@@ -1,2 +1,5 @@
-# Prerequisites
+build_x64
+lib
+bin
+objs
 

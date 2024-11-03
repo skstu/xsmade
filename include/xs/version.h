@@ -5,6 +5,7 @@
 #define xsMINOR_VERSION      0
 #define xsRELEASE_NUMBER     0
 #define xsSUBRELEASE_NUMBER  0
+#define xsVERSION_STRING   "xsProject 1.0.0.0"
 
 /// /*_ Memade®（新生™） _**/
 /// /*_ Sun, 03 Nov 2024 14:48:12 GMT _**/
