@@ -24,22 +24,21 @@ else()
 endif()
 message(STATUS ${CMAKE_SYSTEM_NAME})
 
+include(build/cmake/policies.cmake NO_POLICY_SCOPE)
+
 set(xsSOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR})
 set(xsBINARY_DIR ${CMAKE_CURRENT_BINARY_DIR})
 set(xsOUTPUT_DIR ${xsBINARY_DIR}/lib)
-#[[
-file(READ "${wxSOURCE_DIR}/include/xs/version.h" XS_VERSION_H_CONTENTS)
-string(REGEX MATCH "xsMAJOR_VERSION[ \t]+([0-9]+)"
-    xsMAJOR_VERSION ${XS_VERSION_H_CONTENTS})
-string (REGEX MATCH "([0-9]+)"
-    xsMAJOR_VERSION ${xsMAJOR_VERSION})
-string(REGEX MATCH "xsMINOR_VERSION[ \t]+([0-9]+)"
-    xsMINOR_VERSION ${XS_VERSION_H_CONTENTS})
-string (REGEX MATCH "([0-9]+)"
-    xsMINOR_VERSION ${xsMINOR_VERSION})
-string(REGEX MATCH "xsRELEASE_NUMBER[ \t]+([0-9]+)"
-    xsRELEASE_NUMBER ${XS_VERSION_H_CONTENTS})
-string (REGEX MATCH "([0-9]+)"
-    xsRELEASE_NUMBER ${xsRELEASE_NUMBER})
-]]
+
+message(STATUS "SOURCE_DIR: ${xsSOURCE_DIR}")
+message(STATUS "BINARY_DIR: ${xsBINARY_DIR}")
+message(STATUS "OUTPUT_DIR: ${xsOUTPUT_DIR}")
+
 project(xsmade)
+
+include(build/cmake/main.cmake)
+#LIST(APPEND CMAKE_MODULE_PATH ${LOCAL_CMAKE_MODULES_PATH})
+#include(global)
+#list(APPEND CMAKE_MODULE_PATH "${wxSOURCE_DIR}/build/cmake/modules")
+#add_subdirectory(${SOLUTION_ROOT_DIR}/3rdlocal/bit7z-4.0.8/ "bit7z")
+
