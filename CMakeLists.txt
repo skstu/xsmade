@@ -1,3 +1,11 @@
+#############################################################################
+# Name:        build/cmake/main.cmake
+# Purpose:     Main CMake file
+# Author:      Martell
+# Created:     2024-11-04
+# Copyright:   (c) 2024 skstu development team
+# Licence:     skstu licence
+#############################################################################
 cmake_minimum_required(VERSION 3.5)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
