@@ -1,7 +1,47 @@
 {
     "version": "2.0.0",
     "tasks": [
+        {//!@ Linux ubuntu 20.04
+            "label": "Linux Build Debug On CMake",
+            "type": "shell",
+            "command": "cmake",
+            "args": [
+                "--build",
+                "${workspaceFolder}/build_linux"
+            ],
+            "dependsOn": "linux-cmake-configure",
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "problemMatcher": [
+                "$gcc"
+            ],
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": true,
+                "panel": "shared",
+                "showReuseMessage": false,
+                "clear": false
+            }
+        },
         {
+            "label": "linux-cmake-configure",
+            "type": "shell",
+            "command": "cmake",
+            "args": [
+                "-G",
+                "Ninja",
+                "-S",
+                "${workspaceFolder}",
+                "-B",
+                "${workspaceFolder}/build_linux",
+                "-DCMAKE_BUILD_TYPE=Debug"
+            ],
+            "problemMatcher": []
+        },
+        {//!@ Windows 11
             "label": "Windows Build Debug On CMake",
             "type": "shell",
             "command": "cmake",
@@ -41,7 +81,7 @@
             ],
             "problemMatcher": []
         },
-        {
+        {//!@ MacOS arm64
             "label": "MacOS Build Debug On CMake",
             "type": "shell",
             "command": "cmake",

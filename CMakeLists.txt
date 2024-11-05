@@ -1,11 +1,8 @@
-#############################################################################
-# Name:        build/cmake/main.cmake
-# Purpose:     Main CMake file
-# Author:      Martell
-# Created:     2024-11-04
-# Copyright:   (c) 2024 skstu development team
+# ##############################################################################
+# Name:        build/cmake/main.cmake Purpose:     Main CMake file Author:
+# Martell Created:     2024-11-04 Copyright:   (c) 2024 skstu development team
 # Licence:     skstu licence
-#############################################################################
+# ##############################################################################
 cmake_minimum_required(VERSION 3.5)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -28,25 +25,25 @@ message(STATUS ${CMAKE_SYSTEM_NAME})
 
 include(build/cmake/policies.cmake NO_POLICY_SCOPE)
 
-#set(xsSOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR})
-#set(xsBINARY_DIR ${CMAKE_CURRENT_BINARY_DIR})
-#set(xsOUTPUT_DIR ${xsBINARY_DIR}/lib)
+# set(xsSOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}) set(xsBINARY_DIR
+# ${CMAKE_CURRENT_BINARY_DIR}) set(xsOUTPUT_DIR ${xsBINARY_DIR}/lib)
 
-#message(STATUS "SOURCE_DIR: ${xsSOURCE_DIR}")
-#message(STATUS "BINARY_DIR: ${xsBINARY_DIR}")
-#message(STATUS "OUTPUT_DIR: ${xsOUTPUT_DIR}")
+# message(STATUS "SOURCE_DIR: ${xsSOURCE_DIR}") message(STATUS "BINARY_DIR:
+# ${xsBINARY_DIR}") message(STATUS "OUTPUT_DIR: ${xsOUTPUT_DIR}")
 
 if(NOT CMAKE_BUILD_TYPE)
-    set(CMAKE_BUILD_TYPE Debug CACHE STRING "Build type" FORCE)
+  set(CMAKE_BUILD_TYPE
+      Debug
+      CACHE STRING "Build type" FORCE)
 endif()
-set(CMAKE_BUILD_TYPE Debug CACHE STRING "Build type" FORCE)
-set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -O0")
+set(CMAKE_BUILD_TYPE
+    Debug
+    CACHE STRING "Build type" FORCE)
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -O0")
 
 project(xsmade)
 
 include(build/cmake/main.cmake)
-#LIST(APPEND CMAKE_MODULE_PATH ${LOCAL_CMAKE_MODULES_PATH})
-#include(global)
-#list(APPEND CMAKE_MODULE_PATH "${wxSOURCE_DIR}/build/cmake/modules")
-#add_subdirectory(${SOLUTION_ROOT_DIR}/3rdlocal/bit7z-4.0.8/ "bit7z")
-
+# LIST(APPEND CMAKE_MODULE_PATH ${LOCAL_CMAKE_MODULES_PATH}) include(global)
+# list(APPEND CMAKE_MODULE_PATH "${wxSOURCE_DIR}/build/cmake/modules")
+# add_subdirectory(${SOLUTION_ROOT_DIR}/3rdlocal/bit7z-4.0.8/ "bit7z")
