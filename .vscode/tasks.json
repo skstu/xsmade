@@ -2,14 +2,14 @@
     "version": "2.0.0",
     "tasks": [
         {
-            "label": "Build Debug On CMake",
+            "label": "Windows Build Debug On CMake",
             "type": "shell",
             "command": "cmake",
             "args": [
                 "--build",
                 "${workspaceFolder}/build_win"
             ],
-            "dependsOn":"cmake-configure",
+            "dependsOn": "win-cmake-configure",
             "group": {
                 "kind": "build",
                 "isDefault": true
@@ -27,13 +27,56 @@
             }
         },
         {
-            "label": "cmake-configure",
+            "label": "win-cmake-configure",
             "type": "shell",
             "command": "cmake",
             "args": [
-                "-G", "Ninja",
-                "-S", "${workspaceFolder}",
-                "-B", "${workspaceFolder}/build_win",
+                "-G",
+                "Ninja",
+                "-S",
+                "${workspaceFolder}",
+                "-B",
+                "${workspaceFolder}/build_win",
+                "-DCMAKE_BUILD_TYPE=Debug"
+            ],
+            "problemMatcher": []
+        },
+        {
+            "label": "MacOS Build Debug On CMake",
+            "type": "shell",
+            "command": "cmake",
+            "args": [
+                "--build",
+                "${workspaceFolder}/build_mac"
+            ],
+            "dependsOn": "mac-cmake-configure",
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "problemMatcher": [
+                "$gcc"
+            ],
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": true,
+                "panel": "shared",
+                "showReuseMessage": false,
+                "clear": false
+            }
+        },
+        {
+            "label": "mac-cmake-configure",
+            "type": "shell",
+            "command": "cmake",
+            "args": [
+                "-G",
+                "Ninja",
+                "-S",
+                "${workspaceFolder}",
+                "-B",
+                "${workspaceFolder}/build_mac",
                 "-DCMAKE_BUILD_TYPE=Debug"
             ],
             "problemMatcher": []
