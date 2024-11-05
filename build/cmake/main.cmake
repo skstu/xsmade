@@ -7,7 +7,7 @@
 # Licence:     skstu licence
 #############################################################################
 
-list(APPEND CMAKE_MODULE_PATH "build/cmake/modules")
+list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/build/cmake/modules)
 
 include(global)
 include(build/cmake/functions.cmake)        # skstu functions
