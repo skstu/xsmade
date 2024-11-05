@@ -47,22 +47,38 @@ static bool Detect(const std::string& src,std::string& name) {
     const char *name_ = ucsdet_getName(ucsm, &status);
     if (U_ZERO_ERROR != status || !name_)
       break;
-    name.append(name_);
+    name = name_;
     result = true;
   } while (0);
   if (ucs) {
     ucsdet_close(ucs);
     ucs = NULL;
   }
-
   return result;
 }
-static bool Convert(const std::string& to_name,const std::string& src,std::string& dst){
-bool result= false;
-do{
-
-}while(0);
-return result;
+static bool Convert(const std::string& to_name,const std::string& from_name,const std::string& src,std::string& dst){
+bool result = false;
+  UErrorCode status = U_ZERO_ERROR;
+  do {
+    if(src.empty())
+    break;
+    if(to_name.compare(from_name)==0){
+      result = true;
+      break;
+    }
+    size_t tmp_len = ucnv_convert(to_name.c_str(), from_name.c_str(), NULL, 0, src.data(),
+                           src.size(), &status);
+    if (U_BUFFER_OVERFLOW_ERROR != status && tmp_len != 0)
+      break;
+    status = U_ZERO_ERROR;
+    dst.resize(tmp_len,0x00);
+    ucnv_convert(to_name.c_str(), from_name.c_str(), (char*)&dst[0], dst.size(), src.data(),
+                 src.size(), &status);
+    if (status != U_ZERO_ERROR)
+      break;
+    result = true;
+  } while (0);
+  return result;
 }
 #if 0
 bool Convert(const char *to_name, const char *src, const size_t &srcLen,

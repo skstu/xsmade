@@ -12,22 +12,15 @@ if(MSVC)
   add_compile_options(/utf-8)
 endif()
 
-# add_definitions(-DSHARED_IMPLEMENTATION)
-# add_definitions(-DENABLE_BUILD_STATIC_WIN32)
-# add_definitions(-DBUILDING_CHROMIUM_SHARED) add_library(${PROJECT_NAME} SHARED
-# ${SOURCES})
-
 target_include_directories(${PROJECT_NAME} PRIVATE ${xsINCLUDE_DIR})
 
-find_package(ICU REQUIRED)
-if(ICU_FOUND)
-    include_directories(${ICU_INCLUDE_DIRS})
-    target_link_libraries(${PROJECT_NAME} ${ICU_LIBRARIES})
-else()
-    message(FATAL_ERROR "ICU not found!")
-endif()
-
-
+target_link_libraries(
+  ${PROJECT_NAME} 
+  icuuc 
+  icui18n 
+  icuio 
+  icudata
+)
 #[[
 target_link_libraries(
   ${PROJECT_NAME}
