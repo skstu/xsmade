@@ -7,4 +7,4 @@
 # Licence:     skstu licence
 #############################################################################
 
-add_subdirectory(brw_configure)
+add_subdirectory(test_main)

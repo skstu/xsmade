@@ -1,0 +1,7 @@
+{
+    "clang-format.executable": "C:\\msys64\\clang64\\bin\\clang-format.exe",
+    "files.associations": {
+        "iostream": "cpp"
+    },
+    "workbench.editor.enablePreview": false
+}

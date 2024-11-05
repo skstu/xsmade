@@ -1,0 +1,32 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Build With CMake Ninja On Windows",
+      "type": "cppdbg",
+      "request": "launch",
+      "program": "${workspaceFolder}/build_win/tests/test_main/test_main.exe",
+      "args": [
+        // "--get-processes"
+      ],
+      "stopAtEntry": false,
+      "cwd": "${workspaceFolder}",
+      "environment": [],
+      "externalConsole": false,
+      "MIMode": "gdb",
+      "miDebuggerPath": "C:/msys64/mingw64/bin/gdb.exe",
+      "setupCommands": [
+        {
+          "description": "Enable pretty-printing for lldb",
+          "text": "settings set target.inline-breakpoint-strategy always",
+          "ignoreFailures": true
+        },
+        {
+          "text": "settings set target.exec-path C:/msys64/usr/bin",
+          "ignoreFailures": true
+        }
+      ],
+      "preLaunchTask": "Build Debug On CMake"
+    }
+  ]
+}
