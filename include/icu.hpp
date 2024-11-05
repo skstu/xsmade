@@ -80,47 +80,7 @@ bool result = false;
   } while (0);
   return result;
 }
-#if 0
-bool Convert(const char *to_name, const char *src, const size_t &srcLen,
-                  char **dst, size_t *dstLen) const {
-  bool result = false;
-  UErrorCode status = U_ZERO_ERROR;
-  *dst = NULL;
-  *dstLen = 0;
-  char *from_name = NULL;
-  size_t from_nameLen = 0;
-  do {
-    if (!src || srcLen <= 0 || !to_name)
-      break;
-    if (!DetectName(src, srcLen, &from_name, &from_nameLen))
-      break;
-    if (strcmp(to_name, from_name) == 0) {
-      *dst = (char *)malloc(srcLen);
-      *dstLen = srcLen;
-      memcpy(*dst, src, *dstLen);
-      status = U_ZERO_ERROR;
-      result = true;
-      break;
-    }
-    status = U_ZERO_ERROR;
-    *dstLen = ucnv_convert(to_name, from_name, NULL, 0, (const char *)src,
-                           srcLen, &status);
-    if (U_BUFFER_OVERFLOW_ERROR != status && *dstLen != 0)
-      break;
-    status = U_ZERO_ERROR;
-    *dstLen += sizeof(char);
-    *dst = (char *)malloc(*dstLen);
-    ucnv_convert(to_name, from_name, (char *)(*dst), *dstLen, (const char *)src,
-                 srcLen, &status);
-    if (status != U_ZERO_ERROR)
-      break;
-    *dstLen -= sizeof(char);
-    result = true;
-  } while (0);
-  SK_FREE_PTR(from_name);
-  return result;
-}
-#endif
+
 };
 
 /// /*_ Memade®（新生™） _**/
