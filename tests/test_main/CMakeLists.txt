@@ -42,5 +42,29 @@ elseif(xsSYSTYPE_WINDOWS)
     c:/msys64/clang64/lib/libssl.a
     c:/msys64/clang64/lib/libcrypto.a
     c:/msys64/clang64/lib/libfmt.a
-    c:/msys64/clang64/lib/libuv.a)
+    c:/msys64/clang64/lib/libuv.a   
+    c:/msys64/clang64/lib/libwx_baseu_net-3.0.a
+    c:/msys64/clang64/lib/libwx_baseu_xml-3.0.a
+    c:/msys64/clang64/lib/libwx_baseu-3.0.a
+    c:/msys64/clang64/lib/libwx_mswu_adv-3.0.a
+    c:/msys64/clang64/lib/libwx_mswu_aui-3.0.a
+    c:/msys64/clang64/lib/libwx_mswu_core-3.0.a
+    c:/msys64/clang64/lib/libwx_mswu_gl-3.0.a
+    c:/msys64/clang64/lib/libwx_mswu_html-3.0.a
+    c:/msys64/clang64/lib/libwx_mswu_media-3.0.a
+    c:/msys64/clang64/lib/libwx_mswu_propgrid-3.0.a
+    c:/msys64/clang64/lib/libwx_mswu_qa-3.0.a
+    c:/msys64/clang64/lib/libwx_mswu_ribbon-3.0.a
+    c:/msys64/clang64/lib/libwx_mswu_richtext-3.0.a
+    c:/msys64/clang64/lib/libwx_mswu_stc-3.0.a
+    c:/msys64/clang64/lib/libwx_mswu_webview-3.0.a
+    c:/msys64/clang64/lib/libwx_mswu_xrc-3.0.a
+    c:/msys64/clang64/lib/libwxexpat-3.0.a
+    c:/msys64/clang64/lib/libwxjpeg-3.0.a
+    c:/msys64/clang64/lib/libwxpng-3.0.a
+    c:/msys64/clang64/lib/libwxregexu-3.0.a
+    c:/msys64/clang64/lib/libwxscintilla-3.0.a
+    c:/msys64/clang64/lib/libwxtiff-3.0.a
+    c:/msys64/clang64/lib/libwxzlib-3.0.a
+    )
 endif()
