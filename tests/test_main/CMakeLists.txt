@@ -15,7 +15,8 @@ if(xsSYSTYPE_APPLE)
   target_include_directories(
     ${PROJECT_NAME}
     PRIVATE ${xsINCLUDE_DIR} ${xs3RDPARTY_DIR}/utfcpp/source/
-            ${xs3RDPARTY_DIR}/cpp-httplib/ /opt/homebrew/opt/openssl@3/include/ /opt/homebrew/Cellar/fmt/11.0.2/include/)
+            ${xs3RDPARTY_DIR}/cpp-httplib/ /opt/homebrew/opt/openssl@3/include/
+            /opt/homebrew/Cellar/fmt/11.0.2/include/)
 
   target_link_libraries(
     ${PROJECT_NAME} /opt/homebrew/opt/openssl@3/lib/libcrypto.a
@@ -34,7 +35,11 @@ elseif(xsSYSTYPE_WINDOWS)
     Crypt32.lib
     Normaliz.lib
     ws2_32.lib
+    IPHLPAPI.lib
+    Userenv.lib
+    Dbghelp.lib
     c:/msys64/clang64/lib/libssl.a
     c:/msys64/clang64/lib/libcrypto.a
-    c:/msys64/clang64/lib/libfmt.a)
+    c:/msys64/clang64/lib/libfmt.a
+    c:/msys64/clang64/lib/libuv.a)
 endif()

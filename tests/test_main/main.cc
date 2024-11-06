@@ -5,8 +5,38 @@
 #include <httplib.h>
 #include <rapidjson.h>
 #include <system.hpp>
+#include <uv.h>
+
+void timer_callback(uv_timer_t *handle) {
+  std::cout << "Hello from libuv! The timer callback was triggered."
+            << std::endl;
+}
 
 int main(int argc, char **argv) {
+  do { //!@ libuv
+       // 创建一个 libuv 事件循环
+    uv_loop_t *loop = uv_default_loop();
+
+    // 创建一个定时器句柄
+    uv_timer_t timer_req;
+
+    // 初始化定时器：每 1000 毫秒触发一次
+    uv_timer_init(loop, &timer_req);
+
+    // 启动定时器：每 1000 毫秒触发一次定时器回调
+    uv_timer_start(&timer_req, timer_callback, 1000, 1000);
+
+    std::cout << "libuv test program running... Press Ctrl+C to exit."
+              << std::endl;
+
+    // 运行事件循环
+    uv_run(loop, UV_RUN_DEFAULT);
+
+    // 清理资源
+    uv_loop_close(loop);
+
+    return 0;
+  } while (0);
   do { //!@ test cpp-httplib
     httplib::Client cli("https://github.com");
     auto res = cli.Get("/");
