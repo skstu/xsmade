@@ -12,4 +12,10 @@ endif()
 
 target_include_directories(${PROJECT_NAME} PRIVATE ${xsINCLUDE_DIR})
 
+if(WIN32)
+
+elseif(UNIX)
 target_link_libraries(${PROJECT_NAME} icuuc icui18n icuio icudata)
+elseif(APPLE)
+
+endif()
