@@ -4,6 +4,8 @@
 #include <utf8.h>
 #include <httplib.h>
 #include <rapidjson.h>
+#include <system.hpp>
+
 int main(int argc, char **argv) {
   do { //!@ test cpp-httplib
     httplib::Client cli("https://github.com");
