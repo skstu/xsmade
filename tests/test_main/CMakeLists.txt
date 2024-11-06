@@ -10,12 +10,13 @@ if(MSVC)
   add_compile_options(/utf-8)
 endif()
 
-target_include_directories(${PROJECT_NAME} PRIVATE ${xsINCLUDE_DIR})
+target_include_directories(
+  ${PROJECT_NAME} PRIVATE ${xsINCLUDE_DIR} ${xs3RDPARTY_DIR}/utfcpp/source/)
 
 if(WIN32)
 
 elseif(UNIX)
-target_link_libraries(${PROJECT_NAME} icuuc icui18n icuio icudata)
+  target_link_libraries(${PROJECT_NAME} icuuc icui18n icuio icudata)
 elseif(APPLE)
 
 endif()
