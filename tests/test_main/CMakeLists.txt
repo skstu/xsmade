@@ -3,6 +3,7 @@ project(test_main)
 gfn_project_source_get(${CMAKE_CURRENT_SOURCE_DIR} OUT_HEADER_S OUT_SOURCE_S)
 set(SOURCES ${OUT_HEADER_S} ${OUT_SOURCE_S})
 
+add_definitions(-DCPPHTTPLIB_OPENSSL_SUPPORT)
 add_executable(${PROJECT_NAME} ${SOURCES})
 
 if(MSVC)
@@ -10,13 +11,18 @@ if(MSVC)
   add_compile_options(/utf-8)
 endif()
 
-target_include_directories(
-  ${PROJECT_NAME} PRIVATE ${xsINCLUDE_DIR} ${xs3RDPARTY_DIR}/utfcpp/source/)
+if(xsSYSTYPE_APPLE)
+target_include_directories(${PROJECT_NAME} PRIVATE 
+  ${xsINCLUDE_DIR} 
+  ${xs3RDPARTY_DIR}/utfcpp/source/ 
+  ${xs3RDPARTY_DIR}/cpp-httplib/
+  /opt/homebrew/opt/openssl@3/include/
+  )
 
-if(WIN32)
-
-elseif(UNIX)
-  target_link_libraries(${PROJECT_NAME} icuuc icui18n icuio icudata)
-elseif(APPLE)
-
+target_link_libraries(${PROJECT_NAME}
+/opt/homebrew/opt/openssl@3/lib/libcrypto.a
+/opt/homebrew/opt/openssl@3/lib/libssl.a
+)
 endif()
+
+

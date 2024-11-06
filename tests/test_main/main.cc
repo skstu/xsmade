@@ -2,7 +2,19 @@
 // #include <icu.hpp>
 #include <stl.hpp>
 #include <utf8.h>
+#include <httplib.h>
+#include <rapidjson.h>
 int main(int argc, char **argv) {
+  do { //!@ test cpp-httplib
+    httplib::Client cli("https://github.com");
+    auto res = cli.Get("/");
+    if (!res)
+      break;
+    std::string body = res->body;
+    std::cout << body << std::endl;
+    auto sss = 0;
+  } while (0);
+
   do { //!@ test utfcpp
     std::string u8text = u8R"("asglkasdgh你好啊。@#￥……@……！";)";
     std::string::iterator end_it =
@@ -21,6 +33,15 @@ int main(int argc, char **argv) {
     auto __pause__ = 1;
   } while (0);
 
+  do { //!@ rapidjson
+    rapidjson::Document doc;
+    doc.Parse(R"({"hi":"martell!"})");
+    if (doc.HasParseError())
+      break;
+
+    std::string out = Json::toString(doc);
+    std::cout << out << std::endl;
+  } while (0);
 #if 0
   std::string name;
   const std::string src = "asglkasdgh你好啊。@#￥……@……！";

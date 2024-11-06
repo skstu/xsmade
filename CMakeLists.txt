@@ -4,17 +4,31 @@
 # Licence:     skstu licence
 # ##############################################################################
 cmake_minimum_required(VERSION 3.5)
+
+set(xsSYSTYPE_WINDOWS ON)
+set(xsSYSTYPE_APPLE OFF)
+set(xsSYSTYPE_LINUX OFF)
+
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 if(WIN32)
+set(xsSYSTYPE_WINDOWS ON)
+set(xsSYSTYPE_APPLE OFF)
+set(xsSYSTYPE_LINUX OFF)
   set(CMAKE_SYSTEM_NAME "Windows")
   set(CMAKE_C_COMPILER C:/msys64/clang64/bin/clang.exe)
   set(CMAKE_CXX_COMPILER C:/msys64/clang64/bin/clang++.exe)
 elseif(APPLE)
+set(xsSYSTYPE_WINDOWS OFF)
+set(xsSYSTYPE_APPLE ON)
+set(xsSYSTYPE_LINUX OFF)
   set(CMAKE_SYSTEM_NAME "macOS")
   set(CMAKE_C_COMPILER /usr/bin/clang)
   set(CMAKE_CXX_COMPILER /usr/bin/clang++)
 elseif(UNIX)
+set(xsSYSTYPE_WINDOWS OFF)
+set(xsSYSTYPE_APPLE OFF)
+set(xsSYSTYPE_LINUX ON)
   set(CMAKE_SYSTEM_NAME "Linux")
   set(CMAKE_C_COMPILER /usr/bin/clang)
   set(CMAKE_CXX_COMPILER /usr/bin/clang++)
@@ -25,9 +39,10 @@ message(STATUS ${CMAKE_SYSTEM_NAME})
 
 include(build/cmake/policies.cmake NO_POLICY_SCOPE)
 
-set(xs3RDPARTY_DIR ${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/)
-set(xsINCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/include/) 
 set(xsSOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}) 
+set(xs3RDPARTY_DIR ${xsSOURCE_DIR}/3rdparty/)
+set(xsINCLUDE_DIR ${xsSOURCE_DIR}/include/) 
+
 #set(xsBINARY_DIR ${CMAKE_CURRENT_BINARY_DIR}) 
 #set(xsOUTPUT_DIR ${xsBINARY_DIR}/lib)
 
