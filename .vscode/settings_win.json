@@ -1,5 +1,5 @@
 {
-    "clang-format.executable": "clang-format",
+    "clang-format.executable": "C:\\msys64\\clang64\\bin\\clang-format.exe",
     "files.associations": {
         "iostream": "cpp",
         "*.tcc": "cpp",
