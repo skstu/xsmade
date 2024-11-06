@@ -1,5 +1,5 @@
 #include <iostream>
-// #include <icu.hpp>
+#include <fmt/format.h>
 #include <stl.hpp>
 #include <utf8.h>
 #include <httplib.h>
@@ -42,18 +42,12 @@ int main(int argc, char **argv) {
     std::string out = Json::toString(doc);
     std::cout << out << std::endl;
   } while (0);
-#if 0
-  std::string name;
-  const std::string src = "asglkasdgh你好啊。@#￥……@……！";
-  Icu::Detect(src, name);
-  std::string dst;
-  Icu::Convert("UTF-16", "UTF-8", src, dst);
-  char16_t *tmp = (char16_t *)malloc(dst.size());
-  std::u16string u16tmp;
-  u16tmp.resize(dst.size() + sizeof(char16_t), 0x00);
-  memcpy((char *)&u16tmp[0], dst.data(), dst.size());
-  std::cout << name << std::endl;
-  std::cout << dst << std::endl;
-#endif
+
+  do { //!@ fmt
+    std::string test = fmt::format("{:.2f}", 1.8845);
+
+    std::cout << test << std::endl;
+
+  } while (0);
   return 0;
 }

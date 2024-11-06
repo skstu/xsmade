@@ -12,17 +12,28 @@ if(MSVC)
 endif()
 
 if(xsSYSTYPE_APPLE)
-target_include_directories(${PROJECT_NAME} PRIVATE 
-  ${xsINCLUDE_DIR} 
-  ${xs3RDPARTY_DIR}/utfcpp/source/ 
-  ${xs3RDPARTY_DIR}/cpp-httplib/
-  /opt/homebrew/opt/openssl@3/include/
-  )
+  target_include_directories(
+    ${PROJECT_NAME}
+    PRIVATE ${xsINCLUDE_DIR} ${xs3RDPARTY_DIR}/utfcpp/source/
+            ${xs3RDPARTY_DIR}/cpp-httplib/ /opt/homebrew/opt/openssl@3/include/)
 
-target_link_libraries(${PROJECT_NAME}
-/opt/homebrew/opt/openssl@3/lib/libcrypto.a
-/opt/homebrew/opt/openssl@3/lib/libssl.a
-)
+  target_link_libraries(
+    ${PROJECT_NAME} /opt/homebrew/opt/openssl@3/lib/libcrypto.a
+    /opt/homebrew/opt/openssl@3/lib/libssl.a)
+elseif(xsSYSTYPE_WINDOWS)
+  target_include_directories(
+    ${PROJECT_NAME}
+    PRIVATE ${xsINCLUDE_DIR} ${xs3RDPARTY_DIR}/utfcpp/source/
+            ${xs3RDPARTY_DIR}/cpp-httplib/ c:/msys64/clang64/include/)
+
+  target_link_libraries(
+    ${PROJECT_NAME}
+    wldap32.lib
+    winmm.lib
+    Crypt32.lib
+    Normaliz.lib
+    ws2_32.lib
+    c:/msys64/clang64/lib/libssl.a
+    c:/msys64/clang64/lib/libcrypto.a
+    c:/msys64/clang64/lib/libfmt.a)
 endif()
-
-
