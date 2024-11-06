@@ -15,11 +15,12 @@ if(xsSYSTYPE_APPLE)
   target_include_directories(
     ${PROJECT_NAME}
     PRIVATE ${xsINCLUDE_DIR} ${xs3RDPARTY_DIR}/utfcpp/source/
-            ${xs3RDPARTY_DIR}/cpp-httplib/ /opt/homebrew/opt/openssl@3/include/)
+            ${xs3RDPARTY_DIR}/cpp-httplib/ /opt/homebrew/opt/openssl@3/include/ /opt/homebrew/Cellar/fmt/11.0.2/include/)
 
   target_link_libraries(
     ${PROJECT_NAME} /opt/homebrew/opt/openssl@3/lib/libcrypto.a
-    /opt/homebrew/opt/openssl@3/lib/libssl.a)
+    /opt/homebrew/opt/openssl@3/lib/libssl.a
+    /opt/homebrew/Cellar/fmt/11.0.2/lib/libfmt.a)
 elseif(xsSYSTYPE_WINDOWS)
   target_include_directories(
     ${PROJECT_NAME}
