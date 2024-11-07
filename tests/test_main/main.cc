@@ -6,7 +6,19 @@
 #include <rapidjson.h>
 #include <system.hpp>
 #include <uv.h>
+#define TEST_WXWIDGETS 1
 
+#if TEST_WXWIDGETS
+#include <wxwidgets.hpp>
+int main(int argc, char **argv) {
+  return 0;
+}
+// int APIENTRY WinMain(HINSTANCE hInst, HINSTANCE hInstPrev, PSTR cmdline, int
+// cmdshow)
+// {
+//     return MessageBox(NULL, "hello, world", "caption", 0);
+// }
+#else
 void timer_callback(uv_timer_t *handle) {
   std::cout << "Hello from libuv! The timer callback was triggered."
             << std::endl;
@@ -83,3 +95,4 @@ int main(int argc, char **argv) {
   } while (0);
   return 0;
 }
+#endif
