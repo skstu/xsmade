@@ -68,9 +68,16 @@ if(xsSYSTYPE_WINDOWS)
   set(wxBUILD_TOOLKIT
       "msw"
       CACHE STRING "Choose wxWidgets toolkit" FORCE)
-elseif()
+elseif(xsSYSTYPE_APPLE)
+set(wxUSE_LIBTIFF
+"sys"
+CACHE STRING "Choose wxWidgets toolkit" FORCE)
 set(wxBUILD_TOOLKIT
 "osx_cocoa"
+CACHE STRING "Choose wxWidgets toolkit" FORCE)
+elseif(xsSYSTYPE_LINUX)
+set(wxBUILD_TOOLKIT
+"gtk2"
 CACHE STRING "Choose wxWidgets toolkit" FORCE)
 endif()
 set(wxBUILD_SAMPLES
