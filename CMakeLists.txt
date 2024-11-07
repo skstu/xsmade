@@ -3,7 +3,45 @@
 # Martell Created:     2024-11-04 Copyright:   (c) 2024 skstu development team
 # Licence:     skstu licence
 # ##############################################################################
+
+# cmake -G "Ninja Multi-Config" ..
+# cmake --build . --config Release
+# cmake -G "Ninja" .. -DCMAKE_BUILD_TYPE=Release
+# cmake --build . --config Release
+
 cmake_minimum_required(VERSION 3.5)
+
+if(NOT CMAKE_CONFIGURATION_TYPES)
+  get_property(HAVE_MULTI_CONFIG_GENERATOR GLOBAL
+               PROPERTY GENERATOR_IS_MULTI_CONFIG)
+  if(HAVE_MULTI_CONFIG_GENERATOR)
+    set(CMAKE_CONFIGURATION_TYPES
+        "Debug;Release"
+        CACHE STRING "Available build types" FORCE)
+  endif()
+endif()
+
+if(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
+  set(default_build_type "Debug")
+  message(
+    STATUS
+      "Setting build type to '${default_build_type}' as none was specified.")
+  set(CMAKE_BUILD_TYPE
+      "${default_build_type}"
+      CACHE STRING "Choose the type of build." FORCE)
+  set_property(CACHE CMAKE_BUILD_TYPE PROPERTY STRINGS "Debug" "Release"
+                                               "RelWithDebInfo" "MinSizeRel")
+endif()
+
+if(CMAKE_CONFIGURATION_TYPES)
+  message(
+    STATUS
+      "Multi-config generator detected. Available build types: ${CMAKE_CONFIGURATION_TYPES}"
+  )
+else()
+  message(
+    STATUS "Single-config generator detected. Build type: ${CMAKE_BUILD_TYPE}")
+endif()
 
 set(xsSYSTYPE_WINDOWS ON)
 set(xsSYSTYPE_APPLE OFF)
@@ -18,8 +56,10 @@ if(WIN32)
   set(CMAKE_SYSTEM_NAME "Windows")
   set(CMAKE_C_COMPILER C:/msys64/clang64/bin/clang.exe)
   set(CMAKE_CXX_COMPILER C:/msys64/clang64/bin/clang++.exe)
+
+  add_definitions(-DUNICODE -D_UNICODE)
 elseif(APPLE)
-enable_language(OBJC)
+  enable_language(OBJC)
   set(xsSYSTYPE_WINDOWS OFF)
   set(xsSYSTYPE_APPLE ON)
   set(xsSYSTYPE_LINUX OFF)
@@ -43,6 +83,7 @@ include(build/cmake/policies.cmake NO_POLICY_SCOPE)
 set(xsSOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR})
 set(xs3RDPARTY_DIR ${xsSOURCE_DIR}/3rdparty/)
 set(xsINCLUDE_DIR ${xsSOURCE_DIR}/include/)
+set(xsOUT_DIR ${xsSOURCE_DIR}/out/)
 
 # set(xsBINARY_DIR ${CMAKE_CURRENT_BINARY_DIR}) set(xsOUTPUT_DIR
 # ${xsBINARY_DIR}/lib)
@@ -52,13 +93,20 @@ set(xsINCLUDE_DIR ${xsSOURCE_DIR}/include/)
 
 if(NOT CMAKE_BUILD_TYPE)
   set(CMAKE_BUILD_TYPE
-      Debug
+      "Debug"
       CACHE STRING "Build type" FORCE)
 endif()
-set(CMAKE_BUILD_TYPE
-    Debug
-    CACHE STRING "Build type" FORCE)
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -O0")
+
+set_property(CACHE CMAKE_BUILD_TYPE PROPERTY STRINGS "Debug" "Release"
+                                             "RelWithDebInfo" "MinSizeRel")
+
+set(CMAKE_CXX_FLAGS_DEBUG "-g -O0")
+set(CMAKE_CXX_FLAGS_RELEASE "-O3 -DNDEBUG")
+set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "-O2 -g") # Release with Debug Info
+set(CMAKE_CXX_FLAGS_MINSIZEREL "-Os -DNDEBUG") # MinSizeRel
+
+message(STATUS "Build type: ${CMAKE_BUILD_TYPE}")
+message(STATUS "C++ Flags: ${CMAKE_CXX_FLAGS_${CMAKE_BUILD_TYPE}}")
 
 project(xsmade)
 
@@ -82,12 +130,13 @@ elseif(xsSYSTYPE_LINUX)
       CACHE STRING "Choose wxWidgets toolkit" FORCE)
 endif()
 set(wxBUILD_SAMPLES
-    #"ALL"
+    # "ALL"
     "OFF"
     CACHE STRING "Choose wxWidgets toolkit" FORCE)
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wno-unused-command-line-argument")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-unused-command-line-argument")
-add_subdirectory(${xsSOURCE_DIR}/3rdparty/wxwidgets/ "wxWidgets")
+add_subdirectory(${xs3RDPARTY_DIR}/wxwidgets/ "wxWidgets")
+add_subdirectory(${xs3RDPARTY_DIR}/http-parser/ "http_parser")
 # set_target_properties(wxwidgets PROPERTIES FOLDER "3rdparty") cmake -G Ninja
 # .. -DwxBUILD_SAMPLES=ALL -DwxBUILD_SHARED=OFF
 # -DCMAKE_C_FLAGS="-Wno-unused-command-line-argument"
