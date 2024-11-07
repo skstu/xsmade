@@ -12,23 +12,55 @@ if(MSVC)
   add_compile_options(/utf-8)
 endif()
 
-if(xsSYSTYPE_APPLE)
+if(APPLE)
   target_include_directories(
     ${PROJECT_NAME}
     PRIVATE ${xsINCLUDE_DIR}
             ${xs3RDPARTY_DIR}/utfcpp/source/
             ${xs3RDPARTY_DIR}/cpp-httplib/
+            ${xs3RDPARTY_DIR}/wxWidgets/include/
+            ${xsSOURCE_DIR}/out/wxWidgets/lib/wx/include/osx_cocoa-unicode-static-3.3/
             /opt/homebrew/opt/openssl@3/include/
             /opt/homebrew/Cellar/fmt/11.0.2/include/
             /opt/homebrew/Cellar/libuv/1.49.2/include/)
 
+            target_link_directories(${PROJECT_NAME} PRIVATE
+            ${xsSOURCE_DIR}/out/wxWidgets/lib/)
+
+            set(WX_LIBS
+      libwx_baseu_net-3.3.a
+      libwx_baseu_xml-3.3.a
+      libwx_baseu-3.3.a
+      libwx_osx_cocoau_adv-3.3.a
+      libwx_osx_cocoau_aui-3.3.a
+      libwx_osx_cocoau_core-3.3.a
+      libwx_osx_cocoau_gl-3.3.a
+      libwx_osx_cocoau_html-3.3.a
+      libwx_osx_cocoau_media-3.3.a
+      libwx_osx_cocoau_propgrid-3.3.a
+      libwx_osx_cocoau_qa-3.3.a
+      libwx_osx_cocoau_ribbon-3.3.a
+      libwx_osx_cocoau_richtext-3.3.a
+      libwx_osx_cocoau_stc-3.3.a
+      libwx_osx_cocoau_xrc-3.3.a
+      libwxjpeg-3.3.a
+      libwxlexilla-3.3.a
+      libwxpng-3.3.a
+      libwxregexu-3.3.a
+      libwxscintilla-3.3.a
+      libwxtiff-3.3.a)
+
   target_link_libraries(
     ${PROJECT_NAME}
+    ${WX_LIBS}
+    "-framework CoreFoundation"
+    "-framework Cocoa"
+    "-liconv"
     /opt/homebrew/opt/openssl@3/lib/libcrypto.a
     /opt/homebrew/opt/openssl@3/lib/libssl.a
     /opt/homebrew/Cellar/fmt/11.0.2/lib/libfmt.a
     /opt/homebrew/Cellar/libuv/1.49.2/lib/libuv.a)
-elseif(xsSYSTYPE_WINDOWS)
+elseif(WIN32)
   # target_link_options(${PROJECT_NAME} PRIVATE -Wl,--allow-multiple-definition)
   # set_target_properties(${PROJECT_NAME} PROPERTIES LINK_FLAGS
   # "-Wl,--allow-multiple-definition")

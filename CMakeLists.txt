@@ -19,6 +19,7 @@ if(WIN32)
   set(CMAKE_C_COMPILER C:/msys64/clang64/bin/clang.exe)
   set(CMAKE_CXX_COMPILER C:/msys64/clang64/bin/clang++.exe)
 elseif(APPLE)
+enable_language(OBJC)
   set(xsSYSTYPE_WINDOWS OFF)
   set(xsSYSTYPE_APPLE ON)
   set(xsSYSTYPE_LINUX OFF)
@@ -69,7 +70,6 @@ if(xsSYSTYPE_WINDOWS)
       "msw"
       CACHE STRING "Choose wxWidgets toolkit" FORCE)
 elseif(xsSYSTYPE_APPLE)
-  enable_language(OBJC)
   set(wxBUILD_TOOLKIT
       "osx_cocoa"
       CACHE STRING "Choose wxWidgets toolkit" FORCE)
