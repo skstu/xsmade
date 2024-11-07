@@ -3,7 +3,7 @@ build_x86
 build_win
 build_mac
 build_linux
-lib
+libs
 bin
 objs
 
