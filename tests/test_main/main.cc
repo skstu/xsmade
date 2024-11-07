@@ -6,7 +6,7 @@
 #include <rapidjson.h>
 #include <system.hpp>
 #include <uv.h>
-#define TEST_WXWIDGETS 1
+#define TEST_WXWIDGETS 0
 
 #if TEST_WXWIDGETS
 #include <wxwidgets.hpp>
