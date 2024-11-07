@@ -69,18 +69,21 @@ if(xsSYSTYPE_WINDOWS)
       "msw"
       CACHE STRING "Choose wxWidgets toolkit" FORCE)
 elseif(xsSYSTYPE_APPLE)
-enable_language(OBJC)
-set(wxBUILD_TOOLKIT
-"osx_cocoa"
-CACHE STRING "Choose wxWidgets toolkit" FORCE)
-set(wxUSE_WEBVIEW OFF CACHE BOOL "Choose wxWidgets toolkit" FORCE)
+  enable_language(OBJC)
+  set(wxBUILD_TOOLKIT
+      "osx_cocoa"
+      CACHE STRING "Choose wxWidgets toolkit" FORCE)
+  set(wxUSE_WEBVIEW
+      OFF
+      CACHE BOOL "Choose wxWidgets toolkit" FORCE)
 elseif(xsSYSTYPE_LINUX)
-set(wxBUILD_TOOLKIT
-"gtk2"
-CACHE STRING "Choose wxWidgets toolkit" FORCE)
+  set(wxBUILD_TOOLKIT
+      "gtk2"
+      CACHE STRING "Choose wxWidgets toolkit" FORCE)
 endif()
 set(wxBUILD_SAMPLES
-    "ALL"
+    #"ALL"
+    "OFF"
     CACHE STRING "Choose wxWidgets toolkit" FORCE)
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wno-unused-command-line-argument")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-unused-command-line-argument")

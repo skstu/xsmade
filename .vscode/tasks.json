@@ -7,7 +7,7 @@
             "command": "cmake",
             "args": [
                 "--build",
-                "${workspaceFolder}/build_linux"
+                "${workspaceFolder}/out"
             ],
             "dependsOn": "linux-cmake-configure",
             "group": {
@@ -36,7 +36,7 @@
                 "-S",
                 "${workspaceFolder}",
                 "-B",
-                "${workspaceFolder}/build_linux",
+                "${workspaceFolder}/out",
                 "-DCMAKE_BUILD_TYPE=Debug"
             ],
             "problemMatcher": []
@@ -47,7 +47,7 @@
             "command": "cmake",
             "args": [
                 "--build",
-                "${workspaceFolder}/build_win"
+                "${workspaceFolder}/out"
             ],
             "dependsOn": "win-cmake-configure",
             "group": {
@@ -76,7 +76,7 @@
                 "-S",
                 "${workspaceFolder}",
                 "-B",
-                "${workspaceFolder}/build_win",
+                "${workspaceFolder}/out",
                 "-DCMAKE_BUILD_TYPE=Debug"
             ],
             "problemMatcher": []
@@ -87,7 +87,7 @@
             "command": "cmake",
             "args": [
                 "--build",
-                "${workspaceFolder}/build_mac"
+                "${workspaceFolder}/out"
             ],
             "dependsOn": "mac-cmake-configure",
             "group": {
@@ -116,7 +116,7 @@
                 "-S",
                 "${workspaceFolder}",
                 "-B",
-                "${workspaceFolder}/build_mac",
+                "${workspaceFolder}/out",
                 "-DCMAKE_BUILD_TYPE=Debug"
             ],
             "problemMatcher": []

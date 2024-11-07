@@ -1,9 +1,4 @@
-build_x64
-build_x86
-build_win
-build_mac
-build_linux
 libs
 bin
 objs
-
+out

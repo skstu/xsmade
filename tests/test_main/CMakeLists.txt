@@ -38,8 +38,37 @@ elseif(xsSYSTYPE_WINDOWS)
             ${xs3RDPARTY_DIR}/utfcpp/source/
             ${xs3RDPARTY_DIR}/cpp-httplib/
             c:/msys64/clang64/include/
-            c:/msys64/clang64/include/wx-3.0/
-            c:/msys64/clang64/lib/wx/include/msw-unicode-static-3.0/)
+            ${xs3RDPARTY_DIR}/wxWidgets/include/
+            ${xsSOURCE_DIR}/out/wxWidgets/lib/wx/include/msw-unicode-static-3.3/
+  )
+
+  target_link_directories(${PROJECT_NAME} PRIVATE
+                          ${xsSOURCE_DIR}/out/wxWidgets/lib/)
+  set(WX_LIBS
+      libwx_baseu_net-3.3-Windows.a
+      libwx_baseu_xml-3.3-Windows.a
+      libwx_baseu-3.3-Windows.a
+      libwx_mswu_adv-3.3-Windows.a
+      libwx_mswu_aui-3.3-Windows.a
+      libwx_mswu_core-3.3-Windows.a
+      libwx_mswu_gl-3.3-Windows.a
+      libwx_mswu_html-3.3-Windows.a
+      libwx_mswu_media-3.3-Windows.a
+      libwx_mswu_propgrid-3.3-Windows.a
+      libwx_mswu_qa-3.3-Windows.a
+      libwx_mswu_ribbon-3.3-Windows.a
+      libwx_mswu_richtext-3.3-Windows.a
+      libwx_mswu_stc-3.3-Windows.a
+      libwx_mswu_webview-3.3-Windows.a
+      libwx_mswu_xrc-3.3-Windows.a
+      libwxexpat-3.3.a
+      libwxjpeg-3.3.a
+      libwxlexilla-3.3.a
+      libwxpng-3.3.a
+      libwxregexu-3.3.a
+      libwxscintilla-3.3.a
+      libwxtiff-3.3.a
+      libwxzlib-3.3.a)
 
   target_link_libraries(
     ${PROJECT_NAME}
@@ -57,31 +86,13 @@ elseif(xsSYSTYPE_WINDOWS)
     Version.lib
     Rpcrt4.lib
     Oleacc.lib
+    Gdiplus.lib
+    Msimg32.lib
     c:/msys64/clang64/lib/libssl.a
     c:/msys64/clang64/lib/libcrypto.a
     c:/msys64/clang64/lib/libfmt.a
     c:/msys64/clang64/lib/libuv.a
-    c:/msys64/clang64/lib/libwx_baseu_net-3.0.a
-    c:/msys64/clang64/lib/libwx_baseu_xml-3.0.a
-    c:/msys64/clang64/lib/libwx_baseu-3.0.a
-    c:/msys64/clang64/lib/libwx_mswu_adv-3.0.a
-    c:/msys64/clang64/lib/libwx_mswu_aui-3.0.a
-    c:/msys64/clang64/lib/libwx_mswu_core-3.0.a
-    c:/msys64/clang64/lib/libwx_mswu_richtext-3.0.a
-    c:/msys64/clang64/lib/libwx_mswu_stc-3.0.a
-    c:/msys64/clang64/lib/libwx_mswu_webview-3.0.a
-    c:/msys64/clang64/lib/libwx_mswu_xrc-3.0.a
-    c:/msys64/clang64/lib/libwxexpat-3.0.a
-    c:/msys64/clang64/lib/libwxjpeg-3.0.a
-    c:/msys64/clang64/lib/libwxpng-3.0.a
-    c:/msys64/clang64/lib/libwxzlib-3.0.a
-    c:/msys64/clang64/lib/libwx_mswu_gl-3.0.a
-    c:/msys64/clang64/lib/libwx_mswu_html-3.0.a
-    c:/msys64/clang64/lib/libwx_mswu_media-3.0.a
-    c:/msys64/clang64/lib/libwx_mswu_propgrid-3.0.a
-    c:/msys64/clang64/lib/libwx_mswu_qa-3.0.a
-    c:/msys64/clang64/lib/libwx_mswu_ribbon-3.0.a
-    c:/msys64/clang64/lib/libwxregexu-3.0.a
-    c:/msys64/clang64/lib/libwxscintilla-3.0.a
-    c:/msys64/clang64/lib/libwxtiff-3.0.a)
+    ${WX_LIBS})
 endif()
+
+target_compile_definitions(${PROJECT_NAME} PRIVATE wxUSE_GUI=0 wxUSE_BASE=1)

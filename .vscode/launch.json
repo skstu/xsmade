@@ -5,7 +5,7 @@
       "name": "Linux Build With CMake Ninja",
       "type": "cppdbg",
       "request": "launch",
-      "program": "${workspaceFolder}/build_linux/tests/test_main/test_main",
+      "program": "${workspaceFolder}/out/tests/test_main/test_main",
       "args": [
         // "--get-processes"
       ],
@@ -28,7 +28,7 @@
       "name": "Windows Build With CMake Ninja",
       "type": "cppdbg",
       "request": "launch",
-      "program": "${workspaceFolder}/build_win/tests/test_main/test_main.exe",
+      "program": "${workspaceFolder}/out/tests/test_main/test_main.exe",
       "args": [
         // "--get-processes"
       ],
@@ -51,7 +51,7 @@
       "name": "MacOS Build With CMake Ninja",
       "type": "cppdbg",
       "request": "launch",
-      "program": "${workspaceFolder}/build_mac/tests/test_main/test_main", // 确保这是可执行文件
+      "program": "${workspaceFolder}/out/tests/test_main/test_main", // 确保这是可执行文件
       "args": [],
       "stopAtEntry": false,
       "cwd": "${workspaceFolder}",
