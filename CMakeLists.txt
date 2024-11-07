@@ -69,7 +69,9 @@ if(xsSYSTYPE_WINDOWS)
       "msw"
       CACHE STRING "Choose wxWidgets toolkit" FORCE)
 elseif()
-
+set(wxBUILD_TOOLKIT
+"osx_cocoa"
+CACHE STRING "Choose wxWidgets toolkit" FORCE)
 endif()
 set(wxBUILD_SAMPLES
     "ALL"
