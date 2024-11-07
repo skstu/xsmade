@@ -1,0 +1,39 @@
+# ##############################################################################
+# Name:        build/cmake/main.cmake Purpose:     Main CMake file Author:
+# Martell Created:     2024-11-08 Copyright:   (c) 2024 skstu development team
+# Licence:     skstu licence
+# ##############################################################################
+
+macro(GFN_FIND_WXWIDGETS OUT_WX_INCLUDES OUT_WX_LIBS)
+  set(wxVERSION 3.3)
+
+  set(${OUT_WX_INCLUDES}
+      "${xs3RDPARTY_DIR}/wxWidgets/include/"
+      "${xsOUTPUT_DIR}/wxWidgets/lib/wx/include/msw-unicode-static-${wxVERSION}/")
+  set(wxLIBS_DIR ${xsOUTPUT_DIR}wxWidgets/lib)
+  set(${OUT_WX_LIBS}
+      "${wxLIBS_DIR}/libwx_baseu_net-${wxVERSION}-Windows.a"
+      "${wxLIBS_DIR}/libwx_baseu_xml-${wxVERSION}-Windows.a"
+      "${wxLIBS_DIR}/libwx_baseu-${wxVERSION}-Windows.a"
+      "${wxLIBS_DIR}/libwx_mswu_adv-${wxVERSION}-Windows.a"
+      "${wxLIBS_DIR}/libwx_mswu_aui-${wxVERSION}-Windows.a"
+      "${wxLIBS_DIR}/libwx_mswu_core-${wxVERSION}-Windows.a"
+      "${wxLIBS_DIR}/libwx_mswu_gl-${wxVERSION}-Windows.a"
+      "${wxLIBS_DIR}/libwx_mswu_html-${wxVERSION}-Windows.a"
+      "${wxLIBS_DIR}/libwx_mswu_media-${wxVERSION}-Windows.a"
+      "${wxLIBS_DIR}/libwx_mswu_propgrid-${wxVERSION}-Windows.a"
+      "${wxLIBS_DIR}/libwx_mswu_qa-${wxVERSION}-Windows.a"
+      "${wxLIBS_DIR}/libwx_mswu_ribbon-${wxVERSION}-Windows.a"
+      "${wxLIBS_DIR}/libwx_mswu_richtext-${wxVERSION}-Windows.a"
+      "${wxLIBS_DIR}/libwx_mswu_stc-${wxVERSION}-Windows.a"
+      "${wxLIBS_DIR}/libwx_mswu_webview-${wxVERSION}-Windows.a"
+      "${wxLIBS_DIR}/libwx_mswu_xrc-${wxVERSION}-Windows.a"
+      "${wxLIBS_DIR}/libwxexpat-${wxVERSION}.a"
+      "${wxLIBS_DIR}/libwxjpeg-${wxVERSION}.a"
+      "${wxLIBS_DIR}/libwxlexilla-${wxVERSION}.a"
+      "${wxLIBS_DIR}/libwxpng-${wxVERSION}.a"
+      "${wxLIBS_DIR}/libwxregexu-${wxVERSION}.a"
+      "${wxLIBS_DIR}/libwxscintilla-${wxVERSION}.a"
+      "${wxLIBS_DIR}/libwxtiff-${wxVERSION}.a"
+      "${wxLIBS_DIR}/libwxzlib-${wxVERSION}.a")
+endmacro()

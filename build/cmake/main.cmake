@@ -10,8 +10,10 @@
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/build/cmake/modules)
 
 include(global)
-#include(FindICU)
+include(FindWX)
+include(FindSSL)
 include(build/cmake/functions.cmake)        # skstu functions
 
 add_subdirectory(projects)
 add_subdirectory(tests)
+

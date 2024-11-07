@@ -1,3 +1,12 @@
+#############################################################################
+# Name:        build/cmake/main.cmake
+# Purpose:     Main CMake file
+# Author:      Martell
+# Created:     2024-11-03
+# Copyright:   (c) 2024 skstu development team
+# Licence:     skstu licence
+#############################################################################
+
 # INPUT_TOOLCHAIN_NAME => 'gcc' or 'clang' or 'msvc' or (''==default)
 macro(GFN_TOOLCHAIN_SET INPUT_TOOLCHAIN_NAME)
   if("${INPUT_TOOLCHAIN_NAME}" STREQUAL "")

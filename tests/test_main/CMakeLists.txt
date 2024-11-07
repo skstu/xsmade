@@ -20,13 +20,13 @@ if(APPLE)
       ${xs3RDPARTY_DIR}/utfcpp/source/
       ${xs3RDPARTY_DIR}/cpp-httplib/
       ${xs3RDPARTY_DIR}/wxWidgets/include/
-      ${xsOUT_DIR}/wxWidgets/lib/wx/include/osx_cocoa-unicode-static-3.3/
+      ${xsOUTPUT_DIR}/wxWidgets/lib/wx/include/osx_cocoa-unicode-static-3.3/
       /opt/homebrew/opt/openssl@3/include/
       /opt/homebrew/Cellar/fmt/11.0.2/include/
       /opt/homebrew/Cellar/libuv/1.49.2/include/)
 
   target_link_directories(${PROJECT_NAME} PRIVATE
-                          ${xsOUT_DIR}/wxWidgets/lib/${CMAKE_BUILD_TYPE}/)
+                          ${xsOUTPUT_DIR}/wxWidgets/lib/${CMAKE_BUILD_TYPE}/)
 
   set(WX_LIBS
       libwx_baseu_net-3.3.a
@@ -72,11 +72,11 @@ elseif(WIN32)
             ${xs3RDPARTY_DIR}/cpp-httplib/
             c:/msys64/clang64/include/
             ${xs3RDPARTY_DIR}/wxWidgets/include/
-            ${xsOUT_DIR}/wxWidgets/lib/wx/include/msw-unicode-static-3.3/
+            ${xsOUTPUT_DIR}/wxWidgets/lib/wx/include/msw-unicode-static-3.3/
   )
 
   target_link_directories(${PROJECT_NAME} PRIVATE
-                          ${xsOUT_DIR}/wxWidgets/lib/)
+                          ${xsOUTPUT_DIR}/wxWidgets/lib/)
   set(WX_LIBS
       libwx_baseu_net-3.3-Windows.a
       libwx_baseu_xml-3.3-Windows.a

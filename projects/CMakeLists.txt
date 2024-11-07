@@ -8,3 +8,4 @@
 #############################################################################
 
 add_subdirectory(brw_configure)
+add_subdirectory(services)

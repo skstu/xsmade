@@ -4,10 +4,8 @@
 # Licence:     skstu licence
 # ##############################################################################
 
-# cmake -G "Ninja Multi-Config" ..
-# cmake --build . --config Release
-# cmake -G "Ninja" .. -DCMAKE_BUILD_TYPE=Release
-# cmake --build . --config Release
+# cmake -G "Ninja Multi-Config" .. cmake --build . --config Release cmake -G
+# "Ninja" .. -DCMAKE_BUILD_TYPE=Release cmake --build . --config Release
 
 cmake_minimum_required(VERSION 3.5)
 
@@ -50,14 +48,16 @@ set(xsSYSTYPE_LINUX OFF)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 if(WIN32)
+  add_definitions(-DUNICODE -D_UNICODE)
+  set(MSYS2_DIR c:/msys64/)
+  set(MSYS2_CLANG64_DIR ${MSYS2_DIR}/clang64/)
+  set(MSYS2_MINGW64_DIR ${MSYS2_DIR}/mingw64/)
   set(xsSYSTYPE_WINDOWS ON)
   set(xsSYSTYPE_APPLE OFF)
   set(xsSYSTYPE_LINUX OFF)
   set(CMAKE_SYSTEM_NAME "Windows")
-  set(CMAKE_C_COMPILER C:/msys64/clang64/bin/clang.exe)
-  set(CMAKE_CXX_COMPILER C:/msys64/clang64/bin/clang++.exe)
-
-  add_definitions(-DUNICODE -D_UNICODE)
+  set(CMAKE_C_COMPILER ${MSYS2_CLANG64_DIR}/bin/clang.exe)
+  set(CMAKE_CXX_COMPILER ${MSYS2_CLANG64_DIR}/bin/clang++.exe)
 elseif(APPLE)
   enable_language(OBJC)
   set(xsSYSTYPE_WINDOWS OFF)
@@ -83,7 +83,7 @@ include(build/cmake/policies.cmake NO_POLICY_SCOPE)
 set(xsSOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR})
 set(xs3RDPARTY_DIR ${xsSOURCE_DIR}/3rdparty/)
 set(xsINCLUDE_DIR ${xsSOURCE_DIR}/include/)
-set(xsOUT_DIR ${xsSOURCE_DIR}/out/)
+set(xsOUTPUT_DIR ${xsSOURCE_DIR}/out/)
 
 # set(xsBINARY_DIR ${CMAKE_CURRENT_BINARY_DIR}) set(xsOUTPUT_DIR
 # ${xsBINARY_DIR}/lib)
