@@ -69,12 +69,11 @@ if(xsSYSTYPE_WINDOWS)
       "msw"
       CACHE STRING "Choose wxWidgets toolkit" FORCE)
 elseif(xsSYSTYPE_APPLE)
-set(wxUSE_LIBTIFF
-"sys"
-CACHE STRING "Choose wxWidgets toolkit" FORCE)
+enable_language(OBJC)
 set(wxBUILD_TOOLKIT
 "osx_cocoa"
 CACHE STRING "Choose wxWidgets toolkit" FORCE)
+set(wxUSE_WEBVIEW OFF CACHE BOOL "Choose wxWidgets toolkit" FORCE)
 elseif(xsSYSTYPE_LINUX)
 set(wxBUILD_TOOLKIT
 "gtk2"
