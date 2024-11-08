@@ -51,14 +51,14 @@
       "name": "MacOS Build With CMake Ninja",
       "type": "cppdbg",
       "request": "launch",
-      "program": "${workspaceFolder}/out/tests/test_main/test_main", // 确保这是可执行文件
+      "program": "${workspaceFolder}/out/services", // 确保这是可执行文件
       "args": [],
       "stopAtEntry": false,
       "cwd": "${workspaceFolder}",
       "environment": [],
       "externalConsole": false,
       "MIMode": "lldb",
-      "miDebuggerPath": "/Users/huoxingxiongmao/.vscode/extensions/ms-vscode.cpptools-1.22.10-darwin-arm64/debugAdapters/lldb-mi/bin/lldb-mi",
+      "miDebuggerPath": "/Users/huoxingxiongmao/.vscode/extensions/ms-vscode.cpptools-1.22.11-darwin-arm64/debugAdapters/lldb-mi/bin/lldb-mi",
       "preLaunchTask": "MacOS Build Debug On CMake"
     }
   ]

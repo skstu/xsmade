@@ -26,7 +26,7 @@ if(APPLE)
       /opt/homebrew/Cellar/libuv/1.49.2/include/)
 
   target_link_directories(${PROJECT_NAME} PRIVATE
-                          ${xsOUTPUT_DIR}/wxWidgets/lib/${CMAKE_BUILD_TYPE}/)
+                          ${xsOUTPUT_DIR}/wxWidgets/lib/)
 
   set(WX_LIBS
       libwx_baseu_net-3.3.a

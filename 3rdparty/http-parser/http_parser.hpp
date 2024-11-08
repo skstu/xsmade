@@ -71,51 +71,43 @@ typedef struct tag_message {
 #pragma pack(pop)
 const size_t LENTAGMESSAGE = sizeof(message);
 
-using tf_request_url_cb = int(__stdcall *)(http_parser *, const char *, size_t);
-using tf_header_field_cb = int(__stdcall *)(http_parser *, const char &,
+using tf_request_url_cb = int (*)(http_parser *, const char *, size_t);
+using tf_header_field_cb = int (*)(http_parser *, const char &, size_t);
+using tf_header_value_cb = int (*)(http_parser *, const char *, size_t);
+using tf_body_cb = int (*)(http_parser *, const char *, size_t);
+using tf_count_body_cb = int (*)(http_parser *, const char *, size_t);
+using tf_message_begin_cb = int (*)(http_parser *);
+using tf_headers_complete_cb = int (*)(http_parser *);
+using tf_message_complete_cb = int (*)(http_parser *);
+using tf_response_status_cb = int (*)(http_parser *, const char *, size_t);
+using tf_chunk_header_cb = int (*)(http_parser *);
+using tf_chunk_complete_cb = int (*)(http_parser *);
+using tf_dontcall_message_begin_cb = int (*)(http_parser *);
+using tf_dontcall_header_field_cb = int (*)(http_parser *, const char *,
                                             size_t);
-using tf_header_value_cb = int(__stdcall *)(http_parser *, const char *,
+using tf_dontcall_header_value_cb = int (*)(http_parser *, const char *,
                                             size_t);
-using tf_body_cb = int(__stdcall *)(http_parser *, const char *, size_t);
-using tf_count_body_cb = int(__stdcall *)(http_parser *, const char *, size_t);
-using tf_message_begin_cb = int(__stdcall *)(http_parser *);
-using tf_headers_complete_cb = int(__stdcall *)(http_parser *);
-using tf_message_complete_cb = int(__stdcall *)(http_parser *);
-using tf_response_status_cb = int(__stdcall *)(http_parser *, const char *,
+using tf_dontcall_request_url_cb = int (*)(http_parser *, const char *, size_t);
+using tf_dontcall_body_cb = int (*)(http_parser *, const char *, size_t);
+using tf_dontcall_headers_complete_cb = int (*)(http_parser *);
+using tf_dontcall_message_complete_cb = int (*)(http_parser *);
+using tf_dontcall_response_status_cb = int (*)(http_parser *, const char *,
                                                size_t);
-using tf_chunk_header_cb = int(__stdcall *)(http_parser *);
-using tf_chunk_complete_cb = int(__stdcall *)(http_parser *);
-using tf_dontcall_message_begin_cb = int(__stdcall *)(http_parser *);
-using tf_dontcall_header_field_cb = int(__stdcall *)(http_parser *,
-                                                     const char *, size_t);
-using tf_dontcall_header_value_cb = int(__stdcall *)(http_parser *,
-                                                     const char *, size_t);
-using tf_dontcall_request_url_cb = int(__stdcall *)(http_parser *, const char *,
-                                                    size_t);
-using tf_dontcall_body_cb = int(__stdcall *)(http_parser *, const char *,
-                                             size_t);
-using tf_dontcall_headers_complete_cb = int(__stdcall *)(http_parser *);
-using tf_dontcall_message_complete_cb = int(__stdcall *)(http_parser *);
-using tf_dontcall_response_status_cb = int(__stdcall *)(http_parser *,
-                                                        const char *, size_t);
-using tf_dontcall_chunk_header_cb = int(__stdcall *)(http_parser *);
-using tf_dontcall_chunk_complete_cb = int(__stdcall *)(http_parser *);
-using tf_pause_message_begin_cb = int(__stdcall *)(http_parser *);
-using tf_pause_header_field_cb = int(__stdcall *)(http_parser *, const char *,
-                                                  size_t);
-using tf_pause_header_value_cb = int(__stdcall *)(http_parser *, const char *,
-                                                  size_t);
-using tf_pause_request_url_cb = int(__stdcall *)(http_parser *, const char *,
-                                                 size_t);
-using tf_pause_body_cb = int(__stdcall *)(http_parser *, const char *, size_t);
-using tf_pause_headers_complete_cb = int(__stdcall *)(http_parser *);
-using tf_pause_message_complete_cb = int(__stdcall *)(http_parser *);
-using tf_pause_response_status_cb = int(__stdcall *)(http_parser *,
-                                                     const char *, size_t);
-using tf_pause_chunk_header_cb = int(__stdcall *)(http_parser *);
-using tf_pause_chunk_complete_cb = int(__stdcall *)(http_parser *);
-using tf_connect_headers_complete_cb = int(__stdcall *)(http_parser *);
-using tf_connect_message_complete_cb = int(__stdcall *)(http_parser *);
+using tf_dontcall_chunk_header_cb = int (*)(http_parser *);
+using tf_dontcall_chunk_complete_cb = int (*)(http_parser *);
+using tf_pause_message_begin_cb = int (*)(http_parser *);
+using tf_pause_header_field_cb = int (*)(http_parser *, const char *, size_t);
+using tf_pause_header_value_cb = int (*)(http_parser *, const char *, size_t);
+using tf_pause_request_url_cb = int (*)(http_parser *, const char *, size_t);
+using tf_pause_body_cb = int (*)(http_parser *, const char *, size_t);
+using tf_pause_headers_complete_cb = int (*)(http_parser *);
+using tf_pause_message_complete_cb = int (*)(http_parser *);
+using tf_pause_response_status_cb = int (*)(http_parser *, const char *,
+                                            size_t);
+using tf_pause_chunk_header_cb = int (*)(http_parser *);
+using tf_pause_chunk_complete_cb = int (*)(http_parser *);
+using tf_connect_headers_complete_cb = int (*)(http_parser *);
+using tf_connect_message_complete_cb = int (*)(http_parser *);
 
 class HttpRequest {
 protected:

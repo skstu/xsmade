@@ -1,7 +1,17 @@
 ﻿#include <http_parser.hpp>
 
 namespace httpparser {
-
+#if 0
+int FormatVersionString(std::string& strVersion, unsigned int major, unsigned int minor, unsigned int patch) {
+    strVersion.resize(32);
+    int sprintf_size = std::snprintf(&strVersion[0], strVersion.size(), "%u.%u.%u", major, minor, patch);
+    if (sprintf_size < 0 || static_cast<size_t>(sprintf_size) >= strVersion.size()) {
+        return -1;
+    }
+    strVersion.resize(sprintf_size);
+    return sprintf_size;
+}
+#endif
 void Method::version(std::string &strVersion, unsigned long &nVersion) {
   strVersion.clear();
   nVersion = 0;
@@ -10,9 +20,10 @@ void Method::version(std::string &strVersion, unsigned long &nVersion) {
   unsigned int minor = (nVersion >> 8) & 255;
   unsigned int patch = nVersion & 255;
   strVersion.resize(128, 0x00);
-  int sprintf_size = ::sprintf_s(&strVersion[0], strVersion.size(), "%u.%u.%u",
-                                 major, minor, patch);
-  strVersion.resize(sprintf_size);
+  // int sprintf_size = ::sprintf_s(&strVersion[0], strVersion.size(),
+  // "%u.%u.%u",
+  //                               major, minor, patch);
+  // strVersion.resize(sprintf_size);
 }
 bool Method::parse_http_url(const std::string &url, HttpUrlFields &out) {
   bool result = false;
@@ -101,17 +112,14 @@ void HttpRequest::PushHeaderKey(const char *inkey, const size_t &inkey_size) {
   do {
     if (!inkey || inkey_size <= 0)
       break;
-    char *newkey = (char *)malloc(inkey_size);
-    if (!newkey)
-      break;
-    memcpy(newkey, inkey, inkey_size);
-    newkey = ::_strlwr(newkey);
-    std::string key(newkey, inkey_size);
-    free(newkey);
-    auto found = m_mapHeader.find(key);
+    std::string newkey;
+    newkey.append(inkey, inkey_size);
+    std::transform(newkey.begin(), newkey.end(), newkey.begin(),
+                   [](unsigned char c) { return std::tolower(c); });
+    auto found = m_mapHeader.find(newkey);
     if (found != m_mapHeader.end())
       m_mapHeader.erase(found);
-    m_mapHeader.insert(std::make_pair(key, " "));
+    m_mapHeader.insert(std::make_pair(newkey, " "));
   } while (0);
 }
 void HttpRequest::PushHeaderValue(const char *invalue,
