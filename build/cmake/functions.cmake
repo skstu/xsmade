@@ -28,5 +28,5 @@ function(xs_set_common_target_properties target_name)
                                                     TRUE)
   endif()
 
-  target_compile_definitions(${target_name} PRIVATE wxUSE_GUI=0 wxUSE_BASE=1)
+  target_compile_definitions(${target_name} PRIVATE wxUSE_GUI=1 wxUSE_BASE=0)
 endfunction()

@@ -28,7 +28,7 @@
       "name": "Windows Build With CMake Ninja",
       "type": "cppdbg",
       "request": "launch",
-      "program": "${workspaceFolder}/out/tests/test_main/test_main.exe",
+      "program": "${workspaceFolder}/out/services.exe",
       "args": [
         // "--get-processes"
       ],
