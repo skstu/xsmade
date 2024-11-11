@@ -61,3 +61,5 @@ elseif(APPLE)
     /opt/homebrew/Cellar/zlib/1.3.1/lib/libz.a
     ${xsOPENSSL_LIBRARY})
 endif()
+
+xs_set_common_target_properties(${PROJECT_NAME})

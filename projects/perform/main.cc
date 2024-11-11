@@ -1,22 +1,103 @@
-#include <iostream>
-#ifdef _WIN32
-#elif __APPLE__
-#include <CoreFoundation/CoreFoundation.h>
-#include <ApplicationServices/ApplicationServices.h>
-#endif
+#include "config.h"
+
+// launchctl submit -l com.example.hidden_app -- /path/to/hidden_app
+extern char **environ;
+
+static bool open_browser();
+static bool close_browser();
 
 int main() {
-#if 0
-    // 使用 AppleScript 隐藏当前应用窗口
-    system("osascript -e 'tell application \"Terminal\" to close (every window whose name contains \"main\")' &> /dev/null");
+  httplib::Server *server = new httplib::Server();
+  server->Post("/server/open",
+               [](const httplib::Request &req, httplib::Response &res) {});
+  server->Post("/server/close",
+               [](const httplib::Request &req, httplib::Response &res) {});
+  server->Post("/browser/down",
+               [](const httplib::Request &req, httplib::Response &res) {
 
-    std::cout << "This is a hidden console application on macOS (ARM64)." << std::endl;
-    // 模拟主程序逻辑
-    for (int i = 0; i < 5; ++i) {
-        std::cout << "Running in the background..." << std::endl;
-        sleep(1);
-    }
-#endif
+               });
+  server->Post("/browser/open",
+               [](const httplib::Request &req, httplib::Response &res) {
+                 open_browser();
+                 auto a = 0;
+               });
+  server->Post("/browser/close",
+               [](const httplib::Request &req, httplib::Response &res) {
 
+               });
+  server->Post("/browser/get",
+               [](const httplib::Request &req, httplib::Response &res) {
+
+               });
+  server->Post("/", [](const httplib::Request &req, httplib::Response &res) {
+
+  });
+
+  server->listen("127.0.0.1", 65535);
   return 0;
 }
+//  /Users/huoxingxiongmao/Desktop/skstu/xsmade/out/perform
+bool open_browser() {
+  bool result = false;
+  do {
+#if defined(__APPLE__)
+    const char *chromium_path =
+        "/Users/huoxingxiongmao/Desktop/241107.app/Contents/MacOS/chromium";
+    const char *args[] = {chromium_path, /*"--proxy-server=127.0.0.1",*/
+                          "pixelscan.net", nullptr};
+
+    pid_t pid;
+    int status;
+    if (posix_spawn(&pid, chromium_path, nullptr, nullptr,
+                    const_cast<char *const *>(args), environ) != 0)
+      break;
+#elif _WIN32
+
+#endif
+    result = true;
+  } while (0);
+  return result;
+}
+bool close_browser() {
+  bool result = false;
+  do {
+#if defined(__APPLE__)
+#elif _WIN32
+#endif
+    result = true;
+  } while (0);
+  return result;
+}
+
+#if 0 //!@ Create browser
+
+
+  // 浏览器路径和参数
+  const char *chromium_path =
+      "/Users/huoxingxiongmao/Desktop/241107.app/Contents/MacOS/chromium";
+  const char *args[] = {chromium_path, /*"--proxy-server=127.0.0.1",*/
+                      "pixelscan.net", nullptr};
+
+  pid_t pid;
+  int status;
+
+  // 使用 posix_spawn 打开浏览器
+  if (posix_spawn(&pid, chromium_path, nullptr, nullptr,
+                  const_cast<char *const *>(args), environ) == 0) {
+    // std::cout << "Browser launched successfully with PID: " << pid <<
+    // std::endl;
+
+#if 0
+    // 等待浏览器进程结束（可选）
+    if (waitpid(pid, &status, 0) != -1) {
+      // std::cout << "Browser process finished with status: " << status
+      //<< std::endl;
+    } else {
+      // std::cerr << "Failed to wait for browser process." << std::endl;
+    }
+#endif
+  } else {
+    // std::cerr << "Failed to launch browser." << std::endl;
+  }
+
+#endif
