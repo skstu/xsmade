@@ -3,3 +3,4 @@ libs
 bin
 objs
 out
+compile_commands.json
