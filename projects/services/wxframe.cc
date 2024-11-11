@@ -9,7 +9,6 @@ Frame::Frame(wxWindow *parent, wxWindowID id, const wxString &title,
   wxPanel *panel = new wxPanel(this, wxID_ANY);
   // 创建一个垂直 sizer
   wxBoxSizer *sizer = new wxBoxSizer(wxVERTICAL);
-
   gauge_ = new wxGauge(panel, wxID_ANY, 10000, wxDefaultPosition);
   gauge_->Show(true);
   gauge_->SetValue(500);

@@ -61,7 +61,9 @@
 #include "wx/aboutdlg.h"
 #include "wx/odcombo.h"
 #include "wx/dynlib.h"
+#if defined(__WXMSW__)
 #include "wx/msw/wrapwin.h"
+#endif
 #include "wx/dcbuffer.h"
 #include "wx/mstream.h"
 #include "wx/graphics.h"

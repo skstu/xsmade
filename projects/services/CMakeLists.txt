@@ -4,7 +4,7 @@ gfn_project_source_get(${CMAKE_CURRENT_SOURCE_DIR} OUT_HEADER_S OUT_SOURCE_S)
 set(SOURCES ${OUT_HEADER_S} ${OUT_SOURCE_S})
 
 add_executable(${PROJECT_NAME} ${SOURCES})
-#"${xs3RDPARTY_DIR}/wxWidgets/include/wx/msw/wx.rc"
+# "${xs3RDPARTY_DIR}/wxWidgets/include/wx/msw/wx.rc"
 
 gfn_find_wxwidgets(wxINCLUDES wxLIBS)
 
@@ -34,14 +34,14 @@ if(WIN32)
     version.lib
     Shlwapi.lib
     Msimg32.lib
-    #Oleacc.lib
+    # Oleacc.lib
     ${xsOUTPUT_DIR}http_parser/libhttp_parser.a
     ${xsOPENSSL_LIBRARY}
     ${wxLIBS})
 
   set_target_properties(${PROJECT_NAME} PROPERTIES LINK_FLAGS "-mwindows"
                                                    WIN32_EXECUTABLE YES)
-  
+
 elseif(APPLE)
   target_include_directories(
     ${PROJECT_NAME}
@@ -53,9 +53,17 @@ elseif(APPLE)
     ${PROJECT_NAME}
     "-framework CoreFoundation"
     "-framework Cocoa"
+    "-framework CoreServices"
+    # "-lCarbon.framework"
+    "-framework ApplicationServices"
+    "-framework Carbon"
+    "-framework CoreGraphics"
+    "-framework IOKit"
+    "-framework QuartzCore"
     "-liconv"
     /opt/homebrew/Cellar/fmt/11.0.2/lib/libfmt.a
     /opt/homebrew/Cellar/libuv/1.49.2/lib/libuv.a
+    /opt/homebrew/Cellar/zlib/1.3.1/lib/libz.a
     ${xsOPENSSL_LIBRARY}
     ${wxLIBS})
 endif()
