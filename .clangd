@@ -1,5 +1,6 @@
 ---
-
 CompileFlags:
-  Add: ["-std=c++17","-Wno-unused-include",
-  "-I./3rdparty/wxWidgets/include"]
+  Add: 
+    - "-Wno-unused-include"
+    - "-std=c++17"
+    - "-I./3rdparty/wxWidgets/include"

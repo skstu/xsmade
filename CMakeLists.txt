@@ -112,36 +112,38 @@ message(STATUS "C++ Flags: ${CMAKE_CXX_FLAGS_${CMAKE_BUILD_TYPE}}")
 
 project(xsmade)
 
-set(wxBUILD_SHARED
-    OFF
-    CACHE BOOL "Build wxWidgets as shared library" FORCE)
-if(xsSYSTYPE_WINDOWS)
-  set(wxBUILD_TOOLKIT
-      "msw"
-      CACHE STRING "Choose wxWidgets toolkit" FORCE)
-  set(wxUSE_ACCESSIBILITY
+if(xsUSE_WXWIDGETS)
+  set(wxBUILD_SHARED
       OFF
-      CACHE BOOL "Choose wxWidgets toolkit" FORCE)
+      CACHE BOOL "Build wxWidgets as shared library" FORCE)
+  if(xsSYSTYPE_WINDOWS)
+    set(wxBUILD_TOOLKIT
+        "msw"
+        CACHE STRING "Choose wxWidgets toolkit" FORCE)
+    set(wxUSE_ACCESSIBILITY
+        OFF
+        CACHE BOOL "Choose wxWidgets toolkit" FORCE)
 
-elseif(xsSYSTYPE_APPLE)
-  set(wxBUILD_TOOLKIT
-      "osx_cocoa"
+  elseif(xsSYSTYPE_APPLE)
+    set(wxBUILD_TOOLKIT
+        "osx_cocoa"
+        CACHE STRING "Choose wxWidgets toolkit" FORCE)
+    set(wxUSE_WEBVIEW
+        OFF
+        CACHE BOOL "Choose wxWidgets toolkit" FORCE)
+  elseif(xsSYSTYPE_LINUX)
+    set(wxBUILD_TOOLKIT
+        "gtk2"
+        CACHE STRING "Choose wxWidgets toolkit" FORCE)
+  endif()
+  set(wxBUILD_SAMPLES
+      # "ALL"
+      "OFF"
       CACHE STRING "Choose wxWidgets toolkit" FORCE)
-  set(wxUSE_WEBVIEW
-      OFF
-      CACHE BOOL "Choose wxWidgets toolkit" FORCE)
-elseif(xsSYSTYPE_LINUX)
-  set(wxBUILD_TOOLKIT
-      "gtk2"
-      CACHE STRING "Choose wxWidgets toolkit" FORCE)
-endif()
-set(wxBUILD_SAMPLES
-    # "ALL"
-    "OFF"
-    CACHE STRING "Choose wxWidgets toolkit" FORCE)
-set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wno-unused-command-line-argument")
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-unused-command-line-argument")
-add_subdirectory(${xs3RDPARTY_DIR}/wxwidgets/ "wxWidgets")
+  set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wno-unused-command-line-argument")
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-unused-command-line-argument")
+  add_subdirectory(${xs3RDPARTY_DIR}/wxwidgets/ "wxWidgets")
+endif(xsUSE_WXWIDGETS)
 add_subdirectory(${xs3RDPARTY_DIR}/http-parser/ "http_parser")
 # set_target_properties(wxwidgets PROPERTIES FOLDER "3rdparty") cmake -G Ninja
 # .. -DwxBUILD_SAMPLES=ALL -DwxBUILD_SHARED=OFF

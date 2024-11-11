@@ -19,41 +19,16 @@ if(APPLE)
       ${xsINCLUDE_DIR}
       ${xs3RDPARTY_DIR}/utfcpp/source/
       ${xs3RDPARTY_DIR}/cpp-httplib/
-      ${xs3RDPARTY_DIR}/wxWidgets/include/
-      ${xsOUTPUT_DIR}/wxWidgets/lib/wx/include/osx_cocoa-unicode-static-3.3/
       /opt/homebrew/opt/openssl@3/include/
       /opt/homebrew/Cellar/fmt/11.0.2/include/
       /opt/homebrew/Cellar/libuv/1.49.2/include/)
 
-  target_link_directories(${PROJECT_NAME} PRIVATE
-                          ${xsOUTPUT_DIR}/wxWidgets/lib/)
+ # target_link_directories(${PROJECT_NAME} PRIVATE
+  #                        ${xsOUTPUT_DIR}/wxWidgets/lib/)
 
-  set(WX_LIBS
-      libwx_baseu_net-3.3.a
-      libwx_baseu_xml-3.3.a
-      libwx_baseu-3.3.a
-      libwx_osx_cocoau_adv-3.3.a
-      libwx_osx_cocoau_aui-3.3.a
-      libwx_osx_cocoau_core-3.3.a
-      libwx_osx_cocoau_gl-3.3.a
-      libwx_osx_cocoau_html-3.3.a
-      libwx_osx_cocoau_media-3.3.a
-      libwx_osx_cocoau_propgrid-3.3.a
-      libwx_osx_cocoau_qa-3.3.a
-      libwx_osx_cocoau_ribbon-3.3.a
-      libwx_osx_cocoau_richtext-3.3.a
-      libwx_osx_cocoau_stc-3.3.a
-      libwx_osx_cocoau_xrc-3.3.a
-      libwxjpeg-3.3.a
-      libwxlexilla-3.3.a
-      libwxpng-3.3.a
-      libwxregexu-3.3.a
-      libwxscintilla-3.3.a
-      libwxtiff-3.3.a)
 
   target_link_libraries(
     ${PROJECT_NAME}
-    ${WX_LIBS}
     "-framework CoreFoundation"
     "-framework Cocoa"
     "-liconv"
@@ -71,38 +46,11 @@ elseif(WIN32)
             ${xs3RDPARTY_DIR}/utfcpp/source/
             ${xs3RDPARTY_DIR}/cpp-httplib/
             c:/msys64/clang64/include/
-            ${xs3RDPARTY_DIR}/wxWidgets/include/
-            ${xsOUTPUT_DIR}/wxWidgets/lib/wx/include/msw-unicode-static-3.3/
   )
 
-  target_link_directories(${PROJECT_NAME} PRIVATE
-                          ${xsOUTPUT_DIR}/wxWidgets/lib/)
-  set(WX_LIBS
-      libwx_baseu_net-3.3-Windows.a
-      libwx_baseu_xml-3.3-Windows.a
-      libwx_baseu-3.3-Windows.a
-      libwx_mswu_adv-3.3-Windows.a
-      libwx_mswu_aui-3.3-Windows.a
-      libwx_mswu_core-3.3-Windows.a
-      libwx_mswu_gl-3.3-Windows.a
-      libwx_mswu_html-3.3-Windows.a
-      libwx_mswu_media-3.3-Windows.a
-      libwx_mswu_propgrid-3.3-Windows.a
-      libwx_mswu_qa-3.3-Windows.a
-      libwx_mswu_ribbon-3.3-Windows.a
-      libwx_mswu_richtext-3.3-Windows.a
-      libwx_mswu_stc-3.3-Windows.a
-      libwx_mswu_webview-3.3-Windows.a
-      libwx_mswu_xrc-3.3-Windows.a
-      libwxexpat-3.3.a
-      libwxjpeg-3.3.a
-      libwxlexilla-3.3.a
-      libwxpng-3.3.a
-      libwxregexu-3.3.a
-      libwxscintilla-3.3.a
-      libwxtiff-3.3.a
-      libwxzlib-3.3.a)
-
+  #target_link_directories(${PROJECT_NAME} PRIVATE
+  #                        ${xsOUTPUT_DIR}/wxWidgets/lib/)
+  
   target_link_libraries(
     ${PROJECT_NAME}
     wldap32.lib
@@ -129,4 +77,4 @@ elseif(WIN32)
     ${WX_LIBS})
 endif()
 
-target_compile_definitions(${PROJECT_NAME} PRIVATE wxUSE_GUI=0 wxUSE_BASE=1)
+#target_compile_definitions(${PROJECT_NAME} PRIVATE wxUSE_GUI=0 wxUSE_BASE=1)
