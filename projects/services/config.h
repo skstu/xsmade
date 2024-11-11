@@ -1,6 +1,12 @@
 #if !defined(__392A37A1_4280_45A9_B208_9DAF8B965093__)
 #define __392A37A1_4280_45A9_B208_9DAF8B965093__
 
+#if defined(__APPLE__)
+#ifndef __WXOSX_COCOA__
+#undef __WXOSX_COCOA__
+#define __WXOSX_COCOA__ 1
+#endif
+#endif
 // for compilers that support precompilation, includes "wx/wx.h".
 #include "wx/wxprec.h"
 

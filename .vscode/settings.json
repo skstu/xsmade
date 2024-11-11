@@ -8,7 +8,7 @@
         "**/node_modules": true,
         "**/build": true
     },
-    "clangd.path": "clangd.exe",
+    "clangd.path": "clangd",
     "clangd.arguments": [
         "--background-index",
         "-j=12",
@@ -130,4 +130,5 @@
         "execution": "cpp",
         "print": "cpp"
     },
+    "git.ignoreLimitWarning": true,
 }
