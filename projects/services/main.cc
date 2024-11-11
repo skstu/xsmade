@@ -1,7 +1,5 @@
 #include "config.h"
 
-
-
 namespace {
 #if 0
 class MyApp : public wxApp {

@@ -9,8 +9,10 @@ public:
         long style = wxDEFAULT_FRAME_STYLE /* wxNO_BORDER | wxFRAME_SHAPED*/,
         const wxString &name = wxASCII_STR(wxFrameNameStr));
   virtual ~Frame();
+
 private:
-wxGauge* gauge_ =nullptr;
+  wxGauge *gauge_ = nullptr;
+
 private:
   void OnSize(wxSizeEvent &);
   void OnClose(wxCloseEvent &);

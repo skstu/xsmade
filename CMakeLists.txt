@@ -41,6 +41,8 @@ else()
     STATUS "Single-config generator detected. Build type: ${CMAKE_BUILD_TYPE}")
 endif()
 
+# set(CMAKE_EXPORT_COMPILECOMMANDS ON)
+
 set(xsSYSTYPE_WINDOWS ON)
 set(xsSYSTYPE_APPLE OFF)
 set(xsSYSTYPE_LINUX OFF)
@@ -134,8 +136,8 @@ elseif(xsSYSTYPE_LINUX)
       CACHE STRING "Choose wxWidgets toolkit" FORCE)
 endif()
 set(wxBUILD_SAMPLES
-    "ALL"
-    # "OFF"
+    # "ALL"
+    "OFF"
     CACHE STRING "Choose wxWidgets toolkit" FORCE)
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wno-unused-command-line-argument")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-unused-command-line-argument")

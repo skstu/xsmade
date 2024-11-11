@@ -3,7 +3,8 @@ project(services)
 gfn_project_source_get(${CMAKE_CURRENT_SOURCE_DIR} OUT_HEADER_S OUT_SOURCE_S)
 set(SOURCES ${OUT_HEADER_S} ${OUT_SOURCE_S})
 
-add_executable(${PROJECT_NAME} ${SOURCES} "${xs3RDPARTY_DIR}/wxWidgets/include/wx/msw/wx.rc")
+add_executable(${PROJECT_NAME} ${SOURCES})
+#"${xs3RDPARTY_DIR}/wxWidgets/include/wx/msw/wx.rc"
 
 gfn_find_wxwidgets(wxINCLUDES wxLIBS)
 

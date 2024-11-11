@@ -1,4 +1,22 @@
 {
+    "C_Cpp.workspaceParsingPriority": "low",
+    "C_Cpp.workspaceSymbols": "Just My Code",
+    "C_Cpp.intelliSenseEngine": "disabled",
+    "files.exclude": {
+        "**/.git": true,
+        "**/.svn": true,
+        "**/node_modules": true,
+        "**/build": true
+    },
+    "clangd.path": "clangd.exe",
+    "clangd.arguments": [
+        "--background-index",
+        "-j=12",
+        "--all-scopes-completion",
+        "--completion-style=detailed",
+        "--header-insertion=iwyu",
+        "--compile-commands-dir=${workspaceFolder}/out"
+    ],
     "clang-format.executable": "clang-format",
     "files.associations": {
         "iostream": "cpp",
@@ -112,5 +130,4 @@
         "execution": "cpp",
         "print": "cpp"
     },
-    "workbench.editor.enablePreview": false
 }
