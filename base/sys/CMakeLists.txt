@@ -9,9 +9,11 @@ set(common_srcs_ "${CMAKE_CURRENT_SOURCE_DIR}/sys.h"
                  "${CMAKE_CURRENT_SOURCE_DIR}/sys.cc")
 
 if(WIN32)
-  set(srcs_ "${CMAKE_CURRENT_SOURCE_DIR}/win/net.cc")
+  set(srcs_ "${CMAKE_CURRENT_SOURCE_DIR}/win/net.cc"
+            "${CMAKE_CURRENT_SOURCE_DIR}/win/proc.cc")
 elseif(APPLE)
-  set(srcs_ "${CMAKE_CURRENT_SOURCE_DIR}/apple/net.cc")
+  set(srcs_ "${CMAKE_CURRENT_SOURCE_DIR}/apple/net.cc"
+            "${CMAKE_CURRENT_SOURCE_DIR}/apple/proc.cc")
 endif()
 
 set(SOURCES ${common_srcs_} ${srcs_})

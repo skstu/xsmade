@@ -9,42 +9,8 @@ static bool close_browser();
 int main(int argc, char **argv) {
   std::string cmdline = Stl::PackageCommandLine(argc, argv);
   tfCommandLines cmdlines = Stl::ParserCommandLines(cmdline);
-  for (auto &node : cmdlines) {
-    auto kk = node.first.c_str();
-    auto kk2 = node.second.c_str();
 
-    auto __break__ = 1;
-  }
-  auto view = cmdline.c_str();
-  unsigned short freePort = xs_sys_get_free_port();
-
-  httplib::Server *server = new httplib::Server();
-  server->Post("/server/open",
-               [](const httplib::Request &req, httplib::Response &res) {});
-  server->Post("/server/close",
-               [](const httplib::Request &req, httplib::Response &res) {});
-  server->Post("/browser/down",
-               [](const httplib::Request &req, httplib::Response &res) {
-
-               });
-  server->Post("/browser/open",
-               [](const httplib::Request &req, httplib::Response &res) {
-                 open_browser();
-                 auto a = 0;
-               });
-  server->Post("/browser/close",
-               [](const httplib::Request &req, httplib::Response &res) {
-
-               });
-  server->Post("/browser/get",
-               [](const httplib::Request &req, httplib::Response &res) {
-
-               });
-  server->Post("/", [](const httplib::Request &req, httplib::Response &res) {
-
-  });
-
-  server->listen("127.0.0.1", 65535);
+  
   return 0;
 }
 //  /Users/huoxingxiongmao/Desktop/skstu/xsmade/out/perform

@@ -53,24 +53,27 @@ tfCommandLines Stl::ParserCommandLines(const std::string &input) {
     std::vector<std::string> parsers = Stl::StringSpilt(input, " ");
     if (parsers.empty())
       break;
-    for (const auto &str : parsers) {
-      if (str.empty())
+    for (size_t i = 0; i < parsers.size(); ++i) {
+      if (parsers[i].empty())
         continue;
       std::string key, value;
-      size_t equal = str.find('=');
-      if (*str.begin() == '/') {
-        key = str.substr(1, equal - 1);
-      } else if (str.size() > 1 && (str[0] == '-' && str[1] == '-')) {
-        key = str.substr(2, equal - 2);
+      size_t equal = parsers[i].find('=');
+      if (*parsers[i].begin() == '/') {
+        key = parsers[i].substr(1, equal - 1);
+      } else if (parsers[i].size() > 1 &&
+                 (parsers[i][0] == '-' && parsers[i][1] == '-')) {
+        key = parsers[i].substr(2, equal - 2);
+      } else if (i == 0) {
+        key = parsers[i];
       } else {
-        key = str;
+        continue;
       }
       if (key.empty())
         continue;
       if (equal != std::string::npos) {
-        value = str.substr(equal + 1, str.size());
+        value = parsers[i].substr(equal + 1, parsers[i].size());
       }
-      result.emplace(Stl::toLower(key), value);
+      result.emplace(key, value);
     }
   } while (0);
   return result;

@@ -124,6 +124,7 @@
 #include <span> //(proposed for C++23, but may be available in some compilers)
 #endif
 
+using tfThreads = std::vector<std::thread>;
 using tfCommandLines = std::map<std::string, std::string>;
 
 class Stl final {
