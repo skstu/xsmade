@@ -28,9 +28,14 @@
       "name": "Windows Build With CMake Ninja",
       "type": "cppdbg",
       "request": "launch",
-      "program": "${workspaceFolder}/out/services.exe",
+      "program": "${workspaceFolder}/out/bin/perform.exe",
       "args": [
-        // "--get-processes"
+        "--get-processes",
+        " ",
+        "--asdfasga=888",
+        " ",
+        "--sadgasdgasdgasdg=daasdfalsgk666",
+        " "
       ],
       "stopAtEntry": false,
       "cwd": "${workspaceFolder}",
@@ -51,7 +56,7 @@
       "name": "MacOS Build With CMake Ninja",
       "type": "cppdbg",
       "request": "launch",
-      "program": "${workspaceFolder}/out/perform", // 确保这是可执行文件
+      "program": "${workspaceFolder}/out/bin/perform", // 确保这是可执行文件
       "args": [],
       "stopAtEntry": false,
       "cwd": "${workspaceFolder}",

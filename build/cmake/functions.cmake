@@ -30,3 +30,24 @@ function(xs_set_common_target_properties target_name)
 
   target_compile_definitions(${target_name} PRIVATE wxUSE_GUI=1 wxUSE_BASE=0)
 endfunction()
+
+function(xs_set_target_output_dir PROJECT_NAME__)
+  get_target_property(TARGET_TYPE ${PROJECT_NAME__} TYPE)
+
+  if(TARGET_TYPE STREQUAL "STATIC_LIBRARY")
+    set_target_properties(
+      ${PROJECT_NAME__} PROPERTIES ARCHIVE_OUTPUT_DIRECTORY
+                                   "${xsOUTPUT_DIR}/libs${GEN_EXPR_DIR}")
+  elseif(TARGET_TYPE STREQUAL "SHARED_LIBRARY" OR TARGET_TYPE STREQUAL
+                                                  "MODULE_LIBRARY")
+    set_target_properties(
+      ${PROJECT_NAME__} PROPERTIES LIBRARY_OUTPUT_DIRECTORY
+                                   "${xsOUTPUT_DIR}/bin${GEN_EXPR_DIR}")
+  elseif(TARGET_TYPE STREQUAL "EXECUTABLE")
+    set_target_properties(
+      ${PROJECT_NAME__} PROPERTIES RUNTIME_OUTPUT_DIRECTORY
+                                   "${xsOUTPUT_DIR}/bin${GEN_EXPR_DIR}")
+  else()
+    message(WARNING "Unknown target type for ${PROJECT_NAME__}")
+  endif()
+endfunction()

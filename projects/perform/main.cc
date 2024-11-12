@@ -6,7 +6,18 @@ extern char **environ;
 static bool open_browser();
 static bool close_browser();
 
-int main() {
+int main(int argc, char **argv) {
+  std::string cmdline = Stl::PackageCommandLine(argc, argv);
+  tfCommandLines cmdlines = Stl::ParserCommandLines(cmdline);
+  for (auto &node : cmdlines) {
+    auto kk = node.first.c_str();
+    auto kk2 = node.second.c_str();
+
+    auto __break__ = 1;
+  }
+  auto view = cmdline.c_str();
+  unsigned short freePort = xs_sys_get_free_port();
+
   httplib::Server *server = new httplib::Server();
   server->Post("/server/open",
                [](const httplib::Request &req, httplib::Response &res) {});

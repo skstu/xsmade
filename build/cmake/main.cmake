@@ -14,6 +14,8 @@ include(FindWX)
 include(FindSSL)
 include(build/cmake/functions.cmake)        # skstu functions
 
+add_subdirectory(base)
 add_subdirectory(projects)
 add_subdirectory(tests)
+
 
