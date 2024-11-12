@@ -41,7 +41,7 @@ XS_EXTERN unsigned short xs_sys_get_free_port(void);
 XS_EXTERN int xs_sys_process_spawn(const char *proc, const char **args,
                                     long long *out_pid);
 XS_EXTERN int xs_sys_process_kill(long long pid);
-
+XS_EXTERN int xs_sys_process_has_exit(long long pid);
 #ifdef __cplusplus
 }
 #endif

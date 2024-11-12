@@ -3,15 +3,6 @@
 
 #include <stl.hpp>
 #include <system.h>
-#ifdef _WIN32
-#elif __APPLE__
-#include <unistd.h>
-#include <spawn.h>
-#include <sys/wait.h>
-#include <CoreFoundation/CoreFoundation.h>
-#include <ApplicationServices/ApplicationServices.h>
-#endif
-
 #include <httplib.h>
 
 #include "server.h"

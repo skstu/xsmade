@@ -1,7 +1,7 @@
 #include "sys.h"
 
 XS_EXTERN int xs_sys_process_spawn(const char *proc, const char **args,
-                                    long long *out_pid) {
+                                   long long *out_pid) {
   int r = -1;
   do {
     pid_t pid = 0;
@@ -18,4 +18,7 @@ XS_EXTERN int xs_sys_process_kill(long long pid) {
   int r = 0;
   r = kill(pid, 9);
   return r;
+}
+XS_EXTERN int xs_sys_process_has_exit(long long pid) {
+  return kill(pid, 0) == 0 ? 1 : 0;
 }

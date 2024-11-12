@@ -22,6 +22,8 @@
 #include <ApplicationServices/ApplicationServices.h>
 #endif
 
+#include "stl.hpp"
+
 /// /*_ Memade®（新生™） _**/
 /// /*_ Tue, 12 Nov 2024 02:53:13 GMT _**/
 /// /*_____ https://www.skstu.com/ _____ **/
