@@ -59,6 +59,7 @@ elseif(APPLE)
     "-framework IOKit"
     "-framework QuartzCore"
     "-liconv"
+    libsys.a
     /opt/homebrew/Cellar/fmt/11.0.2/lib/libfmt.a
     /opt/homebrew/Cellar/libuv/1.49.2/lib/libuv.a
     /opt/homebrew/Cellar/zlib/1.3.1/lib/libz.a
