@@ -2,19 +2,19 @@
 #define __B8180CB2_CC67_4024_933A_E67AC94FA0DB__
 
 /**
-* @file stl.hpp
-*
-* @brief Only C++ STL functionality is encapsulated.
-*
-* @author Martell
-* @date 2023-11-13
-* @location SHE(ISO 3166-1)
-*/
+ * @file stl.hpp
+ *
+ * @brief Only C++ STL functionality is encapsulated.
+ *
+ * @author Martell
+ * @date 2023-11-13
+ * @location SHE(ISO 3166-1)
+ */
 
 #define _PLATFORM_STL_VER __cplusplus
 
 #ifdef _WIN32
-	// #define _CRT_SECURE_NO_WARNINGS
+// #define _CRT_SECURE_NO_WARNINGS
 #if _MSC_VER
 #undef _PLATFORM_STL_VER
 #define _PLATFORM_STL_VER _MSVC_LANG
@@ -107,9 +107,9 @@
 #include <locale>
 #include <codecvt>
 #include <filesystem>
-//#if _PLATFORM_STL_VER == 201703L
-//#include <experimental/coroutine>
-//#endif
+// #if _PLATFORM_STL_VER == 201703L
+// #include <experimental/coroutine>
+// #endif
 #endif
 
 #if _STL_HAS_CXX20
@@ -124,7 +124,21 @@
 #include <span> //(proposed for C++23, but may be available in some compilers)
 #endif
 
+using tfCommandLines = std::map<std::string, std::string>;
+
+class Stl final {
+public:
+  Stl();
+  ~Stl();
+
+public:
+  static std::string PackageCommandLine(const int &argc, char **argv);
+  static tfCommandLines ParserCommandLines(const std::string &input);
+  static std::vector<std::string> StringSpilt(const std::string &input,
+                                              const std::string &delim);
+  static std::string toLower(const std::string &input);
+};
 /// /*_ Memade®（新生™） _**/
 /// /*_ Tue, 05 Nov 2024 12:42:24 GMT _**/
 /// /*_____ https://www.skstu.com/ _____ **/
-#endif///__B8180CB2_CC67_4024_933A_E67AC94FA0DB__
+#endif ///__B8180CB2_CC67_4024_933A_E67AC94FA0DB__

@@ -7,6 +7,5 @@
 # Licence:     skstu licence
 #############################################################################
 
-#add_subdirectory(brw_configure)
-#add_subdirectory(services)
-add_subdirectory(system)
+add_subdirectory(sys)
+add_subdirectory(stl)

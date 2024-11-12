@@ -30,7 +30,12 @@
       "request": "launch",
       "program": "${workspaceFolder}/out/bin/perform.exe",
       "args": [
-        // "--get-processes"
+        "--get-processes",
+        " ",
+        "--asdfasga=888",
+        " ",
+        "--sadgasdgasdgasdg=daasdfalsgk666",
+        " "
       ],
       "stopAtEntry": false,
       "cwd": "${workspaceFolder}",
