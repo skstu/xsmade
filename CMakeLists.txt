@@ -60,6 +60,8 @@ if(WIN32)
   set(CMAKE_SYSTEM_NAME "Windows")
   set(CMAKE_C_COMPILER ${MSYS2_CLANG64_DIR}/bin/clang.exe)
   set(CMAKE_CXX_COMPILER ${MSYS2_CLANG64_DIR}/bin/clang++.exe)
+
+  add_compile_options(-Wno-inconsistent-dllimport)
 elseif(APPLE)
   enable_language(OBJC)
   set(xsSYSTYPE_WINDOWS OFF)
@@ -86,6 +88,8 @@ set(xsSOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR})
 set(xs3RDPARTY_DIR ${xsSOURCE_DIR}/3rdparty/)
 set(xsINCLUDE_DIR ${xsSOURCE_DIR}/include/)
 set(xsOUTPUT_DIR ${xsSOURCE_DIR}/out/)
+set(xsLIBS_DIR ${xsSOURCE_DIR}/out/libs/)
+set(xsBIN_DIR ${xsSOURCE_DIR}/out/bin/)
 
 # set(xsBINARY_DIR ${CMAKE_CURRENT_BINARY_DIR}) set(xsOUTPUT_DIR
 # ${xsBINARY_DIR}/lib)
@@ -101,6 +105,10 @@ endif()
 
 set_property(CACHE CMAKE_BUILD_TYPE PROPERTY STRINGS "Debug" "Release"
                                              "RelWithDebInfo" "MinSizeRel")
+
+set(CMAKE_EXPORT_COMPILE_COMMANDS
+    ON
+    CACHE BOOL "enable output - clangd compile commands" FORCE)
 
 set(CMAKE_CXX_FLAGS_DEBUG "-g -O0")
 set(CMAKE_CXX_FLAGS_RELEASE "-O3 -DNDEBUG")

@@ -7,6 +7,8 @@ static bool open_browser();
 static bool close_browser();
 
 int main() {
+  unsigned short freePort = xs_sys_get_free_port();
+
   httplib::Server *server = new httplib::Server();
   server->Post("/server/open",
                [](const httplib::Request &req, httplib::Response &res) {});

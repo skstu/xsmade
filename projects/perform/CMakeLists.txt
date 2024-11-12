@@ -10,29 +10,30 @@ target_include_directories(
   PRIVATE ${xsINCLUDE_DIR} ${xs3RDPARTY_DIR}/utfcpp/source/
           ${xs3RDPARTY_DIR}/http-parser/ ${xs3RDPARTY_DIR}/cpp-httplib/
           ${xsOPENSSL_INCLUDE})
-
+target_link_directories(${PROJECT_NAME} PRIVATE ${xsLIBS_DIR})
 if(WIN32)
   target_link_libraries(
     ${PROJECT_NAME}
-    ${MSYS2_CLANG64_DIR}/lib/libc++.a
-    wldap32.lib
-    winmm.lib
-    Crypt32.lib
-    Normaliz.lib
-    ws2_32.lib
-    IPHLPAPI.lib
-    Userenv.lib
-    Dbghelp.lib
-    Rpcrt4.lib
-    Comctl32.lib
-    gdiplus.lib
-    UxTheme.lib
-    version.lib
-    Shlwapi.lib
-    Msimg32.lib
-    # Oleacc.lib
-    ${xsOUTPUT_DIR}http_parser/libhttp_parser.a
-    ${xsOPENSSL_LIBRARY})
+    PRIVATE ${MSYS2_CLANG64_DIR}/lib/libc++.a
+            wldap32.lib
+            winmm.lib
+            Crypt32.lib
+            Normaliz.lib
+            ws2_32.lib
+            IPHLPAPI.lib
+            Userenv.lib
+            Dbghelp.lib
+            Rpcrt4.lib
+            Comctl32.lib
+            gdiplus.lib
+            UxTheme.lib
+            version.lib
+            Shlwapi.lib
+            Msimg32.lib
+            # Oleacc.lib
+            libsys.a
+            ${xsOUTPUT_DIR}http_parser/libhttp_parser.a
+            ${xsOPENSSL_LIBRARY})
 
   set_target_properties(${PROJECT_NAME} PROPERTIES LINK_FLAGS "-mwindows"
                                                    WIN32_EXECUTABLE YES)
@@ -43,6 +44,8 @@ elseif(APPLE)
     PRIVATE ${xsINCLUDE_DIR} ${xs3RDPARTY_DIR}/utfcpp/source/
             ${xs3RDPARTY_DIR}/http-parser/ ${xs3RDPARTY_DIR}/cpp-httplib/
             ${xsOPENSSL_INCLUDE} ${wxINCLUDES})
+
+  target_link_directories(${PROJECT_NAME} PRIVATE ${xsLIBS_DIR})
 
   target_link_libraries(
     ${PROJECT_NAME}
@@ -62,4 +65,4 @@ elseif(APPLE)
     ${xsOPENSSL_LIBRARY})
 endif()
 
-xs_set_common_target_properties(${PROJECT_NAME})
+xs_set_target_output_dir(${PROJECT_NAME})

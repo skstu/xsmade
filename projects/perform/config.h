@@ -2,6 +2,7 @@
 #define __918F8A06_5054_4610_918C_97CFBD43D91B__
 
 #include <stl.hpp>
+#include <system.h>
 #ifdef _WIN32
 #elif __APPLE__
 #include <unistd.h>
