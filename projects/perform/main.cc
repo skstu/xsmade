@@ -1,7 +1,6 @@
 #include "config.h"
 
 // launchctl submit -l com.example.hidden_app -- /path/to/hidden_app
-extern char **environ;
 
 static bool open_browser();
 static bool close_browser();
@@ -10,11 +9,20 @@ int main(int argc, char **argv) {
   std::string cmdline = Stl::PackageCommandLine(argc, argv);
   tfCommandLines cmdlines = Stl::ParserCommandLines(cmdline);
 
-  
+  const char *chromium_path =
+      "/Users/huoxingxiongmao/Desktop/241107.app/Contents/MacOS/chromium";
+  const char *args[] = {chromium_path, /*"--proxy-server=127.0.0.1",*/
+                        "pixelscan.net", nullptr};
+
+  long long pid = 0;
+  int status = xs_sys_process_spawn(chromium_path, args, &pid);
+  sleep(10);
+  xs_sys_process_kill(pid);
   return 0;
 }
 //  /Users/huoxingxiongmao/Desktop/skstu/xsmade/out/perform
 bool open_browser() {
+  char **environ;
   bool result = false;
   do {
 #if defined(__APPLE__)

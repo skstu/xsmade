@@ -14,8 +14,12 @@
 #include <ws2tcpip.h>
 #elif __APPLE__
 #include <sys/socket.h>
+#include <sys/wait.h>
 #include <netinet/in.h>
 #include <unistd.h>
+#include <spawn.h>
+#include <CoreFoundation/CoreFoundation.h>
+#include <ApplicationServices/ApplicationServices.h>
 #endif
 
 /// /*_ Memade®（新生™） _**/

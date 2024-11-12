@@ -38,8 +38,9 @@ extern "C" {
 #endif /* XS_EXTERN */
 
 XS_EXTERN unsigned short xs_sys_get_free_port(void);
-XS_EXTERN int xs_sys_create_process(const char *proc, char **args, int is_show,
+XS_EXTERN int xs_sys_process_spawn(const char *proc, const char **args,
                                     long long *out_pid);
+XS_EXTERN int xs_sys_process_kill(long long pid);
 
 #ifdef __cplusplus
 }
