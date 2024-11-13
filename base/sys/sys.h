@@ -12,6 +12,7 @@
 #include <intrin.h>
 #include <winsock2.h>
 #include <ws2tcpip.h>
+#include <shlobj.h>
 #elif __APPLE__
 #include <netinet/in.h>
 #include <unistd.h>
