@@ -10,13 +10,28 @@ extern "C" {
 #include <stdint.h>
 #include <stdio.h>
 
+#if defined(_WIN32) || defined(_WIN64)
+#define __OSWIN__ // Windows 系统
+#elif defined(__APPLE__)
+#include <TargetConditionals.h>
+#if TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
+#define __OSIOS__ // iOS 系统
+#elif TARGET_OS_MAC
+#define __OSMAC__ // macOS 系统
+#endif
+#elif defined(__linux__)
+#define __OSLINUX__ // Linux 系统（包括 Ubuntu）
+#elif defined(__unix__)
+#define __OSUNIX__ // 其他 UNIX 系统
+#endif
+
 /* Interface definition */
 #if defined(BUILDING_XS_SHARED) && defined(USING_XS_SHARED)
 #error "Define either BUILDING_XS_SHARED or USING_XS_SHARED, not both."
 #endif
 
 #ifndef XS_EXTERN
-#ifdef _WIN32
+#ifdef __OSWIN__
 /* Windows - set up dll import/export decorators. */
 #if defined(BUILDING_XS_SHARED)
 /* Building shared library. */
@@ -37,11 +52,18 @@ extern "C" {
 #endif
 #endif /* XS_EXTERN */
 
+XS_EXTERN char *xs_sys_malloc(size_t len);
+XS_EXTERN void xs_sys_free(void **p);
 XS_EXTERN unsigned short xs_sys_get_free_port(void);
 XS_EXTERN int xs_sys_process_spawn(const char *proc, const char **args,
-                                    long long *out_pid);
+                                   long long *out_pid);
 XS_EXTERN int xs_sys_process_kill(long long pid);
+//!@ exited == 0 and running  == !0
 XS_EXTERN int xs_sys_process_has_exit(long long pid);
+XS_EXTERN int xs_sys_process_getpath(char **, size_t *);
+XS_EXTERN int xs_sys_process_getpid(long long *);
+//!@ exists == 0 and not exists == !0
+XS_EXTERN int xs_sys_process_already_exists(long long pid /*==0 ? current*/);
 #ifdef __cplusplus
 }
 #endif

@@ -82,3 +82,45 @@ XS_EXTERN int xs_sys_process_has_exit(long long pid) {
   }
   return r;
 }
+XS_EXTERN int xs_sys_process_getpath(char **path, size_t *path_len) {
+  int r = -1;
+  *path = NULL;
+  *path_len = 0;
+  do {
+    std::string strPath;
+    strPath.resize(PATH_MAX, 0x00);
+    *path_len = GetModuleFileNameA(NULL, &strPath[0], strPath.size());
+    if (*path_len <= 0)
+      break;
+    *path_len += 1;
+    strPath.resize(*path_len, 0x00);
+    *path = (char *)malloc(*path_len);
+    memcpy(*path, strPath.data(), *path_len);
+    r = 0;
+  } while (0);
+  return r;
+}
+XS_EXTERN int xs_sys_process_getpid(long long *pid) {
+  *pid = (long long)GetCurrentProcessId();
+  return 0;
+}
+XS_EXTERN int xs_sys_process_already_exists(long long pid /*==0 ? current*/) {
+  int r = -1;
+  do {
+    if (pid == 0)
+      break;
+    if (xs_sys_process_has_exit(pid) != 0) {
+      r = 0;
+    }
+  } while (0);
+  do {
+    if (pid != 0)
+      break;
+    HANDLE hMutex = CreateMutexA(NULL, FALSE, "LaunchProjectsMutex.Service");
+    if (ERROR_ALREADY_EXISTS == GetLastError()) {
+      r = 0;
+      break;
+    }
+  } while (0);
+  return r;
+}

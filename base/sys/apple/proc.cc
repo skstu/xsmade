@@ -22,3 +22,49 @@ XS_EXTERN int xs_sys_process_kill(long long pid) {
 XS_EXTERN int xs_sys_process_has_exit(long long pid) {
   return kill(pid, 0) == 0 ? 1 : 0;
 }
+
+XS_EXTERN int xs_sys_process_getpid(long *pid) {
+  *pid = getpid();
+  return 0;
+}
+XS_EXTERN int xs_sys_process_getpath(char **exepath, size_t *len) {
+  int r = -1;
+  *exepath = NULL;
+  *len = 0;
+  do {
+    char path[PATH_MAX];
+    std::string strPath;
+    strPath.resize(PATH_MAX);
+    *len = readlink("/proc/self/exe", &strPath[0], strPath.size());
+    if (*len <= 0)
+      break;
+    *len += 1;
+    strPath.resize(*len, 0x00);
+    *path = (char *)malloc(*len);
+    memcpy(*path, strPath.data(), *len);
+    r = 0;
+  } while (0);
+  return r;
+}
+XS_EXTERN int xs_sys_process_already_exists(long long *pid /*==0 ? current*/) {
+  int r = -1;
+  do {
+    if (pid == 0)
+      break;
+    if (xs_sys_process_has_exit(pid) != 0) {
+      r = 0;
+    }
+  } while (0);
+  do {
+    if (pid != 0)
+      break;
+#if 0
+    HANDLE hMutex = CreateMutexA(NULL, FALSE, "LaunchProjectsMutex.Service");
+    if (ERROR_ALREADY_EXISTS == GetLastError()) {
+      r = 0;
+      break;
+    }
+#endif
+  } while (0);
+  return r;
+}

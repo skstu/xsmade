@@ -18,6 +18,9 @@
 #include <netinet/in.h>
 #include <unistd.h>
 #include <spawn.h>
+#include <limits.h>
+#include <pthread.h>
+#include <fcntl.h>
 #include <CoreFoundation/CoreFoundation.h>
 #include <ApplicationServices/ApplicationServices.h>
 #endif

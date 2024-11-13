@@ -4,8 +4,10 @@
 #include <stl.hpp>
 #include <system.h>
 #include <httplib.h>
+#include <rapidjson.h>
 
 #include "server.h"
+#include "perform.h"
 
 /// /*_ Memade®（新生™） _**/
 /// /*_ Mon, 11 Nov 2024 09:56:50 GMT _**/

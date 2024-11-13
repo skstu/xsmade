@@ -32,7 +32,7 @@
       "args": [
         "--get-processes",
         " ",
-        "--asdfasga=888",
+        "--type=service",
         " ",
         "--sadgasdgasdgasdg=daasdfalsgk666",
         " "
