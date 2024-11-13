@@ -19,10 +19,28 @@ XS_EXTERN int xs_sys_process_kill(long long pid) {
   r = kill(pid, 9);
   return r;
 }
+// XS_EXTERN int xs_sys_process_has_exit(long long pid) {
+//   return kill(pid, 0) == 0 ? 1 : 0;
+// }
 XS_EXTERN int xs_sys_process_has_exit(long long pid) {
-  return kill(pid, 0) == 0 ? 1 : 0;
+  int r = -1;
+  int status;
+  pid_t result = waitpid((pid_t)pid, &status, WNOHANG);
+  if (result == 0) {
+    r = 1;
+    // 进程还在运行
+    // return 0;
+  } else if (result == pid) {
+    // 进程已退出
+    // return 1;
+    r = 0;
+  } else {
+    // 出现错误，可能是进程不存在
+    // return -1;
+    r = -1;
+  }
+  return r;
 }
-
 XS_EXTERN int xs_sys_process_getpid(long *pid) {
   *pid = getpid();
   return 0;

@@ -44,7 +44,7 @@ void Server::Process() {
   do {
     online_brws_.iterate_clear(
         [&](const auto &key, const long long &pid, bool &itclear) {
-          if (0 != xs_sys_process_has_exit(pid)) {
+          if (0 == xs_sys_process_has_exit(pid)) {
             itclear = true;
           }
         });
@@ -60,13 +60,32 @@ void Server::OnRequest(const RequestType &reqType, const std::string &body,
   int code = -1;
   std::string message;
   long long brwpid = 0;
+  rapidjson::Document resDoc(rapidjson::Type::kObjectType);
+  rapidjson::Value resultObj(rapidjson::Type::kObjectType);
 
   switch (reqType) {
-  case RequestType::SERVER_OPEN: {
+  case RequestType::SERVER_OPEN: { //!@ 初始化请求
+    rapidjson::Value onlines(rapidjson::kArrayType);
 
+    online_brws_.iterate([&](const std::string &key, const long long &pid) {
+      rapidjson::Value brwObj(rapidjson::Type::kObjectType);
+      brwObj.AddMember(
+          rapidjson::Value().SetString("pid", resDoc.GetAllocator()).Move(),
+          rapidjson::Value().SetInt64(pid).Move(), resDoc.GetAllocator());
+      brwObj.AddMember(
+          rapidjson::Value().SetString("key", resDoc.GetAllocator()).Move(),
+          rapidjson::Value()
+              .SetString(key.c_str(), resDoc.GetAllocator())
+              .Move(),
+          resDoc.GetAllocator());
+      onlines.PushBack(brwObj, resDoc.GetAllocator());
+    });
+    resultObj.AddMember(
+        rapidjson::Value().SetString("brwonline", resDoc.GetAllocator()),
+        onlines, resDoc.GetAllocator());
   } break;
   case RequestType::SERVER_CLOSE: {
-
+    std::exit(3762);
   } break;
   case RequestType::BROWSER_OPEN: {
     rapidjson::Document doc;
@@ -180,17 +199,52 @@ void Server::OnRequest(const RequestType &reqType, const std::string &body,
 
   } break;
   case RequestType::BROWSER_CLOSE: {
-
+    rapidjson::Document doc;
+    if (doc.Parse(body.data(), body.size()).HasParseError())
+      break;
+    if (!doc.HasMember("rule") || !doc["rule"].IsObject())
+      break;
+    if (!doc["rule"].HasMember("key") || !doc["rule"]["key"].IsString())
+      break;
+    auto found =
+        online_brws_.search(doc["rule"]["key"].GetString(),
+                            [](const std::string &key, const long long &pid) {
+                              xs_sys_process_kill(pid);
+                            });
+    online_brws_.pop(doc["rule"]["key"].GetString());
+    if (found) {
+      code = 0;
+      message = "ok";
+    } else {
+      code = -1003;
+      message = "not found";
+    }
   } break;
   case RequestType::BROWSER_GET: {
-
+    rapidjson::Value brwObjs(rapidjson::Type::kArrayType);
+    std::string chromium_dir =
+        Config::ConfigGet()->WorkProjectsPath() + "/chromium/";
+    std::map<std::string, std::string> dirs, files;
+    stl::Directory::EnumU8(chromium_dir, dirs, files, false);
+    for (const auto &node : dirs) {
+      brwObjs.PushBack(rapidjson::Value()
+                           .SetString(node.first.c_str(), resDoc.GetAllocator())
+                           .Move(),
+                       resDoc.GetAllocator());
+    }
+    resultObj.AddMember(
+        rapidjson::Value()
+            .SetString("chromium_versions", resDoc.GetAllocator())
+            .Move(),
+        brwObjs, resDoc.GetAllocator());
+    code = 0;
+    message = "ok";
   } break;
   default:
     break;
   }
 
   do {
-    rapidjson::Document resDoc(rapidjson::Type::kObjectType);
     resDoc.AddMember(
         rapidjson::Value().SetString("code", resDoc.GetAllocator()).Move(),
         rapidjson::Value().SetInt(code).Move(), resDoc.GetAllocator());
@@ -200,6 +254,9 @@ void Server::OnRequest(const RequestType &reqType, const std::string &body,
             .SetString(message.c_str(), resDoc.GetAllocator())
             .Move(),
         resDoc.GetAllocator());
+    resDoc.AddMember(
+        rapidjson::Value().SetString("result", resDoc.GetAllocator()).Move(),
+        resultObj, resDoc.GetAllocator());
     res = Json::toString(resDoc);
   } while (0);
 }
