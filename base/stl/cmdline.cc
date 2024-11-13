@@ -39,7 +39,7 @@ std::string CmdLine::PackageCommandLine(const int &argc, char **argv) {
     for (int i = 0; i < argc; ++i) {
       if (!argv[i])
         continue;
-      result.append(argv[i]);
+      result.append(argv[i]).append(" ");
     }
   } while (0);
   return result;

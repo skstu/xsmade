@@ -13,14 +13,20 @@
 #include <winsock2.h>
 #include <ws2tcpip.h>
 #elif __APPLE__
-#include <sys/socket.h>
-#include <sys/wait.h>
 #include <netinet/in.h>
 #include <unistd.h>
+#include <sys/file.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <sys/sysctl.h>
+#include <sys/socket.h>
+#include <sys/wait.h>
 #include <spawn.h>
 #include <limits.h>
 #include <pthread.h>
+#include <semaphore.h>
 #include <fcntl.h>
+#include <libproc.h>
 #include <CoreFoundation/CoreFoundation.h>
 #include <ApplicationServices/ApplicationServices.h>
 #endif

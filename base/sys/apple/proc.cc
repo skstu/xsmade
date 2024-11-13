@@ -32,7 +32,6 @@ XS_EXTERN int xs_sys_process_getpath(char **exepath, size_t *len) {
   *exepath = NULL;
   *len = 0;
   do {
-    char path[PATH_MAX];
     std::string strPath;
     strPath.resize(PATH_MAX);
     *len = readlink("/proc/self/exe", &strPath[0], strPath.size());
@@ -40,14 +39,15 @@ XS_EXTERN int xs_sys_process_getpath(char **exepath, size_t *len) {
       break;
     *len += 1;
     strPath.resize(*len, 0x00);
-    *path = (char *)malloc(*len);
-    memcpy(*path, strPath.data(), *len);
+    *exepath = (char *)malloc(*len);
+    memcpy(*exepath, strPath.data(), *len);
     r = 0;
   } while (0);
   return r;
 }
-XS_EXTERN int xs_sys_process_already_exists(long long *pid /*==0 ? current*/) {
+XS_EXTERN int xs_sys_process_already_exists(long long pid /*==0 ? current*/) {
   int r = -1;
+  int fd = -1;
   do {
     if (pid == 0)
       break;
@@ -58,13 +58,20 @@ XS_EXTERN int xs_sys_process_already_exists(long long *pid /*==0 ? current*/) {
   do {
     if (pid != 0)
       break;
-#if 0
-    HANDLE hMutex = CreateMutexA(NULL, FALSE, "LaunchProjectsMutex.Service");
-    if (ERROR_ALREADY_EXISTS == GetLastError()) {
+    fd =
+        open("/tmp/LaunchProjectsMutex.Service.lock", O_CREAT | O_WRONLY, 0666);
+    if (fd == -1)
+      break;
+    if (flock(fd, LOCK_EX | LOCK_NB) == 0) {
+      break;
+    } else {
       r = 0;
       break;
     }
-#endif
   } while (0);
+  //!@ You cannot clean the file lock here, because the process exclusion will
+  //! be invalidated once the file lock is cleaned
+  // if (-1 != fd)
+  //   close(fd);
   return r;
 }

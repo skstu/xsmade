@@ -8,7 +8,7 @@ int APIENTRY WinMain(HINSTANCE hInst, HINSTANCE hInstPrev, PSTR cmdline,
   std::string cmdline_ = cmdline ? cmdline : "";
 #else
 int main(int argc, char **argv) {
-  std::string cmdline_ = stl::Cmdline::PackageCommandLine(argc, argv);
+  std::string cmdline_ = stl::CmdLine::PackageCommandLine(argc, argv);
 #endif
 
   Perform *perform = new Perform(cmdline_);

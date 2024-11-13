@@ -79,7 +79,7 @@ void Server::Listen() {
         stl::Path::PathnameToPath(std::string(path_tmp, path_len));
     xs_sys_free((void **)&path_tmp);
 
-    std::string route_path = path + "\\route.json";
+    std::string route_path = path + "/route.json";
 
     rapidjson::Document doc;
     std::string route_buffer = stl::File::ReadFile(route_path);
