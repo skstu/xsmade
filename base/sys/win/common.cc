@@ -5,10 +5,10 @@ XS_EXTERN int xs_sys_get_appdata_path(char **path, size_t *path_len) {
   std::string result;
   LPITEMIDLIST ppidl = nullptr;
   do {
-    if (::SHGetSpecialFolderLocation(nullptr, CSIDL_APPDATA, &ppidl) != S_OK)
+    if (SHGetSpecialFolderLocation(nullptr, CSIDL_APPDATA, &ppidl) != S_OK)
       break;
     char pszPath[_MAX_PATH] = {0};
-    if (!::SHGetPathFromIDListA(ppidl, pszPath))
+    if (!SHGetPathFromIDListA(ppidl, pszPath))
       break;
     result = pszPath;
     if (result.empty())
@@ -22,7 +22,7 @@ XS_EXTERN int xs_sys_get_appdata_path(char **path, size_t *path_len) {
     r = 0;
   } while (0);
   if (ppidl) {
-    ::CoTaskMemFree(ppidl);
+    CoTaskMemFree(ppidl);
     ppidl = nullptr;
   }
   return r;
