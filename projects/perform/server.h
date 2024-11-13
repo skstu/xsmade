@@ -8,7 +8,7 @@ enum class RequestType : unsigned long long {
   BROWSER_OPEN = 0x10101,  //!@ 打开浏览器
   BROWSER_CLOSE = 0x10102, //!@ 关闭浏览器
   BROWSER_GET = 0x10103,   //!@ 获取浏览器列表
-  //BROWSER_DOWN = 0x10104,  //!@ 下载浏览器
+  // BROWSER_DOWN = 0x10104,  //!@ 下载浏览器
 };
 class Server {
 public:
@@ -25,12 +25,13 @@ private:
   void Init();
   void UnInit();
   void Listen();
-  void OnRequest(const RequestType&,const std::string& body,std::string& res);
+  void OnRequest(const RequestType &, const std::string &body,
+                 std::string &res);
   unsigned short port_ = 0;
   std::atomic_bool open_ = false;
   stl::tfThreads threads_;
   httplib::Server *server_ = nullptr;
-  stl::container::map<std::string, std::string> online_brws_;
+  stl::container::map<std::string/*key*/, long long/*pid*/> online_brws_;
 };
 /// /*_ Memade®（新生™） _**/
 /// /*_ Mon, 11 Nov 2024 09:56:22 GMT _**/

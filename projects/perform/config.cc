@@ -40,6 +40,14 @@ const std::string &Config::WorkProjectsPath() const {
   std::lock_guard<std::mutex> lock{*mtx_};
   return work_projects_path_;
 }
+void Config::ConfigureSet(const std::string &input_json) {
+  std::lock_guard<std::mutex> lock{*mtx_};
+  configure_ << input_json;
+}
+const Configure &Config::ConfigureGet() const {
+  std::lock_guard<std::mutex> lock{*mtx_};
+  return configure_;
+}
 ////////////////////////////////////////////////////////////////////////////
 static Config *__gpConfig = nullptr;
 Config *Config::ConfigGet() {

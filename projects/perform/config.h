@@ -8,6 +8,7 @@
 
 #include "server.h"
 #include "perform.h"
+#include "configure.h"
 
 class Config {
 public:
@@ -24,12 +25,16 @@ private:
 public:
   const std::string &CurrentProcessPath() const;
   const std::string &WorkProjectsPath() const;
+  void ConfigureSet(const std::string &input_json);
+  const Configure &ConfigureGet() const;
 
 private:
+  Configure configure_;
   std::string current_process_path_;
   std::string work_projects_path_;
   std::shared_ptr<std::mutex> mtx_ = std::make_shared<std::mutex>();
 };
+
 /// /*_ Memade®（新生™） _**/
 /// /*_ Mon, 11 Nov 2024 09:56:50 GMT _**/
 /// /*_____ https://www.skstu.com/ _____ **/

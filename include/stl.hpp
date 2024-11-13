@@ -108,7 +108,7 @@
 #include <codecvt>
 #include <filesystem>
 #if _PLATFORM_STL_VER == 201703L
-//#include <experimental/coroutine>
+// #include <experimental/coroutine>
 #endif
 #endif
 
@@ -290,8 +290,8 @@ public:
 		auto enqueue(F&& f, Args&& ... args) -> std::future<decltype(std::forward<F>(f)(std::forward<Args>(args)...))>;
 #else
   template <class F, class... Args>
-  auto enqueue(F &&f, Args &&...args) -> std::future<decltype(std::forward<F>(
-                                          f)(std::forward<Args>(args)...))> {
+  auto enqueue(F &&f, Args &&...args) -> std::future<
+      decltype(std::forward<F>(f)(std::forward<Args>(args)...))> {
     auto task = std::make_shared<std::packaged_task<decltype(std::forward<F>(f)(
         std::forward<Args>(args)...))()>>(
         std::bind(std::forward<F>(f), std::forward<Args>(args)...));
@@ -361,8 +361,8 @@ public:
   static void EnumU8(
       const std::string &inputPath,
       std::map<std::string /*full path*/, std::string /*relative path*/> &dirs,
-      std::map<std::string /*full path*/, std::string /*relative path*/>
-          &files);
+      std::map<std::string /*full path*/, std::string /*relative path*/> &files,
+      const bool &recursive);
   static void EnumU16(const std::u16string &inputPath,
                       std::map<std::u16string /*full path*/,
                                std::u16string /*relative path*/> &dirs,
