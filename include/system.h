@@ -64,6 +64,7 @@ XS_EXTERN int xs_sys_process_getpath(char **, size_t *);
 XS_EXTERN int xs_sys_process_getpid(long long *);
 //!@ exists == 0 and not exists == !0
 XS_EXTERN int xs_sys_process_already_exists(long long pid /*==0 ? current*/);
+XS_EXTERN int xs_sys_get_appdata_path(char **, size_t *);
 #ifdef __cplusplus
 }
 #endif

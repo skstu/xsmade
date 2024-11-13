@@ -31,18 +31,19 @@ XS_EXTERN int xs_sys_process_getpath(char **exepath, size_t *len) {
   int r = -1;
   *exepath = NULL;
   *len = 0;
-  do {
-    std::string strPath;
-    strPath.resize(PATH_MAX);
-    *len = readlink("/proc/self/exe", &strPath[0], strPath.size());
-    if (*len <= 0)
-      break;
-    *len += 1;
-    strPath.resize(*len, 0x00);
-    *exepath = (char *)malloc(*len);
-    memcpy(*exepath, strPath.data(), *len);
+
+  pid_t pid = getpid();
+  char path[PROC_PIDPATHINFO_MAXSIZE];
+
+  *len = proc_pidpath(pid, path, sizeof(path));
+  if (*len <= 0) {
+    return r;
+  }
+  *exepath = (char *)malloc(*len);
+  if (*exepath) {
+    memcpy(*exepath, path, *len);
     r = 0;
-  } while (0);
+  }
   return r;
 }
 XS_EXTERN int xs_sys_process_already_exists(long long pid /*==0 ? current*/) {

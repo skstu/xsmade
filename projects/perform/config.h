@@ -9,6 +9,27 @@
 #include "server.h"
 #include "perform.h"
 
+class Config {
+public:
+  static Config *ConfigGet();
+
+public:
+  Config();
+  ~Config();
+
+private:
+  void Init();
+  void UnInit();
+
+public:
+  const std::string &CurrentProcessPath() const;
+  const std::string &WorkProjectsPath() const;
+
+private:
+  std::string current_process_path_;
+  std::string work_projects_path_;
+  std::shared_ptr<std::mutex> mtx_ = std::make_shared<std::mutex>();
+};
 /// /*_ Memade®（新生™） _**/
 /// /*_ Mon, 11 Nov 2024 09:56:50 GMT _**/
 /// /*_____ https://www.skstu.com/ _____ **/

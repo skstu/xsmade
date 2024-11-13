@@ -27,6 +27,7 @@
 #include <semaphore.h>
 #include <fcntl.h>
 #include <libproc.h>
+//#include <Cocoa/Cocoa.h>
 #include <CoreFoundation/CoreFoundation.h>
 #include <ApplicationServices/ApplicationServices.h>
 #endif

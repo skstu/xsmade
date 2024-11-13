@@ -10,7 +10,8 @@ int APIENTRY WinMain(HINSTANCE hInst, HINSTANCE hInstPrev, PSTR cmdline,
 int main(int argc, char **argv) {
   std::string cmdline_ = stl::CmdLine::PackageCommandLine(argc, argv);
 #endif
-
+  auto pConfig = Config::ConfigGet();
+  
   Perform *perform = new Perform(cmdline_);
   perform->Run();
   perform->Release();
