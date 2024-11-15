@@ -45,18 +45,28 @@ void Server::Process() {
     online_brws_.iterate_clear(
         [&](const auto &key, const long long &pid, bool &itclear) {
           if (0 == xs_sys_process_has_exit(pid)) {
+            client_notifys_.push(Config::CreateBrwCloseNotifyPak(key));
             itclear = true;
           }
         });
   } while (0);
+  do {
+    unsigned int notify_port = Config::ConfigGet()->GetClientLocalPort();
+    if (notify_port <= 0)
+      break;
+    auto msgs = client_notifys_.pops();
+    if (msgs.empty())
+      break;
+    for (const auto &msg : msgs) {
+      httplib::Client cli("127.0.0.1", notify_port);
+      httplib::Headers heads = {{"content-type", "application/json"}};
+      auto view = msg.c_str();
+      cli.Post("/close", heads, msg.data(), msg.size(), "application/json");
+    }
+  } while (0);
 }
 void Server::OnRequest(const RequestType &reqType, const std::string &body,
                        std::string &res) {
-  /*
-      "code": 0,
-    "message": "ok",
-    "browser_id": 19264,
-  */
   int code = -1;
   std::string message;
   long long brwpid = 0;
@@ -110,22 +120,31 @@ void Server::OnRequest(const RequestType &reqType, const std::string &body,
     do { //!@ proxy
       if (!Config::ConfigGet()->ConfigureGet().proxy_.valid())
         break;
-      std::string node;
-      node.append("--proxy-server=")
-          .append(Config::ConfigGet()->ConfigureGet().proxy_.addr)
-          .append(
-              std::to_string(Config::ConfigGet()->ConfigureGet().proxy_.port));
+      std::string node =
+          fmt::format("--proxy-server={}:{}",
+                      Config::ConfigGet()->ConfigureGet().proxy_.addr,
+                      Config::ConfigGet()->ConfigureGet().proxy_.port);
       brw_startup_args.emplace_back(node);
     } while (0);
 
     do { //!@ startup url
       if (Config::ConfigGet()->ConfigureGet().worker_.url.empty())
         break;
-      std::string node;
-      node.append(Config::ConfigGet()->ConfigureGet().worker_.url);
+      std::string node = fmt::format(
+          "--xs-openurl={}", Config::ConfigGet()->ConfigureGet().worker_.url);
       brw_startup_args.emplace_back(node);
     } while (0);
 
+    do { //!@ userAgent
+      if (Config::ConfigGet()
+              ->ConfigureGet()
+              .fp_.f_.vs_.navigator_.userAgent.empty())
+        break;
+      std::string node = fmt::format(
+          R"(--user-agent="{}")",
+          Config::ConfigGet()->ConfigureGet().fp_.f_.vs_.navigator_.userAgent);
+      brw_startup_args.emplace_back(node);
+    } while (0);
     do { //!@ user-data-dir
       std::string node;
       std::string user_data =
@@ -137,8 +156,7 @@ void Server::OnRequest(const RequestType &reqType, const std::string &body,
             .append("/");
         final_brw_key = Config::ConfigGet()->ConfigureGet().rule_.key;
       }
-      // stl::Directory::Create(user_data);
-      node.append("--user-data-dir=").append(user_data);
+      node = fmt::format("--user-data-dir={}", user_data);
       brw_startup_args.emplace_back(node);
     } while (0);
 
@@ -163,21 +181,31 @@ void Server::OnRequest(const RequestType &reqType, const std::string &body,
 
     do { //!@
       //!@ 浏览器目录
-      std::string chromium_dir =
-          Config::ConfigGet()->WorkProjectsPath() + "/chromium/";
+      std::string chromium_dir = Config::ConfigGet()->ChromiumPath();
       std::map<std::string, std::string> dirs, files;
       stl::Directory::EnumU8(chromium_dir, dirs, files, false);
       if (dirs.empty())
         break;
+#if defined(__OSMAC__)
       final_brw_prog_fname = chromium_dir + dirs.begin()->first + "/chrome.app";
       if (!Config::ConfigGet()->ConfigureGet().worker_.brwver.empty()) {
         auto found =
             dirs.find(Config::ConfigGet()->ConfigureGet().worker_.brwver);
         if (found == dirs.end())
           break;
-        final_brw_prog_fname = chromium_dir + found->first + "/chrome.app";
+        final_brw_prog_fname =
+            chromium_dir + found->first + "/chrome.app/Contents/MacOS/chromium";
       }
-      auto sss = 0;
+#elif defined(__OSWIN__)
+      final_brw_prog_fname = chromium_dir + dirs.begin()->first + "/chrome.exe";
+      if (!Config::ConfigGet()->ConfigureGet().worker_.brwver.empty()) {
+        auto found =
+            dirs.find(Config::ConfigGet()->ConfigureGet().worker_.brwver);
+        if (found == dirs.end())
+          break;
+        final_brw_prog_fname = chromium_dir + found->first + "/chrome.exe";
+      }
+#endif
       is_open_ready = true;
     } while (0);
 
@@ -186,10 +214,10 @@ void Server::OnRequest(const RequestType &reqType, const std::string &body,
       std::vector<const char *> args;
       for (const auto &node : brw_startup_args)
         args.emplace_back(node.c_str());
+      args.emplace_back(nullptr);
       long long pid = 0;
-      int status = xs_sys_process_spawn(
-          (final_brw_prog_fname + "/Contents/MacOS/chromium").c_str(), &args[0],
-          &pid);
+      int status =
+          xs_sys_process_spawn(final_brw_prog_fname.c_str(), &args[0], &pid);
       if (status != 0)
         break;
       online_brws_.push(final_brw_key, pid);
@@ -206,15 +234,16 @@ void Server::OnRequest(const RequestType &reqType, const std::string &body,
       break;
     if (!doc["rule"].HasMember("key") || !doc["rule"]["key"].IsString())
       break;
-    auto found =
-        online_brws_.search(doc["rule"]["key"].GetString(),
-                            [](const std::string &key, const long long &pid) {
-                              xs_sys_process_kill(pid);
-                            });
-    online_brws_.pop(doc["rule"]["key"].GetString());
+    const std::string key = doc["rule"]["key"].GetString();
+    auto found = online_brws_.search(
+        key, [](const std::string &key, const long long &pid) {
+          xs_sys_process_kill(pid);
+        });
+    online_brws_.pop(key);
     if (found) {
       code = 0;
       message = "ok";
+      client_notifys_.push(Config::CreateBrwCloseNotifyPak(key));
     } else {
       code = -1003;
       message = "not found";
@@ -222,10 +251,9 @@ void Server::OnRequest(const RequestType &reqType, const std::string &body,
   } break;
   case RequestType::BROWSER_GET: {
     rapidjson::Value brwObjs(rapidjson::Type::kArrayType);
-    std::string chromium_dir =
-        Config::ConfigGet()->WorkProjectsPath() + "/chromium/";
     std::map<std::string, std::string> dirs, files;
-    stl::Directory::EnumU8(chromium_dir, dirs, files, false);
+    stl::Directory::EnumU8(Config::ConfigGet()->ChromiumPath(), dirs, files,
+                           false);
     for (const auto &node : dirs) {
       brwObjs.PushBack(rapidjson::Value()
                            .SetString(node.first.c_str(), resDoc.GetAllocator())
@@ -321,16 +349,21 @@ void Server::Listen() {
     }
     if (doc.HasMember("server_port"))
       doc.RemoveMember("server_port");
+    if (!doc.HasMember("client_port")) {
+      doc.AddMember(rapidjson::Value()
+                        .SetString("client_port", doc.GetAllocator())
+                        .Move(),
+                    rapidjson::Value().SetUint(0).Move(), doc.GetAllocator());
+    }
     doc.AddMember(
         rapidjson::Value().SetString("server_port", doc.GetAllocator()).Move(),
         rapidjson::Value().SetUint(port_).Move(), doc.GetAllocator());
 
     stl::File::WriteFile(route_path, Json::toString(doc));
   } while (0);
-#if _DEBUG
+#if ENABLE_DEVELOPER_DEBUG
   server_->listen("127.0.0.1", 65535);
 #else
-  server_->listen("127.0.0.1", 65535);
-  // server_->listen("127.0.0.1", port_);
+  server_->listen("127.0.0.1", port_);
 #endif
 }

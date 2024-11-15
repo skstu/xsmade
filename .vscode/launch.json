@@ -32,12 +32,9 @@
       "request": "launch",
       "program": "${workspaceFolder}/out/bin/perform.exe",
       "args": [
-        "--get-processes",
         " ",
         "--type=service",
         " ",
-        "--sadgasdgasdgasdg=daasdfalsgk666",
-        " "
       ],
       "stopAtEntry": false,
       "cwd": "${workspaceFolder}",

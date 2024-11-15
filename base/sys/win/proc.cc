@@ -66,15 +66,15 @@ XS_EXTERN int xs_sys_process_has_exit(long long pid) {
       r = 0;
       break;
     }
-    DWORD r = WaitForSingleObject(hProcess, 0);
-    switch (r) {
+    DWORD rWait = WaitForSingleObject(hProcess, 0);
+    r = ((rWait == WAIT_OBJECT_0) ? 0 : (int)rWait);
+    /*switch (rWait) {
     case WAIT_OBJECT_0: {
       r = 0;
     } break;
-    default: {
-      r = 1;
-    } break;
-    }
+    default:
+      break;
+    }*/
   } while (0);
   if (hProcess) {
     CloseHandle(hProcess);

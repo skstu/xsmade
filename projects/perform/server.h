@@ -29,6 +29,7 @@ private:
                  std::string &res);
   unsigned short port_ = 0;
   std::atomic_bool open_ = false;
+  stl::container::queue<std::string> client_notifys_;
   stl::tfThreads threads_;
   httplib::Server *server_ = nullptr;
   stl::container::map<std::string/*key*/, long long/*pid*/> online_brws_;

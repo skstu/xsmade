@@ -31,6 +31,7 @@ if(WIN32)
             Shlwapi.lib
             Msimg32.lib
             # Oleacc.lib
+            libfmt.a
             libsys.a
             libstl.a
             ${xsOUTPUT_DIR}http_parser/libhttp_parser.a
