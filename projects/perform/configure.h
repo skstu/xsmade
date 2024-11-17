@@ -722,9 +722,11 @@ public:
 
   public:
     unsigned long id = 0;
-    std::string name; //!@ 名字
-    std::string key;  //!@ 前端id
-
+    std::string name;            //!@ 名字
+    std::string key = "Default"; //!@ 前端id
+    bool IsDefault() const {
+      return key == "Default";
+    }
     bool operator<<(const std::string &input) {
       bool result = false;
       do {
@@ -864,6 +866,9 @@ public:
 public:
   inline bool empty() const {
     return source_.empty();
+  }
+  inline bool Default() const {
+    return rule_.IsDefault();
   }
   inline void operator=(const Configure &obj) {
     std::string tmp;

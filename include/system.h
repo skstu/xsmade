@@ -52,6 +52,8 @@ extern "C" {
 #endif
 #endif /* XS_EXTERN */
 
+typedef long long process_id_t;
+
 XS_EXTERN char *xs_sys_malloc(size_t len);
 XS_EXTERN void xs_sys_free(void **p);
 XS_EXTERN unsigned short xs_sys_get_free_port(void);

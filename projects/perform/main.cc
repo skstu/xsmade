@@ -16,6 +16,7 @@ int main(int argc, char **argv) {
   perform->Run();
   perform->Release();
 
+  Config::Destroy();
   return 0;
 }
 #if 0

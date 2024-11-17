@@ -9,8 +9,6 @@ public:
 public:
   void Release() const;
   void Run();
-
-public:
 private:
   std::atomic_bool open_ = false;
   stl::CmdLine *cmdline_ = nullptr;

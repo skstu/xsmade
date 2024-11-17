@@ -2,45 +2,69 @@
 #define __918F8A06_5054_4610_918C_97CFBD43D91B__
 
 #define ENABLE_DEVELOPER_DEBUG 1
+#define ENABLE_DEVELOPER_LOGGER 1
+
 #include <stl.hpp>
 #include <system.h>
 #include <httplib.h>
 #include <rapidjson.h>
 #include <fmt/format.h>
+#include <log.hpp>
 
+#include "configure.h"
+#include "browser.h"
 #include "server.h"
 #include "perform.h"
-#include "configure.h"
 
 class Config {
 public:
-  static Config *ConfigGet();
+  class Paths {
+  public:
+    std::string root_dir;                // "${AppData}/MarsProjects/"
+    std::string logs_dir;                // "/logs/"
+    std::string chromium_dir;            // "/chromium/"
+    std::string chromium_user_data_dir;  // "/userdata/"
+    std::string chromium_extensions_dir; // "/chromium/extensions/"
+    std::string
+        chromium_configure_dir; // "/userdata/cache/${key}/Default/XSexten/"
+    std::string
+        chromium_statistics_dir; // "/userdata/cache/${key}/Default/XSexten/"
+    std::string brw_projects_route_file; // "${AppData}/MarsProjects/route.json"
+    std::string
+        brw_projects_configure_file; // "${AppData}/MarsProjects/configure.json"
+  };
 
 public:
+  static Config *ConfigGet();
+  static void Destroy();
+
+private:
   Config();
   ~Config();
 
 private:
   void Init();
   void UnInit();
+  void PathsInit();
 
 public:
-  const std::string &CurrentProcessPath() const;
-  const std::string &WorkProjectsPath() const;
-  void ConfigureSet(const std::string &input_json);
-  const Configure &ConfigureGet() const;
-  const std::string &ChromiumPath() const;
-  unsigned int GetClientLocalPort() const;
+  void RouteConfigureInit(const unsigned int &) const;
+  unsigned int RouteConfigureGetClientPort() const;
+  const Paths &PathGet() const;
+  std::string GetBrwUserDataDir(const std::string &brwKey) const;
 
 public:
   static std::string CreateBrwCloseNotifyPak(const std::string &brwId);
 
 private:
-  Configure configure_;
+  Paths paths_;
   std::string current_process_path_;
   std::string work_projects_path_;
   std::string chromium_path_;
   std::shared_ptr<std::mutex> mtx_ = std::make_shared<std::mutex>();
+
+public:
+  const std::string project_name_ = "MarsProjects";
 };
 
 /// /*_ Memade®（新生™） _**/

@@ -32,7 +32,7 @@ private:
   stl::container::queue<std::string> client_notifys_;
   stl::tfThreads threads_;
   httplib::Server *server_ = nullptr;
-  stl::container::map<std::string/*key*/, long long/*pid*/> online_brws_;
+  stl::container::map<std::string/*key*/, Browser*> brws_;
 };
 /// /*_ Memade®（新生™） _**/
 /// /*_ Mon, 11 Nov 2024 09:56:22 GMT _**/
