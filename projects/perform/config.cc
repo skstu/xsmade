@@ -46,9 +46,66 @@ void Config::RouteConfigureInit(const unsigned int &server_port) const {
 std::string Config::GetBrwUserDataDir(const std::string &brwKey) const {
   std::string result;
   std::lock_guard<std::mutex> lock{*mtx_};
-  result =
-      paths_.chromium_user_data_dir + (brwKey.empty() ? brwKey : brwKey) + "/";
+  result = fmt::format(R"({}/{}/)", paths_.chromium_user_data_dir, brwKey);
   return result;
+}
+/*
+    std::string
+        chromium_xscache_configure_dir; //
+   "/userdata/cache/${key}/Default/xscache/cfgs/" std::string
+        chromium_xscache_extensions_dir; //
+   "/userdata/cache/${key}/Default/xscache/exts/" std::string
+        chromium_xscache_statistics_dir; //
+   "/userdata/cache/${key}/Default/xscache/statis/"
+*/
+std::string Config::GetXSCacheExtsDir(const std::string &brwKey,
+                                      const std::string &extId) const {
+  std::string result;
+  std::lock_guard<std::mutex> lock{*mtx_};
+  result = fmt::format(R"({}/{}/Default/XSCache/exts/{}/)",
+                       paths_.chromium_user_data_dir, brwKey, extId);
+  stl::Directory::Create(result);
+  return result;
+}
+std::string Config::GetXSCacheConfigureFName(const std::string &brwKey) const {
+  std::string result;
+  std::lock_guard<std::mutex> lock{*mtx_};
+  result = fmt::format(R"({}/{}/Default/XSCache/cfgs/configure.json)",
+                       paths_.chromium_user_data_dir, brwKey);
+  stl::Directory::Create(stl::Path::PathnameToPath(result));
+  return result;
+}
+std::string Config::GetXSCacheExtsDir(const std::string &brwKey) const {
+  std::string result;
+  std::lock_guard<std::mutex> lock{*mtx_};
+  result = fmt::format(R"({}/{}/Default/XSCache/exts/)",
+                       paths_.chromium_user_data_dir, brwKey);
+  stl::Directory::Create(result);
+  return result;
+}
+std::string Config::GetXSCacheCfgsDir(const std::string &brwKey) const {
+  std::string result;
+  std::lock_guard<std::mutex> lock{*mtx_};
+  result = fmt::format(R"({}/{}/Default/XSCache/cfgs/)",
+                       paths_.chromium_user_data_dir, brwKey);
+  stl::Directory::Create(result);
+  return result;
+}
+std::string Config::GetXSCacheStatisDir(const std::string &brwKey) const {
+  std::string result;
+  std::lock_guard<std::mutex> lock{*mtx_};
+  result = fmt::format(R"({}/{}/Default/XSCache/statis/)",
+                       paths_.chromium_user_data_dir, brwKey);
+  stl::Directory::Create(result);
+  return result;
+}
+void Config::XSCacheClean(const std::string &brwKey) const {
+  std::lock_guard<std::mutex> lock{*mtx_};
+  if (!brwKey.empty()) {
+    std::string xscache_dir = fmt::format(
+        R"({}/{}/Default/XSCache/)", paths_.chromium_user_data_dir, brwKey);
+    stl::Directory::RemoveAllU8(xscache_dir);
+  }
 }
 unsigned int Config::RouteConfigureGetClientPort() const {
   unsigned int result = 0;

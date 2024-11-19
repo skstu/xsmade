@@ -152,6 +152,17 @@ if(xsUSE_WXWIDGETS)
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-unused-command-line-argument")
   add_subdirectory(${xs3RDPARTY_DIR}/wxwidgets/ "wxWidgets")
 endif(xsUSE_WXWIDGETS)
+
+
+set(ZLIB_BUILD_EXAMPLES OFF CACHE BOOL "disabled zlib build examples." FORCE)
+add_subdirectory(${xs3RDPARTY_DIR}/zlib/ "zlib")
+#set_target_properties(zlibstatic PROPERTIES FOLDER "3rdparty")
+#set_target_properties(zlib PROPERTIES FOLDER "3rdparty")
+
+set(CMAKE_DEBUG_POSTFIX "" CACHE STRING "..." FORCE)
+add_subdirectory(${xs3RDPARTY_DIR}/minizip/ "minizip")
+#set_target_properties(minizip PROPERTIES FOLDER "3rdparty")
+
 add_subdirectory(${xs3RDPARTY_DIR}/http-parser/ "http_parser")
 # set_target_properties(wxwidgets PROPERTIES FOLDER "3rdparty") cmake -G Ninja
 # .. -DwxBUILD_SAMPLES=ALL -DwxBUILD_SHARED=OFF

@@ -34,7 +34,9 @@ if(WIN32)
             libfmt.a
             libsys.a
             libstl.a
+            libzipcc.a
             ${xsOUTPUT_DIR}http_parser/libhttp_parser.a
+            ${xsOUTPUT_DIR}zlib/libzlibstatic.a
             ${xsOPENSSL_LIBRARY})
 
   set_target_properties(${PROJECT_NAME} PROPERTIES LINK_FLAGS "-mwindows"

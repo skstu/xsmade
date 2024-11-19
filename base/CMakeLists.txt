@@ -9,3 +9,4 @@
 
 add_subdirectory(sys)
 add_subdirectory(stl)
+add_subdirectory(zipcc)

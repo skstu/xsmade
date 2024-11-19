@@ -11,19 +11,85 @@ void Browser::Release() const {
 }
 void Browser::Init() {
   do {
-    brwcfg_ = new Configure(cfg_);
-
-    const std::string chromium_user_data_dir =
-        Config::ConfigGet()->GetBrwUserDataDir(brwcfg_->rule_.key);
-    stl::Directory::Create(chromium_user_data_dir);
-
-    do { //!@ extensions
-    //!@ fp
-    //!@ proxy
-    
+    std::string cfg_cache;
+    do { //!@ 获取缓存配置 用于初始化
+      Configure tmpcfg(cfg_);
+      cfg_cache = stl::File::ReadFile(
+          Config::ConfigGet()->GetXSCacheConfigureFName(tmpcfg.rule_.key));
     } while (0);
 
-    do { //!@ default
+    brwcfg_ = new Configure(cfg_cache);
+    *brwcfg_ << cfg_;
+
+    std::string brwkey = brwcfg_->rule_.key;
+    std::string brwver = brwcfg_->worker_.brwver;
+    //!@ 浏览器目录
+    std::string chromium_dir = Config::ConfigGet()->PathGet().chromium_dir;
+    std::string chromium_user_data_dir =
+        Config::ConfigGet()->GetBrwUserDataDir(brwkey);
+    stl::Directory::Create(chromium_user_data_dir);
+
+    Config::ConfigGet()->XSCacheClean(brwkey);
+
+    do {
+      auto dir = Config::ConfigGet()->GetXSCacheCfgsDir(brwkey);
+      stl::File::WriteFile(
+          Config::ConfigGet()->GetXSCacheConfigureFName(brwkey),
+          brwcfg_->source_);
+    } while (0);
+
+    //!@ 总开关
+    if (!brwcfg_->Enable())
+      break;
+
+    do { //!@ extensions
+      if (brwcfg_->rule_.IsDefault())
+        break;
+      //!@ Install default extensions
+      do { //!@ ap
+        if (!brwcfg_->proxy_.Enable())
+          break;
+        if (!brwcfg_->proxy_.valid())
+          break;
+        auto dir = Config::ConfigGet()->GetXSCacheExtsDir(
+            brwkey, "afgbmmdnakcefnkchckgelobigkbboci");
+        stl::File::WriteFile(dir + "/manifest.json",
+                             brwcfg_->GetExtensionManifestAP());
+        stl::File::WriteFile(dir + "/background.js",
+                             brwcfg_->GetExtensionBackgroundAP());
+        brw_startup_args_.emplace_back(fmt::format(R"(--proxy-server={}:{})",
+                                                   brwcfg_->proxy_.addr,
+                                                   brwcfg_->proxy_.port));
+      } while (0);
+      do { //!@ fs
+        if (!brwcfg_->fp_.Enable())
+          break;
+        auto dir = Config::ConfigGet()->GetXSCacheExtsDir(
+            brwkey, "ebglcogbaklfalmoeccdjbmgfcacengf");
+        stl::File::WriteFile(dir + "/manifest.json",
+                             brwcfg_->GetExtensionManifestFPS());
+        stl::File::WriteFile(dir + "/content.js",
+                             brwcfg_->GetExtensionContentFps());
+        stl::File::WriteFile(dir + "/background.js",
+                             brwcfg_->GetExtensionBackgroundFps());
+      } while (0);
+      //!@ Install custom extensions
+      std::map<std::string, std::string> dirs, files;
+      stl::Directory::EnumU8(
+          Config::ConfigGet()->PathGet().chromium_extensions_dir, dirs, files,
+          false);
+      if (files.empty())
+        break;
+
+      const std::u16string u16extdir =
+          Utfpp::u8_to_u16(Config::ConfigGet()->GetXSCacheExtsDir(brwkey));
+      for (const auto &f : files) {
+        auto u16path = Utfpp::u8_to_u16(f.second);
+        Zipcc::zipUnCompress(u16path, u16extdir);
+      }
+    } while (0);
+
+    do { //!@ default args
       brw_startup_args_.emplace_back("--no-first-run");
       brw_startup_args_.emplace_back("--disable-sync");
       brw_startup_args_.emplace_back("--disable-gaia-services");
@@ -35,9 +101,6 @@ void Browser::Init() {
     } while (0);
 
     do { //!@ 指定版本
-      std::string brwver = brwcfg_->worker_.brwver;
-      //!@ 浏览器目录
-      std::string chromium_dir = Config::ConfigGet()->PathGet().chromium_dir;
       std::map<std::string, std::string> dirs, files;
       stl::Directory::EnumU8(chromium_dir, dirs, files, false);
       if (dirs.empty())
@@ -57,53 +120,35 @@ void Browser::Init() {
       );
     } while (0);
 
+    do { //!@ userAgent
+      if (brwcfg_->fp_.f_.vs_.navigator_.userAgent.empty())
+        break;
+      std::string node = fmt::format(R"(--user-agent="{}")",
+                                     brwcfg_->fp_.f_.vs_.navigator_.userAgent);
+      brw_startup_args_.emplace_back(node);
+    } while (0);
+
+    do { //!@ --lang=zh-CN
+      if (brwcfg_->fp_.f_.vs_.navigator_.language.empty())
+        break;
+      std::string node =
+          fmt::format(R"(--lang={})", brwcfg_->fp_.f_.vs_.navigator_.language);
+      brw_startup_args_.emplace_back(node);
+    } while (0);
+
     do { //!@ user-data-dir
       std::string node;
       node = fmt::format(R"(--user-data-dir={})", chromium_user_data_dir);
       brw_startup_args_.emplace_back(node);
     } while (0);
 
-#if 0 
-    stl::File::WriteFile(
-        Config::ConfigGet()->PathGet().brw_projects_configure_file,
-        brwConfig.source_);
-    std::vector<std::string> brw_startup_args;
-
-    do { //!@ proxy
-      if (!brwConfig.proxy_.valid())
-        break;
-      std::string node = fmt::format(
-          "--proxy-server={}:{}", brwConfig.proxy_.addr, brwConfig.proxy_.port);
-      brw_startup_args.emplace_back(node);
-    } while (0);
-
     do { //!@ startup url
-      if (brwConfig.worker_.url.empty())
+      if (brwcfg_->worker_.url.empty())
         break;
-      std::string node = fmt::format("--xs-openurl={}", brwConfig.worker_.url);
-      brw_startup_args.emplace_back(node);
+      std::string node = fmt::format("--xs-openurl={}", brwcfg_->worker_.url);
+      brw_startup_args_.emplace_back(node);
     } while (0);
 
-    do { //!@ userAgent
-      if (brwConfig.fp_.f_.vs_.navigator_.userAgent.empty())
-        break;
-      std::string node = fmt::format(R"(--user-agent="{}")",
-                                     brwConfig.fp_.f_.vs_.navigator_.userAgent);
-      brw_startup_args.emplace_back(node);
-    } while (0);
-
-
-    if (brws_.search(final_brw_key)) {
-      code = -1002;
-      message = "The target is already running";
-      break;
-    }
-
-
-    if (!final_brw_prog_fname.empty()) {
-      // brw_startup_args
-    }
-#endif
     ready_.store(true);
   } while (0);
 }
@@ -132,6 +177,7 @@ void Browser::Close() {
   do {
     if (!open_.load())
       break;
+    xs_sys_process_kill(pid_);
   } while (0);
   open_.store(false);
 }

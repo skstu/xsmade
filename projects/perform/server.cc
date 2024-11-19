@@ -49,6 +49,7 @@ void Server::Process() {
     brws_.iterate_clear([&](const auto &key, const auto &brw, bool &itclear) {
       if (0 == xs_sys_process_has_exit(brw->GetPid())) {
         client_notifys_.push(Config::CreateBrwCloseNotifyPak(key));
+        brw->Release();
         itclear = true;
       }
     });
@@ -136,10 +137,12 @@ void Server::OnRequest(const RequestType &reqType, const std::string &body,
     if (!doc["rule"].HasMember("key") || !doc["rule"]["key"].IsString())
       break;
     const std::string key = doc["rule"]["key"].GetString();
-    auto found = brws_.search(key, [](const std::string &key, const auto &brw) {
-      xs_sys_process_kill(brw->GetPid());
-    });
-    brws_.pop(key);
+    auto found = brws_.search(
+        key, [](const std::string &key, const auto &brw) { brw->Close(); });
+    auto pop = brws_.pop(key);
+    if (pop) {
+      (*pop)->Release();
+    }
     if (found) {
       code = 0;
       message = "ok";

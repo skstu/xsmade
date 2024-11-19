@@ -101,6 +101,17 @@ public:
     ~Fp();
 
   public:
+    class functions {
+    public:
+      functions();
+      ~functions();
+
+    public:
+      bool enable_image = true;
+      bool enable_audio = true;
+      bool enable_video = true;
+      bool enable_notify = true;
+    };
     class f {
     public:
       f();
@@ -273,12 +284,16 @@ public:
 
   public:
     f f_;
+    functions functions_;
+    bool enable_ = false;
     std::string g_;
     std::string s_;
     unsigned long long v_;
     std::set<std::string> b_;
     std::set<std::string> w_;
-
+    inline bool Enable() const {
+      return enable_;
+    }
     void operator>>(std::string &output) const {
       if (fp_json_data_.empty()) {
         output = "{}";
@@ -312,6 +327,9 @@ public:
         if (!doc["fp"].IsObject()) {
           break;
         }
+        if (doc["fp"].HasMember("enable") && doc["fp"]["enable"].IsBool()) {
+          enable_ = doc["fp"]["enable"].GetBool();
+        }
         if (doc["fp"].HasMember("g") && doc["fp"]["g"].IsString()) {
           g_ = doc["fp"]["g"].GetString();
         }
@@ -329,6 +347,27 @@ public:
             w_.emplace(doc["fp"]["w"][i].GetString());
           }
         }
+        if (doc["fp"].HasMember("functions") &&
+            doc["fp"]["functions"].IsObject()) {
+          rapidjson::Value &theObj = doc["fp"]["functions"];
+          if (theObj.HasMember("enable_image") &&
+              theObj["enable_image"].IsBool()) {
+            functions_.enable_image = theObj["enable_image"].GetBool();
+          }
+          if (theObj.HasMember("enable_audio") &&
+              theObj["enable_audio"].IsBool()) {
+            functions_.enable_audio = theObj["enable_audio"].GetBool();
+          }
+          if (theObj.HasMember("enable_video") &&
+              theObj["enable_video"].IsBool()) {
+            functions_.enable_video = theObj["enable_video"].GetBool();
+          }
+          if (theObj.HasMember("enable_notify") &&
+              theObj["enable_notify"].IsBool()) {
+            functions_.enable_notify = theObj["enable_notify"].GetBool();
+          }
+        }
+
         if (doc["fp"].HasMember("b") && doc["fp"]["b"].IsArray()) {
           for (rapidjson::SizeType i = 0; i < doc["fp"]["b"].Size(); ++i) {
             if (!doc["fp"]["b"][i].IsString()) {
@@ -406,6 +445,7 @@ public:
                   doc["fp"]["f"]["vs"]["timezone"]["enable"].GetBool();
             }
           }
+
           if (doc["fp"]["f"]["vs"].HasMember("random") &&
               doc["fp"]["f"]["vs"]["random"].IsObject()) {
             if (doc["fp"]["f"]["vs"]["random"].HasMember("enable") &&
@@ -764,11 +804,15 @@ public:
     ~Proxy();
 
   public:
+    bool enable = false;
     int type = 0;
     std::string addr;
     int port = 0;
     std::string name;
     std::string pwd;
+    inline bool Enable() const {
+      return enable;
+    }
     inline bool valid() const {
       return type == 0 && !addr.empty() && port != 0 && !name.empty() &&
              !pwd.empty();
@@ -790,7 +834,9 @@ public:
           break;
         }
         rapidjson::Value &proxyObj = doc["proxy"];
-
+        if (proxyObj.HasMember("enable") && proxyObj["enable"].IsBool()) {
+          enable = proxyObj["enable"].GetBool();
+        }
         if (proxyObj.HasMember("type") && proxyObj["type"].IsInt()) {
           type = proxyObj["type"].GetInt();
         }
@@ -901,7 +947,9 @@ public:
         unsigned long hex = docInput["action"].GetUint();
         action_ = strtoul(std::to_string(hex).c_str(), nullptr, 16);
       }
-
+      if (docInput.HasMember("enable") && docInput["enable"].IsBool()) {
+        enable_ = docInput["enable"].GetBool();
+      }
       fp_ << input;
       worker_ << input;
       account_ << input;
@@ -921,11 +969,15 @@ public:
   static std::string GetDefaultCfgBuffer() {
     return R"({"type":10001,"rule":{"id":0,"key":"sadgasga","name":"美2"},"proxy":{"type":0,"addr":"proxygs.tunneldot.com","port":51000,"name":"mp","pwd":"538909"},"wroker":{"url":"https://pixelscan.net","cache":{"demo":5568668,"test_string":"你好！"}},"account":{"phone":13066886688,"name":"碼爹利","pwd":"123456789","identify":"agadsagas24362626","level":1},"fp":{"g":"martell","s":".5567","f":{"vs":{"canvas":{"enable":true},"webgl":{"enable":true,"vendor":"Apple I3nc.","renderer":"Intel HD2 Graphics ","version":" Apple GPU"},"audio":{"enable":true},"font":{"enable":true},"clientrects":{"enable":true,"screen":{"availLeft":0,"availTop":0,"availWidth":888,"availHeight":111,"width":666,"height":111,"colorDepth":16,"pixelDepth":16}},"webrtc":{"enable":false},"navigator":{"enable":true,"appCodeName":"Mozilla","appName":"Netscape","appVersion":"5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/888.8.8.8 Safari/888.88","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/888.8.8.8 Safari/888.88","platform":"Linux","language":"en-US","hardwareConcurrency":"8","DoNotTrack":"null","languages":["en-US"]},"timezone":{"enable":true},"backup1":{"enable":false},"random":{"enable":false},"nocache":{"enable":true},"backup2":{"enable":false}}},"b":["fingerprintjs.github.io","pixelscan.net"],"w":[],"v":1759}})";
   }
+  //!@ afgbmmdnakcefnkchckgelobigkbboci
   static std::string GetExtensionManifestAP() { //!@ manifest.json
-    return R"({"manifest_version":3,"name":"ap","version":"1.0","description":"AP","background":{"service_worker":"background.js"},"permissions":["proxy","tabs","storage","webRequest","webRequestAuthProvider"],"host_permissions":["https://*/*","http://*/*"],"key":"MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAu97nv5pEW0RIRKoCLNN+ni5z1qgR7mzBvQpFiGeuNLg0PUjFccQuqDtPae2FUmbQuFG3zOfORzjAPwjduelt8+X2jJ1E6h5J/gu+c7/yu+QHuCi+e884vYCa0OaS1ydKXSWlUURGVkgFS11NPF3Or6lyo1/6lbYwaq5/At7EIlqC9QGneLCRUyBTIENkll9cTRjz9OQb9GDiROWLOghokpigM3rntYfYbIbQyALMj1aXoh7iP8Tq32ecvyAUUyblVNzpSOQXQt8FtgDbpqL9hBYss+mx5kti9aqUwiSc6LGDF40HyGnKQrg6bs/wQIzAqPbg0Fig7D4KZzAEp9bZXQIDAQAB"})";
+    return R"({"manifest_version":3,"name":"ap","version":"1.0","description":"AP","background":{"service_worker":"background.js"},"permissions":["proxy","tabs","storage","webRequest","webRequestAuthProvider"],"host_permissions":["https://*/*","http://*/*"],"key":"MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAyAUpxzVDSbelKEcebEkUuQy1hqjT8V/oKzt4qzced13bRcnqlGO9EBZBIkFYaDas4Qlpa2z7O2n2y49XbaxFsWXGBm/dm7s95pTWffco6EbAKiWyxiH/IiZFz4ZmwblnjXkm1YFATJkYA/EnS3DYZCORj4ed8eaBXM+okYgNojNoJEeFeNICvCIEotHfc34TiGqfO/dsVkKhDd80KvKSfB1gHqPIb8ttDIf4S5yLUMbCN3iC7mmKHVCxv8iu17H7lmrWcSglEDvimDJCHfNCgm4ZZdkmVBdbicSqo6PSzb3efOsEelsuwejLQe6DNeyIBqjdq/hFr+ZWoY/1wAiP7QIDAQAB"})";
   }
+  //!@ ebglcogbaklfalmoeccdjbmgfcacengf
   static std::string GetExtensionManifestFPS() {
-    return R"({"name":"skstu","version":"1.0.1","key":"MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAphyx7eO0n+3TR6u0YF82c0LtaND5XIHv/3CddW5uZ4+5V9BfYXrYVEvKMr7kN/OjTHe25E8upQLRhS0IeKakpaBcTOlAZDNLQh6lfl2w3RATveGtPyX4+b2mtE98xgREtxc8dQ+8lWEGhw50RRf61WXAMGvXCmGmXLrp5Jr3xBS1F5P5r5JeGN41qiKu4V9YRLkQMdOT8yTuaeDH4Ult4XaEVxx/rehALnHp41QnK+4ZSnVo+jnjMVKMA78MtLuZn/ZKxCql9iMbMMX6WcahfsOd93txG3K1zlNP/3W98v9IYvBQoZ/UlXkSJnBCU75xcCIT9zkKPXiRa52yooZdgQIDAQAB","manifest_version":3,"permissions":["storage","activeTab","tabs"],"content_scripts":[{"all_frames":true,"js":["content.js"],"match_about_blank":true,"match_origin_as_fallback":true,"matches":["<all_urls>"],"run_at":"document_start","world":"MAIN"},{"all_frames":true,"js":["content.js"],"match_about_blank":true,"match_origin_as_fallback":true,"matches":["<all_urls>"],"run_at":"document_start","world":"ISOLATED"}]})";
+    return R"(
+    {"name":"fps","version":"1.0.1","key":"MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAphyx7eO0n+3TR6u0YF82c0LtaND5XIHv/3CddW5uZ4+5V9BfYXrYVEvKMr7kN/OjTHe25E8upQLRhS0IeKakpaBcTOlAZDNLQh6lfl2w3RATveGtPyX4+b2mtE98xgREtxc8dQ+8lWEGhw50RRf61WXAMGvXCmGmXLrp5Jr3xBS1F5P5r5JeGN41qiKu4V9YRLkQMdOT8yTuaeDH4Ult4XaEVxx/rehALnHp41QnK+4ZSnVo+jnjMVKMA78MtLuZn/ZKxCql9iMbMMX6WcahfsOd93txG3K1zlNP/3W98v9IYvBQoZ/UlXkSJnBCU75xcCIT9zkKPXiRa52yooZdgQIDAQAB","manifest_version":3,"permissions":["tabs","activeTab","tabs","scripting","contentSettings","declarativeNetRequestWithHostAccess"],"background":{"service_worker":"background.js"},"content_scripts":[{"all_frames":true,"js":["content.js"],"match_about_blank":true,"match_origin_as_fallback":true,"matches":["<all_urls>"],"run_at":"document_end","world":"MAIN"},{"all_frames":true,"js":["content.js"],"match_about_blank":true,"match_origin_as_fallback":true,"matches":["<all_urls>"],"run_at":"document_end","world":"ISOLATED"}]}
+    )";
   }
   std::string GetExtensionBackgroundAP() const { //!@ background.js
     std::string result =
@@ -941,6 +993,22 @@ public:
     } while (0);
     return result;
   }
+  std::string GetExtensionBackgroundFps() const { //!@ background.js
+    std::string result;
+    do {
+      result.append(R"(
+chrome.runtime.onInstalled.addListener(function () {
+    setTimeout(() => {
+        chrome.runtime.reload();
+    }, 5000);
+});
+chrome.runtime.onStartup.addListener(function () {
+    chrome.runtime.reload();
+});
+      )");
+    } while (0);
+    return result;
+  }
   std::string GetExtensionContentFps() const { //!@ content.js
     std::string result;
     do {
@@ -952,8 +1020,12 @@ public:
     } while (0);
     return result;
   }
+  inline bool Enable() const {
+    return enable_;
+  }
 
 public:
+  bool enable_ = true; //!@ 总开关
   Proxy proxy_;
   Rule rule_;
   Worker worker_;
@@ -962,9 +1034,426 @@ public:
   Fp fp_;                    //!@ 指纹配置
   std::string extension_id_; //!@ 扩展ID
   std::string source_ =
-      R"({"g":"martell","s":".5567","f":{"vs":{"canvas":{"enable":true},"webgl":{"enable":true,"vendor":"Apple I3nc.","renderer":"Intel HD2 Graphics ","version":" Apple GPU"},"audio":{"enable":true},"font":{"enable":true},"clientrects":{"enable":true,"screen":{"availLeft":0,"availTop":0,"availWidth":888,"availHeight":111,"width":666,"height":111,"colorDepth":16,"pixelDepth":16}},"webrtc":{"enable":false},"navigator":{"enable":true,"appCodeName":"Mozilla","appName":"Netscape","appVersion":"5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/888.8.8.8 Safari/888.88","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/888.8.8.8 Safari/888.88","platform":"Linux","language":"en-US","hardwareConcurrency":"8","DoNotTrack":"null","languages":["en-US"]},"timezone":{"enable":true},"backup1":{"enable":false},"random":{"enable":true},"nocache":{"enable":true},"backup2":{"enable":false}}},"b":["fingerprintjs.github.io","pixelscan.net"],"w":[],"v":1759})";
+      R"(
+      {"enable":true,"rule":{"id":0,"key":"525c36a14d4da77712db610af924c39g","name":"开发测试环境"},"proxy":{"enable":true,"type":0,"addr":"proxygs.tunneldot.com","port":51000,"name":"mp","pwd":"538909"},"wroker":{"brwver":"128.0.6613.186","url":"https://pixelscan.net","cache":{"demo":5568668,"test_string":"你好！"}},"account":{"phone":13066886688,"name":"碼爹利","pwd":"123456789","identify":"agadsagas24362626","level":1},"fp":{"enable":true,"g":"martell","s":".5567","f":{"vs":{"canvas":{"enable":true},"webgl":{"enable":true,"vendor":"Apple I6nc.","renderer":"Intel HD8 Graphics ","version":" Apple GPU"},"audio":{"enable":true},"font":{"enable":true},"clientrects":{"enable":true,"screen":{"availLeft":0,"availTop":0,"availWidth":888,"availHeight":111,"width":666,"height":111,"colorDepth":16,"pixelDepth":16}},"webrtc":{"enable":false},"navigator":{"enable":true,"appCodeName":"Mozilla","appName":"Netscape","appVersion":"5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/888.8.8.8 Safari/888.88","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/888.8.8.8 Safari/888.88","platform":"Apple","language":"zh-CN","hardwareConcurrency":"2","DoNotTrack":"0","languages":["en-US","zh-CN"]},"timezone":{"enable":false},"random":{"enable":true},"nocache":{"enable":true},"backup2":{"enable":false}}},"functions":{"enable_image":true,"enable_audio":true,"enable_video":true,"enable_notify":true},"b":["fingerprintjs.github.io","pixelscan.net"],"w":["baidu.com","bing.com","google.com"],"v":1759}}
+      )";
   const std::string jsFPS_ =
-      R"((function(e){var t=JSON.parse(e);var ttt=JSON.parse(e);var n=t.g;var r=t.g.substr(1);var o=t.g.substr(2);if(window[n]){Object.assign(window[n],t)}else{window[n]=t}var a=function(e,n){return n.forEach((function(n){return t[n]=(e|t.v)==t.v?e:0}))};if(a(1,["toDataURL","toBlob","getImageData","measureText","convertToBlob"]),a(2,["readPixels","getExtension","getParameter"]),a(4,["getChannelData","getFloatFrequencyData"]),a(8,["offsetWidth","offsetHeight"]),a(16,["getClientRects"]),a(32,["enumerateDevices","MediaStreamTrack","RTCPeerConnection","RTCSessionDescription","webkitMediaStreamTrack","webkitRTCPeerConnection","webkitRTCSessionDescription","getUserMedia","mozGetUserMedia","mozMediaStreamTrack","mozRTCPeerConnection","mozRTCSessionDescription","webkitGetUserMedia"]),a(64,["getBattery","getGamepads","getVRDisplays","screen","platform","language","languages"]),a(128,["getTimezoneOffset","resolvedOptions"]),a(256,["logs"]),a(1024,["nocache"]),a(2048,["wlist"]),t.s=(512|t.v)==t.v?Math.random():parseFloat(t.s),!window[r]){var i=function(e,t,n){var r={};r[t]=n,window.dispatchEvent(new CustomEvent(e,{detail:r}))},c=function(e){return Math.floor(t.s*e)},u=function(){return t.i%t.c==0&&(t.i=1,t.n.push(t.c=t.n.shift())),t.r%t.c==t.i++?1:0};Object.assign(t,{i:0,c:7,n:[7,11,13,17,19,2053],r:c(1e6)});var s=function(e){if(e[r]){return e}var n=function(e,n){var r=arguments.length>2&&void 0!==arguments[2]?arguments[2]:void 0,o=function(n,r){var o=e[n];Object.defineProperty(e,n,{get:function(){return 0===t[n]&&o?o.bind(this):r}})};e&&("string"==typeof n?o(n,r):n instanceof Array?n.forEach((function(e){return o(e,r)})):Object.keys(n).forEach((function(e){return o(e,n[e])})))},a=function(e,n){return Object.keys(n).forEach((function(r){var o=e[r];Object.defineProperty(e,r,{get:function(){return 0!==t[r]?n[r]:o}})}))},s=function(n){try{n(e)}catch(e){t.debug&&console.error(e)}};return s((function(e){var r=e.WebGLRenderingContext.prototype,o=r.getParameter,a=r.getExtension,i=r.readPixels,u=null,s=null;n(e.WebGLRenderingContext.prototype,{readPixels:function(e,n,r,o,a,c,u,s){var p=t.s+1,l=Math.max(1,parseInt(r/11)),f=Math.max(1,parseInt(o/11));if(i.apply(this,arguments),u instanceof Uint8Array)for(var d=0;d<o;d+=f)for(var g=0;g<r;g+=l)u[4*r*d+4*g]*=p},getParameter:function(t){return t==e.WebGLRenderingContext.RENDERER||t==u?ttt.f.vs.webgl.renderer+(c(8e3)+500)+ttt.f.vs.webgl.version:t==e.WebGLRenderingContext.VENDOR||t==s?ttt.f.vs.webgl.vendor:o.apply(this,arguments)},getExtension:function(e){var t=a.apply(this,arguments);return"WEBGL_debug_renderer_info"==e&&(u=t.UNMASKED_RENDERER_WEBGL,s=t.UNMASKED_VENDOR_WEBGL),t}})})),s((function(e){var r=e.WebGL2RenderingContext.prototype,o=r.getParameter,a=r.getExtension,i=r.readPixels,u=null,s=null;n(e.WebGL2RenderingContext.prototype,{readPixels:function(e,n,r,o,a,c,u,s){var p=t.s+1,l=Math.max(1,parseInt(r/11)),f=Math.max(1,parseInt(o/11));if(i.apply(this,arguments),u instanceof Uint8Array)for(var d=0;d<o;d+=f)for(var g=0;g<r;g+=l)u[4*r*d+4*g]*=p},getParameter:function(t){return t==e.WebGL2RenderingContext.RENDERER||t==u?ttt.f.vs.webgl.renderer+(c(8e3)+500)+ttt.f.vs.webgl.version:t==e.WebGL2RenderingContext.VENDOR||t==s?ttt.f.vs.webgl.vendor:o.apply(this,arguments)},getExtension:function(e){var t=a.apply(this,arguments);return"WEBGL_debug_renderer_info"==e&&(u=t.UNMASKED_RENDERER_WEBGL,s=t.UNMASKED_VENDOR_WEBGL),t}})})),s((function(e){var r=e.CanvasRenderingContext2D.prototype,a=r.measureText,c=r.getImageData;n(e.CanvasRenderingContext2D.prototype,{measureText:function(){var n=a.apply(this,arguments),r=n.actualBoundingBoxAscent,o=n.actualBoundingBoxDescent,i=n.actualBoundingBoxLeft,c=n.actualBoundingBoxRight,u=n.fontBoundingBoxAscent,s=n.fontBoundingBoxDescent,p=n.width;return p+=t.s/1e6,{__proto__:e.TextMetrics.prototype,actualBoundingBoxAscent:r,actualBoundingBoxDescent:o,actualBoundingBoxLeft:i,actualBoundingBoxRight:c,fontBoundingBoxAscent:u,fontBoundingBoxDescent:s,width:p}},getImageData:function(e,n,r,o,a){for(var i=t.s+1,u=Math.max(1,parseInt(r/11)),s=Math.max(1,parseInt(o/11)),p=c.apply(this,arguments),l=0;l<o;l+=s)for(var f=0;f<r;f+=u)p.data[4*r*l+4*f]*=i;return p}});var u=e.HTMLCanvasElement.prototype,s=u.toDataURL,p=u.toBlob,l=function(e){if(e[o])return e[o];t.logs&&i("clogs",location.host,s.apply(e)),e[o]=e.cloneNode(!0);var n=e.getContext("2d").getImageData(0,0,e.width,e.height);return e[o].getContext("2d").putImageData(n,0,0),e[o]};n(e.HTMLCanvasElement.prototype,{toDataURL:function(){return s.apply(l(this),arguments)},toBlob:function(){return p.apply(l(this),arguments)}});var f=e.OffscreenCanvas.prototype.convertToBlob,d=function(t){if(t[o])return t[o];var n=e.document.createElement("canvas");n.width=t.width,n.height=t.height;var r=n.getContext("2d");r.drawImage(t.transferToImageBitmap(),0,0);var a=r.getImageData(0,0,n.width,n.height);return t[o]=new e.OffscreenCanvas(t.width,t.height),t[o].getContext("2d").putImageData(a,0,0),t[o]};n(e.OffscreenCanvas.prototype,{convertToBlob:function(){return f.apply(d(this),arguments)}})})),s((function(e){var r=null,o=e.AudioBuffer.prototype.getChannelData;n(e.AudioBuffer.prototype,{getChannelData:function(){var e=o.apply(this,arguments);if(r==e)return r;r=e;for(var n=0;n<r.length;n+=88){var a=c(n);r[a]=(r[a]+t.s)/2}return r}})})),s((function(e){var r=e.AnalyserNode.prototype.getFloatFrequencyData;n(e.AnalyserNode.prototype,{getFloatFrequencyData:function(){for(var e=r.apply(this,arguments),n=0;n<arguments[0].length;n+=88){var o=c(n);arguments[o]=(arguments[o]+t.s)/2}return e}})})),s((function(e){return n=e.HTMLElement.prototype,r={offsetWidth:function(){return Math.floor(this.getBoundingClientRect().width)+u()},offsetHeight:function(){return Math.floor(this.getBoundingClientRect().height)+u()}},Object.keys(r).forEach((function(e){var o=n.__lookupGetter__(e);Object.defineProperty(n,e,{get:function(){return(0!==t[e]?r[e]:o).apply(this,arguments)}})}));var n,r})),s((function(e){return n(e.Element.prototype,"getClientRects",(function(){return{0:{x:0,y:0,top:0,bottom:c(500),left:0,right:c(400),height:c(500),width:c(400),__proto__:e.DOMRect.prototype},length:1,__proto__:e.DOMRectList.prototype}}))})),s((function(e){return a(e,{screen:{availLeft:t.f.vs.clientrects.screen.availLeft,availTop:t.f.vs.clientrects.screen.availTop,availWidth:t.f.vs.clientrects.screen.availWidth,availHeight:t.f.vs.clientrects.screen.availHeight,width:t.f.vs.clientrects.screen.width,height:t.f.vs.clientrects.screen.height,colorDepth:t.f.vs.clientrects.screen.colorDepth,pixelDepth:t.f.vs.clientrects.screen.pixelDepth,__proto__:e.Screen.prototype,orientation:{angle:0,type:"landscape-primary",onchange:null,__proto__:e.ScreenOrientation.prototype}}})})),s((function(e){return n(e.navigator,["getBattery","getGamepads","getVRDisplays"])})),s((function(e){return a(e.navigator,{appCodeName:t.f.vs.navigator.appCodeName,appName:t.f.vs.navigator.appName,appVersion:t.f.vs.navigator.appVersion,userAgent:t.f.vs.navigator.userAgent,platform:t.f.vs.navigator.platform,language:t.f.vs.navigator.language,languages:t.f.vs.navigator.languages,hardwareConcurrency:t.f.vs.navigator.hardwareConcurrency})})),s((function(e){var t=e.navigator.mediaDevices.enumerateDevices;n(e.navigator.mediaDevices,{enumerateDevices:function(){return t.apply(this,arguments).then((function(t){return t.push({deviceId:"default",groupId:"n/a",kind:"audiooutput",label:"FPS-Audio "+c(400),__proto__:e.MediaDeviceInfo.prototype}),t}))}})})),s((function(e){return n(e,["MediaStreamTrack","RTCPeerConnection","RTCSessionDescription","webkitMediaStreamTrack","webkitRTCPeerConnection","webkitRTCSessionDescription","getUserMedia","mozGetUserMedia","mozMediaStreamTrack","mozRTCPeerConnection","mozRTCSessionDescription","webkitGetUserMedia"])})),s((function(e){return n(e.Intl.DateTimeFormat.prototype,"resolvedOptions",(function(){return{calendar:"gregory",day:"numeric",locale:"en-US",month:"numeric",numberingSystem:"latn",timeZone:"UTC",year:"numeric"}}))})),s((function(e){return n(e.Date.prototype,"getTimezoneOffset",(function(){return[720,660,600,570,540,480,420,360,300,240,210,180,120,60,0,-60,-120,-180,-210,-240,-270,-300,-330,-345,-360,-390,-420,-480,-510,-525,-540,-570,-600,-630,-660,-720,-765,-780,-840][c(39)]}))})),e[r]=!0,e};s(window);var p=window.HTMLIFrameElement.prototype.__lookupGetter__("contentWindow");var l=window.HTMLIFrameElement.prototype.__lookupGetter__("contentDocument");Object.defineProperties(window.HTMLIFrameElement.prototype,{contentWindow:{get:function(){try{return s(p.apply(this,arguments))}catch(e){return p.apply(this,arguments)}}},contentDocument:{get:function(){try{s(p.apply(this,arguments))}finally{return l.apply(this,arguments)}}}}),t.nocache&&i("ncache","origin",location.origin)}}))";
+      R"(
+      (function (e) {
+	var t = JSON.parse(e);
+	var ttt = JSON.parse(e);
+
+	if (!t.enable)
+		return;
+
+	const audioEnabled = t.functions.enable_audio;
+	const videoEnabled = t.functions.enable_video;
+	const imageEnabled = t.functions.enable_image;
+	const notifyEnabled = t.functions.enable_notify;
+	if (!audioEnabled || !videoEnabled) {
+		let mediaSrc = "media-src 'none';";
+		const meta = document.createElement('meta');
+		meta.httpEquiv = 'Content-Security-Policy';
+		meta.content = `default-src 'self'; ${mediaSrc}`;
+		document.head.appendChild(meta);
+	}
+
+	if (!notifyEnabled) {
+		if ("Notification" in window) {
+			const originalNotification = Notification;
+			Notification = function () {
+
+			};
+		}
+	}
+
+	if (!imageEnabled) {
+		let imgSrc = "img-src 'none';";
+		const meta = document.createElement('meta');
+		meta.httpEquiv = 'Content-Security-Policy';
+		meta.content = `default-src 'self'; ${imgSrc}`;
+		document.head.appendChild(meta);
+	}
+
+	function isAllowed(hostname) {
+		for (const allowed of t.w) {
+			const regex = new RegExp("^" + allowed.replace(/\*/g, ".*") + "$");
+			if (regex.test(hostname)) {
+				return true;
+			}
+		}
+		for (const blocked of t.b) {
+			const regex = new RegExp("^" + blocked.replace(/\*/g, ".*") + "$");
+			if (regex.test(hostname)) {
+				return false;
+			}
+		}
+		return true;
+	}
+
+	if (isAllowed(window.location.hostname))
+		return;
+
+	var n = t.g;
+	var r = t.g.substr(1);
+	var o = t.g.substr(2);
+	if (window[n]) {
+		Object.assign(window[n], t)
+	} else {
+		window[n] = t
+	}
+	var a = function (e, n) {
+		return n.forEach((function (n) {
+			return t[n] = (e | t.v) == t.v ? e : 0
+		}))
+	};
+	if (a(1, ["toDataURL", "toBlob", "getImageData", "measureText", "convertToBlob"]), a(2, ["readPixels", "getExtension", "getParameter"]), a(4, ["getChannelData", "getFloatFrequencyData"]), a(8, ["offsetWidth", "offsetHeight"]), a(16, ["getClientRects"]), a(32, ["enumerateDevices", "MediaStreamTrack", "RTCPeerConnection", "RTCSessionDescription", "webkitMediaStreamTrack", "webkitRTCPeerConnection", "webkitRTCSessionDescription", "getUserMedia", "mozGetUserMedia", "mozMediaStreamTrack", "mozRTCPeerConnection", "mozRTCSessionDescription", "webkitGetUserMedia"]), a(64, ["getBattery", "getGamepads", "getVRDisplays", "screen", "platform", "language", "languages"]), a(128, ["getTimezoneOffset", "resolvedOptions"]), a(256, ["logs"]), a(1024, ["nocache"]), a(2048, ["wlist"]), t.s = (512 | t.v) == t.v ? Math.random() : parseFloat(t.s), !window[r]) {
+		var i = function (e, t, n) {
+			var r = {};
+			r[t] = n,
+				window.dispatchEvent(new CustomEvent(e, {
+					detail: r
+				}))
+		},
+			c = function (e) {
+				return Math.floor(t.s * e)
+			},
+			u = function () {
+				return t.i % t.c == 0 && (t.i = 1, t.n.push(t.c = t.n.shift())),
+					t.r % t.c == t.i++ ? 1 : 0
+			};
+		Object.assign(t, {
+			i: 0,
+			c: 7,
+			n: [7, 11, 13, 17, 19, 2053],
+			r: c(1e6)
+		});
+		var s = function (e) {
+			if (e[r]) {
+				return e
+			}
+			var n = function (e, n) {
+				var r = arguments.length > 2 && void 0 !== arguments[2] ? arguments[2] : void 0,
+					o = function (n, r) {
+						var o = e[n];
+						Object.defineProperty(e, n, {
+							get: function () {
+								return 0 === t[n] && o ? o.bind(this) : r
+							}
+						})
+					};
+				e && ("string" == typeof n ? o(n, r) : n instanceof Array ? n.forEach((function (e) {
+					return o(e, r)
+				})) : Object.keys(n).forEach((function (e) {
+					return o(e, n[e])
+				})))
+			},
+				a = function (e, n) {
+					return Object.keys(n).forEach((function (r) {
+						var o = e[r];
+						Object.defineProperty(e, r, {
+							get: function () {
+								return 0 !== t[r] ? n[r] : o
+							}
+						})
+					}))
+				},
+				s = function (n) {
+					try {
+						n(e)
+					} catch (e) {
+						t.debug && console.error(e)
+					}
+				};
+			return s((function (e) {
+				var r = e.WebGLRenderingContext.prototype,
+					o = r.getParameter,
+					a = r.getExtension,
+					i = r.readPixels,
+					u = null,
+					s = null;
+				n(e.WebGLRenderingContext.prototype, {
+					readPixels: function (e, n, r, o, a, c, u, s) {
+						var p = t.s + 1,
+							l = Math.max(1, parseInt(r / 11)),
+							f = Math.max(1, parseInt(o / 11));
+						if (i.apply(this, arguments), u instanceof Uint8Array) for (var d = 0; d < o; d += f) for (var g = 0; g < r; g += l) u[4 * r * d + 4 * g] *= p
+					},
+					getParameter: function (t) {
+						return t == e.WebGLRenderingContext.RENDERER || t == u ? ttt.f.vs.webgl.renderer + (c(8e3) + 500) + ttt.f.vs.webgl.version : t == e.WebGLRenderingContext.VENDOR || t == s ? ttt.f.vs.webgl.vendor : o.apply(this, arguments)
+					},
+					getExtension: function (e) {
+						var t = a.apply(this, arguments);
+						return "WEBGL_debug_renderer_info" == e && (u = t.UNMASKED_RENDERER_WEBGL, s = t.UNMASKED_VENDOR_WEBGL),
+							t
+					}
+				})
+			})),
+				s((function (e) {
+					var r = e.WebGL2RenderingContext.prototype,
+						o = r.getParameter,
+						a = r.getExtension,
+						i = r.readPixels,
+						u = null,
+						s = null;
+					n(e.WebGL2RenderingContext.prototype, {
+						readPixels: function (e, n, r, o, a, c, u, s) {
+							var p = t.s + 1,
+								l = Math.max(1, parseInt(r / 11)),
+								f = Math.max(1, parseInt(o / 11));
+							if (i.apply(this, arguments), u instanceof Uint8Array) for (var d = 0; d < o; d += f) for (var g = 0; g < r; g += l) u[4 * r * d + 4 * g] *= p
+						},
+						getParameter: function (t) {
+							return t == e.WebGL2RenderingContext.RENDERER || t == u ? ttt.f.vs.webgl.renderer + (c(8e3) + 500) + ttt.f.vs.webgl.version : t == e.WebGL2RenderingContext.VENDOR || t == s ? ttt.f.vs.webgl.vendor : o.apply(this, arguments)
+						},
+						getExtension: function (e) {
+							var t = a.apply(this, arguments);
+							return "WEBGL_debug_renderer_info" == e && (u = t.UNMASKED_RENDERER_WEBGL, s = t.UNMASKED_VENDOR_WEBGL),
+								t
+						}
+					})
+				})),
+				s((function (e) {
+					var r = e.CanvasRenderingContext2D.prototype,
+						a = r.measureText,
+						c = r.getImageData;
+					n(e.CanvasRenderingContext2D.prototype, {
+						measureText: function () {
+							var n = a.apply(this, arguments),
+								r = n.actualBoundingBoxAscent,
+								o = n.actualBoundingBoxDescent,
+								i = n.actualBoundingBoxLeft,
+								c = n.actualBoundingBoxRight,
+								u = n.fontBoundingBoxAscent,
+								s = n.fontBoundingBoxDescent,
+								p = n.width;
+							return p += t.s / 1e6,
+							{
+								__proto__: e.TextMetrics.prototype,
+								actualBoundingBoxAscent: r,
+								actualBoundingBoxDescent: o,
+								actualBoundingBoxLeft: i,
+								actualBoundingBoxRight: c,
+								fontBoundingBoxAscent: u,
+								fontBoundingBoxDescent: s,
+								width: p
+							}
+						},
+						getImageData: function (e, n, r, o, a) {
+							for (var i = t.s + 1,
+								u = Math.max(1, parseInt(r / 11)), s = Math.max(1, parseInt(o / 11)), p = c.apply(this, arguments), l = 0; l < o; l += s) for (var f = 0; f < r; f += u) p.data[4 * r * l + 4 * f] *= i;
+							return p
+						}
+					});
+					var u = e.HTMLCanvasElement.prototype,
+						s = u.toDataURL,
+						p = u.toBlob,
+						l = function (e) {
+							if (e[o]) return e[o];
+							t.logs && i("clogs", location.host, s.apply(e)),
+								e[o] = e.cloneNode(!0);
+							var n = e.getContext("2d").getImageData(0, 0, e.width, e.height);
+							return e[o].getContext("2d").putImageData(n, 0, 0),
+								e[o]
+						};
+					n(e.HTMLCanvasElement.prototype, {
+						toDataURL: function () {
+							return s.apply(l(this), arguments)
+						},
+						toBlob: function () {
+							return p.apply(l(this), arguments)
+						}
+					});
+					var f = e.OffscreenCanvas.prototype.convertToBlob,
+						d = function (t) {
+							if (t[o]) return t[o];
+							var n = e.document.createElement("canvas");
+							n.width = t.width,
+								n.height = t.height;
+							var r = n.getContext("2d");
+							r.drawImage(t.transferToImageBitmap(), 0, 0);
+							var a = r.getImageData(0, 0, n.width, n.height);
+							return t[o] = new e.OffscreenCanvas(t.width, t.height),
+								t[o].getContext("2d").putImageData(a, 0, 0),
+								t[o]
+						};
+					n(e.OffscreenCanvas.prototype, {
+						convertToBlob: function () {
+							return f.apply(d(this), arguments)
+						}
+					})
+				})),
+				s((function (e) {
+					var r = null,
+						o = e.AudioBuffer.prototype.getChannelData;
+					n(e.AudioBuffer.prototype, {
+						getChannelData: function () {
+							var e = o.apply(this, arguments);
+							if (r == e) return r;
+							r = e;
+							for (var n = 0; n < r.length; n += 88) {
+								var a = c(n);
+								r[a] = (r[a] + t.s) / 2
+							}
+							return r
+						}
+					})
+				})),
+				s((function (e) {
+					var r = e.AnalyserNode.prototype.getFloatFrequencyData;
+					n(e.AnalyserNode.prototype, {
+						getFloatFrequencyData: function () {
+							for (var e = r.apply(this, arguments), n = 0; n < arguments[0].length; n += 88) {
+								var o = c(n);
+								arguments[o] = (arguments[o] + t.s) / 2
+							}
+							return e
+						}
+					})
+				})),
+				s((function (e) {
+					return n = e.HTMLElement.prototype,
+						r = {
+							offsetWidth: function () {
+								return Math.floor(this.getBoundingClientRect().width) + u()
+							},
+							offsetHeight: function () {
+								return Math.floor(this.getBoundingClientRect().height) + u()
+							}
+						},
+						Object.keys(r).forEach((function (e) {
+							var o = n.__lookupGetter__(e);
+							Object.defineProperty(n, e, {
+								get: function () {
+									return (0 !== t[e] ? r[e] : o).apply(this, arguments)
+								}
+							})
+						}));
+					var n, r
+				})), s((function (e) {
+					return n(e.Element.prototype, "getClientRects", (function () {
+						return {
+							0: {
+								x: 0,
+								y: 0,
+								top: 0,
+								bottom: c(500),
+								left: 0,
+								right: c(400),
+								height: c(500),
+								width: c(400),
+								__proto__: e.DOMRect.prototype
+							},
+							length: 1,
+							__proto__: e.DOMRectList.prototype
+						}
+					}))
+				})),
+				s((function (e) {
+					return a(e, {
+						screen: {
+							availLeft: t.f.vs.clientrects.screen.availLeft,
+							availTop: t.f.vs.clientrects.screen.availTop,
+							availWidth: t.f.vs.clientrects.screen.availWidth,
+							availHeight: t.f.vs.clientrects.screen.availHeight,
+							width: t.f.vs.clientrects.screen.width,
+							height: t.f.vs.clientrects.screen.height,
+							colorDepth: t.f.vs.clientrects.screen.colorDepth,
+							pixelDepth: t.f.vs.clientrects.screen.pixelDepth,
+							__proto__: e.Screen.prototype,
+							orientation: {
+								angle: 0,
+								type: "landscape-primary",
+								onchange: null,
+								__proto__: e.ScreenOrientation.prototype
+							}
+						}
+					})
+				})),
+				s((function (e) {
+					return n(e.navigator, ["getBattery", "getGamepads", "getVRDisplays"])
+				})),
+				s((function (e) {
+					return a(e.navigator, {
+						appCodeName: t.f.vs.navigator.appCodeName,
+						appName: t.f.vs.navigator.appName,
+						appVersion: t.f.vs.navigator.appVersion,
+						userAgent: t.f.vs.navigator.userAgent,
+						platform: t.f.vs.navigator.platform,
+						language: t.f.vs.navigator.language,
+						languages: t.f.vs.navigator.languages,
+						hardwareConcurrency: t.f.vs.navigator.hardwareConcurrency,
+						doNotTrack: t.f.vs.navigator.DoNotTrack
+					})
+				})),
+				s((function (e) {
+					var t = e.navigator.mediaDevices.enumerateDevices;
+					n(e.navigator.mediaDevices, {
+						enumerateDevices: function () {
+							return t.apply(this, arguments).then((function (t) {
+								return t.push({
+									deviceId: "default",
+									groupId: "n/a",
+									kind: "audiooutput",
+									label: "FPS-Audio " + c(400),
+									__proto__: e.MediaDeviceInfo.prototype
+								}),
+									t
+							}))
+						}
+					})
+				})),
+				s((function (e) {
+					return n(e, ["MediaStreamTrack", "RTCPeerConnection", "RTCSessionDescription", "webkitMediaStreamTrack", "webkitRTCPeerConnection", "webkitRTCSessionDescription", "getUserMedia", "mozGetUserMedia", "mozMediaStreamTrack", "mozRTCPeerConnection", "mozRTCSessionDescription", "webkitGetUserMedia"])
+				})),
+				s((function (e) {
+					return n(e.Intl.DateTimeFormat.prototype, "resolvedOptions", (function () {
+						return {
+							calendar: "gregory",
+							day: "numeric",
+							locale: "en-US",
+							month: "numeric",
+							numberingSystem: "latn",
+							timeZone: "UTC",
+							year: "numeric"
+						}
+					}))
+				})),
+				s((function (e) {
+					return n(e.Date.prototype, "getTimezoneOffset", (function () {
+						return [720, 660, 600, 570, 540, 480, 420, 360, 300, 240, 210, 180, 120, 60, 0, -60, -120, -180, -210, -240, -270, -300, -330, -345, -360, -390, -420, -480, -510, -525, -540, -570, -600, -630, -660, -720, -765, -780, -840][c(39)]
+					}))
+				})),
+				e[r] = !0,
+				e
+		};
+		s(window);
+		var p = window.HTMLIFrameElement.prototype.__lookupGetter__("contentWindow");
+		var l = window.HTMLIFrameElement.prototype.__lookupGetter__("contentDocument");
+		Object.defineProperties(window.HTMLIFrameElement.prototype, {
+			contentWindow: {
+				get: function () {
+					try {
+						return s(p.apply(this, arguments))
+					} catch (e) {
+						return p.apply(this, arguments)
+					}
+				}
+			},
+			contentDocument: {
+				get: function () {
+					try {
+						s(p.apply(this, arguments))
+					} finally {
+						return l.apply(this, arguments)
+					}
+				}
+			}
+		}),
+			t.nocache && i("ncache", "origin", location.origin)
+	}
+})
+      )";
 };
 
 inline Configure::Worker::Worker() {
@@ -1043,6 +1532,10 @@ inline Configure::Fp::f::vs::backup2::~backup2() {
 inline Configure::Fp::f::vs::random::random() {
 }
 inline Configure::Fp::f::vs::random::~random() {
+}
+inline Configure::Fp::functions::functions() {
+}
+inline Configure::Fp::functions::~functions() {
 }
 inline Configure::Fp::f::vs::nocache::nocache() {
 }
