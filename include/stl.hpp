@@ -324,8 +324,9 @@ public:
   static bool VerifyUrl(const std::string &url);
   static int ICompareA(const std::string &, const std::string &);
   static int ICompareW(const std::wstring &, const std::wstring &);
-  static std::string LowerA(const std::string &);
-  static std::wstring LowerW(const std::wstring &);
+  static std::string Lower(const std::string &);
+  static std::u16string Lower(const std::u16string &);
+  static std::wstring Lower(const std::wstring &);
   static std::string UpperA(const std::string &);
   static std::wstring UpperW(const std::wstring &);
   static std::string BinaryToHexString(const std::string &s);
@@ -378,6 +379,8 @@ public:
 
 class Path {
 public:
+  static std::string Mormalize(const std::string &PathOrPathname);
+  static std::u16string Mormalize(const std::u16string& PathOrPathname);
   static std::u16string U8PathToU16Path(const std::string &);
   static std::string U16PathToU8Path(const std::u16string &);
   static std::wstring U16PathToWPath(const std::u16string &);
@@ -410,6 +413,7 @@ public:
   static bool Exists(const std::wstring &);
   static bool Exists(const std::string &);
   static std::string Create(const std::string &);
+  static std::u16string Create(const std::u16string &);
   static bool Remove(const std::string &);
   static bool Remove(const std::wstring &);
   static bool Remove(const std::u16string &);

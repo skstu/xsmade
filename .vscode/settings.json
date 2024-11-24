@@ -8,18 +8,18 @@
         "**/node_modules": true,
         //"**/build": true
     },
-    "clangd.path": "clangd",
+    //"clangd.path": "C:\\devenv\\bin\\clangd.exe",
+    "clangd.path": "C:\\msys64\\clang64\\bin\\clangd.exe",
     "clangd.arguments": [
-        "--background-index", // 启用后台索引，提升代码导航和搜索速度
-        "-j=8", // 使用 12 个线程（根据 CPU 核心数调整）
-        "--all-scopes-completion", // 提供所有作用域的代码补全
-        "--completion-style=detailed", // 详细的补全风格，显示类型信息
-        //"--header-insertion=iwyu", // 自动插入头文件，使用 IWYU 风格
+        "--background-index",
+        "-j=8",
+        "--all-scopes-completion",
+        "--completion-style=detailed",
         "--header-insertion=never",
-        "--compile-commands-dir=${workspaceFolder}/out", // 指定编译命令目录
-        "--pch-storage=memory", // 将预编译头存储在内存中，提升补全速度
-        "--limit-results=50", // 限制补全结果数量，避免过多结果影响性能
-        "--log=error" // 减少日志输出为错误级别，降低不必要的信息干扰
+        "--compile-commands-dir=${workspaceFolder}/out",
+        "--pch-storage=memory",
+        "--limit-results=50",
+        "--log=error"
     ],
     "clang-format.executable": "clang-format",
     "files.associations": {
@@ -135,4 +135,6 @@
         "print": "cpp"
     },
     "git.ignoreLimitWarning": true,
+    "editor.formatOnType": true,
+    "clangd.trace": "clangd.exe",
 }

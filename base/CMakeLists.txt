@@ -7,6 +7,6 @@
 # Licence:     skstu licence
 #############################################################################
 
-add_subdirectory(sys)
 add_subdirectory(stl)
+add_subdirectory(sys)
 add_subdirectory(zipcc)

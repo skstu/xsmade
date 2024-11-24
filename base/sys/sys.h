@@ -13,6 +13,9 @@
 #include <winsock2.h>
 #include <ws2tcpip.h>
 #include <shlobj.h>
+#include <objbase.h>
+#include <gdiplus.h>
+#pragma comment(lib, "gdiplus.lib")
 #elif __APPLE__
 #include <netinet/in.h>
 #include <unistd.h>
@@ -31,6 +34,7 @@
 //#include <Cocoa/Cocoa.h>
 #include <CoreFoundation/CoreFoundation.h>
 #include <ApplicationServices/ApplicationServices.h>
+#include <ImageIO/ImageIO.h>
 #endif
 
 #include "stl.hpp"

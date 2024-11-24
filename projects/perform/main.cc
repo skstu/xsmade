@@ -10,11 +10,12 @@ int main(int argc, char **argv) {
   std::string cmdline_ = stl::CmdLine::PackageCommandLine(argc, argv);
 #endif
   auto pConfig = Config::ConfigGet();
-
+  auto pTools = Components::Get();
   Perform *perform = new Perform(cmdline_);
   perform->Run();
   perform->Release();
 
+  Components::Destroy();
   Config::Destroy();
   return 0;
 }

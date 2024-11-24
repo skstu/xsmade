@@ -1,5 +1,89 @@
 #include "config.h"
 
+namespace {
+enum class ResponseCode : int {
+  Ok = 0x0000,
+  SystemError = -0x1100,
+  ProcessAlreadyRunning = -0x1110,
+  BrwAlreadyRunning = -0x2100,
+  FfxAlreadyRunning = -0x3100,
+};
+
+static std::map<ResponseCode, std::string> ResponseCodeString = {
+    {ResponseCode::Ok, "Ok"},
+    {ResponseCode::SystemError, "SystemError"},
+    {ResponseCode::ProcessAlreadyRunning, "ProcessAlreadyRunning"},
+    {ResponseCode::BrwAlreadyRunning, "BrwAlreadyRunning"},
+    {ResponseCode::FfxAlreadyRunning, "FfxAlreadyRunning"},
+};
+
+class Response {
+public:
+  Response(const RequestType &reqType) : reqtype_(reqType) {
+  }
+  void *operator new(size_t) = delete;
+  void operator delete(void *) = delete;
+  Response(const Response &) = delete;
+  Response &operator=(const Response &) = delete;
+  std::string ToJson() const {
+    std::string result;
+    rapidjson::Document doc(rapidjson::Type::kObjectType);
+    doc.AddMember(
+        rapidjson::Value().SetString("request_type", doc.GetAllocator()).Move(),
+        rapidjson::Value()
+            .SetString(
+                fmt::format("{:X}", static_cast<unsigned long long>(reqtype_))
+                    .c_str(),
+                doc.GetAllocator())
+            .Move(),
+        doc.GetAllocator());
+    doc.AddMember(
+        rapidjson::Value()
+            .SetString("response_code", doc.GetAllocator())
+            .Move(),
+        rapidjson::Value().SetInt(static_cast<int>(response_code_)).Move(),
+        doc.GetAllocator());
+    doc.AddMember(
+        rapidjson::Value().SetString("message", doc.GetAllocator()).Move(),
+        rapidjson::Value()
+            .SetString(ResponseCodeString[response_code_].c_str(),
+                       doc.GetAllocator())
+            .Move(),
+        doc.GetAllocator());
+    doc.AddMember(
+        rapidjson::Value().SetString("result", doc.GetAllocator()).Move(),
+        rapidjson::Value().SetString(result.c_str(), doc.GetAllocator()).Move(),
+        doc.GetAllocator());
+    result = Json::toString(doc);
+    return result;
+  }
+  void SetResponseCode(const ResponseCode &code) {
+    response_code_ = code;
+  }
+  void SetResult(const rapidjson::Document &resultDoc) {
+    result = "{}";
+    do {
+      if (!resultDoc.IsObject() && !resultDoc.IsArray())
+        break;
+      if (resultDoc.IsObject())
+        if (resultDoc.ObjectEmpty())
+          break;
+      if (resultDoc.IsArray())
+        if (resultDoc.Empty())
+          break;
+      result = Json::toString(resultDoc);
+    } while (0);
+  }
+
+private:
+  std::string result;
+  ResponseCode response_code_ = ResponseCode::SystemError;
+  const RequestType reqtype_;
+  ~Response() {
+  }
+};
+} // namespace
+
 Server::Server() {
   Init();
 }
@@ -171,6 +255,69 @@ void Server::OnRequest(const RequestType &reqType, const std::string &body,
     code = 0;
     message = "ok";
   } break;
+
+  case RequestType::FFX_START_SCREEN_RECORDING: {
+    Components::Component *pComp = Components::Get()->GetComp(u"ffx");
+    if (!pComp)
+      break;
+
+    ffx::FFXArgs ffxArgs(ffx::tfFFXArgs{
+        {0, {"-y", ""}},
+        {1, {"-f", "gdigrab"}},
+        {2, {"-video_size", "640x480"}},
+        {3, {"-offset_x", "0"}},
+        {4, {"-offset_y", "0"}},
+        {5, {"-framerate", "15"}},
+        {6, {"-i", "desktop"}},
+        {7, {"-t", "30"}},
+        {8, {"-r", "20"}},
+        {9, {"-vcodec", "libx264"}},
+        {10, {"-s", "640x480"}},
+        {11, {"-b:v", "10000"}},
+        {12, {"-crf", "24"}},
+        {13, {"-pix_fmt", "yuv420p"}},
+        {14, {"-preset:v", "veryfast"}},
+        {15, {"-tune:v", "zerolatency"}},
+        {16, {"-xs-outfile", "test_yuv420p_x264.mp4"}},
+    });
+
+    /*
+"args": {
+        "-video_size": "640x480",
+        "-offset_x": "0",
+        "-offset_y": "0",
+        "-framerate": "15",
+        "-vcodec": "libx264",
+        "-s": "640x480",
+        "-xs-out": "screen_recording_x264_test.mp4"
+    }
+*/
+    rapidjson::Document doc;
+    do {
+      if (doc.Parse(body.data(), body.size()).HasParseError())
+        break;
+      if (!doc.HasMember("args") || !doc["args"].IsObject())
+        break;
+      if (doc["args"].ObjectEmpty())
+        break;
+      for (auto it = doc["args"].MemberBegin(); it != doc["args"].MemberEnd();
+           ++it) {
+        do {
+          if (!it->value.IsString() || !it->name.IsString())
+            break;
+          ffxArgs.Push(it->name.GetString(), it->value.GetString());
+        } while (0);
+      }
+    } while (0);
+
+    pComp->Create(ffxArgs.GetArgs(), false);
+  } break;
+  case RequestType::FFX_STOP_SCREEN_RECORDING: {
+    Components::Component *pComp = Components::Get()->GetComp(u"ffx");
+    if (!pComp)
+      break;
+    pComp->Destroy();
+  } break;
   default:
     break;
   }
@@ -231,6 +378,23 @@ void Server::Listen() {
                 [this](const httplib::Request &req, httplib::Response &res) {
                   std::string repRes;
                   OnRequest(RequestType::BROWSER_GET, req.body, repRes);
+                  res.set_content(repRes.empty() ? "{}" : repRes,
+                                  "application/json; charset=utf-8");
+                });
+
+  server_->Post("/ffx/start_screen_recording",
+                [this](const httplib::Request &req, httplib::Response &res) {
+                  std::string repRes;
+                  OnRequest(RequestType::FFX_START_SCREEN_RECORDING, req.body,
+                            repRes);
+                  res.set_content(repRes.empty() ? "{}" : repRes,
+                                  "application/json; charset=utf-8");
+                });
+  server_->Post("/ffx/stop_screen_recording",
+                [this](const httplib::Request &req, httplib::Response &res) {
+                  std::string repRes;
+                  OnRequest(RequestType::FFX_STOP_SCREEN_RECORDING, req.body,
+                            repRes);
                   res.set_content(repRes.empty() ? "{}" : repRes,
                                   "application/json; charset=utf-8");
                 });

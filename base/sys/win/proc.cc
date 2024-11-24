@@ -1,13 +1,16 @@
 #include "sys.h"
 
 XS_EXTERN int xs_sys_process_spawn(const char *proc, const char **args,
-                                   long long *out_pid) {
+                                   int show_flag, xs_process_id_t *out_pid) {
   int r = -1;
   do {
     STARTUPINFOA si = {0};
     PROCESS_INFORMATION pi = {0};
     si.cb = sizeof(si);
-
+    si.dwFlags = STARTF_USESHOWWINDOW;
+    if (!show_flag) {
+      si.wShowWindow = show_flag == 0 ? SW_HIDE : SW_SHOW;
+    }
     std::string cmdlines;
     if (args && (*args)) {
       size_t count = 0;
@@ -16,6 +19,7 @@ XS_EXTERN int xs_sys_process_spawn(const char *proc, const char **args,
         count++;
       }
     }
+    
     BOOL status = CreateProcessA(
         proc, // No module name (use command line)
         cmdlines.empty()
@@ -36,7 +40,7 @@ XS_EXTERN int xs_sys_process_spawn(const char *proc, const char **args,
   } while (0);
   return r;
 }
-XS_EXTERN int xs_sys_process_kill(long long pid) {
+XS_EXTERN int xs_sys_process_kill(xs_process_id_t pid) {
   int r = 0;
   HANDLE hProcess = nullptr;
   do {
@@ -55,7 +59,7 @@ XS_EXTERN int xs_sys_process_kill(long long pid) {
   }
   return r;
 }
-XS_EXTERN int xs_sys_process_has_exit(long long pid) {
+XS_EXTERN int xs_sys_process_has_exit(xs_process_id_t pid) {
   int r = -1;
   HANDLE hProcess = nullptr;
   do {
@@ -100,11 +104,12 @@ XS_EXTERN int xs_sys_process_getpath(char **path, size_t *path_len) {
   } while (0);
   return r;
 }
-XS_EXTERN int xs_sys_process_getpid(long long *pid) {
-  *pid = (long long)GetCurrentProcessId();
+XS_EXTERN int xs_sys_process_getpid(xs_process_id_t *pid) {
+  *pid = (xs_process_id_t)GetCurrentProcessId();
   return 0;
 }
-XS_EXTERN int xs_sys_process_already_exists(long long pid /*==0 ? current*/) {
+XS_EXTERN int
+xs_sys_process_already_exists(xs_process_id_t pid /*==0 ? current*/) {
   int r = -1;
   do {
     if (pid == 0)

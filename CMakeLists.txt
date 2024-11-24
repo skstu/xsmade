@@ -85,11 +85,14 @@ message(STATUS ${CMAKE_SYSTEM_NAME})
 include(build/cmake/policies.cmake NO_POLICY_SCOPE)
 
 set(xsSOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR})
-set(xs3RDPARTY_DIR ${xsSOURCE_DIR}/3rdparty/)
-set(xsINCLUDE_DIR ${xsSOURCE_DIR}/include/)
-set(xsOUTPUT_DIR ${xsSOURCE_DIR}/out/)
-set(xsLIBS_DIR ${xsSOURCE_DIR}/out/libs/)
-set(xsBIN_DIR ${xsSOURCE_DIR}/out/bin/)
+set(xs3RDPARTY_DIR ${xsSOURCE_DIR}/3rdparty)
+set(xsINCLUDE_DIR ${xsSOURCE_DIR}/include)
+set(xsOUTPUT_DIR ${xsSOURCE_DIR}/out)
+set(xsLIBS_DIR ${xsSOURCE_DIR}/out/libs)
+set(xsBIN_DIR ${xsSOURCE_DIR}/out/bin)
+set(xsPROJECTS_DIR ${xsSOURCE_DIR}/projects)
+set(xsBUILD_DIR ${xsSOURCE_DIR}/build)
+set(xsBUILD_INSTALLED_DIR ${xsBUILD_DIR}/installed)
 
 # set(xsBINARY_DIR ${CMAKE_CURRENT_BINARY_DIR}) set(xsOUTPUT_DIR
 # ${xsBINARY_DIR}/lib)
@@ -168,6 +171,7 @@ add_subdirectory(${xs3RDPARTY_DIR}/http-parser/ "http_parser")
 # .. -DwxBUILD_SAMPLES=ALL -DwxBUILD_SHARED=OFF
 # -DCMAKE_C_FLAGS="-Wno-unused-command-line-argument"
 # -DCMAKE_CXX_FLAGS="-Wno-unused-command-line-argument"
+
 include(build/cmake/main.cmake)
 # LIST(APPEND CMAKE_MODULE_PATH ${LOCAL_CMAKE_MODULES_PATH}) include(global)
 # list(APPEND CMAKE_MODULE_PATH "${wxSOURCE_DIR}/build/cmake/modules")

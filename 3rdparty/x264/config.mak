@@ -1,5 +1,5 @@
 SRCPATH=.
-prefix=/c/Users/k34ub/source/skstu/ffprojects/build/../x264/../installed
+prefix=/c/Users/k34ub/source/skstu/xsmade/build/scripts/ffmpeg-projects/win/../../../../build/installed
 exec_prefix=${prefix}
 bindir=${exec_prefix}/bin
 libdir=${exec_prefix}/lib

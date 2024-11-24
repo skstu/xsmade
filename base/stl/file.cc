@@ -135,6 +135,35 @@ bool File::Exists(const std::u16string &input_pathname) {
   }
   return result;
 }
+std::u16string File::Create(const std::u16string &file_path) {
+  u16string result;
+#ifdef _STL_HAS_CXX17
+  do {
+    if (file_path.empty())
+      break;
+    const fs::path path = file_path;
+    u16string _tmp = path.lexically_normal().u16string();
+    if (fs::exists(path)) {
+      if (!fs::is_directory(path)) {
+        result = _tmp;
+        break;
+      }
+    }
+    const fs::path parent_path = path.parent_path();
+    if (!fs::exists(parent_path)) {
+      if (!fs::create_directories(parent_path.lexically_normal()))
+        break;
+    }
+    fstream of(path, static_cast<ios_base::openmode>(ios::binary | ios::out |
+                                                     ios::app));
+    if (!of.is_open())
+      break;
+    of.close();
+    result = _tmp;
+  } while (0);
+#endif
+  return result;
+}
 string File::Create(const string &file_path) {
   string result;
 #ifdef _STL_HAS_CXX17
@@ -294,7 +323,7 @@ void File::ReadFile(/*ios::_Nocreate | ios::_Noreplace | ios::binary*/
                     const wstring &file_, vector<wchar_t> &out_,
                     const int &mode_ /*= ios::in | ios::binary*/) {
   out_.clear();
-  wfstream of(file_, static_cast<ios_base::openmode>(mode_));
+  wfstream of(file_.c_str(), static_cast<ios_base::openmode>(mode_));
   do {
     if (!of.is_open())
       break;

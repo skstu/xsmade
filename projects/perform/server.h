@@ -8,6 +8,8 @@ enum class RequestType : unsigned long long {
   BROWSER_OPEN = 0x10101,  //!@ 打开浏览器
   BROWSER_CLOSE = 0x10102, //!@ 关闭浏览器
   BROWSER_GET = 0x10103,   //!@ 获取浏览器列表
+  FFX_START_SCREEN_RECORDING = 0x10201,
+  FFX_STOP_SCREEN_RECORDING = 0x10202,
   // BROWSER_DOWN = 0x10104,  //!@ 下载浏览器
 };
 class Server {
@@ -32,7 +34,7 @@ private:
   stl::container::queue<std::string> client_notifys_;
   stl::tfThreads threads_;
   httplib::Server *server_ = nullptr;
-  stl::container::map<std::string/*key*/, Browser*> brws_;
+  stl::container::map<std::string /*key*/, Browser *> brws_;
 };
 /// /*_ Memade®（新生™） _**/
 /// /*_ Mon, 11 Nov 2024 09:56:22 GMT _**/

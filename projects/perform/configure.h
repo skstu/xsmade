@@ -1,3 +1,4 @@
+
 #if !defined(__35D73024_3F90_4D82_9E3E_DAAB4A57133F__)
 #define __35D73024_3F90_4D82_9E3E_DAAB4A57133F__
 
@@ -630,6 +631,7 @@ public:
               doc["fp"].RemoveMember("v");
             }
 
+#if 0
             std::string bstr;
             for (const auto &node : b_) {
               if (node.empty()) {
@@ -654,6 +656,34 @@ public:
                                 rapidjson::Value::StringRefType(
                                     wstr.empty() ? "" : wstr.c_str()),
                                 doc.GetAllocator());
+#else
+            rapidjson::Value arrayB(rapidjson::Type::kArrayType);
+            rapidjson::Value arrayW(rapidjson::Type::kArrayType);
+            for (const auto &node : b_) {
+              if (node.empty()) {
+                continue;
+              }
+              arrayB.PushBack(rapidjson::Value()
+                                  .SetString(node.c_str(), doc.GetAllocator())
+                                  .Move(),
+                              doc.GetAllocator());
+            }
+            std::string wstr;
+            for (const auto &node : w_) {
+              if (node.empty()) {
+                continue;
+              }
+              arrayW.PushBack(rapidjson::Value()
+                                  .SetString(node.c_str(), doc.GetAllocator())
+                                  .Move(),
+                              doc.GetAllocator());
+            }
+            doc["fp"].AddMember(rapidjson::Value::StringRefType("b"), arrayB,
+                                doc.GetAllocator());
+            doc["fp"].AddMember(rapidjson::Value::StringRefType("w"), arrayW,
+                                doc.GetAllocator());
+
+#endif
 
             unsigned int v_value = 0;
             if (f_.vs_.audio_.enable) {
@@ -719,9 +749,9 @@ public:
     ~Worker();
 
   public:
-    std::string url;    //!@ 启动页
-    std::string cache;  //!@ 前端数据路由|缓存(json object)
-    std::string brwver; //!@ 打开指定浏览器版本号
+    std::vector<std::string> urls; //!@ 启动页
+    std::string cache;             //!@ 前端数据路由|缓存(json object)
+    std::string brwver;            //!@ 打开指定浏览器版本号
     inline std::string GetCache() const {
       return cache.empty() ? "{}" : cache;
     }
@@ -740,8 +770,14 @@ public:
         }
         rapidjson::Value &wokerObj = doc["wroker"];
 
-        if (wokerObj.HasMember("url") && wokerObj["url"].IsString()) {
-          url = wokerObj["url"].GetString();
+        if (wokerObj.HasMember("urls") && wokerObj["urls"].IsArray()) {
+          urls.clear();
+          for (rapidjson::SizeType i = 0; i < wokerObj["urls"].Size(); ++i) {
+            if (!wokerObj["urls"][i].IsString()) {
+              break;
+            }
+            urls.emplace_back(wokerObj["urls"][i].GetString());
+          }
         }
         if (wokerObj.HasMember("brwver") && wokerObj["brwver"].IsString()) {
           brwver = wokerObj["brwver"].GetString();
@@ -792,6 +828,43 @@ public:
         }
         if (ruleObj.HasMember("name") && ruleObj["name"].IsString()) {
           name = ruleObj["name"].GetString();
+        }
+        result = true;
+      } while (0);
+      return result;
+    }
+  };
+  class Develop {
+  public:
+    Develop();
+    ~Develop();
+
+  public:
+    std::string brwargs_;
+    bool enable_ = false;
+
+    inline bool operator<<(const std::string &input) {
+      bool result = false;
+      do {
+        if (input.empty()) {
+          break;
+        }
+        rapidjson::Document doc;
+        if (doc.Parse(input.data(), input.size()).HasParseError()) {
+          break;
+        }
+        if (!doc.IsObject() || doc.ObjectEmpty()) {
+          break;
+        }
+        if (!doc.HasMember("develop") || !doc["develop"].IsObject()) {
+          break;
+        }
+        rapidjson::Value &devObj = doc["develop"];
+        if (devObj.HasMember("brwargs") && devObj["brwargs"].IsString()) {
+          brwargs_ = devObj["brwargs"].GetString();
+        }
+        if (devObj.HasMember("enable") && devObj["enable"].IsBool()) {
+          enable_ = devObj["enable"].GetBool();
         }
         result = true;
       } while (0);
@@ -910,132 +983,43 @@ public:
   };
 
 public:
-  inline bool empty() const {
-    return source_.empty();
-  }
-  inline bool Default() const {
-    return rule_.IsDefault();
-  }
-  inline void operator=(const Configure &obj) {
-    std::string tmp;
-    obj >> tmp;
-    *this << tmp;
-  }
-  inline void operator<<(const std::string &input) {
-    rapidjson::Document docSource, docInput;
-    do {
-      if (docSource.Parse(source_.data(), source_.size()).HasParseError()) {
-        break;
-      }
-      if (!docSource.IsObject() || docSource.ObjectEmpty()) {
-        break;
-      }
-      if (input.empty()) {
-        break;
-      }
-      if (docInput.Parse(input.data(), input.size()).HasParseError()) {
-        break;
-      }
-      if (!docInput.IsObject() || docInput.ObjectEmpty()) {
-        break;
-      }
-
-      if (docInput.HasMember("extension") && docInput["extension"].IsString()) {
-        extension_id_ = docInput["extension"].GetString();
-      }
-      if (docInput.HasMember("action") && docInput["action"].IsUint()) {
-        unsigned long hex = docInput["action"].GetUint();
-        action_ = strtoul(std::to_string(hex).c_str(), nullptr, 16);
-      }
-      if (docInput.HasMember("enable") && docInput["enable"].IsBool()) {
-        enable_ = docInput["enable"].GetBool();
-      }
-      fp_ << input;
-      worker_ << input;
-      account_ << input;
-      rule_ << input;
-      proxy_ << input;
-      source_ = Configure::toString(docInput);
-    } while (0);
-  }
-  inline void operator>>(std::string &output) const {
-    output = source_;
-  }
+  bool empty() const;
+  bool Default() const;
+  void operator=(const Configure &obj);
+  void operator<<(const std::string &input);
+  void operator>>(std::string &output) const;
   Configure();
   Configure(const std::string &input);
   ~Configure();
 
 public:
-  static std::string GetDefaultCfgBuffer() {
-    return R"({"type":10001,"rule":{"id":0,"key":"sadgasga","name":"美2"},"proxy":{"type":0,"addr":"proxygs.tunneldot.com","port":51000,"name":"mp","pwd":"538909"},"wroker":{"url":"https://pixelscan.net","cache":{"demo":5568668,"test_string":"你好！"}},"account":{"phone":13066886688,"name":"碼爹利","pwd":"123456789","identify":"agadsagas24362626","level":1},"fp":{"g":"martell","s":".5567","f":{"vs":{"canvas":{"enable":true},"webgl":{"enable":true,"vendor":"Apple I3nc.","renderer":"Intel HD2 Graphics ","version":" Apple GPU"},"audio":{"enable":true},"font":{"enable":true},"clientrects":{"enable":true,"screen":{"availLeft":0,"availTop":0,"availWidth":888,"availHeight":111,"width":666,"height":111,"colorDepth":16,"pixelDepth":16}},"webrtc":{"enable":false},"navigator":{"enable":true,"appCodeName":"Mozilla","appName":"Netscape","appVersion":"5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/888.8.8.8 Safari/888.88","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/888.8.8.8 Safari/888.88","platform":"Linux","language":"en-US","hardwareConcurrency":"8","DoNotTrack":"null","languages":["en-US"]},"timezone":{"enable":true},"backup1":{"enable":false},"random":{"enable":false},"nocache":{"enable":true},"backup2":{"enable":false}}},"b":["fingerprintjs.github.io","pixelscan.net"],"w":[],"v":1759}})";
-  }
+  static std::string GetDefaultCfgBuffer();
   //!@ afgbmmdnakcefnkchckgelobigkbboci
-  static std::string GetExtensionManifestAP() { //!@ manifest.json
-    return R"({"manifest_version":3,"name":"ap","version":"1.0","description":"AP","background":{"service_worker":"background.js"},"permissions":["proxy","tabs","storage","webRequest","webRequestAuthProvider"],"host_permissions":["https://*/*","http://*/*"],"key":"MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAyAUpxzVDSbelKEcebEkUuQy1hqjT8V/oKzt4qzced13bRcnqlGO9EBZBIkFYaDas4Qlpa2z7O2n2y49XbaxFsWXGBm/dm7s95pTWffco6EbAKiWyxiH/IiZFz4ZmwblnjXkm1YFATJkYA/EnS3DYZCORj4ed8eaBXM+okYgNojNoJEeFeNICvCIEotHfc34TiGqfO/dsVkKhDd80KvKSfB1gHqPIb8ttDIf4S5yLUMbCN3iC7mmKHVCxv8iu17H7lmrWcSglEDvimDJCHfNCgm4ZZdkmVBdbicSqo6PSzb3efOsEelsuwejLQe6DNeyIBqjdq/hFr+ZWoY/1wAiP7QIDAQAB"})";
-  }
+  //!@ manifest.json
+  static std::string GetExtensionManifestAP();
   //!@ ebglcogbaklfalmoeccdjbmgfcacengf
-  static std::string GetExtensionManifestFPS() {
-    return R"(
-    {"name":"fps","version":"1.0.1","key":"MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAphyx7eO0n+3TR6u0YF82c0LtaND5XIHv/3CddW5uZ4+5V9BfYXrYVEvKMr7kN/OjTHe25E8upQLRhS0IeKakpaBcTOlAZDNLQh6lfl2w3RATveGtPyX4+b2mtE98xgREtxc8dQ+8lWEGhw50RRf61WXAMGvXCmGmXLrp5Jr3xBS1F5P5r5JeGN41qiKu4V9YRLkQMdOT8yTuaeDH4Ult4XaEVxx/rehALnHp41QnK+4ZSnVo+jnjMVKMA78MtLuZn/ZKxCql9iMbMMX6WcahfsOd93txG3K1zlNP/3W98v9IYvBQoZ/UlXkSJnBCU75xcCIT9zkKPXiRa52yooZdgQIDAQAB","manifest_version":3,"permissions":["tabs","activeTab","tabs","scripting","contentSettings","declarativeNetRequestWithHostAccess"],"background":{"service_worker":"background.js"},"content_scripts":[{"all_frames":true,"js":["content.js"],"match_about_blank":true,"match_origin_as_fallback":true,"matches":["<all_urls>"],"run_at":"document_end","world":"MAIN"},{"all_frames":true,"js":["content.js"],"match_about_blank":true,"match_origin_as_fallback":true,"matches":["<all_urls>"],"run_at":"document_end","world":"ISOLATED"}]}
-    )";
-  }
-  std::string GetExtensionBackgroundAP() const { //!@ background.js
-    std::string result =
-        R"(chrome.webRequest.onAuthRequired.addListener((details,callback)=>{callback({authCredentials:{username:'__NAME__',password:'__PWD__'}})},{urls:["<all_urls>"]},["asyncBlocking"]);)";
-    do {
-      if (!proxy_.name.empty()) {
-        result.replace(result.find("__NAME__"), strlen("__NAME__"),
-                       proxy_.name);
-      }
-      if (!proxy_.pwd.empty()) {
-        result.replace(result.find("__PWD__"), strlen("__PWD__"), proxy_.pwd);
-      }
-    } while (0);
-    return result;
-  }
-  std::string GetExtensionBackgroundFps() const { //!@ background.js
-    std::string result;
-    do {
-      result.append(R"(
-chrome.runtime.onInstalled.addListener(function () {
-    setTimeout(() => {
-        chrome.runtime.reload();
-    }, 5000);
-});
-chrome.runtime.onStartup.addListener(function () {
-    chrome.runtime.reload();
-});
-      )");
-    } while (0);
-    return result;
-  }
-  std::string GetExtensionContentFps() const { //!@ content.js
-    std::string result;
-    do {
-      if (fp_.fp_json_data_.empty()) {
-        break;
-      }
-      result = jsFPS_;
-      result.append("('").append(fp_.fp_json_data_).append("')");
-    } while (0);
-    return result;
-  }
-  inline bool Enable() const {
-    return enable_;
-  }
+  static std::string GetExtensionManifestFPS();
+  //!@ background.js
+  std::string GetExtensionBackgroundAP() const;
+  //!@ background.js
+  std::string GetExtensionBackgroundFps() const;
+  //!@ content.js
+  std::string GetExtensionContentFps() const;
+  bool Enable() const;
 
 public:
   bool enable_ = true; //!@ 总开关
   Proxy proxy_;
   Rule rule_;
   Worker worker_;
+  Develop develop_;
   Account account_;
   unsigned long action_ = 0; //!@ 扩展命令码
   Fp fp_;                    //!@ 指纹配置
   std::string extension_id_; //!@ 扩展ID
   std::string source_ =
       R"(
-      {"enable":true,"rule":{"id":0,"key":"525c36a14d4da77712db610af924c39g","name":"开发测试环境"},"proxy":{"enable":true,"type":0,"addr":"proxygs.tunneldot.com","port":51000,"name":"mp","pwd":"538909"},"wroker":{"brwver":"128.0.6613.186","url":"https://pixelscan.net","cache":{"demo":5568668,"test_string":"你好！"}},"account":{"phone":13066886688,"name":"碼爹利","pwd":"123456789","identify":"agadsagas24362626","level":1},"fp":{"enable":true,"g":"martell","s":".5567","f":{"vs":{"canvas":{"enable":true},"webgl":{"enable":true,"vendor":"Apple I6nc.","renderer":"Intel HD8 Graphics ","version":" Apple GPU"},"audio":{"enable":true},"font":{"enable":true},"clientrects":{"enable":true,"screen":{"availLeft":0,"availTop":0,"availWidth":888,"availHeight":111,"width":666,"height":111,"colorDepth":16,"pixelDepth":16}},"webrtc":{"enable":false},"navigator":{"enable":true,"appCodeName":"Mozilla","appName":"Netscape","appVersion":"5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/888.8.8.8 Safari/888.88","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/888.8.8.8 Safari/888.88","platform":"Apple","language":"zh-CN","hardwareConcurrency":"2","DoNotTrack":"0","languages":["en-US","zh-CN"]},"timezone":{"enable":false},"random":{"enable":true},"nocache":{"enable":true},"backup2":{"enable":false}}},"functions":{"enable_image":true,"enable_audio":true,"enable_video":true,"enable_notify":true},"b":["fingerprintjs.github.io","pixelscan.net"],"w":["baidu.com","bing.com","google.com"],"v":1759}}
+      {"enable":true,"rule":{"id":0,"key":"525c36a14d4da77712db610af924c391","name":"开发测试环境"},"proxy":{"enable":false,"type":0,"addr":"proxygs.tunneldot.com","port":51000,"name":"mp","pwd":"538909"},"wroker":{"brwver":"128.0.6613.186","urls":["https://baidu.com","https://cn.bing.com"],"cache":{"demo":5568668,"test_string":"你好！"}},"account":{"phone":13066886688,"name":"碼爹利","pwd":"123456789","identify":"agadsagas24362626","level":1},"fp":{"enable":true,"g":"martell","s":".5567","f":{"vs":{"canvas":{"enable":true},"webgl":{"enable":true,"vendor":"Apple I6nc.","renderer":"Intel HD8 Graphics ","version":" Apple GPU"},"audio":{"enable":true},"font":{"enable":true},"clientrects":{"enable":true,"screen":{"availLeft":0,"availTop":0,"availWidth":888,"availHeight":111,"width":666,"height":111,"colorDepth":16,"pixelDepth":16}},"webrtc":{"enable":false},"navigator":{"enable":true,"appCodeName":"Mozilla","appName":"Netscape","appVersion":"5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/888.8.8.8 Safari/888.88","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/888.8.8.8 Safari/888.88","platform":"Apple","language":"zh-CN","hardwareConcurrency":"2","DoNotTrack":"1","languages":["en-US","zh-CN"]},"timezone":{"enable":false},"random":{"enable":true},"nocache":{"enable":true},"backup2":{"enable":false}}},"functions":{"enable_image":true,"enable_audio":true,"enable_video":true,"enable_notify":true},"b":[],"w":[],"v":1759}}
       )";
   const std::string jsFPS_ =
       R"(
@@ -1088,7 +1072,7 @@ public:
 				return false;
 			}
 		}
-		return true;
+		return false;
 	}
 
 	if (isAllowed(window.location.hostname))
@@ -1468,6 +1452,10 @@ inline Configure::Proxy::Proxy() {
 }
 inline Configure::Proxy::~Proxy() {
 }
+inline Configure::Develop::Develop() {
+}
+inline Configure::Develop::~Develop() {
+}
 inline Configure::Fp::Fp() {
 }
 inline Configure::Fp::~Fp() {
@@ -1540,15 +1528,6 @@ inline Configure::Fp::functions::~functions() {
 inline Configure::Fp::f::vs::nocache::nocache() {
 }
 inline Configure::Fp::f::vs::nocache::~nocache() {
-}
-
-inline Configure::Configure() {
-  *this << source_;
-}
-inline Configure::Configure(const std::string &input) {
-  *this << input;
-}
-inline Configure::~Configure() {
 }
 /// /*_ Memade®（新生™） _**/
 /// /*_ Wed, 13 Nov 2024 05:45:56 GMT _**/

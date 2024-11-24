@@ -4,8 +4,7 @@
 #define ENABLE_DEVELOPER_DEBUG 1
 #define ENABLE_DEVELOPER_LOGGER 1
 
-#include <stl.hpp>
-#include <system.h>
+#include <sys.hpp>
 #include <httplib.h>
 #include <rapidjson.h>
 #include <fmt/format.h>
@@ -13,8 +12,11 @@
 #include <zipcc.h>
 #include <log.hpp>
 
+#include "define.h"
 #include "configure.h"
+#include "ffxargs.h"
 #include "browser.h"
+#include "components.h"
 #include "server.h"
 #include "perform.h"
 

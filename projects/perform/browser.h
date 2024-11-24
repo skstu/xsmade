@@ -14,13 +14,14 @@ private:
 public:
   bool Open();
   void Close();
-  const process_id_t &GetPid() const;
+  const xs_process_id_t &GetPid() const;
   const std::string &GetKey() const;
+
 private:
   Configure *brwcfg_ = nullptr;
   std::atomic_bool open_ = false;
   std::atomic_bool ready_ = false;
-  process_id_t pid_ = 0;
+  xs_process_id_t pid_ = 0;
   const std::string cfg_;
   std::string brw_module_pathname_;
   std::vector<std::string> brw_startup_args_;

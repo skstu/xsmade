@@ -1,72 +1,56 @@
 #if !defined(__66C85601_CF91_446F_8CB5_96455760E625__)
 #define __66C85601_CF91_446F_8CB5_96455760E625__
 
+#include "xs.h"
+
 #ifdef __cplusplus
 extern "C" {
 #endif
-/* Referenced C standard library header files */
-#include <errno.h>
-#include <stddef.h>
-#include <stdint.h>
-#include <stdio.h>
 
-#if defined(_WIN32) || defined(_WIN64)
-#define __OSWIN__ // Windows 系统
-#elif defined(__APPLE__)
-#include <TargetConditionals.h>
-#if TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
-#define __OSIOS__ // iOS 系统
-#elif TARGET_OS_MAC
-#define __OSMAC__ // macOS 系统
-#endif
-#elif defined(__linux__)
-#define __OSLINUX__ // Linux 系统（包括 Ubuntu）
-#elif defined(__unix__)
-#define __OSUNIX__ // 其他 UNIX 系统
+#if defined(__OSWIN__)
+typedef unsigned long xs_process_id_t;
+#elif defined(__OSMAC__)
+typedef pit_t xs_process_id_t;
 #endif
 
-/* Interface definition */
-#if defined(BUILDING_XS_SHARED) && defined(USING_XS_SHARED)
-#error "Define either BUILDING_XS_SHARED or USING_XS_SHARED, not both."
-#endif
+typedef struct {
+  long x;
+  long y;
+  long cx;
+  long cy;
+} xs_position_t;
 
-#ifndef XS_EXTERN
-#ifdef __OSWIN__
-/* Windows - set up dll import/export decorators. */
-#if defined(BUILDING_XS_SHARED)
-/* Building shared library. */
-#define XS_EXTERN __declspec(dllexport)
-#elif defined(USING_XS_SHARED)
-/* Using shared library. */
-#define XS_EXTERN __declspec(dllimport)
-#else
-/* Building static library. */
-#define XS_EXTERN /* nothing */
-#endif
-#elif __GNUC__ >= 4
-#define XS_EXTERN __attribute__((visibility("default")))
-#elif defined(__SUNPRO_C) && (__SUNPRO_C >= 0x550) /* Sun Studio >= 8 */
-#define XS_EXTERN __global
-#else
-#define XS_EXTERN /* nothing */
-#endif
-#endif /* XS_EXTERN */
+typedef enum {
+  PNG = 0,
+  JPEG,
+  BMP,
+} xs_image_stream_type_t;
 
-typedef long long process_id_t;
+typedef struct {
+  char *buffer;
+  size_t len;
+} xs_image_stream_t;
 
+XS_EXTERN void xs_sys_startup(void);
+XS_EXTERN void xs_sys_shutdown(void);
 XS_EXTERN char *xs_sys_malloc(size_t len);
 XS_EXTERN void xs_sys_free(void **p);
 XS_EXTERN unsigned short xs_sys_get_free_port(void);
 XS_EXTERN int xs_sys_process_spawn(const char *proc, const char **args,
-                                   long long *out_pid);
-XS_EXTERN int xs_sys_process_kill(long long pid);
+                                   int show_flag, xs_process_id_t *out_pid);
+XS_EXTERN int xs_sys_process_kill(xs_process_id_t pid);
 //!@ exited == 0 and running  == !0
-XS_EXTERN int xs_sys_process_has_exit(long long pid);
+XS_EXTERN int xs_sys_process_has_exit(xs_process_id_t pid);
 XS_EXTERN int xs_sys_process_getpath(char **, size_t *);
-XS_EXTERN int xs_sys_process_getpid(long long *);
+XS_EXTERN int xs_sys_process_getpid(xs_process_id_t *);
 //!@ exists == 0 and not exists == !0
-XS_EXTERN int xs_sys_process_already_exists(long long pid /*==0 ? current*/);
+XS_EXTERN int
+xs_sys_process_already_exists(xs_process_id_t pid /*==0 ? current*/);
 XS_EXTERN int xs_sys_get_appdata_path(char **, size_t *);
+XS_EXTERN int xs_sys_image_stream_destroy(xs_image_stream_t **);
+XS_EXTERN int xs_sys_capturescreen(xs_position_t pos,
+                                   xs_image_stream_type_t type,
+                                   xs_image_stream_t **stream);
 #ifdef __cplusplus
 }
 #endif

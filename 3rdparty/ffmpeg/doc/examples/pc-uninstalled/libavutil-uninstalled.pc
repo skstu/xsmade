@@ -8,5 +8,5 @@ Description: FFmpeg utility library
 Version: 59.47.100
 Requires: 
 Conflicts:
-Libs: -L${libdir} -Wl,-rpath,${libdir} -lavutil -lm -luser32 -lbcrypt
+Libs: -L${libdir} -Wl,-rpath,${libdir} -lavutil -lm -LC:/msys64/clang64/bin/../lib -lssl -lcrypto -luser32 -lbcrypt -pthread
 Cflags: -I${includedir}

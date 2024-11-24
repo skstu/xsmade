@@ -7,6 +7,5 @@
 # Licence:     skstu licence
 #############################################################################
 
-#add_subdirectory(brw_configure)
-#add_subdirectory(services)
 add_subdirectory(perform)
+#add_subdirectory(ffx)
