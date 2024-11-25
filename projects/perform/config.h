@@ -53,11 +53,13 @@ public:
   const Paths &PathGet() const;
   std::string GetBrwUserDataDir(const std::string &brwKey) const;
   std::string GetXSCacheExtsDir(const std::string &brwKey) const;
-  std::string GetXSCacheExtsDir(const std::string &brwKey,const std::string& extId) const;
+  std::string GetXSCacheExtsDir(const std::string &brwKey,
+                                const std::string &extId) const;
   std::string GetXSCacheCfgsDir(const std::string &brwKey) const;
   std::string GetXSCacheStatisDir(const std::string &brwKey) const;
   std::string GetXSCacheConfigureFName(const std::string &brwKey) const;
   void XSCacheClean(const std::string &brwKey) const;
+
 public:
   static std::string CreateBrwCloseNotifyPak(const std::string &brwId);
 

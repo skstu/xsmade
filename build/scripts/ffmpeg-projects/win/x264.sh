@@ -1,13 +1,13 @@
 #!/bin/bash
-
+# cd /c/Users/k34ub/source/skstu/xsmade/build/scripts/ffmpeg-projects/win
 CURRENT=$(pwd)
-TARGET_SRC_DIR=$(pwd)/../x264
-# 设置目标安装路径
-PREFIX=$TARGET_SRC_DIR/../installed
+ROOT_DIR=${CURRENT}/../../../..
+SRC_DIR=${ROOT_DIR}/3rdparty/x264
+INSTALL_DIR=${ROOT_DIR}/build/installed
 
-cd $TARGET_SRC_DIR
+cd $SRC_DIR
 
-bash ./configure --prefix="$PREFIX" --enable-static
+bash ./configure --prefix="${INSTALL_DIR}" --enable-static
 
 make -j8
 

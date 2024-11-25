@@ -47,7 +47,7 @@ Failed commandline was:
 --------------------------------------------------
 gcc conftest.c -m64  -Wall -I. -I$(SRCPATH) -D_POSIX_C_SOURCE=200112L -std=gnu99 -D_GNU_SOURCE -mstack-alignment=64   -Werror=unknown-warning-option -Werror=unknown-attributes -Werror=attributes -Werror=ignored-attributes -Werror=implicit-function-declaration   -lshell32 -Wl,--image-base,0x140000000 -m64   -Wl,--high-entropy-va -Wl,--dynamicbase,--nxcompat,--tsaware -o conftest
 ld.lld: error: undefined symbol: clock_gettime
->>> referenced by C:/msys64/tmp/conftest-a25248.o:(main)
+>>> referenced by C:/msys64/tmp/conftest-7fcd4f.o:(main)
 gcc: error: linker command failed with exit code 1 (use -v to see invocation)
 --------------------------------------------------
 Failed program was:

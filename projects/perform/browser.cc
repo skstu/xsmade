@@ -118,6 +118,23 @@ void Browser::Init() {
       for (const auto &f : files) {
         auto u16path = Utfpp::u8_to_u16(f.second);
         Zipcc::zipUnCompress(u16path, u16extdir);
+        do { //!@ 自动填充扩展补丁
+          if (f.first.find("iopcliemaddhijhmjbecffinafojoofk") ==
+              std::string::npos)
+            break;
+          std::u16string content_js_path = stl::Path::Mormalize(
+              u16extdir + u"/iopcliemaddhijhmjbecffinafojoofk/content.js");
+          std::string content_js = stl::File::ReadFile(content_js_path);
+          if (content_js.empty())
+            break;
+          const std::string flagString = "__CONFIGURES__";
+          const size_t flagPos = content_js.find(flagString);
+          if (flagPos == std::string::npos)
+            break;
+          std::string finish = content_js.replace(flagPos, flagString.size(),
+                                                  brwcfg_->account_.route_);
+          stl::File::WriteFile(content_js_path, finish);
+        } while (0);
       }
     } while (0);
 

@@ -169,7 +169,7 @@ chrome.windows.onCreated.addListener(async () => {
 
     //"https://pixelscan.net", "https://www.baidu.com", "https://cn.bing.com"
     if (worker_.urls.empty()) { //!@ const urlsToOpen=[];
-      result = temp.replace(temp.find("__URLS__"), 1, " ");
+      result = temp.replace(temp.find("__URLS__"), strlen("__URLS__"), " ");
     } else {
       std::string urls;
       for (const auto &url : worker_.urls) {

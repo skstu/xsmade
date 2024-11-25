@@ -936,6 +936,30 @@ public:
     ~Account();
 
   public:
+    std::string route_ = {};
+
+    inline bool operator<<(const std::string &input) {
+      bool result = false;
+      do {
+        if (input.empty()) {
+          break;
+        }
+        rapidjson::Document doc;
+        if (doc.Parse(input.data(), input.size()).HasParseError()) {
+          break;
+        }
+        if (!doc.IsObject() || doc.ObjectEmpty()) {
+          break;
+        }
+        if (!doc.HasMember("account") || !doc["account"].IsObject()) {
+          break;
+        }
+        route_ = Json::toString(doc["account"]);
+        result = true;
+      } while (0);
+      return result;
+    }
+#if 0
     unsigned long long phone; //!@ 用户手机号
     std::string name;         //!@ 用户名
     std::string identify;     //!@ 用户标识
@@ -980,6 +1004,7 @@ public:
       } while (0);
       return result;
     }
+#endif
   };
 
 public:
