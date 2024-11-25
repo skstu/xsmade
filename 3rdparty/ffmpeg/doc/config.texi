@@ -582,7 +582,7 @@
 @set config-mediafoundation yes
 @c @set config-metal no
 @c @set config-schannel no
-@c @set config-sdl2 no
+@set config-sdl2 yes
 @c @set config-securetransport no
 @c @set config-sndio no
 @c @set config-xlib no
@@ -633,7 +633,7 @@
 @set config-avcodec yes
 @set config-swresample yes
 @set config-avutil yes
-@c @set config-ffplay no
+@set config-ffplay yes
 @set config-ffprobe yes
 @set config-ffmpeg yes
 @set config-dwt yes
@@ -663,7 +663,7 @@
 @set config-hwaccels yes
 @set config-parsers yes
 @set config-indevs yes
-@c @set config-outdevs no
+@set config-outdevs yes
 @set config-filters yes
 @set config-demuxers yes
 @set config-muxers yes
@@ -1831,7 +1831,7 @@
 @c @set config-opengl-outdev no
 @c @set config-oss-outdev no
 @c @set config-pulse-outdev no
-@c @set config-sdl2-outdev no
+@set config-sdl2-outdev yes
 @c @set config-sndio-outdev no
 @c @set config-v4l2-outdev no
 @c @set config-xv-outdev no
