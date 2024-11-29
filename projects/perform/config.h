@@ -11,6 +11,7 @@
 #include <utfpp.hpp>
 #include <zipcc.h>
 #include <log.hpp>
+#include <projects/ffxctrl/export.h>
 
 #include "define.h"
 #include "configure.h"

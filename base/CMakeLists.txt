@@ -10,3 +10,4 @@
 add_subdirectory(stl)
 add_subdirectory(sys)
 add_subdirectory(zipcc)
+add_subdirectory(wxui)

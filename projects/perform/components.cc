@@ -98,7 +98,7 @@ bool Components::Component::Create(const std::vector<std::string> &args,
                                    const bool &show) {
 
   for (const auto &node : args) {
-    LOG_INFO(node);
+    LOG_INFO("{}",node);
   }
   std::vector<const char *> startup_args;
   for (const auto &node : args)

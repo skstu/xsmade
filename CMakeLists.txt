@@ -85,6 +85,7 @@ message(STATUS ${CMAKE_SYSTEM_NAME})
 include(build/cmake/policies.cmake NO_POLICY_SCOPE)
 
 set(xsSOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR})
+set(xsROOT_DIR ${xsSOURCE_DIR})
 set(xs3RDPARTY_DIR ${xsSOURCE_DIR}/3rdparty)
 set(xsINCLUDE_DIR ${xsSOURCE_DIR}/include)
 set(xsOUTPUT_DIR ${xsSOURCE_DIR}/out)
@@ -113,7 +114,7 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS
     ON
     CACHE BOOL "enable output - clangd compile commands" FORCE)
 
-set(CMAKE_CXX_FLAGS_DEBUG "-g -O0")
+set(CMAKE_CXX_FLAGS_DEBUG "-g -O0 -DDEBUG -D_DEBUG")
 set(CMAKE_CXX_FLAGS_RELEASE "-O3 -DNDEBUG")
 set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "-O2 -g") # Release with Debug Info
 set(CMAKE_CXX_FLAGS_MINSIZEREL "-Os -DNDEBUG") # MinSizeRel
@@ -122,7 +123,7 @@ message(STATUS "Build type: ${CMAKE_BUILD_TYPE}")
 message(STATUS "C++ Flags: ${CMAKE_CXX_FLAGS_${CMAKE_BUILD_TYPE}}")
 
 project(xsmade)
-
+set(xsUSE_WXWIDGETS ON)
 if(xsUSE_WXWIDGETS)
   set(wxBUILD_SHARED
       OFF
@@ -131,10 +132,12 @@ if(xsUSE_WXWIDGETS)
     set(wxBUILD_TOOLKIT
         "msw"
         CACHE STRING "Choose wxWidgets toolkit" FORCE)
+    #[[
     set(wxUSE_ACCESSIBILITY
         OFF
         CACHE BOOL "Choose wxWidgets toolkit" FORCE)
-
+        ]]
+    add_compile_options(-Wno-deprecated-declarations)
   elseif(xsSYSTYPE_APPLE)
     set(wxBUILD_TOOLKIT
         "osx_cocoa"
@@ -156,15 +159,18 @@ if(xsUSE_WXWIDGETS)
   add_subdirectory(${xs3RDPARTY_DIR}/wxwidgets/ "wxWidgets")
 endif(xsUSE_WXWIDGETS)
 
-
-set(ZLIB_BUILD_EXAMPLES OFF CACHE BOOL "disabled zlib build examples." FORCE)
+set(ZLIB_BUILD_EXAMPLES
+    OFF
+    CACHE BOOL "disabled zlib build examples." FORCE)
 add_subdirectory(${xs3RDPARTY_DIR}/zlib/ "zlib")
-#set_target_properties(zlibstatic PROPERTIES FOLDER "3rdparty")
-#set_target_properties(zlib PROPERTIES FOLDER "3rdparty")
+# set_target_properties(zlibstatic PROPERTIES FOLDER "3rdparty")
+# set_target_properties(zlib PROPERTIES FOLDER "3rdparty")
 
-set(CMAKE_DEBUG_POSTFIX "" CACHE STRING "..." FORCE)
+set(CMAKE_DEBUG_POSTFIX
+    ""
+    CACHE STRING "..." FORCE)
 add_subdirectory(${xs3RDPARTY_DIR}/minizip/ "minizip")
-#set_target_properties(minizip PROPERTIES FOLDER "3rdparty")
+# set_target_properties(minizip PROPERTIES FOLDER "3rdparty")
 
 add_subdirectory(${xs3RDPARTY_DIR}/http-parser/ "http_parser")
 # set_target_properties(wxwidgets PROPERTIES FOLDER "3rdparty") cmake -G Ninja

@@ -21,6 +21,15 @@ typedef struct {
 } xs_position_t;
 
 typedef enum {
+  _Unknown,
+  _PNG,
+  _JPEG,
+  _BMP,
+  _GIF,
+  _ICO,
+} xs_image_type_t;
+
+typedef enum {
   PNG = 0,
   JPEG,
   BMP,
@@ -51,6 +60,8 @@ XS_EXTERN int xs_sys_image_stream_destroy(xs_image_stream_t **);
 XS_EXTERN int xs_sys_capturescreen(xs_position_t pos,
                                    xs_image_stream_type_t type,
                                    xs_image_stream_t **stream);
+XS_EXTERN int xs_sys_get_image_type(const char *buffer, size_t buffer_size,
+                                    xs_image_type_t *output_image_type);
 #ifdef __cplusplus
 }
 #endif

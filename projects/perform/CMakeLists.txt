@@ -7,7 +7,7 @@ add_executable(${PROJECT_NAME} ${SOURCES})
 
 target_include_directories(
   ${PROJECT_NAME}
-  PRIVATE ${xsINCLUDE_DIR} ${xs3RDPARTY_DIR}/utfcpp/source/
+  PRIVATE ${xsROOT_DIR} ${xsINCLUDE_DIR} ${xs3RDPARTY_DIR}/utfcpp/source/
           ${xs3RDPARTY_DIR}/http-parser/ ${xs3RDPARTY_DIR}/cpp-httplib/
           ${xsOPENSSL_INCLUDE})
 target_link_directories(${PROJECT_NAME} PRIVATE ${xsLIBS_DIR})
@@ -15,6 +15,7 @@ if(WIN32)
   target_link_libraries(
     ${PROJECT_NAME}
     PRIVATE ${MSYS2_CLANG64_DIR}/lib/libc++.a
+            ${MSYS2_CLANG64_DIR}/lib/libdl.a
             wldap32.lib
             winmm.lib
             Crypt32.lib

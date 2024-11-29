@@ -57,7 +57,7 @@ std::u16string Path::U8PathToU16Path(const std::string &input_path) {
 std::string Path::U16PathToU8Path(const std::u16string &input_path) {
   std::string result;
   try {
-    result = fs::path(input_path).generic_u8string();
+    result = fs::path(input_path).generic_string();
   } catch (const std::filesystem::filesystem_error &e) {
     std::cout << e.what() << std::endl;
   }
@@ -90,7 +90,7 @@ string Path::Parent(const string &path) {
         break;
       fs::path fullPath(path);
       fs::path parentPath = fullPath.parent_path();
-      result = parentPath.u8string();
+      result = parentPath.string();
     } while (0);
 #endif
   } catch (const std::filesystem::filesystem_error &e) {
@@ -139,7 +139,7 @@ string Path::AppendU8(const string &abs, const string &rel) {
       break;
     string tmp = abs + "/" + rel;
     fs::path path = tmp;
-    result = path.lexically_normal().u8string();
+    result = path.lexically_normal().string();
   } while (0);
   return result;
 }
@@ -293,7 +293,7 @@ string Path::NormalU8(const string &path) {
       break;
 #ifdef _STL_HAS_CXX17
     fs::path _path = path;
-    result = _path.lexically_normal().u8string();
+    result = _path.lexically_normal().string();
 #endif
   } while (0);
   return result;
@@ -340,16 +340,16 @@ bool Path::ParsePathname(const std::string &pathname, std::string &parent_path,
     std::filesystem::path parent_path_ = pathname_.parent_path();
 
     if (!filename_.empty()) {
-      filename = filename_.u8string();
+      filename = filename_.string();
     }
     if (!stem_.empty()) {
-      stem = stem_.u8string();
+      stem = stem_.string();
     }
     if (!extension_.empty()) {
-      extension = extension_.u8string();
+      extension = extension_.string();
     }
     if (!parent_path_.empty()) {
-      parent_path = parent_path_.u8string();
+      parent_path = parent_path_.string();
     }
     result = true;
 #endif

@@ -182,7 +182,7 @@ void Directory::EnumU8(
       auto iterator = fs::recursive_directory_iterator(inputPath);
       for (const fs::directory_entry &entry : iterator) {
         fs::path relativePath = fs::relative(entry.path(), inputPath);
-        std::string relativePathStr = relativePath.generic_u8string();
+        std::string relativePathStr = relativePath.generic_string();
 
         if (fs::is_directory(entry.path())) {
           dirs.emplace(relativePathStr,
@@ -196,7 +196,7 @@ void Directory::EnumU8(
       auto iterator = fs::directory_iterator(inputPath);
       for (const fs::directory_entry &entry : iterator) {
         fs::path relativePath = fs::relative(entry.path(), inputPath);
-        std::string relativePathStr = relativePath.generic_u8string();
+        std::string relativePathStr = relativePath.generic_string();
 
         if (fs::is_directory(entry.path())) {
           dirs.emplace(relativePathStr,

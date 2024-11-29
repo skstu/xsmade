@@ -4,7 +4,13 @@ Language: Cpp
 AccessModifierOffset: -2
 AlignAfterOpenBracket: Align
 AlignArrayOfStructures: None
-AlignConsecutiveMacros: None
+AlignConsecutiveMacros:
+  Enabled: true
+  AcrossEmptyLines: false
+  AcrossComments: false
+  AlignCompound: false
+  AlignFunctionPointers: false
+  PadOperators: false
 AlignConsecutiveAssignments: None
 AlignConsecutiveBitFields: None
 AlignConsecutiveDeclarations: None
@@ -26,7 +32,7 @@ AlwaysBreakAfterReturnType: None
 AlwaysBreakBeforeMultilineStrings: false
 AlwaysBreakTemplateDeclarations: MultiLine
 AttributeMacros:
-  - __capability
+- __capability
 BinPackArguments: true
 BinPackParameters: true
 BraceWrapping:
@@ -78,25 +84,25 @@ ConstructorInitializerAllOnOneLineOrOnePerLine: false
 AllowAllConstructorInitializersOnNextLine: true
 FixNamespaceComments: true
 ForEachMacros:
-  - foreach
-  - Q_FOREACH
-  - BOOST_FOREACH
+- foreach
+- Q_FOREACH
+- BOOST_FOREACH
 IfMacros:
-  - KJ_IF_MAYBE
+- KJ_IF_MAYBE
 IncludeBlocks: Preserve
 IncludeCategories:
-  - Regex: '^"(llvm|llvm-c|clang|clang-c)/'
-    Priority: 2
-    SortPriority: 0
-    CaseSensitive: false
-  - Regex: '^(<|"(gtest|gmock|isl|json)/)'
-    Priority: 3
-    SortPriority: 0
-    CaseSensitive: false
-  - Regex: ".*"
-    Priority: 1
-    SortPriority: 0
-    CaseSensitive: false
+- Regex: '^"(llvm|llvm-c|clang|clang-c)/'
+  Priority: 2
+  SortPriority: 0
+  CaseSensitive: false
+- Regex: '^(<|"(gtest|gmock|isl|json)/)'
+  Priority: 3
+  SortPriority: 0
+  CaseSensitive: false
+- Regex: ".*"
+  Priority: 1
+  SortPriority: 0
+  CaseSensitive: false
 IncludeIsMainRegex: "(Test)?$"
 IncludeIsMainSourceRegex: ""
 IndentAccessModifiers: false
@@ -178,18 +184,19 @@ SpaceBeforeSquareBrackets: false
 BitFieldColonSpacing: Both
 Standard: Latest
 StatementAttributeLikeMacros:
-  - Q_EMIT
+- Q_EMIT
 StatementMacros:
-  - Q_UNUSED
-  - QT_REQUIRE_VERSION
+- Q_UNUSED
+- QT_REQUIRE_VERSION
 TabWidth: 8
 UseCRLF: false
 UseTab: Never
 WhitespaceSensitiveMacros:
-  - STRINGIZE
-  - PP_STRINGIZE
-  - BOOST_PP_STRINGIZE
-  - NS_SWIFT_NAME
-  - CF_SWIFT_NAME
+- STRINGIZE
+- PP_STRINGIZE
+- BOOST_PP_STRINGIZE
+- NS_SWIFT_NAME
+- CF_SWIFT_NAME
 ---
+
 

@@ -12,7 +12,7 @@ macro(GFN_FIND_WXWIDGETS OUT_WX_INCLUDES OUT_WX_LIBS)
         "${xs3RDPARTY_DIR}/wxWidgets/include/"
         "${xsOUTPUT_DIR}/wxWidgets/lib/wx/include/msw-unicode-static-${wxVERSION}/"
     )
-    set(wxLIBS_DIR ${xsOUTPUT_DIR}wxWidgets/lib)
+    set(wxLIBS_DIR ${xsOUTPUT_DIR}/wxWidgets/lib)
     set(${OUT_WX_LIBS}
         "${wxLIBS_DIR}/libwx_baseu_net-${wxVERSION}-Windows.a"
         "${wxLIBS_DIR}/libwx_baseu_xml-${wxVERSION}-Windows.a"
@@ -44,7 +44,7 @@ macro(GFN_FIND_WXWIDGETS OUT_WX_INCLUDES OUT_WX_LIBS)
         "${xs3RDPARTY_DIR}/wxWidgets/include/"
         "${xsOUTPUT_DIR}/wxWidgets/lib/wx/include/osx_cocoa-unicode-static-3.3/"
     )
-    set(wxLIBS_DIR ${xsOUTPUT_DIR}wxWidgets/lib)
+    set(wxLIBS_DIR ${xsOUTPUT_DIR}/wxWidgets/lib)
 
     set(${OUT_WX_LIBS}
         "${wxLIBS_DIR}/libwx_baseu_net-${wxVERSION}.a"

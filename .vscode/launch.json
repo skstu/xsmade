@@ -5,8 +5,10 @@
       "name": "Windows Build With CMake Ninja",
       "type": "cppdbg",
       "request": "launch",
-      "program": "${workspaceFolder}/out/bin/perform.exe",
+      //"program": "${workspaceFolder}/out/bin/perform.exe",
       //"program": "${workspaceFolder}/out/bin/test_ffx.exe",
+      //"program": "${workspaceFolder}/out/bin/ffxui.exe",
+      "program": "${workspaceFolder}/out/bin/test_wxui.exe",
       "args": [
         " ",
         "--type=service",
