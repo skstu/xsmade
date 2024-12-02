@@ -44,7 +44,8 @@ if(WIN32)
 elseif(APPLE)
   target_include_directories(
     ${PROJECT_NAME}
-    PRIVATE ${xsINCLUDE_DIR}
+    PRIVATE ${xsROOT_DIR}
+            ${xsINCLUDE_DIR}
             ${xs3RDPARTY_DIR}/utfcpp/source/
             ${xs3RDPARTY_DIR}/cpp-httplib/
             /opt/homebrew/opt/openssl@3/include/
@@ -53,12 +54,15 @@ elseif(APPLE)
 
   # target_link_directories(${PROJECT_NAME} PRIVATE
   # ${xsOUTPUT_DIR}/wxWidgets/lib/)
-
+  target_link_directories(${PROJECT_NAME} PRIVATE ${xsLIBS_DIR})
+  
   target_link_libraries(
     ${PROJECT_NAME}
     "-framework CoreFoundation"
     "-framework Cocoa"
     "-liconv"
+    libsys.a
+    libstl.a
     /opt/homebrew/opt/openssl@3/lib/libcrypto.a
     /opt/homebrew/opt/openssl@3/lib/libssl.a
     /opt/homebrew/Cellar/fmt/11.0.2/lib/libfmt.a

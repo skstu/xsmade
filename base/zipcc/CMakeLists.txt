@@ -3,12 +3,20 @@ cmake_minimum_required(VERSION 3.5)
 project(zipcc)
 
 gfn_project_source_get(${CMAKE_CURRENT_SOURCE_DIR} OUT_HEADER_S OUT_SOURCE_S)
+if(WIN32)
 set(SOURCES
     ${OUT_HEADER_S} ${OUT_SOURCE_S}
     ${xs3RDPARTY_DIR}/zlib/contrib/minizip/zip.c
     ${xs3RDPARTY_DIR}/zlib/contrib/minizip/unzip.c
     ${xs3RDPARTY_DIR}/zlib/contrib/minizip/ioapi.c
     ${xs3RDPARTY_DIR}/zlib/contrib/minizip/iowin32.c)
+    elseif(APPLE)
+    set(SOURCES
+    ${OUT_HEADER_S} ${OUT_SOURCE_S}
+    ${xs3RDPARTY_DIR}/zlib/contrib/minizip/zip.c
+    ${xs3RDPARTY_DIR}/zlib/contrib/minizip/unzip.c
+    ${xs3RDPARTY_DIR}/zlib/contrib/minizip/ioapi.c)
+    endif()
 
 add_library(${PROJECT_NAME} STATIC ${SOURCES})
 

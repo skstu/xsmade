@@ -63,10 +63,10 @@ static int GZUnCompress(unsigned char *pSrc, unsigned long nSrc,
 bool Zipcc::IsZipCompress(const std::string &buffer) {
   if (buffer.empty())
     return false;
-  if (buffer.size() < sizeof(__int64))
+  if (buffer.size() < sizeof(__int64_t))
     return false;
-  __int64 head = 0;
-  ::memcpy(&head, buffer.data(), sizeof(__int64));
+  __int64_t head = 0;
+  ::memcpy(&head, buffer.data(), sizeof(__int64_t));
   return (head << (8 * 4)) >> (8 * 4) == 0x04034b50 /*0x0000001404034b50*/;
 }
 

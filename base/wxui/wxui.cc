@@ -48,7 +48,10 @@ void Wxui::MainProc() {
     auto inst = wxApp::GetInstance();
     App *app = wxDynamicCast(inst, App);
 
-    int rc = wxEntry(NULL);
+    // int rc = wxEntry(NULL);
+    int argc = 1;
+    char *argv[] = {const_cast<char *>("myapp")};
+    int rc = wxEntry(argc, argv);
     // config_->OnSystemExit(rc);
   } while (0);
 }

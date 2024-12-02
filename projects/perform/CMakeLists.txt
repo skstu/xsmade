@@ -54,7 +54,7 @@ elseif(APPLE)
     ${PROJECT_NAME}
     PRIVATE ${xsINCLUDE_DIR} ${xs3RDPARTY_DIR}/utfcpp/source/
             ${xs3RDPARTY_DIR}/http-parser/ ${xs3RDPARTY_DIR}/cpp-httplib/
-            ${xsOPENSSL_INCLUDE} ${wxINCLUDES})
+            ${xsOPENSSL_INCLUDE} ${wxINCLUDES} /opt/homebrew/Cellar/fmt/11.0.2/include/)
 
   target_link_directories(${PROJECT_NAME} PRIVATE ${xsLIBS_DIR})
 
@@ -72,6 +72,8 @@ elseif(APPLE)
     "-liconv"
     libsys.a
     libstl.a
+    libzipcc.a
+    libpthread.a
     /opt/homebrew/Cellar/fmt/11.0.2/lib/libfmt.a
     /opt/homebrew/Cellar/libuv/1.49.2/lib/libuv.a
     /opt/homebrew/Cellar/zlib/1.3.1/lib/libz.a

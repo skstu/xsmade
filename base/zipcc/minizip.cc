@@ -1,7 +1,9 @@
 ﻿#include "config.h"
 #include <zip.h>
 #include <unzip.h>
-
+#if !defined(MAX_PATH)
+#define MAX_PATH 260
+#endif
 bool Zipcc::zipUnCompress(const std::u16string &inputZipFile,
                           const tfzipUnCompressCb &uncompress_cb, void *route) {
   bool result = false;
@@ -17,10 +19,10 @@ bool Zipcc::zipUnCompress(const std::u16string &inputZipFile,
     if (UNZ_OK != unzGoToFirstFile(zip_file))
       break;
     do {
-      char filename_in_zip[_MAX_PATH] = {0};
+      char filename_in_zip[MAX_PATH] = {0};
       unz_file_info file_info;
       if (UNZ_OK != unzGetCurrentFileInfo(zip_file, &file_info, filename_in_zip,
-                                          _MAX_PATH, nullptr, 0, nullptr, 0))
+                                          MAX_PATH, nullptr, 0, nullptr, 0))
         break;
       std::u16string strfilename_in_zip = Utfpp::u8_to_u16(filename_in_zip);
       if (!(*std::prev(strfilename_in_zip.end()) == u'\\' ||
@@ -65,10 +67,10 @@ bool Zipcc::zipUnCompress(const std::u16string &inputZipFile,
     if (!stl::Directory::Create(outputUnzipPath))
       break;
     do {
-      char filename_in_zip[_MAX_PATH] = {0};
+      char filename_in_zip[MAX_PATH] = {0};
       unz_file_info file_info;
       if (unzGetCurrentFileInfo(zip_file, &file_info, filename_in_zip,
-                                _MAX_PATH, nullptr, 0, nullptr, 0) != UNZ_OK)
+                                MAX_PATH, nullptr, 0, nullptr, 0) != UNZ_OK)
         break;
       const std::u16string filename_in_zip_full =
           outputUnzipPath + u"\\" + Utfpp::u8_to_u16(filename_in_zip);
@@ -126,10 +128,10 @@ bool Zipcc::zipUnCompress(const std::u16string &inputZipFile,
     if (!stl::Directory::Create(outputUnzipPath))
       break;
     do {
-      char filename_in_zip[_MAX_PATH] = {0};
+      char filename_in_zip[MAX_PATH] = {0};
       unz_file_info file_info;
       if (unzGetCurrentFileInfo(zip_file, &file_info, filename_in_zip,
-                                _MAX_PATH, nullptr, 0, nullptr, 0) != UNZ_OK)
+                                MAX_PATH, nullptr, 0, nullptr, 0) != UNZ_OK)
         break;
       const std::u16string filename_in_zip_full =
           outputUnzipPath + u"\\" + Utfpp::u8_to_u16(filename_in_zip);
