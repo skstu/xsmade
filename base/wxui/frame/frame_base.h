@@ -14,6 +14,12 @@ public:
 protected:
   const FrameType &Type() const override;
   void SetRegion(long x, long y, long cx, long cy) override;
+  bool IsFullScreenShown() const override;
+  bool IsDragging() const override;
+
+protected:
+  std::atomic_bool is_dragging_ = false;
+  std::atomic_bool is_fullscreen_shown_ = false;
 };
 /// /*_ Memade®（新生™） _**/
 /// /*_ Thu, 28 Nov 2024 05:50:44 GMT _**/

@@ -15,6 +15,8 @@ class IFrame {
 public:
   virtual const FrameType &Type() const = 0;
   virtual void SetRegion(long x, long y, long cx, long cy) = 0;
+  virtual bool IsFullScreenShown() const = 0;
+  virtual bool IsDragging() const = 0;
 };
 class ITheme {
 public:
@@ -22,10 +24,25 @@ public:
   virtual void SetBackgroundImage(const char *) = 0;
   virtual tfThemeIdentify Identify() const = 0;
 };
+class IRecordingArgs {
+public:
+  virtual int GetX() const = 0;
+  virtual int GetY() const = 0;
+  virtual int GetCX() const = 0;
+  virtual int GetCY() const = 0;
+  virtual void Release() const = 0;
+};
 class IConfig {
+public:
+  typedef void (*tfRecordingStartCb)(const IRecordingArgs *, void *);
+  typedef void (*tfRecordingStopCb)(void *);
+
 public:
   virtual void SetFrameType(const FrameType &) = 0;
   virtual ITheme *CreateTheme() = 0;
+  virtual void SetResourceDir(const char *) = 0;
+  virtual void RegisterRecordingStartCb(tfRecordingStartCb, void *) = 0;
+  virtual void RegisterRecordingStopCb(tfRecordingStopCb, void *) = 0;
 };
 class IWxui : public Interface<IWxui> {
 public:
@@ -34,6 +51,7 @@ public:
   virtual void Stop() = 0;
   virtual IConfig *ConfigGet() const = 0;
   virtual IFrame *GetFrame() const = 0;
+  virtual void NotifyRecordingEnd() const = 0;
 };
 } // namespace wxui
 

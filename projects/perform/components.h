@@ -44,6 +44,8 @@ public:
 
 public:
   Component *GetComp(const std::u16string &) const;
+  bool ffxRecordStart(const wxui::IRecordingArgs *);
+  void ffxRecordStop();
 
 private:
   Components();

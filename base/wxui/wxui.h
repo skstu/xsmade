@@ -6,14 +6,18 @@
 #include <sys.hpp>
 #include <macros.h>
 #include <stl.hpp>
+#include <fmt/format.h>
 #include "export.h"
 using namespace wxui;
 #include "deps.h"
 #include "theme.h"
 #include "config.h"
-#include "frame_base.h"
-#include "shape_frame.h"
-#include "toolbar_frame.h"
+#include "global.h"
+#include "recording_args.h"
+#include "frame/frame_base.h"
+#include "frame/frame_bkg.h"
+#include "frame/frame_work.h"
+#include "frame/frame_tool.h"
 #include "frame.h"
 #include "app.h"
 
@@ -27,11 +31,13 @@ private:
   virtual ~Wxui();
   void Init();
   void UnInit();
+
 protected:
   bool Start() override final;
   void Stop() override final;
-  IConfig* ConfigGet() const override final;
-  IFrame *GetFrame() const override;
+  IConfig *ConfigGet() const override final;
+  IFrame *GetFrame() const override final;
+  void NotifyRecordingEnd() const override final;
 
 private:
   void MainProc();

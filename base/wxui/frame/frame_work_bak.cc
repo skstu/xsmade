@@ -1,21 +1,21 @@
 #include "wxui.h"
-
-/*EVT_CONTEXT_MENU(ShapeFrame::OnContextMenu)*/
-wxBEGIN_EVENT_TABLE(ShapeFrame, wxFrame) EVT_SIZE(ShapeFrame::OnSize)
-    EVT_PAINT(ShapeFrame::OnPaint) EVT_CLOSE(ShapeFrame::OnClose)
-        EVT_LEFT_DOWN(ShapeFrame::OnLeftDown) EVT_LEFT_UP(ShapeFrame::OnLeftUp)
-            EVT_RIGHT_DOWN(ShapeFrame::OnRightDown)
-                EVT_RIGHT_UP(ShapeFrame::OnRightUp)
-                    EVT_MOUSE_CAPTURE_LOST(ShapeFrame::OnMouseLost)
-                        EVT_MOTION(ShapeFrame::OnMotion)
-                            EVT_ERASE_BACKGROUND(ShapeFrame::OnErase)
-                                EVT_ENTER_WINDOW(ShapeFrame::OnEnterWindow)
-                                    EVT_LEAVE_WINDOW(ShapeFrame::OnLeaveWindow)
+#if 0
+/*EVT_CONTEXT_MENU(FrameWork::OnContextMenu)*/
+wxBEGIN_EVENT_TABLE(FrameWork, wxFrame) EVT_SIZE(FrameWork::OnSize)
+    EVT_PAINT(FrameWork::OnPaint) EVT_CLOSE(FrameWork::OnClose)
+        EVT_LEFT_DOWN(FrameWork::OnLeftDown) EVT_LEFT_UP(FrameWork::OnLeftUp)
+            EVT_RIGHT_DOWN(FrameWork::OnRightDown)
+                EVT_RIGHT_UP(FrameWork::OnRightUp)
+                    EVT_MOUSE_CAPTURE_LOST(FrameWork::OnMouseLost)
+                        EVT_MOTION(FrameWork::OnMotion)
+                            EVT_ERASE_BACKGROUND(FrameWork::OnErase)
+                                EVT_ENTER_WINDOW(FrameWork::OnEnterWindow)
+                                    EVT_LEAVE_WINDOW(FrameWork::OnLeaveWindow)
                                         wxEND_EVENT_TABLE();
 
-ShapeFrame::ShapeFrame(wxWindow *parent, wxWindowID id, const wxString &title,
-                       const wxPoint &pos, const wxSize &size, long style,
-                       const wxString &name)
+FrameWork::FrameWork(wxWindow *parent, wxWindowID id, const wxString &title,
+                     const wxPoint &pos, const wxSize &size, long style,
+                     const wxString &name)
     : FrameBase(parent, id, title, pos, wxSize(640, 480),
                 wxFRAME_SHAPED | wxFRAME_NO_TASKBAR, name) {
   m_MouseRightPopupMenu.Append(0, "&About");
@@ -27,38 +27,26 @@ ShapeFrame::ShapeFrame(wxWindow *parent, wxWindowID id, const wxString &title,
   m_MouseRightPopupMenu.AppendSeparator();
   m_MouseRightPopupMenu.Append(5, "E&xit")
       ->SetBitmap(wxArtProvider::GetBitmapBundle(wxART_QUIT, wxART_MENU));
-
-  Bind(wxEVT_BUTTON, &ShapeFrame::OnToolbarEvent, this);
+  SetTheme(0);
 }
 
-ShapeFrame::~ShapeFrame() {
-  Unbind(wxEVT_BUTTON, &ShapeFrame::OnToolbarEvent, this);
+FrameWork::~FrameWork() {
 }
-void ShapeFrame::SetRegion(long x, long y, long cx, long cy) {
+void FrameWork::SetRegion(long x, long y, long cx, long cy) {
   wxFrameBase::SetPosition(wxPoint(x, y));
   wxFrameBase::SetSize(wxSize(cx, cy));
   SetTheme(0);
 }
-void ShapeFrame::OnSize(wxSizeEvent &wxEvent) {
+void FrameWork::OnSize(wxSizeEvent &wxEvent) {
   wxEvent.Skip();
 }
-void ShapeFrame::OnClose(wxCloseEvent &wxEvent) {
-  int res = wxMessageBox("Are you sure you want to exit system?", "tip",
-                         wxYES_NO, this);
-  if (res != wxYES) {
-    wxEvent.Veto();
-  } else {
-    auto handle = wxApp::GetInstance();
-    if (handle)
-      wxQueueEvent(
-          handle, new wxThreadEvent(wxEVT_THREAD, wxAppThreadEvt_FrameDestroy));
-    wxEvent.Skip();
-  }
-}
-void ShapeFrame::OnErase(wxEraseEvent &wxEvent) {
+void FrameWork::OnClose(wxCloseEvent &wxEvent) {
   wxEvent.Skip();
 }
-void ShapeFrame::OnPaint(wxPaintEvent &wxEvent) {
+void FrameWork::OnErase(wxEraseEvent &wxEvent) {
+  wxEvent.Skip();
+}
+void FrameWork::OnPaint(wxPaintEvent &wxEvent) {
   do {
     // break;
     int width{0}, height{0};
@@ -82,8 +70,9 @@ void ShapeFrame::OnPaint(wxPaintEvent &wxEvent) {
   } while (0);
   wxEvent.Skip();
 }
-bool ShapeFrame::SetTheme(const wxui::tfThemeIdentify &theme_identify) {
+bool FrameWork::SetTheme(const wxui::tfThemeIdentify &theme_identify) {
   bool result = false;
+#if 0
   do {
     theme_ = const_cast<Theme *>(Config::Get()->GetTheme(theme_identify));
     if (!theme_)
@@ -98,13 +87,28 @@ bool ShapeFrame::SetTheme(const wxui::tfThemeIdentify &theme_identify) {
     Layout();
     Refresh();
     // Center();
-#if _WIN32
+#if defined(__OSWIN__)
     SetWindowPos(GetHWND(), HWND_TOPMOST, 0, 0, 0, 0, SWP_NOSIZE | SWP_NOMOVE);
 #endif
   } while (0);
+#endif
+  do { //!@ theme
+    wxImage *themeImg = Config::Get()->GetResImage("theme.png");
+    if (!themeImg)
+      break;
+    wxSize size = GetSize();
+    size.x += region_offset_x_;
+    size.y += region_offset_y_;
+    if (!SetShape(themeImg->Scale(size.x, size.y)))
+      break;
+
+    SetBackgroundColour(wxColour(255, 0, 0, wxALPHA_OPAQUE));
+    Layout();
+    Refresh();
+  } while (0);
   return result;
 }
-bool ShapeFrame::SetShape(const wxImage &img) {
+bool FrameWork::SetShape(const wxImage &img) {
   wxImage m = img;
   if (m.HasAlpha())
     m.ConvertAlphaToMask();
@@ -112,7 +116,7 @@ bool ShapeFrame::SetShape(const wxImage &img) {
   return wxNonOwnedWindow::SetShape(region);
 }
 
-void ShapeFrame::OnMotion(wxMouseEvent &wxEvent) {
+void FrameWork::OnMotion(wxMouseEvent &wxEvent) {
   wxPoint pt = wxEvent.GetPosition();
   bool isDown = wxEvent.LeftIsDown();
   if (isDown && wxEvent.Dragging() && HasCapture()) {
@@ -123,7 +127,7 @@ void ShapeFrame::OnMotion(wxMouseEvent &wxEvent) {
     }
   }
 }
-void ShapeFrame::OnLeftDown(wxMouseEvent &wxEvent) {
+void FrameWork::OnLeftDown(wxMouseEvent &wxEvent) {
   wxPoint pt = wxEvent.GetPosition();
   if (!HasCapture() && !m_rect.Contains(pt))
     CaptureMouse();
@@ -133,20 +137,20 @@ void ShapeFrame::OnLeftDown(wxMouseEvent &wxEvent) {
   m_offset.y = mouse_pos.y - wnd_pos.y;
   std::cout << __FUNCTION__ << std::endl;
 }
-void ShapeFrame::OnLeftUp(wxMouseEvent &wxEvent) {
+void FrameWork::OnLeftUp(wxMouseEvent &wxEvent) {
   m_offset = wxPoint(-1, -1);
   //   if (HasCapture())
   //     ReleaseMouse();
   std::cout << __FUNCTION__ << std::endl;
 }
-void ShapeFrame::OnContextMenu(wxContextMenuEvent &) {
+void FrameWork::OnContextMenu(wxContextMenuEvent &) {
   std::cout << __FUNCTION__ << std::endl;
 }
-void ShapeFrame::OnRightDown(wxMouseEvent &wxEvent) {
+void FrameWork::OnRightDown(wxMouseEvent &wxEvent) {
   auto sk = 0;
   std::cout << __FUNCTION__ << std::endl;
 }
-void ShapeFrame::OnRightUp(wxMouseEvent &wxEvent) {
+void FrameWork::OnRightUp(wxMouseEvent &wxEvent) {
   auto sk = 0;
   std::cout << __FUNCTION__ << std::endl;
 
@@ -164,18 +168,18 @@ void ShapeFrame::OnRightUp(wxMouseEvent &wxEvent) {
   PopupMenu(&m_MouseRightPopupMenu, point);
   std::cout << __FUNCTION__ << std::endl;
 }
-void ShapeFrame::OnMouseLost(wxMouseCaptureLostEvent &wxEvent) {
+void FrameWork::OnMouseLost(wxMouseCaptureLostEvent &wxEvent) {
   m_offset = wxPoint(-1, -1);
   //   if (HasCapture())
   //     ReleaseMouse();
   std::cout << __FUNCTION__ << std::endl;
 }
-void ShapeFrame::OnEnterWindow(wxMouseEvent &wxEvent) {
+void FrameWork::OnEnterWindow(wxMouseEvent &wxEvent) {
   /* wxEvent.Skip();*/
   // CaptureMouse();
   std::cout << __FUNCTION__ << std::endl;
 }
-void ShapeFrame::OnLeaveWindow(wxMouseEvent &wxEvent) {
+void FrameWork::OnLeaveWindow(wxMouseEvent &wxEvent) {
 
   // wxEvent.Skip();
 
@@ -197,56 +201,5 @@ void ShapeFrame::OnLeaveWindow(wxMouseEvent &wxEvent) {
   //     ReleaseMouse();
   std::cout << __FUNCTION__ << std::endl;
   auto sk = 0;
-}
-void ShapeFrame::OnToolbarEvent(wxCommandEvent &evt) {
-  switch (evt.GetId()) {
-  case CommandTool::BTN_SCALING_UP: {
-  } break;
-  case CommandTool::BTN_SCALING_DOWN: {
-  } break;
-  default:
-    break;
-  }
-  evt.Skip();
-}
-#if 0
-bool ShapeFrame::AppendTheme(Theme *theme) {
-  bool result = false;
-  do {
-    if (!theme->Ready())
-      break;
-    auto found = m_Themes.find(theme->Identify());
-    if (found != m_Themes.end())
-      m_Themes.erase(found);
-    m_Themes.emplace(theme->Identify(), theme);
-    result = true;
-  } while (0);
-  return result;
-}
-bool ShapeFrame::SetTheme(const IdentifyTheme &current /*= ""*/) {
-  bool result = false;
-  do {
-    Theme *pos = nullptr;
-    if (m_Themes.empty())
-      break;
-    if (!current.empty()) {
-      auto found = m_Themes.find(current);
-      if (found == m_Themes.end())
-        break;
-      pos = found->second;
-    } else
-      pos = m_Themes.begin()->second;
-    m_CurrentTheme = pos->Identify();
-    auto size = pos->MainWindowSize();
-    SetSize(size);
-    if (!SetShape(pos->ImgShape().Scale(size.x, size.y)))
-      break;
-
-    SetBackgroundColour(wxColour(255, 0, 0, wxALPHA_OPAQUE));
-    Layout();
-    Refresh();
-    result = true;
-  } while (0);
-  return result;
 }
 #endif

@@ -8,24 +8,6 @@ int APIENTRY WinMain(HINSTANCE hInst, HINSTANCE hInstPrev, PSTR cmdline,
 int main(int argc, char **argv) {
   std::string cmdline_ = stl::CmdLine::PackageCommandLine(argc, argv);
 #endif
-  const std::string current_process_path = System::GetCurrentProcessPath();
-  do {
-    auto ffxctrlObj = IFFXCtrl::Create(
-#if defined(DEBUG)
-        (current_process_path + "/../projects/ffxctrl/libffxctrl.dll").c_str()
-#else
-        (current_process_path + "/libffxctrl.dll").c_str();
-#endif
-    );
-    if (!ffxctrlObj)
-      break;
-    ffxctrlObj->Start();
-    ffxctrlObj->Stop();
-    auto xx = 0;
-  } while (0);
-
-  return -1;
-
   auto pConfig = Config::ConfigGet();
   auto pTools = Components::Get();
   Perform *perform = new Perform(cmdline_);

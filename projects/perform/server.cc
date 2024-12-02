@@ -1,5 +1,7 @@
 #include "config.h"
 
+static wxui::IWxui *gpsWxui = nullptr;
+
 namespace {
 enum class ResponseCode : int {
   Ok = 0x0000,
@@ -318,6 +320,36 @@ void Server::OnRequest(const RequestType &reqType, const std::string &body,
       break;
     pComp->Destroy();
   } break;
+  case RequestType::PLUGIN_FFXUI_OPEN: {
+    bool success = false;
+    do {
+      if (!gpsWxui) {
+        gpsWxui = wxui::IWxui::Create(
+            (Config::ConfigGet()->PathGet().plugins_dir + "/wxui.dll").c_str());
+      }
+      if (!gpsWxui)
+        break;
+      gpsWxui->ConfigGet()->SetResourceDir(
+          (Config::ConfigGet()->PathGet().resources_dir + "/ffxui/").c_str());
+      gpsWxui->ConfigGet()->SetFrameType(wxui::FrameType::SHAPEFRAME);
+      gpsWxui->ConfigGet()->RegisterRecordingStartCb(
+          [](const wxui::IRecordingArgs *args, void *route) {
+            Components::Get()->ffxRecordStart(args);
+          },
+          this);
+      gpsWxui->ConfigGet()->RegisterRecordingStopCb(
+          [](void *route) { Components::Get()->ffxRecordStop(); }, this);
+      gpsWxui->Start();
+    } while (0);
+    auto ss = 0;
+  } break;
+  case RequestType::PLUGIN_FFXUI_CLOSE: {
+    if (!gpsWxui)
+      break;
+    gpsWxui->Stop();
+    wxui::IWxui::Destroy(&gpsWxui);
+    gpsWxui = nullptr;
+  } break;
   default:
     break;
   }
@@ -395,6 +427,20 @@ void Server::Listen() {
                   std::string repRes;
                   OnRequest(RequestType::FFX_STOP_SCREEN_RECORDING, req.body,
                             repRes);
+                  res.set_content(repRes.empty() ? "{}" : repRes,
+                                  "application/json; charset=utf-8");
+                });
+  server_->Post("/plugin/ffxui/open",
+                [this](const httplib::Request &req, httplib::Response &res) {
+                  std::string repRes;
+                  OnRequest(RequestType::PLUGIN_FFXUI_OPEN, req.body, repRes);
+                  res.set_content(repRes.empty() ? "{}" : repRes,
+                                  "application/json; charset=utf-8");
+                });
+  server_->Post("/plugin/ffxui/close",
+                [this](const httplib::Request &req, httplib::Response &res) {
+                  std::string repRes;
+                  OnRequest(RequestType::PLUGIN_FFXUI_CLOSE, req.body, repRes);
                   res.set_content(repRes.empty() ? "{}" : repRes,
                                   "application/json; charset=utf-8");
                 });

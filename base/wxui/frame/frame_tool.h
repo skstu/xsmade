@@ -1,30 +1,32 @@
 #if !defined(__00E6354C_3D16_4C11_8AAF_51ED98E1BD3A__)
 #define __00E6354C_3D16_4C11_8AAF_51ED98E1BD3A__
 
-class FrameToolbar final : public FrameBase {
+class FrameTool final : public FrameBase {
 public:
-  FrameToolbar(wxWindow *parent, wxWindowID id = wxID_ANY,
+  FrameTool(wxWindow *parent, wxWindowID id = wxID_ANY,
                const wxString &title = wxEmptyString,
                const wxPoint &pos = wxDefaultPosition,
                const wxSize &size = wxDefaultSize,
                long style = wxDEFAULT_FRAME_STYLE,
                const wxString &name = wxASCII_STR(wxFrameNameStr));
-  virtual ~FrameToolbar();
+  virtual ~FrameTool();
 
 private:
-  void Loyout();
-  wxSize prev_dragging_size_ = wxSize(0, 0);
+  void LayoutEx();
+  wxSize prev_frame_tool_size_;
+  wxSize prev_frame_work_size_;
   wxPoint m_delta;
   void OnSize(wxSizeEvent &);
   void OnClose(wxCloseEvent &);
-  void OnMove(wxMoveEvent&);
+  void OnMove(wxMoveEvent &);
   void OnMouseMove(wxMouseEvent &event);
   void OnMouseLeftDown(wxMouseEvent &event);
   void OnMouseLeftUp(wxMouseEvent &event);
-  void OnToolbarEvent(wxCommandEvent& event);
+  void OnMouseLeftDClick(wxMouseEvent &event);
+  void OnToolEvent(wxCommandEvent &event);
   DECLARE_EVENT_TABLE()
 private:
-  const int btn_size = 30;
+  const int btn_size = 20;
   const int btn_offset_x_ = 5;
   const int btn_offset_y_ = 5;
   wxBitmapButton *btn_close_ = nullptr;

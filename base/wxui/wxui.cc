@@ -55,7 +55,9 @@ void Wxui::MainProc() {
 IFrame *Wxui::GetFrame() const {
   // auto app = wxDynamicCast(wxGetapp(), App);
   App *app = wxDynamicCast(wxApp::GetInstance(), App);
-  return app->FrameGet();
+  return app->FrameToolGet();
+}
+void Wxui::NotifyRecordingEnd() const {
 }
 /////////////////////////////////////////////////////////////////////
 static Wxui *__gpsWxui = nullptr;

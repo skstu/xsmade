@@ -84,9 +84,8 @@ bool Components::CreateComponent(const std::string &identify,
   bool result = false;
   do {
 
-
     result = true;
-  }while(0);
+  } while (0);
   return result;
 }
 void Components::DestroyComponent(const std::string &identify,
@@ -98,7 +97,7 @@ bool Components::Component::Create(const std::vector<std::string> &args,
                                    const bool &show) {
 
   for (const auto &node : args) {
-    LOG_INFO("{}",node);
+    LOG_INFO("{}", node);
   }
   std::vector<const char *> startup_args;
   for (const auto &node : args)
@@ -111,6 +110,54 @@ bool Components::Component::Create(const std::vector<std::string> &args,
 }
 void Components::Component::Destroy() {
   auto ss = 0;
+}
+bool Components::ffxRecordStart(const wxui::IRecordingArgs *args) {
+  bool result = false;
+  std::lock_guard<std::mutex> lock{*mtx_};
+  do {
+    auto fComp = comps_.find(u"ffx");
+    if (fComp == comps_.end())
+      break;
+    if (!args)
+      break;
+    std::string size = fmt::format("{}x{}", args->GetCX(), args->GetCY());
+#if defined(DEBUG)
+    std::string outfile = fmt::format(
+        R"(C:\Users\k34ub\AppData\Roaming\MarsProjects\userdata\{}.mp4)",
+        stl::Time::TimeStamp<std::chrono::microseconds>());
+#else
+    std::string outfile =
+        fmt::format("{}/{}.mp4", System::GetCurrentProcessPath(),
+                    stl::Time::TimeStamp<std::chrono::microseconds>());
+#endif
+    ffx::FFXArgs ffxArgs(ffx::tfFFXArgs{
+        {0, {"-y", ""}},
+        {1, {"-f", "gdigrab"}},
+        {2, {"-video_size", size}},
+        {3, {"-offset_x", std::to_string(args->GetX())}},
+        {4, {"-offset_y", std::to_string(args->GetY())}},
+        {5, {"-framerate", "15"}},
+        {6, {"-i", "desktop"}},
+        {7, {"-t", "10"}},
+        {8, {"-r", "20"}},
+        {9, {"-vcodec", "libx264"}},
+        {10, {"-s", size}},
+        {11, {"-b:v", "10000"}},
+        {12, {"-crf", "24"}},
+        {13, {"-pix_fmt", "yuv420p"}},
+        {14, {"-preset:v", "veryfast"}},
+        {15, {"-tune:v", "zerolatency"}},
+        {16, {"-xs-outfile", stl::Path::Mormalize(outfile)}},
+    });
+    fComp->second->Create(ffxArgs.GetArgs(), false);
+  } while (0);
+  return result;
+}
+void Components::ffxRecordStop() {
+  std::lock_guard<std::mutex> lock{*mtx_};
+  do {
+
+  } while (0);
 }
 ///////////////////////////////////////////////////
 static Components *__gpTools = nullptr;

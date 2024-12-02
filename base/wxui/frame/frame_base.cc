@@ -12,3 +12,9 @@ const FrameType &FrameBase::Type() const {
 }
 void FrameBase::SetRegion(long x, long y, long cx, long cy) {
 }
+bool FrameBase::IsFullScreenShown() const {
+  return is_fullscreen_shown_.load();
+}
+bool FrameBase::IsDragging() const {
+  return is_dragging_.load();
+}

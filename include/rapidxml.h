@@ -5,7 +5,7 @@
 #include "../3rdparty/rapidxml/rapidxml_iterators.hpp"
 #include "../3rdparty/rapidxml/rapidxml_print.hpp"
 #include "../3rdparty/rapidxml/rapidxml_utils.hpp"
-
+#if 0
 using tf_rapidxml_char_doc = rapidxml::xml_document<char>;
 using tf_rapidxml_wchar_doc = rapidxml::xml_document<wchar_t>;
 
@@ -57,4 +57,5 @@ static bool rapidxml_isxml(const std::string& xml_data) {
  } while (0);
  return result;
 }
+#endif
 #endif ///__RAPID_XML_H_

@@ -1,15 +1,15 @@
 #if !defined(__C431D9C4_3CA8_4270_8548_883BCF6F8E32__)
 #define __C431D9C4_3CA8_4270_8548_883BCF6F8E32__
-
-class ShapeFrame final : public FrameBase {
+#if 0
+class FrameWork final : public FrameBase {
 public:
-  ShapeFrame(wxWindow *parent, wxWindowID id = wxID_ANY,
+  FrameWork(wxWindow *parent, wxWindowID id = wxID_ANY,
              const wxString &title = wxEmptyString,
              const wxPoint &pos = wxDefaultPosition,
              const wxSize &size = wxDefaultSize,
              long style = wxDEFAULT_FRAME_STYLE,
              const wxString &name = wxASCII_STR(wxFrameNameStr));
-  virtual ~ShapeFrame();
+  virtual ~FrameWork();
 
 public:
   bool SetTheme(const wxui::tfThemeIdentify &theme_identify);
@@ -28,7 +28,6 @@ private:
   void OnEnterWindow(wxMouseEvent &);
   void OnLeaveWindow(wxMouseEvent &);
   void OnContextMenu(wxContextMenuEvent &);
-  void OnToolbarEvent(wxCommandEvent&);
 protected:
   bool SetShape(const wxImage &img);
 
@@ -51,7 +50,7 @@ private:
 #endif
   DECLARE_EVENT_TABLE()
 };
-
+#endif
 /// /*_ Memade®（新生™） _**/
 /// /*_ Thu, 28 Nov 2024 05:23:27 GMT _**/
 /// /*_____ https://www.skstu.com/ _____ **/

@@ -9,6 +9,7 @@ Config::~Config() {
 }
 void Config::Init() {
   PathsInit();
+  SettingsInit();
   LOG_INIT(paths_.logs_dir + "perform.log");
 }
 
@@ -157,11 +158,33 @@ void Config::PathsInit() {
     paths_.chromium_dir = paths_.root_dir + "/chromium/";
     paths_.chromium_user_data_dir = paths_.root_dir + "/userdata/";
     paths_.chromium_extensions_dir = paths_.root_dir + "/exetnsions/";
+    paths_.configure_dir = paths_.root_dir + "/configure/";
+    paths_.plugins_dir = paths_.root_dir + "/plugins/";
+    paths_.components_dir = paths_.root_dir + "/components/";
+    paths_.resources_dir = paths_.root_dir + "/resources/";
 
     stl::Directory::Create(paths_.root_dir);
+    stl::Directory::Create(paths_.configure_dir);
+    stl::Directory::Create(paths_.resources_dir);
+    stl::Directory::Create(paths_.plugins_dir);
+    stl::Directory::Create(paths_.components_dir);
     stl::Directory::Create(paths_.logs_dir);
     stl::Directory::Create(paths_.chromium_dir);
     stl::Directory::Create(paths_.chromium_extensions_dir);
+  } while (0);
+}
+////////////////////////////////////////////////////////////////////////////
+Config::Settings::Settings() {
+}
+Config::Settings::~Settings() {
+}
+void Config::SettingsInit() {
+  do {
+    std::string settings_buffer =
+        stl::File::ReadFile(paths_.configure_dir + "/settings.xml");
+    if (settings_buffer.empty())
+      break;
+
   } while (0);
 }
 ////////////////////////////////////////////////////////////////////////////

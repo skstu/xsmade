@@ -9,8 +9,9 @@ add_library(${PROJECT_NAME} SHARED ${SOURCES})
 gfn_find_wxwidgets(wxINCLUDES wxLIBS)
 
 target_include_directories(
-  ${PROJECT_NAME} PRIVATE ${xsINCLUDE_DIR} ${xs3RDPARTY_DIR}/utfcpp/source/
-                          ${xsOPENSSL_INCLUDE} ${wxINCLUDES})
+  ${PROJECT_NAME}
+  PRIVATE ${CMAKE_CURRENT_SOURCE_DIR} ${xsINCLUDE_DIR}
+          ${xs3RDPARTY_DIR}/utfcpp/source/ ${xsOPENSSL_INCLUDE} ${wxINCLUDES})
 target_link_directories(${PROJECT_NAME} PRIVATE ${xsLIBS_DIR})
 if(WIN32)
   target_link_libraries(
@@ -47,6 +48,13 @@ if(WIN32)
   set_target_properties(${PROJECT_NAME} PROPERTIES POSITION_INDEPENDENT_CODE
                                                    TRUE)
   target_compile_definitions(${PROJECT_NAME} PRIVATE wxUSE_GUI=1 wxUSE_BASE=0)
+
+  add_custom_command(
+    TARGET ${PROJECT_NAME}
+    POST_BUILD
+    COMMAND
+      ${CMAKE_COMMAND} -E copy_if_different $<TARGET_FILE:${PROJECT_NAME}>
+      C:/Users/k34ub/AppData/Roaming/MarsProjects/plugins/${PROJECT_NAME}.dll)
 elseif(APPLE)
   target_include_directories(
     ${PROJECT_NAME} PRIVATE ${xsINCLUDE_DIR} ${xs3RDPARTY_DIR}/utfcpp/source/
@@ -86,4 +94,4 @@ add_custom_command(
   TARGET ${PROJECT_NAME}
   POST_BUILD
   COMMAND ${CMAKE_COMMAND} -E copy_if_different $<TARGET_FILE:${PROJECT_NAME}>
-          ${xsBIN_DIR}/${PROJECT_NAME}.${EXTNAME})
+          ${xsBIN_DIR}/plugins/${PROJECT_NAME}.${EXTNAME})

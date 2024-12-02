@@ -19,7 +19,6 @@ XS_EXTERN int xs_sys_process_spawn(const char *proc, const char **args,
         count++;
       }
     }
-    
     BOOL status = CreateProcessA(
         proc, // No module name (use command line)
         cmdlines.empty()

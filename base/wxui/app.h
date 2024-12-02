@@ -10,39 +10,22 @@ public:
   int OnExit() override;
   void OnFrameCreate();
   void OnFrameDestroy();
-  IFrame *FrameGet() const;
-  IFrame *FrameShapeGet() const;
+  IFrame *FrameToolGet() const;
+  IFrame *FrameWorkGet() const;
+  IFrame *FrameBgkGet() const;
 
 private:
   IFrame *frame_ = nullptr;
-  IFrame *frame_shape_ = nullptr;
+  IFrame *frame_tool_ = nullptr;
+  IFrame *frame_work_ = nullptr;
+  IFrame *frame_bgk_ = nullptr;
   void OnThreadEvtFrameDestroy(wxThreadEvent &event);
-};
-#if 0
-class App : public wxApp {
-public:
-  App();
-  virtual ~App();
-
-public:
-  bool OnInit() override;
-  int OnExit() override;
-
-private:
-  void OnThreadEvtFrameDestroy(wxThreadEvent &event);
-
-private:
-  void OnFrameCreate();
-  void OnFrameDestroy();
-
-private:
+  void OnThreadEvtCaptureFinished(wxThreadEvent &event);
+  void MainProc();
+  std::atomic_bool open_ = false;
   stl::tfThreads threads_;
-  wxIcon logo_;
-  Frame *frame_ = nullptr;
-  std::shared_ptr<std::mutex> mtx_ = std::make_shared<std::mutex>();
 };
-
-#endif
+extern const int wxAppThreadEvt_CaptureFinished;
 extern const int wxAppThreadEvt_FrameDestroy;
 extern const int wxAppThreadEvt_BroadcastEvent;
 /// /*_ Memade®（新生™） _**/

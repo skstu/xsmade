@@ -70,20 +70,30 @@ XS_EXTERN int xs_sys_capturescreen(xs_position_t pos,
   int r = -1;
   std::string imageStream;
   do {
+    if (pos.cx <= 0 || pos.cy <= 0)
+      break;
+#if 0
     HWND hwnd_ = GetDesktopWindow();
-    IStream *pStream = nullptr;
-    HBITMAP hBitmap = nullptr;
-    HDC hScreenDC = nullptr;
-    HDC hMemoryDC = nullptr;
-
-    RECT rtWindow;
-    GetWindowRect(hwnd_, &rtWindow);
-    const long left = rtWindow.left;
+       RECT rtWindow;
+       GetWindowRect(hwnd_, &rtWindow);
+           const long left = rtWindow.left;
     const long top = rtWindow.top;
     const long right = rtWindow.right;
     const long bottom = rtWindow.bottom;
     const long width = rtWindow.right - rtWindow.left;
     const long height = rtWindow.bottom - rtWindow.top;
+#endif
+    IStream *pStream = nullptr;
+    HBITMAP hBitmap = nullptr;
+    HDC hScreenDC = nullptr;
+    HDC hMemoryDC = nullptr;
+
+    const long left = pos.x;
+    const long top = pos.y;
+    const long right = pos.x + pos.cx;
+    const long bottom = pos.y + pos.cy;
+    const long width = pos.cx;
+    const long height = pos.cy;
     do {
       if (right && bottom) { //!@ unused variable ...
       }

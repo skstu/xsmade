@@ -1,10 +1,11 @@
 #if !defined(__918F8A06_5054_4610_918C_97CFBD43D91B__)
 #define __918F8A06_5054_4610_918C_97CFBD43D91B__
 
-#define ENABLE_DEVELOPER_DEBUG 1
+#define ENABLE_DEVELOPER_DEBUG  1
 #define ENABLE_DEVELOPER_LOGGER 1
 
 #include <sys.hpp>
+#include <macros.h>
 #include <httplib.h>
 #include <rapidjson.h>
 #include <fmt/format.h>
@@ -12,7 +13,7 @@
 #include <zipcc.h>
 #include <log.hpp>
 #include <projects/ffxctrl/export.h>
-
+#include <base/wxui/export.h>
 #include "define.h"
 #include "configure.h"
 #include "ffxargs.h"
@@ -33,6 +34,15 @@ public:
     std::string brw_projects_route_file; // "${AppData}/MarsProjects/route.json"
     std::string
         brw_projects_configure_file; // "${AppData}/MarsProjects/configure.json"
+    std::string configure_dir;       // "/configure/"
+    std::string plugins_dir;         // "/plugins/"
+    std::string components_dir;      // "/components/"
+    std::string resources_dir;       // "/resources/"
+  };
+  class Settings {
+  public:
+    Settings();
+    ~Settings();
   };
 
 public:
@@ -47,6 +57,7 @@ private:
   void Init();
   void UnInit();
   void PathsInit();
+  void SettingsInit();
 
 public:
   void RouteConfigureInit(const unsigned int &) const;
@@ -70,6 +81,7 @@ private:
   std::string work_projects_path_;
   std::string chromium_path_;
   std::shared_ptr<std::mutex> mtx_ = std::make_shared<std::mutex>();
+  Settings settings_;
 
 public:
   const std::string project_name_ = "MarsProjects";
