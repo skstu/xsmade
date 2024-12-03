@@ -93,6 +93,17 @@ void Config::OnRecordingStop() const {
     recording_stop_cb_(recording_stop_cb_route_);
   }
 }
+void Config::RegisterSystemExitCb(tfSystemExitCb cb, void *route) {
+  std::lock_guard<std::mutex> lock{*mtx_};
+  system_exit_cb_ = cb;
+  system_exit_cb_route_ = route;
+}
+void Config::OnSystemExit() const {
+  std::lock_guard<std::mutex> lock{*mtx_};
+  if (system_exit_cb_) {
+    system_exit_cb_(system_exit_cb_route_);
+  }
+}
 std::map<CommandTool, wxString> gpCommandToolTipMap = {
     {CommandTool::TOOL_SCALING_UP, wxT("比例缩放(大)")},
     {CommandTool::TOOL_SCALING_DOWN, wxT("比例缩放(小)")},

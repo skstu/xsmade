@@ -36,6 +36,7 @@ class IConfig {
 public:
   typedef void (*tfRecordingStartCb)(const IRecordingArgs *, void *);
   typedef void (*tfRecordingStopCb)(void *);
+  typedef void (*tfSystemExitCb)(void *);
 
 public:
   virtual void SetFrameType(const FrameType &) = 0;
@@ -43,6 +44,7 @@ public:
   virtual void SetResourceDir(const char *) = 0;
   virtual void RegisterRecordingStartCb(tfRecordingStartCb, void *) = 0;
   virtual void RegisterRecordingStopCb(tfRecordingStopCb, void *) = 0;
+  virtual void RegisterSystemExitCb(tfSystemExitCb,void*) = 0;
 };
 class IWxui : public Interface<IWxui> {
 public:

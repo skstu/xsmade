@@ -28,8 +28,9 @@ protected:
   void SetFrameType(const FrameType &) override final;
   ITheme *CreateTheme() override final;
   void SetResourceDir(const char *) override final;
-  void RegisterRecordingStartCb(tfRecordingStartCb,void*) override final;
-  void RegisterRecordingStopCb(tfRecordingStopCb,void*) override final;
+  void RegisterRecordingStartCb(tfRecordingStartCb, void *) override final;
+  void RegisterRecordingStopCb(tfRecordingStopCb, void *) override final;
+  void RegisterSystemExitCb(tfSystemExitCb, void *) override final;
 
 public:
   const FrameType &GetFrameType() const;
@@ -37,16 +38,19 @@ public:
   wxImage *GetResImage(const std::string &imgName) const;
   void OnRecordingStart(const IRecordingArgs *) const;
   void OnRecordingStop() const;
+  void OnSystemExit() const;
 private:
   FrameType type_ = FrameType::FRAME;
   std::vector<Theme *> themes_;
   std::shared_ptr<std::mutex> mtx_ = std::make_shared<std::mutex>();
   std::map<std::string, wxImage *> imgres_;
   std::string resource_dir_;
-  tfRecordingStartCb recording_start_cb_=nullptr;
-  void* recording_start_cb_route_ = nullptr;
+  tfRecordingStartCb recording_start_cb_ = nullptr;
+  void *recording_start_cb_route_ = nullptr;
   tfRecordingStopCb recording_stop_cb_ = nullptr;
-  void* recording_stop_cb_route_ = nullptr;
+  void *recording_stop_cb_route_ = nullptr;
+  tfSystemExitCb system_exit_cb_ = nullptr;
+  void *system_exit_cb_route_ = nullptr;
 };
 
 extern std::map<CommandTool, wxString> gpCommandToolTipMap;

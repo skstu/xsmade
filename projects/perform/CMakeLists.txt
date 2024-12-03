@@ -8,12 +8,14 @@ add_executable(${PROJECT_NAME} ${SOURCES})
 
 target_include_directories(
   ${PROJECT_NAME}
-  PRIVATE ${xsROOT_DIR}
+  PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}
+          ${xsROOT_DIR}
           ${xsINCLUDE_DIR}
           ${xs3RDPARTY_DIR}/utfcpp/source/
           ${xs3RDPARTY_DIR}/http-parser/
           ${xs3RDPARTY_DIR}/cpp-httplib/
           ${xsOPENSSL_INCLUDE}
+          ${xs3RDPARTY_DIR}/tinyxml2/
           ${xs3RDPARTY_DIR}/wxWidgets/include/)
 target_link_directories(${PROJECT_NAME} PRIVATE ${xsLIBS_DIR})
 if(WIN32)
@@ -44,6 +46,7 @@ if(WIN32)
             libpthread.a
             ${xsOUTPUT_DIR}/http_parser/libhttp_parser.a
             ${xsOUTPUT_DIR}/zlib/libzlibstatic.a
+            ${xsOUTPUT_DIR}/tinyxml2/libtinyxml2.a
             ${xsOPENSSL_LIBRARY})
 
   set_target_properties(${PROJECT_NAME} PROPERTIES LINK_FLAGS "-mwindows"
@@ -52,9 +55,13 @@ if(WIN32)
 elseif(APPLE)
   target_include_directories(
     ${PROJECT_NAME}
-    PRIVATE ${xsINCLUDE_DIR} ${xs3RDPARTY_DIR}/utfcpp/source/
-            ${xs3RDPARTY_DIR}/http-parser/ ${xs3RDPARTY_DIR}/cpp-httplib/
-            ${xsOPENSSL_INCLUDE} ${wxINCLUDES} /opt/homebrew/Cellar/fmt/11.0.2/include/)
+    PRIVATE ${xsINCLUDE_DIR}
+            ${xs3RDPARTY_DIR}/utfcpp/source/
+            ${xs3RDPARTY_DIR}/http-parser/
+            ${xs3RDPARTY_DIR}/cpp-httplib/
+            ${xsOPENSSL_INCLUDE}
+            ${wxINCLUDES}
+            /opt/homebrew/Cellar/fmt/11.0.2/include/)
 
   target_link_directories(${PROJECT_NAME} PRIVATE ${xsLIBS_DIR})
 

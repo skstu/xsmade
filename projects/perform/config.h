@@ -8,6 +8,7 @@
 #include <macros.h>
 #include <httplib.h>
 #include <rapidjson.h>
+#include <tinyxml2.hpp>
 #include <fmt/format.h>
 #include <utfpp.hpp>
 #include <zipcc.h>
@@ -18,7 +19,9 @@
 #include "configure.h"
 #include "ffxargs.h"
 #include "browser.h"
-#include "components.h"
+#include "plugins/plugins.h"
+#include "components/components.h"
+#include "components/ffmpeg/ffmpeg.h"
 #include "server.h"
 #include "perform.h"
 

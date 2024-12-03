@@ -380,7 +380,7 @@ public:
 class Path {
 public:
   static std::string Mormalize(const std::string &PathOrPathname);
-  static std::u16string Mormalize(const std::u16string& PathOrPathname);
+  static std::u16string Mormalize(const std::u16string &PathOrPathname);
   static std::u16string U8PathToU16Path(const std::string &);
   static std::string U16PathToU8Path(const std::u16string &);
   static std::wstring U16PathToWPath(const std::u16string &);
@@ -488,6 +488,62 @@ private:
   std::shared_ptr<std::mutex> mtx_ = std::make_shared<std::mutex>();
 };
 
+class Operation {
+public:
+  Operation() = default;
+  void *operator new(size_t) = delete;
+  void operator delete(void *) = delete;
+  Operation(const Operation &) = delete;
+  Operation &operator=(const Operation &) = delete;
+
+private:
+  ~Operation() = default;
+
+public:
+  static const int SHIFT_DIRECTION_BASE = 4;
+  // This is an enumeration class called ShiftDirection.
+  // It has two values: LEFT and RIGHT.
+  enum class ShiftDirection {
+    LEFT, // Represents a left shift.
+    RIGHT // Represents a right shift.
+  };
+
+  // This is a template function that takes a type T as its input.
+  // It requires that T is an integral type (integers and bool).
+  template <typename T>
+  /*requires std::integral<T>*/
+
+  // This function takes three arguments:
+  // 1. num: a constant reference to an object of type T.
+  // 2. n: a constant reference to an unsigned 16-bit integer (std::uint16_t).
+  // 3. dir: an enum value of type ShiftDirection (LEFT or RIGHT).
+
+  // The function returns a value of type T.
+  static T shift_hex_by_nibbles(const T &num, const std::uint16_t &n,
+                                const ShiftDirection &dir) {
+    // Initialize a variable called "result" of type T with a value of zero.
+    T result = 0;
+    // Use a switch statement to handle the different cases for the
+    // ShiftDirection enum.
+    switch (dir) {
+      // If the ShiftDirection is LEFT, shift the bits of the input number to
+      // the left by n*4.
+    case ShiftDirection::LEFT:
+      result = num << (n * SHIFT_DIRECTION_BASE);
+      break;
+      // If the ShiftDirection is RIGHT, shift the bits of the input number to
+      // the right by n*4.
+    case ShiftDirection::RIGHT:
+      result = num >> (n * SHIFT_DIRECTION_BASE);
+      break;
+      // If neither LEFT nor RIGHT, do nothing.
+    default:
+      break;
+    }
+    // Return the result of the shift operation.
+    return result;
+  }
+};
 class Signal {
 public:
   Signal() = default;
@@ -1113,7 +1169,288 @@ public:
 private:
   std::set<T> m_set;
 };
+template <typename K, typename V> class multimap final : public base {
+private:
+  size_t m_max_size = 0;
 
+public:
+  multimap(const std::multimap<K, V> &obj) : m_map(obj) {
+  }
+  multimap(size_t max_size = 0) : m_max_size(max_size) {
+  }
+  virtual ~multimap() {
+  }
+  void SetMaxSize(const size_t &max_size) {
+    std::lock_guard<std::mutex> lock(*mutex_);
+    m_max_size = max_size;
+  }
+
+public:
+  bool empty() const {
+    std::lock_guard<std::mutex> lock(*mutex_);
+    return m_map.empty();
+  }
+  size_t push(const K &key, const V &val) {
+    std::lock_guard<std::mutex> lock(*mutex_);
+    if (m_max_size > 0) {
+      while (m_map.size() >= m_max_size) {
+        m_map.erase(std::prev(m_map.end()));
+      }
+    }
+    m_map.insert(std::make_pair(key, val));
+    return m_map.size();
+  }
+
+  std::shared_ptr<std::list<V>>
+  search(const std::function<bool(const V &)> &cbSerach) const {
+    std::shared_ptr<std::list<V>> result;
+    std::lock_guard<std::mutex> lock(*mutex_);
+    for (const auto &node : m_map) {
+      if (cbSerach(node.second)) {
+        if (!result) {
+          result = std::make_shared<std::list<V>>();
+        }
+        result->push_front(node.second);
+      } else {
+        break;
+      }
+    }
+    return result;
+  }
+
+  std::shared_ptr<std::list<V>> get(const size_t &count) {
+    std::shared_ptr<std::list<V>> result;
+    std::lock_guard<std::mutex> lock(*mutex_);
+    if (count > 0) {
+      size_t pos = 0;
+      for (const auto &node : m_map) {
+        if (count < pos)
+          break;
+        if (!result) {
+          result = std::make_shared<std::list<V>>();
+        }
+        result->push_front(node.second);
+        ++pos;
+      }
+    }
+    return result;
+  }
+
+  std::shared_ptr<std::tuple<K, V>> pop() {
+    std::shared_ptr<std::tuple<K, V>> val;
+    std::lock_guard<std::mutex> lock(*mutex_);
+    if (m_map.empty()) {
+      return val;
+    }
+    auto it = m_map.begin();
+    if (it == m_map.end()) {
+      return val;
+    }
+    val = std::make_shared<std::tuple<K, V>>(std::tie(it->first, it->second));
+    m_map.erase(it);
+    return val;
+  }
+  void pop_back(size_t count = 1) {
+    std::lock_guard<std::mutex> lock(*mutex_);
+    if (m_map.empty()) {
+      return;
+    }
+    if (m_map.size() <= count) {
+      m_map.clear();
+      return;
+    }
+    do {
+      if (count <= 0) {
+        break;
+      }
+      if (m_map.empty()) {
+        break;
+      }
+      m_map.erase(m_map.end()--);
+      --count;
+    } while (1);
+  }
+
+  std::shared_ptr<V> pop(const K &key) {
+    std::shared_ptr<V> result;
+    std::lock_guard<std::mutex> lock(*mutex_);
+    auto found = m_map.find(key);
+    if (found == m_map.end()) {
+      return result;
+    }
+    result = std::make_shared<V>(std::move(found->second));
+    m_map.erase(found);
+    return result;
+  }
+
+  std::shared_ptr<V> search(const K &key, bool itclear = false) {
+    std::shared_ptr<V> result;
+    std::lock_guard<std::mutex> lock(*mutex_);
+    auto found = m_map.find(key);
+    if (found == m_map.end())
+      return result;
+    result = std::make_shared<V>(std::move(found->second));
+    if (itclear)
+      m_map.erase(found);
+    return result;
+  }
+
+  std::shared_ptr<V> search(const K &key) const {
+    std::shared_ptr<V> result;
+    std::lock_guard<std::mutex> lock(*mutex_);
+    auto found = m_map.find(key);
+    if (found == m_map.end())
+      return result;
+    result = std::make_shared<V>(std::move(found->second));
+    return result;
+  }
+
+  std::shared_ptr<std::tuple<K, V>>
+  pop(const std::function<void(const K &_key, V &_val)> &_cb) {
+    std::shared_ptr<std::tuple<K, V>> val;
+    std::lock_guard<std::mutex> lock(*mutex_);
+    if (m_map.empty()) {
+      return val;
+    }
+    auto it = m_map.begin();
+    if (it == m_map.end()) {
+      return val;
+    }
+    val = std::make_shared<std::tuple<K, V>>(std::tie(it->first, it->second));
+    _cb(it->first, it->second);
+    m_map.erase(it);
+    return val;
+  }
+  bool pop(const K &key,
+           const std::function<void(const K &_key, V &_val)> &_cb) {
+    std::lock_guard<std::mutex> lock(*mutex_);
+    if (m_map.empty()) {
+      return false;
+    }
+    auto it = m_map.find(key);
+    if (it == m_map.end()) {
+      return false;
+    }
+    _cb(it->first, it->second);
+    m_map.erase(it);
+    return true;
+  }
+  bool pop(const K &key, const V &value,
+           const std::function<void(const K &, const V &)> &pop_cb) {
+    if (m_map.empty()) {
+      return false;
+    }
+    std::lock_guard<std::mutex> lock(*mutex_);
+    auto itFind = m_map.find(key);
+    if (itFind != m_map.end()) {
+      for (std::size_t i = 0; i < m_map.count(key); ++i, ++itFind) {
+        if (itFind->second == value) {
+          if (pop_cb) {
+            pop_cb(itFind->first, itFind->second);
+          }
+          m_map.erase(itFind);
+          return true;
+        }
+      }
+    }
+    return false;
+  }
+  void
+  riterate(const std::function<void(const K &, const V &)> &riterate_cb) const {
+    std::lock_guard<std::mutex> lock(*mutex_);
+    if (m_map.empty()) {
+      return;
+    }
+    for (auto rit = m_map.rbegin(); rit != m_map.rend(); ++rit) {
+      riterate_cb(rit->first, rit->second);
+    }
+  }
+
+  std::vector<V> pops(const K &key) {
+    std::vector<V> result;
+    std::lock_guard<std::mutex> lock(*mutex_);
+    if (m_map.empty())
+      return result;
+    auto find = m_map.find(key);
+    if (find != m_map.end()) {
+      for (std::size_t i = 0; i < m_map.count(key); ++i, ++find) {
+        result.emplace_back(find->second);
+      }
+      m_map.erase(key);
+    }
+    return result;
+  }
+
+  void iterate_clear(const std::function<void(const K &, V &, bool & /*break*/,
+                                              bool & /*clear*/)> &iterate_cb) {
+    std::lock_guard<std::mutex> lock(*mutex_);
+    if (!m_map.empty()) {
+      bool __break = false;
+      bool __clear = false;
+      for (auto it = m_map.begin(); it != m_map.end();) {
+        if (__break)
+          break;
+        __break = false;
+        __clear = false;
+        iterate_cb(it->first, it->second, __break, __clear);
+        if (__clear) {
+          it = m_map.erase(it);
+          continue;
+        }
+        ++it;
+      }
+    }
+  }
+  void
+  iterate(const std::function<void(const K &, const V &, const int &cycle_index,
+                                   bool &_iterate_break)> &cb) const {
+    int cycle_index = 0;
+    bool _iterate_break = false;
+    std::lock_guard<std::mutex> lock(*mutex_);
+    if (m_map.empty()) {
+      return;
+    }
+    for (auto it = m_map.begin(); it != m_map.end(); ++it) {
+      if (!_iterate_break) {
+        cb(it->first, it->second, ++cycle_index, _iterate_break);
+      } else {
+        break;
+      }
+    }
+  }
+  auto count(const K &key) {
+    std::lock_guard<std::mutex> lock(*mutex_);
+    return m_map.count(key);
+  }
+  void iterate(const std::function<void(const K &, V &)> &cb) {
+    std::lock_guard<std::mutex> lock(*mutex_);
+    if (m_map.empty()) {
+      return;
+    }
+    for (auto it = m_map.begin(); it != m_map.end(); ++it) {
+      cb(it->first, it->second);
+    }
+  }
+  unsigned long long size() {
+    std::lock_guard<std::mutex> lock(*mutex_);
+    return m_map.size();
+  }
+  bool empty() {
+    std::lock_guard<std::mutex> lock(*mutex_);
+    return m_map.empty();
+  }
+  void clear() {
+    std::lock_guard<std::mutex> lock(*mutex_);
+    m_map.clear();
+  }
+  std::shared_ptr<std::multimap<K, V, std::greater<K>>> src() const {
+    std::lock_guard<std::mutex> lock(*mutex_);
+    return std::make_shared<decltype(m_map)>(m_map);
+  }
+
+private:
+  std::multimap<K, V, std::greater<K>> m_map;
+};
 } // namespace container
 
 template <typename T>

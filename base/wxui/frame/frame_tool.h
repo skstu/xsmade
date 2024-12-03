@@ -27,8 +27,8 @@ private:
   DECLARE_EVENT_TABLE()
 private:
   const int btn_size = 20;
-  const int btn_offset_x_ = 5;
-  const int btn_offset_y_ = 5;
+  const int btn_offset_x_ = 20;
+  const int btn_offset_y_ = 10;
   wxBitmapButton *btn_close_ = nullptr;
   wxBitmapButton *btn_edit_ = nullptr;
   wxBitmapButton *btn_screenshot_ = nullptr;

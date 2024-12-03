@@ -184,7 +184,59 @@ void Config::SettingsInit() {
         stl::File::ReadFile(paths_.configure_dir + "/settings.xml");
     if (settings_buffer.empty())
       break;
+    tinyxml2::XMLDocument doc;
+    tinyxml2::XMLError xmlErr =
+        doc.Parse(settings_buffer.c_str(), settings_buffer.size());
+    if (xmlErr != tinyxml2::XML_SUCCESS)
+      break;
 
+    tinyxml2::XMLNode *node_settings = doc.FirstChildElement("settings");
+    if (!node_settings)
+      break;
+    auto node_settings_att = node_settings->ToElement()->FirstAttribute();
+    while (node_settings_att) {
+
+      node_settings_att = node_settings_att->Next();
+    }
+    auto first_node = node_settings->FirstChild();
+    while (first_node) { //!@ plugins
+      if (auto element = first_node->ToElement()) {
+        if (!strcmp("components", element->Value())) {
+
+          break;
+        }
+      } else if (auto text = first_node->ToText()) {
+      } else if (auto comment = first_node->ToComment()) {
+      }
+      first_node = first_node->NextSibling();
+    }
+    first_node = node_settings->FirstChild();
+    while (first_node) { //!@ components
+      if (auto element = first_node->ToElement()) {
+        if (!strcmp("plugins", element->Value())) {
+          auto att = element->FirstAttribute();
+          while (att) {
+            if (!strcmp("vvv", att->Name())) {
+ 
+              auto value = att->Value();
+              auto ssssss= 0 ;
+            }
+            att = att->Next();
+          }
+
+          auto node = element->FirstChild();
+          while (node) {
+
+            node = node->NextSibling();
+          }
+          break;
+        }
+      } else if (auto text = first_node->ToText()) {
+      } else if (auto comment = first_node->ToComment()) {
+      }
+      first_node = first_node->NextSibling();
+    }
+    auto xx = 0;
   } while (0);
 }
 ////////////////////////////////////////////////////////////////////////////

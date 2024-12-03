@@ -63,26 +63,27 @@ void App::OnFrameCreate() {
     case FrameType::FRAME: {
       frame_ = new Frame(nullptr);
       frame = dynamic_cast<wxFrame *>(frame_);
+      frame->Center();
+      frame->Show();
     } break;
     case FrameType::SHAPEFRAME: {
       frame_bgk_ = new FrameBgk(nullptr);
       frame_work_ = new FrameWork(nullptr);
       frame_tool_ = new FrameTool(nullptr);
-      // dynamic_cast<FrameToolbar *>(frame_)->SetTheme(0);
-      // frame = dynamic_cast<wxFrame *>(frame_tool_);
-      // frame_toolbar_ = new FrameToolbar(nullptr);
-      // frame_toolbar_->Show();
-
+      Global::ffxCenter();
+      Global::ffxTopmost();
     } break;
     default:
       break;
     }
-    Global::ffxTopmost();
-    Global::ffxCenter();
+
   } while (0);
 }
+IFrame *App::FrameGet() const {
+  return frame_;
+}
 IFrame *App::FrameToolGet() const {
-  return frame_ ? frame_ : frame_tool_;
+  return frame_tool_;
 }
 IFrame *App::FrameBgkGet() const {
   return frame_bgk_;
@@ -93,6 +94,8 @@ IFrame *App::FrameWorkGet() const {
 void App::MainProc() {
   do {
     do {
+      if (FrameType::SHAPEFRAME != Config::Get()->GetFrameType())
+        break;
       if (!frame_tool_ || !frame_work_)
         break;
       int x(0), y(0);

@@ -123,6 +123,7 @@ message(STATUS "Build type: ${CMAKE_BUILD_TYPE}")
 message(STATUS "C++ Flags: ${CMAKE_CXX_FLAGS_${CMAKE_BUILD_TYPE}}")
 
 project(xsmade)
+
 set(xsUSE_WXWIDGETS ON)
 if(xsUSE_WXWIDGETS)
   set(wxBUILD_SHARED
@@ -159,6 +160,10 @@ if(xsUSE_WXWIDGETS)
   add_subdirectory(${xs3RDPARTY_DIR}/wxwidgets/ "wxWidgets")
 endif(xsUSE_WXWIDGETS)
 
+
+# tinyxml2
+add_subdirectory(${xs3RDPARTY_DIR}/tinyxml2/ "tinyxml2")
+
 set(ZLIB_BUILD_EXAMPLES
     OFF
     CACHE BOOL "disabled zlib build examples." FORCE)
@@ -177,6 +182,10 @@ add_subdirectory(${xs3RDPARTY_DIR}/http-parser/ "http_parser")
 # .. -DwxBUILD_SAMPLES=ALL -DwxBUILD_SHARED=OFF
 # -DCMAKE_C_FLAGS="-Wno-unused-command-line-argument"
 # -DCMAKE_CXX_FLAGS="-Wno-unused-command-line-argument"
+
+set(BUILD_TESTING OFF CACHE BOOL "" FORCE)
+set(LIBUV_BUILD_SHARED OFF CACHE BOOL "" FORCE)
+add_subdirectory(${xs3RDPARTY_DIR}/libuv/ "uv_a")
 
 include(build/cmake/main.cmake)
 # LIST(APPEND CMAKE_MODULE_PATH ${LOCAL_CMAKE_MODULES_PATH}) include(global)

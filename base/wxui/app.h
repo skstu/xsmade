@@ -10,6 +10,7 @@ public:
   int OnExit() override;
   void OnFrameCreate();
   void OnFrameDestroy();
+  IFrame* FrameGet() const;
   IFrame *FrameToolGet() const;
   IFrame *FrameWorkGet() const;
   IFrame *FrameBgkGet() const;

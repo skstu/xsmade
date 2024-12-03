@@ -5,16 +5,17 @@
 #include <base/wxui/export.h>
 
 int main(int argc, char **argv) {
-  wxui::IWxui *pWxui = wxui::IWxui::Create(
 #if defined(__OSWIN__)
+  wxui::IWxui *pWxui = wxui::IWxui::Create(
       (System::GetCurrentProcessPath() + "/plugins/wxui.dll").c_str());
-#elif defined(__OSMAC__)
-      (System::GetCurrentProcessPath() + "/plugins/wxui.dylib").c_str());
-#endif
   pWxui->ConfigGet()->SetResourceDir(
       R"(C:\Users\k34ub\AppData\Roaming\MarsProjects\resources\ffxui)");
-  pWxui->ConfigGet()->SetFrameType(wxui::FrameType::FRAME);
+  pWxui->ConfigGet()->SetFrameType(wxui::FrameType::SHAPEFRAME);
   pWxui->Start();
+#elif defined(__OSMAC__)
+  wxui::IWxui *pWxui = wxui::IWxui::Create(
+      (System::GetCurrentProcessPath() + "/plugins/wxui.dylib").c_str());
+#endif
 
   std::string input;
   do {

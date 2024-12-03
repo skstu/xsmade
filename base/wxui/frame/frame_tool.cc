@@ -10,11 +10,11 @@ wxBEGIN_EVENT_TABLE(FrameTool, wxFrame) EVT_SIZE(FrameTool::OnSize)
 FrameTool::FrameTool(wxWindow *parent, wxWindowID id, const wxString &title,
                      const wxPoint &pos, const wxSize &size, long style,
                      const wxString &name)
-    : FrameBase(parent, id, title, wxPoint(0, 0), wxSize(640, 30),
+    : FrameBase(parent, id, title, wxPoint(0, 0), wxSize(640, 40),
                 /*(wxDEFAULT_FRAME_STYLE & ~wxCLOSE_BOX & ~wxCAPTION)*/
                 wxNO_BORDER | wxFRAME_NO_TASKBAR /*| wxRESIZE_BORDER*/, name) {
 
-  SetBackgroundColour(wxColour(200, 200, 200));
+  SetBackgroundColour(wxColour(252, 252, 252));
 
   wxImage *img = Config::Get()->GetResImage("btn_close.png");
   if (img) {

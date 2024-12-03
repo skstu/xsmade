@@ -45,18 +45,17 @@ void Wxui::MainProc() {
     wxSystemOptions::SetOption("msw.window-dpi-aware", 1);
 #endif
 
-    auto inst = wxApp::GetInstance();
-    App *app = wxDynamicCast(inst, App);
-
-    // int rc = wxEntry(NULL);
+#if defined(__OSMAC__)
     int argc = 1;
     char *argv[] = {const_cast<char *>("myapp")};
     int rc = wxEntry(argc, argv);
-    // config_->OnSystemExit(rc);
+#elif defined(__OSWIN__)
+    int rc = wxEntry(__argc, __argv);
+#endif
+    Config::Get()->OnSystemExit();
   } while (0);
 }
 IFrame *Wxui::GetFrame() const {
-  // auto app = wxDynamicCast(wxGetapp(), App);
   App *app = wxDynamicCast(wxApp::GetInstance(), App);
   return app->FrameToolGet();
 }
