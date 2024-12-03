@@ -6,6 +6,7 @@
         "**/.git": true,
         "**/.svn": true,
         "**/node_modules": true,
+        "**/.__backup__": true,
         //"**/build": true
     },
     //"clangd.path": "C:\\devenv\\bin\\clangd.exe",
