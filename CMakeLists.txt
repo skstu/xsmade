@@ -184,8 +184,12 @@ add_subdirectory(${xs3RDPARTY_DIR}/http-parser/ "http_parser")
 # -DCMAKE_C_FLAGS="-Wno-unused-command-line-argument"
 # -DCMAKE_CXX_FLAGS="-Wno-unused-command-line-argument"
 
-set(BUILD_TESTING OFF CACHE BOOL "" FORCE)
-set(LIBUV_BUILD_SHARED OFF CACHE BOOL "" FORCE)
+set(BUILD_TESTING
+    OFF
+    CACHE BOOL "" FORCE)
+set(LIBUV_BUILD_SHARED
+    OFF
+    CACHE BOOL "" FORCE)
 add_subdirectory(${xs3RDPARTY_DIR}/libuv/ "uv_a")
 
 include(build/cmake/main.cmake)

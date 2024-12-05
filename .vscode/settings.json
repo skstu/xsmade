@@ -4,6 +4,8 @@
     "C_Cpp.intelliSenseEngine": "disabled",
     "git.ignoreLimitWarning": true,
     "editor.formatOnType": true,
+    "cmakeFormat.mergeEnv": false,
+    "cmakeFormat.exePath": "/Users/huoxingxiongmao/.local/bin/cmake-format",
     "[windows]": {
         "clangd.trace": "C:\\devenv\\bin\\clangd.exe",
         "clangd.path": "C:\\devenv\\bin\\clangd.exe",
