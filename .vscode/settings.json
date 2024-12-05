@@ -4,7 +4,10 @@
     "C_Cpp.intelliSenseEngine": "disabled",
     "git.ignoreLimitWarning": true,
     "editor.formatOnType": true,
-    "clangd.trace": "/usr/bin/clangd",
+    //"clangd.trace": "/usr/bin/clangd",
+    //"clangd.path": "/usr/bin/clangd",
+    "clangd.trace": "C:\\devenv\\bin\\clangd.exe",
+    "clangd.path": "C:\\devenv\\bin\\clangd.exe",
     "files.exclude": {
         "**/.git": true,
         "**/.svn": true,
@@ -12,8 +15,6 @@
         "**/.__backup__": true,
         //"**/build": true
     },
-    //"clangd.path": "C:\\devenv\\bin\\clangd.exe",
-    "clangd.path": "/usr/bin/clangd",
     "clangd.arguments": [
         "--background-index",
         "-j=8",
