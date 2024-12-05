@@ -91,6 +91,15 @@ void Config::RegisterServerExitCb(const tfOnServerExitCb &cb) {
   std::lock_guard<std::mutex> lock{*mtx_};
   server_exit_cb_ = cb;
 }
+void Config::RegisterServerExitBeforeCb(const tfOnServerExitBefore &cb) {
+  std::lock_guard<std::mutex> lock{*mtx_};
+  server_exit_before_cb_ = cb;
+}
+void Config::OnServerExitBefore(const ISession *session) const {
+  std::lock_guard<std::mutex> lock{*mtx_};
+  if (server_exit_before_cb_)
+    server_exit_before_cb_(session);
+}
 void Config::OnServerExit(void) const {
   std::lock_guard<std::mutex> lock{*mtx_};
   if (server_exit_cb_)
@@ -314,4 +323,17 @@ void Config::OnClientSessionWriteHookCb(const ISession *pSession,
   std::lock_guard<std::mutex> lock{*mtx_};
   if (client_session_write_hook_cb_)
     client_session_write_hook_cb_(pSession, msg);
+}
+//////////////////////////////////////////////////////////////////////////////////
+static Config *__gpConfig = nullptr;
+Config *Config::Create() {
+  if (!__gpConfig)
+    __gpConfig = new Config();
+  return __gpConfig;
+}
+void Config::Destroy() {
+  SK_DELETE_PTR(__gpConfig);
+}
+Config *Config::Get() {
+  return Config::Create();
 }

@@ -11,6 +11,9 @@ void Wxui::Init() {
 }
 void Wxui::UnInit() {
 }
+bool Wxui::Ready() const {
+  return open_.load();
+}
 bool Wxui::Start() {
   do {
     if (open_.load())

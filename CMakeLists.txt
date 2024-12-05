@@ -160,9 +160,10 @@ if(xsUSE_WXWIDGETS)
   add_subdirectory(${xs3RDPARTY_DIR}/wxwidgets/ "wxWidgets")
 endif(xsUSE_WXWIDGETS)
 
-
 # tinyxml2
 add_subdirectory(${xs3RDPARTY_DIR}/tinyxml2/ "tinyxml2")
+# sqlite3
+add_subdirectory(${xs3RDPARTY_DIR}/sqlite3/ "sqlite3")
 
 set(ZLIB_BUILD_EXAMPLES
     OFF

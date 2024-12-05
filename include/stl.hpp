@@ -133,15 +133,16 @@ public:
   ~CmdLine();
 
 public:
-  bool HasKey(const std::string &key) const;
-  std::string GetValue(const std::string &key) const;
+  virtual void Release() const;
+  virtual bool HasKey(const std::string &key) const;
+  virtual std::string GetValue(const std::string &key) const;
 
 public:
   static std::string PackageCommandLine(const int &argc, char **argv);
   static std::string PackageCommandLine(const char **args);
   static tfCommandLines ParserCommandLines(const std::string &input);
 
-private:
+protected:
   tfCommandLines source_;
 };
 

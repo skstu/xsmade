@@ -1,6 +1,8 @@
 #ifndef MACROS_H
 #define MACROS_H
 
+#define VAR_NAME(x) #x
+
 #define __FUNCTION_BEGIN_TIME__                                                \
   std::uint64_t _____begin_time_____ = GetTickCount64();
 

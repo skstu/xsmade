@@ -5,6 +5,9 @@ class Client final : public IService {
   std::shared_ptr<std::mutex> m_Mutex = std::make_shared<std::mutex>();
 
 public:
+  static Client *Create();
+  static void Destroy();
+private:
   Client(/*const unsigned long&*/);
   ~Client();
 

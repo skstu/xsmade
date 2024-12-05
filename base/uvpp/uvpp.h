@@ -3,8 +3,17 @@
 
 class Uvpp final : public IUvpp {
 public:
+  static Uvpp *Create();
+  static void Destroy();
+
+private:
   Uvpp();
   virtual ~Uvpp();
+
+protected:
+  IConfig *ConfigGet() const override final;
+  IService *CreateSevice() const override final;
+  IBuffer *CreateBuffer(const char *, size_t) const override final;
 };
 
 #ifdef __cplusplus

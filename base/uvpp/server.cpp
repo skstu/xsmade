@@ -95,19 +95,19 @@ ServerStatus Server::Status() const {
 ServerType Server::ServerTypeGet() const {
   ServerType result = ServerType::UNKNOWN;
   std::unique_lock<std::mutex> lock{*m_Mutex, std::defer_lock};
-  result = Protocol::GetServerType(__gpService->ConfigGet()->GetServiceType());
+  result = Protocol::GetServerType(Config::Get()->GetServiceType());
   return result;
 }
 SessionType Server::SessionTypeGet() const {
   SessionType result = SessionType::UNKNOWN;
   std::unique_lock<std::mutex> lock{*m_Mutex, std::defer_lock};
-  result = Protocol::GetSessionType(__gpService->ConfigGet()->GetServiceType());
+  result = Protocol::GetSessionType(Config::Get()->GetServiceType());
   return result;
 }
 AddressType Server::AddressTypeGet() const {
   AddressType result = AddressType::UNKNOWN;
   std::unique_lock<std::mutex> lock{*m_Mutex, std::defer_lock};
-  result = Protocol::GetAddressType(__gpService->ConfigGet()->GetServiceType());
+  result = Protocol::GetAddressType(Config::Get()->GetServiceType());
   return result;
 }
 void Server::SessionCount(const unsigned long &count) {
@@ -139,7 +139,7 @@ void Server::MainProcess(void *arg) {
     if (0 != uv_loop_init(loop))
       break;
 
-    std::string server_start_address = __gpService->ConfigGet()->Address();
+    std::string server_start_address = Config::Get()->Address();
 
     switch (pServer->SessionTypeGet()) {
     case SessionType::TCP: {
@@ -149,8 +149,8 @@ void Server::MainProcess(void *arg) {
       if (0 != uv_tcp_init(loop, (uv_tcp_t *)server))
         break;
       std::string sockaddr_buffer;
-      if (!Protocol::MakeIPAddr(__gpService->ConfigGet()->Address(),
-                                sockaddr_buffer, pServer->AddressTypeGet()))
+      if (!Protocol::MakeIPAddr(Config::Get()->Address(), sockaddr_buffer,
+                                pServer->AddressTypeGet()))
         break;
       if (0 != uv_tcp_bind(
                    (uv_tcp_t *)server,
@@ -198,8 +198,8 @@ void Server::MainProcess(void *arg) {
     }
 
     if (pServer->Status() != ServerStatus::READY || !server) {
-      dynamic_cast<Config *>(ServiceGet()->ConfigGet())
-          ->OnServerError(nullptr, SystemErrorno::E_SYSTEM_CORE_INIT, nullptr);
+      Config::Get()->OnServerError(nullptr, SystemErrorno::E_SYSTEM_CORE_INIT,
+                                   nullptr);
       break;
     }
     server->data = new UserData;
@@ -207,7 +207,7 @@ void Server::MainProcess(void *arg) {
     USERDATA_PTR(server)->Handle(server);
     USERDATA_PTR(server)->ServerTypeSet(ServerType::ACCEPTOR);
 
-    dynamic_cast<Config *>(ServiceGet()->ConfigGet())->OnServerReady();
+    Config::Get()->OnServerReady();
 
     do {
       auto push_s = *pServer->m_PushQ.src();
@@ -240,7 +240,7 @@ void Server::MainProcess(void *arg) {
     SK_DELETE_PTR(loop);
   }
 
-  dynamic_cast<Config *>(ServiceGet()->ConfigGet())->OnServerExit();
+  Config::Get()->OnServerExit();
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -311,8 +311,8 @@ void Server::SessionConnectionCb(uv_stream_t *server, int status) {
   }
 
   if (!client) {
-    dynamic_cast<Config *>(ServiceGet()->ConfigGet())
-        ->OnServerError(nullptr, SystemErrorno::E_SERVER_SESSION_INIT, nullptr);
+    Config::Get()->OnServerError(nullptr, SystemErrorno::E_SERVER_SESSION_INIT,
+                                 nullptr);
     return;
   }
 
@@ -325,22 +325,19 @@ void Server::SessionConnectionCb(uv_stream_t *server, int status) {
   pSession->Status(success ? SessionStatus::STARTED
                            : SessionStatus::FORCECLOSE);
 
-  dynamic_cast<Config *>(ServiceGet()->ConfigGet())
-      ->OnServerSessionCreate(pSession);
-  dynamic_cast<Config *>(ServiceGet()->ConfigGet())
-      ->OnServerSessionAccept(pSession, success);
+  Config::Get()->OnServerSessionCreate(pSession);
+  Config::Get()->OnServerSessionAccept(pSession, success);
 
   if (!success)
     return;
 
-  dynamic_cast<Config *>(ServiceGet()->ConfigGet())
-      ->OnServerSessionReady(pSession);
+  Config::Get()->OnServerSessionReady(pSession);
 
   do {
     Buffer welcome(
         fmt::format("Welcome to server and version({:X})", FILE_VERSION_HEX));
-    dynamic_cast<Config *>(ServiceGet()->ConfigGet())
-        ->OnHookServerWelcomeSend(pSession, dynamic_cast<IBuffer *>(&welcome));
+    Config::Get()->OnHookServerWelcomeSend(pSession,
+                                           dynamic_cast<IBuffer *>(&welcome));
     if (welcome.Empty())
       break;
     if (pSession->Write(static_cast<unsigned long>(CommandType::WELCOME),
@@ -379,8 +376,7 @@ void Server::WorkProcess(uv_handle_t *client, void *arg) {
       case SessionStatus::FORCECLOSE: {
         if (uv_is_closing(client))
           break;
-        dynamic_cast<Config *>(ServiceGet()->ConfigGet())
-            ->OnServerSessionDestroy(pSession);
+        Config::Get()->OnServerSessionDestroy(pSession);
         uv_close(client, Protocol::uv_close_cb);
       } break;
       case SessionStatus::STARTED: {
@@ -395,9 +391,8 @@ void Server::WorkProcess(uv_handle_t *client, void *arg) {
 
         unsigned long long timeout_ms =
             pSession->ActivationTime(current_time_ms);
-        if (timeout_ms >= __gpService->ConfigGet()->SessionTimeoutMS()) {
-          dynamic_cast<Config *>(ServiceGet()->ConfigGet())
-              ->OnServerSessionTimeout(pSession, timeout_ms);
+        if (timeout_ms >= Config::Get()->SessionTimeoutMS()) {
+          Config::Get()->OnServerSessionTimeout(pSession, timeout_ms);
           pSession->ForceClose();
           break;
         }
@@ -405,9 +400,8 @@ void Server::WorkProcess(uv_handle_t *client, void *arg) {
         do { //!@ write
           write_req_t *req = pSession->Write([&](std::string &write_data) {
             Buffer route(write_data);
-            dynamic_cast<Config *>(ServiceGet()->ConfigGet())
-                ->OnHookServerSessionWrite(pSession,
-                                           dynamic_cast<IBuffer *>(&route));
+            Config::Get()->OnHookServerSessionWrite(
+                pSession, dynamic_cast<IBuffer *>(&route));
             write_data = route.GetString();
           });
           if (!req)
@@ -417,9 +411,8 @@ void Server::WorkProcess(uv_handle_t *client, void *arg) {
                             reinterpret_cast<uv_stream_t *>(req->handle),
                             &req->buf, 1, Protocol::uv_write_cb)) {
             Buffer buffer(req->buf.base, req->buf.len);
-            dynamic_cast<Config *>(ServiceGet()->ConfigGet())
-                ->OnServerError(pSession, SystemErrorno::E_STREAM_SEND,
-                                dynamic_cast<IBuffer *>(&buffer));
+            Config::Get()->OnServerError(pSession, SystemErrorno::E_STREAM_SEND,
+                                         dynamic_cast<IBuffer *>(&buffer));
             SK_DELETE_PTR(req);
             pSession->ForceClose();
             break;
@@ -434,25 +427,22 @@ void Server::WorkProcess(uv_handle_t *client, void *arg) {
           std::string message;
           if (!Protocol::UnMakeStream(data, head, message)) {
             Buffer buffer(data);
-            dynamic_cast<Config *>(ServiceGet()->ConfigGet())
-                ->OnServerError(pSession, SystemErrorno::E_STREAM_RECV,
-                                dynamic_cast<IBuffer *>(&buffer));
+            Config::Get()->OnServerError(pSession, SystemErrorno::E_STREAM_RECV,
+                                         dynamic_cast<IBuffer *>(&buffer));
             pSession->Status(SessionStatus::FORCECLOSE);
             break;
           }
 
           Buffer msg(message);
-          dynamic_cast<Config *>(ServiceGet()->ConfigGet())
-              ->OnServerMessage(pSession, head.Command(),
-                                dynamic_cast<IBuffer *>(&msg));
+          Config::Get()->OnServerMessage(pSession, head.Command(),
+                                         dynamic_cast<IBuffer *>(&msg));
 
           CommandType cmdReply = CommandType::UNKNOWN;
           Buffer messageReply;
 
-          dynamic_cast<Config *>(ServiceGet()->ConfigGet())
-              ->OnServerMessageReceiveReply(
-                  pSession, head.Command(), dynamic_cast<IBuffer *>(&msg),
-                  cmdReply, dynamic_cast<IBuffer *>(&messageReply));
+          Config::Get()->OnServerMessageReceiveReply(
+              pSession, head.Command(), dynamic_cast<IBuffer *>(&msg), cmdReply,
+              dynamic_cast<IBuffer *>(&messageReply));
 
           if (CommandType::UNKNOWN != cmdReply) {
             if (!pSession->Write(static_cast<unsigned long>(cmdReply),
@@ -465,9 +455,9 @@ void Server::WorkProcess(uv_handle_t *client, void *arg) {
           case CommandType::KEEPALIVE: {
             Buffer msg(message);
             Buffer message_reply;
-            dynamic_cast<Config *>(ServiceGet()->ConfigGet())
-                ->OnServertfKeepAlive(pSession, dynamic_cast<IBuffer *>(&msg),
-                                      dynamic_cast<IBuffer *>(&message_reply));
+            Config::Get()->OnServertfKeepAlive(
+                pSession, dynamic_cast<IBuffer *>(&msg),
+                dynamic_cast<IBuffer *>(&message_reply));
 
             if (message_reply.Empty())
               break;
@@ -479,9 +469,8 @@ void Server::WorkProcess(uv_handle_t *client, void *arg) {
           case CommandType::HELLO: {
             Buffer buffer(message);
             Buffer welcome;
-            dynamic_cast<Config *>(ServiceGet()->ConfigGet())
-                ->OnServerHello(pSession, dynamic_cast<IBuffer *>(&buffer),
-                                &welcome);
+            Config::Get()->OnServerHello(
+                pSession, dynamic_cast<IBuffer *>(&buffer), &welcome);
             if (welcome.Empty())
               break;
             if (!pSession->Write(
@@ -516,5 +505,15 @@ void udp_recv_cb(uv_udp_t *handle, ssize_t nread, const uv_buf_t *buf,
                  const struct sockaddr *addr, unsigned flags) {
   auto sk = 0;
 }
-
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////
+static Server *__gpServer = nullptr;
+Server *Server::Create() {
+  if (!__gpServer)
+    __gpServer = new Server();
+  return __gpServer;
+}
+void Server::Destroy() {
+  if (__gpServer)
+    __gpServer->Stop();
+  SK_DELETE_PTR(__gpServer);
+}

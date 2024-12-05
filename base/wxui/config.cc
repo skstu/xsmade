@@ -108,7 +108,7 @@ std::map<CommandTool, wxString> gpCommandToolTipMap = {
     {CommandTool::TOOL_SCALING_UP, wxT("比例缩放(大)")},
     {CommandTool::TOOL_SCALING_DOWN, wxT("比例缩放(小)")},
     {CommandTool::TOOL_RECORDING_START, wxT("开始录屏")},
-    {CommandTool::TOOL_RECORDING_STOP, wxT("停止录屏")},
+    {CommandTool::TOOL_RECORDING_STOP, wxT("正在录制...")},
     {CommandTool::TOOL_SCREENSHOT, wxT("截屏")},
     {CommandTool::TOOL_SYSTEM_CLOSE, wxT("退出")},
     {CommandTool::TOOL_SETTINGS, wxT("设置")},

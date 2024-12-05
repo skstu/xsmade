@@ -2,10 +2,14 @@
 #define __E0803552_809F_4615_ACB4_7DEB537BCEB9__
 
 /* Referenced C standard library header files */
-#include <errno.h>
-#include <stddef.h>
-#include <stdint.h>
 #include <stdio.h>
+#include <errno.h>
+#include <stdio.h>
+#include <stdint.h>
+#include <stddef.h>
+#include <stdlib.h>
+#include <string.h>
+#include "xserr.h"
 
 #if defined(_WIN32) || defined(_WIN64)
 #define __OSWIN__ // Windows 系统
@@ -44,36 +48,35 @@
 #endif
 #endif /* XS_EXTERN */
 
-
 #if defined(__OSWIN__)
 #if defined(SHARED_IMPLEMENTATION)
 #if defined(_MSC_VER)
-#define SHARED_API __declspec(dllexport)
+#define SHARED_API         __declspec(dllexport)
 #define SHARED_API_PRIVATE __declspec(dllexport)
 #elif defined(__clang__)
-#define SHARED_API __declspec(dllexport)
+#define SHARED_API         __declspec(dllexport)
 #define SHARED_API_PRIVATE __declspec(dllexport)
 #elif defined(__GNUC__)
-#define SHARED_API __declspec(dllexport)
+#define SHARED_API         __declspec(dllexport)
 #define SHARED_API_PRIVATE __declspec(dllexport)
 #else
-#define SHARED_API __declspec(dllexport)
+#define SHARED_API         __declspec(dllexport)
 #define SHARED_API_PRIVATE __declspec(dllexport)
 #endif
 #else
-#define SHARED_API __declspec(dllimport)
+#define SHARED_API         __declspec(dllimport)
 #define SHARED_API_PRIVATE __declspec(dllimport)
 #endif
 #else // __OSWIN__
 #if defined(SHARED_IMPLEMENTATION)
 #if defined(__clang__)
-#define SHARED_API __attribute__((visibility("default")))
+#define SHARED_API         __attribute__((visibility("default")))
 #define SHARED_API_PRIVATE __attribute__((visibility("default")))
 #elif defined(__GNUC__)
-#define SHARED_API __attribute__((visibility("default")))
+#define SHARED_API         __attribute__((visibility("default")))
 #define SHARED_API_PRIVATE __attribute__((visibility("default")))
 #else
-#define SHARED_API __attribute__((visibility("default")))
+#define SHARED_API         __attribute__((visibility("default")))
 #define SHARED_API_PRIVATE __attribute__((visibility("default")))
 #endif
 #else
@@ -84,4 +87,4 @@
 /// /*_ Memade®（新生™） _**/
 /// /*_ Tue, 19 Nov 2024 07:42:48 GMT _**/
 /// /*_____ https://www.skstu.com/ _____ **/
-#endif///__E0803552_809F_4615_ACB4_7DEB537BCEB9__
+#endif ///__E0803552_809F_4615_ACB4_7DEB537BCEB9__

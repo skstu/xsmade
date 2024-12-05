@@ -3,6 +3,10 @@
 
 class Server final : public IService {
 public:
+  static Server *Create();
+  static void Destroy();
+
+private:
   Server();
   ~Server();
 

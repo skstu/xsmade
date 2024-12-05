@@ -51,6 +51,7 @@ public:
 public:
   virtual bool Start() = 0;
   virtual void Stop() = 0;
+  virtual bool Ready() const = 0;
   virtual IConfig *ConfigGet() const = 0;
   virtual IFrame *GetFrame() const = 0;
   virtual void NotifyRecordingEnd() const = 0;

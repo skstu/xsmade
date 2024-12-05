@@ -4,37 +4,55 @@ Uvpp::Uvpp() {
 }
 Uvpp::~Uvpp() {
 }
+IConfig *Uvpp::ConfigGet() const {
+  return dynamic_cast<IConfig *>(Config::Get());
+}
+IBuffer *Uvpp::CreateBuffer(const char *data, size_t len) const {
+  return dynamic_cast<IBuffer *>(new Buffer(data, len));
+}
+IService *Uvpp::CreateSevice() const {
+  IService *result = nullptr;
+  const unsigned long service_type = Config::Get()->GetServiceType();
+  do {
+    ServerType server_type = Protocol::GetServerType(service_type);
+    SessionType session_type = Protocol::GetSessionType(service_type);
+    AddressType address_type = Protocol::GetAddressType(service_type);
+    if (server_type == ServerType::UNKNOWN ||
+        session_type == SessionType::UNKNOWN ||
+        address_type == AddressType::UNKNOWN)
+      break;
+    switch (server_type) {
+    case ServerType::ACCEPTOR: {
+      result = dynamic_cast<IService *>(Server::Create());
+    } break;
+    case ServerType::INITIATOR: {
+      result = dynamic_cast<IService *>(Client::Create());
+    } break;
+    default:
+      break;
+    }
+  } while (0);
+  return result;
+}
+//////////////////////////////////////////////////////////////////////////////////////////
+static Uvpp *__gpUvpp = nullptr;
+Uvpp *Uvpp::Create() {
+  if (!__gpUvpp)
+    __gpUvpp = new Uvpp();
+  return __gpUvpp;
+}
+void Uvpp::Destroy() {
+  SK_DELETE_PTR(__gpUvpp);
+}
 SHARED_API void *interface_init(void *data, unsigned long len) {
-  if (!__gpService)
-    __gpService = new Service();
-  return dynamic_cast<IServiceManager *>(__gpService);
-#if 0
-	__gpConfig = new Config();
-	void* result = nullptr;
-	unsigned long type = 0;
-	do {
-		ServerType server_type = Protocol::GetServerType(type);
-		SessionType session_type = Protocol::GetSessionType(type);
-		AddressType address_type = Protocol::GetAddressType(type);
-		if (server_type == ServerType::UNKNOWN || \
-			session_type == SessionType::UNKNOWN || \
-			address_type == AddressType::UNKNOWN)
-			return result;
+  auto config = Config::Create();
+  auto uvpp = Uvpp::Create();
 
-		switch (server_type) {
-		case ServerType::ACCEPTOR: {
-			result = reinterpret_cast<decltype(result)>(dynamic_cast<IService*>(new Server()));
-		}break;
-		case ServerType::INITIATOR: {
-			result = reinterpret_cast<decltype(result)>(dynamic_cast<IService*>(new Client()));
-		}break;
-		default:
-			break;
-		}
-	} while (0);
-	return result;
-#endif
+  return dynamic_cast<IUvpp *>(uvpp);
 }
 SHARED_API void interface_uninit() {
-  SK_DELETE_PTR(__gpService);
+  Server::Destroy();
+  Client::Destroy();
+  Config::Destroy();
+  Uvpp::Destroy();
 }

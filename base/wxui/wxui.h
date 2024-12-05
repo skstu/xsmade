@@ -32,9 +32,12 @@ private:
   void Init();
   void UnInit();
 
+public:
+  void Stop() override final;
+
 protected:
   bool Start() override final;
-  void Stop() override final;
+  bool Ready() const override final;
   IConfig *ConfigGet() const override final;
   IFrame *GetFrame() const override final;
   void NotifyRecordingEnd() const override final;

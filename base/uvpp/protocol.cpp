@@ -50,13 +50,13 @@ std::string Protocol::MakeStream(const HEAD &input_head,
 bool Protocol::UnMakeStream(const std::string &input_data, HEAD &head,
                             std::string &output_data) {
   bool result = false;
-  memset(&head, 0x00, PACKET_HEAD_SIZE);
+  memset((void *)&head, 0x00, PACKET_HEAD_SIZE);
   output_data.clear();
   do {
     PHEAD pHead = (PHEAD)input_data.data();
     if (!pHead->Verify())
       break;
-    memcpy(&head, pHead, PACKET_HEAD_SIZE);
+    memcpy((void *)&head, (void *)pHead, PACKET_HEAD_SIZE);
     switch (ZipType(pHead->Zip())) {
     case ZipType::UNKNOWN: {
       if (!pHead->DataSize())
@@ -237,22 +237,19 @@ void Protocol::uv_close_cb(uv_handle_t *handle) {
     do {
       if (!udata || !pServer)
         break;
-#if 0
-			switch (udata->Type()) {
-			case ServerType::UNKNOWN: {
+      switch (udata->ServerTypeGet()) {
+      case ServerType::UNKNOWN: {
 
-			}break;
-			case ServerType::ACCEPTOR: {
-
-			}break;
-			case ServerType::INITIATOR: {
-
-				LOG_OUTPUT(std::format("Session logout on({})", udata->Address()));
-			}break;
-			default:
-				break;
-			}
-#endif
+      } break;
+      case ServerType::ACCEPTOR: {
+        Config::Get()->OnServerExitBefore(udata);
+      } break;
+      case ServerType::INITIATOR: {
+        Config::Get()->OnServerSessionDestroy(udata);
+      } break;
+      default:
+        break;
+      }
     } while (0);
     SK_DELETE_PTR(udata);
     SK_DELETE_PTR(handle);
@@ -301,12 +298,12 @@ void Protocol::uv_write_cb(uv_write_t *req, int status) {
 }
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
 tagPacketHeader::tagPacketHeader() {
-  memset(this, 0x00, sizeof(*this));
+  memset((void *)this, 0x00, sizeof(*this));
   header_logo = 0xFAC9C2D0;
   footer_logo = 0xB4B4AAC1;
 }
 tagPacketHeader::tagPacketHeader(const CommandType &input_cmd) {
-  memset(this, 0x00, sizeof(*this));
+  memset((void *)this, 0x00, sizeof(*this));
   header_logo = 0xFAC9C2D0;
   footer_logo = 0xB4B4AAC1;
   command_code = static_cast<decltype(command_code)>(input_cmd);

@@ -183,6 +183,7 @@ public:
                                      const IBuffer *);
   using tfOnClientErrorCb = tfOnServerErrorCb;
   using tfOnServerExitCb = void (*)(void);
+  using tfOnServerExitBefore = void(*)(const ISession *);
   using tfOnClientExitCb = tfOnServerExitCb;
   using tfOnServerReadyCb = void (*)(void);
   using tfOnServerHelloCb = void (*)(const ISession *, const IBuffer *,
@@ -190,8 +191,7 @@ public:
   using tfOnServerSessionCreateCb = void (*)(const ISession *);
   using tfOnServerSessionDestroyCb = void (*)(const ISession *);
   using tfOnServerSessionReadyCb = void (*)(const ISession *);
-  using tfOnServerSessionTimeoutCb = void (*)(const ISession *,
-                                              const std::time_t &);
+  using tfOnServerSessionTimeoutCb = void (*)(const ISession *, const time_t &);
   using tfOnServerSessionAcceptCb = void (*)(const ISession *, const bool &);
   using tfOnHookServerWelcomeSendCb = void (*)(const ISession *, IBuffer *);
   using tfOnHookServerSessionWriteCb = void (*)(const ISession *, IBuffer *);
@@ -244,6 +244,7 @@ public:
 public:
   virtual void RegisterServerReadyCb(const tfOnServerReadyCb &) = 0;
   virtual void RegisterServerExitCb(const tfOnServerExitCb &) = 0;
+  virtual void RegisterServerExitBeforeCb(const tfOnServerExitBefore &) = 0;
   virtual void RegisterServerErrorCb(const tfOnServerErrorCb &) = 0;
   virtual void RegisterServerHelloCb(const tfOnServerHelloCb &) = 0;
   virtual void
@@ -277,19 +278,11 @@ public:
   RegisterClientSessionWriteHookCb(const tfOnHookClientSessionWriteCb &) = 0;
 };
 
-class IServiceManager {
+class IUvpp : public Interface<IUvpp> {
 public:
   virtual IConfig *ConfigGet() const = 0;
-  virtual IService *GetSevice() const = 0;
-  virtual bool Start() = 0;
-  virtual void Stop() = 0;
-  virtual bool Ready() const = 0;
-  virtual void Release() const = 0;
+  virtual IService *CreateSevice() const = 0;
   virtual IBuffer *CreateBuffer(const char *, size_t) const = 0;
-};
-
-class IUvpp {
-public:
 };
 } // namespace uvpp
 

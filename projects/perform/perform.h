@@ -3,15 +3,18 @@
 
 class Perform {
 public:
-  Perform(const std::string &cmdline);
+  static Perform *Create();
+  static void Destroy();
+private:
+  Perform();
   ~Perform();
 
 public:
   void Release() const;
   void Run();
+
 private:
   std::atomic_bool open_ = false;
-  stl::CmdLine *cmdline_ = nullptr;
 };
 /// /*_ Memade®（新生™） _**/
 /// /*_ Tue, 12 Nov 2024 11:26:03 GMT _**/

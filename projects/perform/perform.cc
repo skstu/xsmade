@@ -1,44 +1,62 @@
 #include "config.h"
 
-Perform::Perform(const std::string &cmdline) {
-  cmdline_ = new stl::CmdLine(cmdline);
+Perform::Perform() {
 }
 
 Perform::~Perform() {
-  delete cmdline_;
 }
 void Perform::Release() const {
   delete this;
 }
 void Perform::Run() {
   std::thread([this]() {
-    bool stop = true;
-    Server *server = nullptr;
+    bool needStop = true;
+    IPerform *perform = nullptr;
     do {
-      std::string process_type = cmdline_->GetValue("type");
-      if (stl::Common::strIcmp(process_type, "service")) {
-        do {
-          if (server) {
-            server->Process();
-            break;
-          }
-          if (0 == xs_sys_process_already_exists(0))
-            break;
-          server = new Server();
-          if (!server->Start())
-            break;
+      switch (PerformCmdLine::Get()->ProcessType()) {
+      case PerformProcessType::UTILITY: {
+        needStop = true;
+      } break;
+      case PerformProcessType::DOWNLOAD: {
+        perform = new Download();
 
-          stop = false;
-        } while (0);
-      }
-      if (stop) {
+        needStop = true;
+      } break;
+      case PerformProcessType::IBROWSER: {
+        Server *server = dynamic_cast<Server *>(perform);
         if (server) {
-          server->Stop();
-          delete server;
+          server->Process();
+          break;
+        }
+        if (0 == xs_sys_process_already_exists(0))
+          break;
+        perform = new Server();
+        if (!perform->Start())
+          break;
+        needStop = false;
+      } break;
+      default:
+        break;
+      }
+      if (needStop) {
+        if (perform) {
+          perform->Stop();
+          perform->Release();
         }
         break;
       }
       std::this_thread::sleep_for(std::chrono::milliseconds(1000));
     } while (1);
   }).join();
+}
+
+///////////////////////////////////////////////////////////////////////////////
+static Perform *__gpPerform = nullptr;
+Perform *Perform::Create() {
+  if (!__gpPerform)
+    __gpPerform = new Perform();
+  return __gpPerform;
+}
+void Perform::Destroy() {
+  SK_DELETE_PTR(__gpPerform);
 }

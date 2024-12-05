@@ -36,36 +36,44 @@ void Components::Init() {
       break;
     for (auto it = doc.Begin(); it != doc.End(); ++it) {
       auto &obj = *it;
-      Component *comp = new Component();
+      std::u16string identify;
+      std::u16string main;
+      bool enable = false;
       if (obj.HasMember("enable") && obj["enable"].IsBool()) {
-        comp->enable = obj["enable"].GetBool();
+        enable = obj["enable"].GetBool();
       }
       if (obj.HasMember("main") && obj["main"].IsString()) {
-        comp->main = component_dir + Utfpp::u8_to_u16(obj["main"].GetString());
+        main = component_dir + Utfpp::u8_to_u16(obj["main"].GetString());
       }
       if (obj.HasMember("identify") && obj["identify"].IsString()) {
-        comp->identify =
+        identify =
             stl::String::Lower(Utfpp::u8_to_u16(obj["identify"].GetString()));
       }
-      if (comp->enable && !comp->identify.empty() &&
-          stl::File::Exists(comp->main)) {
-        auto exists = comps_.find(comp->identify);
-        if (exists != comps_.end())
-          comps_.erase(exists);
-        comps_.emplace(comp->identify, comp);
-      } else {
-        delete comp;
-        comp = nullptr;
+      if (!enable)
+        continue;
+      if (identify.compare(u"ffmpeg") == 0) {
+        if (!stl::File::Exists(main))
+          continue;
+        auto ff = new FFmpeg();
+        ff->enable = enable;
+        ff->identify = stl::String::Lower(identify);
+        ff->main = main;
+        ff->pid_ = 0;
+        comps_.emplace(ff->identify, ff);
       }
     }
   } while (0);
 }
 
 void Components::UnInit() {
+  for (auto &node : comps_) {
+    node.second->Stop();
+    node.second->Release();
+  }
+  comps_.clear();
 }
-Components::Component *
-Components::GetComp(const std::u16string &identify) const {
-  Component *result = nullptr;
+IComponent *Components::GetComp(const std::u16string &identify) const {
+  IComponent *result = nullptr;
   std::lock_guard<std::mutex> lock{*mtx_};
   auto found = comps_.find(stl::String::Lower(identify));
   do {
@@ -93,6 +101,7 @@ void Components::DestroyComponent(const std::string &identify,
 }
 
 /////////////////////////////////////////////////////
+#if 0
 bool Components::Component::Create(const std::vector<std::string> &args,
                                    const bool &show) {
 
@@ -111,6 +120,7 @@ bool Components::Component::Create(const std::vector<std::string> &args,
 void Components::Component::Destroy() {
   auto ss = 0;
 }
+#endif
 bool Components::ffxRecordStart(const wxui::IRecordingArgs *args) {
   bool result = false;
   std::lock_guard<std::mutex> lock{*mtx_};
@@ -149,7 +159,7 @@ bool Components::ffxRecordStart(const wxui::IRecordingArgs *args) {
         {15, {"-tune:v", "zerolatency"}},
         {16, {"-xs-outfile", stl::Path::Mormalize(outfile)}},
     });
-    fComp->second->Create(ffxArgs.GetArgs(), false);
+    // fComp->second->Create(ffxArgs.GetArgs(), false);
   } while (0);
   return result;
 }

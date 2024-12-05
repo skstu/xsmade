@@ -62,6 +62,7 @@ XS_EXTERN int xs_sys_capturescreen(xs_position_t pos,
                                    xs_image_stream_t **stream);
 XS_EXTERN int xs_sys_get_image_type(const char *buffer, size_t buffer_size,
                                     xs_image_type_t *output_image_type);
+
 #ifdef __cplusplus
 }
 #endif

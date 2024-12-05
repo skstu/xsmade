@@ -14,6 +14,11 @@ using namespace uvpp;
 
 class Config final : public IConfig {
 public:
+  static Config *Create();
+  static void Destroy();
+  static Config *Get();
+
+private:
   Config();
   ~Config();
 
@@ -51,6 +56,7 @@ private:
 protected:
   void RegisterServerReadyCb(const tfOnServerReadyCb &) override final;
   void RegisterServerExitCb(const tfOnServerExitCb &) override final;
+  void RegisterServerExitBeforeCb(const tfOnServerExitBefore &) override final;
   void RegisterServerErrorCb(const tfOnServerErrorCb &) override final;
   void RegisterServerHelloCb(const tfOnServerHelloCb &) override final;
   void
@@ -89,6 +95,7 @@ protected:
 
 public:
   void OnServerReady(void) const;
+  void OnServerExitBefore(const ISession *) const;
   void OnServerExit(void) const;
   void OnServerError(const ISession *, const SystemErrorno &,
                      const IBuffer *) const;
@@ -126,6 +133,7 @@ private:
   tfOnClientForceCloseCb client_force_close_cb_ = nullptr;
   tfOnServerReadyCb server_ready_cb_ = nullptr;
   tfOnServerExitCb server_exit_cb_ = nullptr;
+  tfOnServerExitBefore server_exit_before_cb_ = nullptr;
   tfOnServerErrorCb server_error_cb_ = nullptr;
   tfOnServerHelloCb server_hello_cb_ = nullptr;
   tfOnClientWelcomeCb client_welcome_cb_ = nullptr;
@@ -156,7 +164,6 @@ private:
 #include "config.h"
 #include "client.h"
 #include "server.h"
-#include "service.h"
 /// /*_ Memade®（新生™） _**/
 /// /*_ Sat, 20 May 2023 01:20:31 GMT _**/
 /// /*_____ https://www.skstu.com/ _____ **/

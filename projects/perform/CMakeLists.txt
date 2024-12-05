@@ -17,7 +17,9 @@ target_include_directories(
           ${xsOPENSSL_INCLUDE}
           ${xs3RDPARTY_DIR}/tinyxml2/
           ${xs3RDPARTY_DIR}/wxWidgets/include/)
+
 target_link_directories(${PROJECT_NAME} PRIVATE ${xsLIBS_DIR})
+
 if(WIN32)
   target_link_libraries(
     ${PROJECT_NAME}

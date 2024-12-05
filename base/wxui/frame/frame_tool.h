@@ -12,6 +12,7 @@ public:
   virtual ~FrameTool();
 
 private:
+  std::atomic_bool recording_running_ = false;
   void LayoutEx();
   wxSize prev_frame_tool_size_;
   wxSize prev_frame_work_size_;

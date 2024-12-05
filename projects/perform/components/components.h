@@ -3,55 +3,42 @@
 
 class IComponent {
 public:
-  virtual bool Start() = 0;
+  virtual bool Start(const std::vector<std::string> &cmdline,
+                     const bool &show) = 0;
   virtual void Stop() = 0;
-  virtual const std::string &GetName() const = 0;
-  virtual const std::uint64_t &GetIdentify() const = 0;
+  virtual void Release() const = 0;
+
+public:
+  void operator=(const IComponent &obj) {
+    main = obj.main;
+    identify = obj.identify;
+  }
+  bool operator<(const IComponent &obj) {
+    bool result = false;
+    do {
+      if (main.compare(obj.main) >= 0)
+        break;
+      if (identify.compare(obj.identify) >= 0)
+        break;
+      result = true;
+    } while (0);
+    return result;
+  }
+
+public:
+  std::u16string main;
+  std::u16string identify;
+  bool enable = false;
+  xs_process_id_t pid_ = 0;
 };
 
 class Components {
-public:
-  class Component {
-    friend class Components;
-
-  public:
-    Component() = default;
-    ~Component() = default;
-
-  public:
-    bool Create(const std::vector<std::string> &cmdline, const bool &show);
-    void Destroy();
-
-  private:
-    std::u16string main;
-    std::u16string identify;
-    bool enable = false;
-    xs_process_id_t pid_ = 0;
-
-  public:
-    void operator=(const Component &obj) {
-      main = obj.main;
-      identify = obj.identify;
-    }
-    bool operator<(const Component &obj) {
-      bool result = false;
-      do {
-        if (main.compare(obj.main) >= 0)
-          break;
-        if (identify.compare(obj.identify) >= 0)
-          break;
-        result = true;
-      } while (0);
-      return result;
-    }
-  };
-
 public:
   static Components *Get();
   static void Destroy();
 
 public:
-  Component *GetComp(const std::u16string &) const;
+  IComponent *GetComp(const std::u16string &) const;
   bool ffxRecordStart(const wxui::IRecordingArgs *);
   void ffxRecordStop();
 
@@ -71,7 +58,7 @@ private:
 
 private:
   const std::u16string root_dir_name_ = u"components";
-  std::map<std::u16string, Component *> comps_;
+  std::map<std::u16string, IComponent *> comps_;
   std::shared_ptr<std::mutex> mtx_ = std::make_shared<std::mutex>();
 };
 

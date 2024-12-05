@@ -190,6 +190,8 @@ void FrameTool::OnToolEvent(wxCommandEvent &evt) {
     auto frame_shape = dynamic_cast<wxFrame *>(app->FrameWorkGet());
     if (!frame_shape)
       break;
+    if (recording_running_.load())
+      break;
     wxRect rt = frame_shape->GetRect();
     long x = rt.GetLeft();
     long y = rt.GetTop();
@@ -201,46 +203,19 @@ void FrameTool::OnToolEvent(wxCommandEvent &evt) {
     args->SetPos(x, y, cx, cy);
     Config::Get()->OnRecordingStart(args);
     args->Release();
-    break;
-#if 0
-    ffx::FFXArgs ffxArgs(ffx::tfFFXArgs{
-        {0, {"-y", ""}},
-        {1, {"-f", "gdigrab"}},
-        {2, {"-video_size", fmt::format("{}x{}", cx, cy)}}, //"640x480"}
-        {3, {"-offset_x", fmt::format("{}", x)}},
-        {4, {"-offset_y", fmt::format("{}", y)}},
-        {5, {"-framerate", "15"}},
-        {6, {"-i", "desktop"}},
-        {7, {"-t", "10"}},
-        {8, {"-r", "20"}},
-        {9, {"-vcodec", "libx264"}},
-        {10, {"-s", fmt::format("{}x{}", cx, cy)}},
-        {11, {"-b:v", "10000"}},
-        {12, {"-crf", "24"}},
-        {13, {"-pix_fmt", "yuv420p"}},
-        {14, {"-preset:v", "veryfast"}},
-        {15, {"-tune:v", "zerolatency"}},
-        {16,
-         {"-xs-outfile",
-          fmt::format("{}.mp4",
-                      stl::Time::TimeStamp<std::chrono::microseconds>())}},
-    });
-    auto args__ = ffxArgs.GetArgs();
-    xs_process_id_t pid_;
-#if defined(DEBUG)
-    int status = xs_sys_process_spawn(
-        R"(C:\Users\k34ub\source\skstu\xsmade\build\installed\bin\ffmpeg.exe)",
-        &args__->GetSource()[0], 0, &pid_);
-#else
-
-#endif
-    args__->Release();
-    auto ss = 0;
-    //
-#endif
+    recording_running_.store(true);
+    wxBitmapButton *btn = (wxBitmapButton *)evt.GetEventObject();
+    btn->Show(false);
+    btn_recording_stop_->Show();
   } break;
   case CommandTool::TOOL_RECORDING_STOP: {
+    if (!recording_running_.load())
+      break;
+    recording_running_.store(false);
     Config::Get()->OnRecordingStop();
+    wxBitmapButton *btn = (wxBitmapButton *)evt.GetEventObject();
+    btn->Show(false);
+    btn_recording_start_->Show();
   } break;
   case CommandTool::TOOL_SYSTEM_CLOSE: {
     Close();
@@ -260,8 +235,10 @@ void FrameTool::OnMove(wxMoveEvent &event) {
   event.Skip();
 }
 void FrameTool::OnClose(wxCloseEvent &event) {
+  auto shape = dynamic_cast<wxFrame *>(
+      wxDynamicCast(wxApp::GetInstance(), App)->FrameWorkGet());
   int res = wxMessageBox(L"Are you sure you want to exit system?", L"Memade®",
-                         wxYES_NO, this);
+                         wxYES_NO, shape ? shape : this);
   if (res != wxYES) {
     event.Veto();
   } else {

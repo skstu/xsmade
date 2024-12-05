@@ -135,6 +135,10 @@ std::string Config::CreateBrwCloseNotifyPak(const std::string &brwKey) {
   result.append("}");
   return result;
 }
+const Config::Settings &Config::GetSettings() const {
+  std::lock_guard<std::mutex> lock{*mtx_};
+  return settings_;
+}
 const Config::Paths &Config::PathGet() const {
   std::lock_guard<std::mutex> lock{*mtx_};
   return paths_;
@@ -170,6 +174,7 @@ void Config::PathsInit() {
     stl::Directory::Create(paths_.components_dir);
     stl::Directory::Create(paths_.logs_dir);
     stl::Directory::Create(paths_.chromium_dir);
+    stl::Directory::Create(paths_.chromium_user_data_dir);
     stl::Directory::Create(paths_.chromium_extensions_dir);
   } while (0);
 }
@@ -193,12 +198,37 @@ void Config::SettingsInit() {
     tinyxml2::XMLNode *node_settings = doc.FirstChildElement("settings");
     if (!node_settings)
       break;
-    auto node_settings_att = node_settings->ToElement()->FirstAttribute();
-    while (node_settings_att) {
-
-      node_settings_att = node_settings_att->Next();
+    auto node_settings_attr = node_settings->ToElement()->FirstAttribute();
+    while (node_settings_attr) {
+      if (strcmp("enable_logger", node_settings_attr->Name())) {
+        node_settings_attr->QueryBoolValue(&settings_.enable_logger);
+      }
+      node_settings_attr = node_settings_attr->Next();
     }
     auto first_node = node_settings->FirstChild();
+    while (first_node) { //!@ developer
+      if (auto element = first_node->ToElement()) {
+        if (!strcmp("developer", element->Value())) {
+          auto attr = element->FirstAttribute();
+          while (attr) {
+            if (!strcmp("enable", attr->Name())) {
+              attr->QueryBoolValue(&settings_.developer.enable);
+            }
+            attr = attr->Next();
+          }
+          auto node = element->FirstChild();
+          while (node) {
+
+            node = node->NextSibling();
+          }
+          break;
+        }
+      } else if (auto text = first_node->ToText()) {
+      } else if (auto comment = first_node->ToComment()) {
+      }
+      first_node = first_node->NextSibling();
+    }
+    first_node = node_settings->FirstChild();
     while (first_node) { //!@ plugins
       if (auto element = first_node->ToElement()) {
         if (!strcmp("components", element->Value())) {
@@ -217,9 +247,9 @@ void Config::SettingsInit() {
           auto att = element->FirstAttribute();
           while (att) {
             if (!strcmp("vvv", att->Name())) {
- 
+
               auto value = att->Value();
-              auto ssssss= 0 ;
+              auto ssssss = 0;
             }
             att = att->Next();
           }

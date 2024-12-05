@@ -1,7 +1,6 @@
 #if !defined(__918F8A06_5054_4610_918C_97CFBD43D91B__)
 #define __918F8A06_5054_4610_918C_97CFBD43D91B__
 
-#define ENABLE_DEVELOPER_DEBUG  1
 #define ENABLE_DEVELOPER_LOGGER 1
 
 #include <sys.hpp>
@@ -13,16 +12,17 @@
 #include <utfpp.hpp>
 #include <zipcc.h>
 #include <log.hpp>
-#include <projects/ffxctrl/export.h>
 #include <base/wxui/export.h>
-#include "define.h"
+#include "local.h"
 #include "configure.h"
-#include "ffxargs.h"
 #include "browser.h"
 #include "plugins/plugins.h"
 #include "components/components.h"
+#include "components/ffmpeg/ffxargs.h"
 #include "components/ffmpeg/ffmpeg.h"
-#include "server.h"
+#include "process/server.h"
+#include "process/download.h"
+#include "cmdline.h"
 #include "perform.h"
 
 class Config {
@@ -44,8 +44,18 @@ public:
   };
   class Settings {
   public:
+    class Developer {
+    public:
+      bool enable = false;
+    };
+
+  public:
     Settings();
     ~Settings();
+
+  public:
+    Developer developer;
+    bool enable_logger = false;
   };
 
 public:
@@ -74,6 +84,7 @@ public:
   std::string GetXSCacheStatisDir(const std::string &brwKey) const;
   std::string GetXSCacheConfigureFName(const std::string &brwKey) const;
   void XSCacheClean(const std::string &brwKey) const;
+  const Settings &GetSettings() const;
 
 public:
   static std::string CreateBrwCloseNotifyPak(const std::string &brwId);

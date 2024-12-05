@@ -1,7 +1,8 @@
-#include <iostream>
+#include "system.h"
 
 int main(int argc, char **argv) {
- 
+
+  const char* ddd = xs_err_name(xs_errno_t::XS_OK);
   return 0;
 }
 

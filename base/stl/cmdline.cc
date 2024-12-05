@@ -5,6 +5,9 @@ CmdLine::CmdLine(const std::string &cmdline) {
 }
 CmdLine::~CmdLine() {
 }
+void CmdLine::Release() const {
+  delete this;
+}
 std::string CmdLine::GetValue(const std::string &key) const {
   std::string result;
   do {

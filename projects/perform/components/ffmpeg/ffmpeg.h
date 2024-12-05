@@ -7,14 +7,13 @@ public:
   virtual ~FFmpeg();
 
 protected:
-  bool Start() override final;
+  void Release() const override final;
+  bool Start(const std::vector<std::string> &cmdline,
+             const bool &show) override final;
   void Stop() override final;
-  const std::string &GetName() const override final;
-  const std::uint64_t &GetIdentify() const override final;
 
 private:
-  std::string name_;
-  std::uint64_t identify_ = 0;
+  std::atomic_bool open_=false;
 };
 /// /*_ Memade®（新生™） _**/
 /// /*_ Mon, 02 Dec 2024 07:43:29 GMT _**/
