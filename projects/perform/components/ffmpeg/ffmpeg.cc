@@ -1,4 +1,5 @@
 #include "config.h"
+#if defined(__OSWIN__)
 static HANDLE ghWritePipe = nullptr;
 static PROCESS_INFORMATION g_pi = {};
 static void sendCommand(HANDLE writePipe, const std::string &command) {
@@ -13,6 +14,7 @@ static void sendCommand(HANDLE writePipe, const std::string &command) {
       break;
   } while (0);
 }
+#endif
 FFmpeg::FFmpeg() {
 }
 FFmpeg::~FFmpeg() {
@@ -76,7 +78,7 @@ void FFmpeg::Stop() {
   do {
     if (!open_.load())
       break;
-
+#if defined(__OSWIN__)
     // 模拟录制一段时间
     // std::this_thread::sleep_for(std::chrono::seconds(10));
 
@@ -90,7 +92,9 @@ void FFmpeg::Stop() {
     CloseHandle(g_pi.hProcess);
     CloseHandle(g_pi.hThread);
     CloseHandle(ghWritePipe);
+#elif defined(__OSMAC__)
 
+#endif
     open_.store(false);
   } while (0);
 }

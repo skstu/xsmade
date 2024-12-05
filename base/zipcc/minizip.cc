@@ -69,8 +69,8 @@ bool Zipcc::zipUnCompress(const std::u16string &inputZipFile,
     do {
       char filename_in_zip[MAX_PATH] = {0};
       unz_file_info file_info;
-      if (unzGetCurrentFileInfo(zip_file, &file_info, filename_in_zip,
-                                MAX_PATH, nullptr, 0, nullptr, 0) != UNZ_OK)
+      if (unzGetCurrentFileInfo(zip_file, &file_info, filename_in_zip, MAX_PATH,
+                                nullptr, 0, nullptr, 0) != UNZ_OK)
         break;
       const std::u16string filename_in_zip_full =
           outputUnzipPath + u"\\" + Utfpp::u8_to_u16(filename_in_zip);
@@ -130,8 +130,8 @@ bool Zipcc::zipUnCompress(const std::u16string &inputZipFile,
     do {
       char filename_in_zip[MAX_PATH] = {0};
       unz_file_info file_info;
-      if (unzGetCurrentFileInfo(zip_file, &file_info, filename_in_zip,
-                                MAX_PATH, nullptr, 0, nullptr, 0) != UNZ_OK)
+      if (unzGetCurrentFileInfo(zip_file, &file_info, filename_in_zip, MAX_PATH,
+                                nullptr, 0, nullptr, 0) != UNZ_OK)
         break;
       const std::u16string filename_in_zip_full =
           outputUnzipPath + u"\\" + Utfpp::u8_to_u16(filename_in_zip);

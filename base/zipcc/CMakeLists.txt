@@ -10,13 +10,13 @@ set(SOURCES
     ${xs3RDPARTY_DIR}/zlib/contrib/minizip/unzip.c
     ${xs3RDPARTY_DIR}/zlib/contrib/minizip/ioapi.c
     ${xs3RDPARTY_DIR}/zlib/contrib/minizip/iowin32.c)
-    elseif(APPLE)
+elseif(APPLE)
     set(SOURCES
     ${OUT_HEADER_S} ${OUT_SOURCE_S}
     ${xs3RDPARTY_DIR}/zlib/contrib/minizip/zip.c
     ${xs3RDPARTY_DIR}/zlib/contrib/minizip/unzip.c
     ${xs3RDPARTY_DIR}/zlib/contrib/minizip/ioapi.c)
-    endif()
+endif()
 
 add_library(${PROJECT_NAME} STATIC ${SOURCES})
 

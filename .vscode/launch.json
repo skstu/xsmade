@@ -60,7 +60,7 @@
       "name": "MacOS Build With CMake Ninja",
       "type": "cppdbg",
       "request": "launch",
-      "program": "${workspaceFolder}/out/bin/perform", // 确保这是可执行文件
+      "program": "${workspaceFolder}/out/bin/perform",
       "args": [
         " ",
         "--type=service",

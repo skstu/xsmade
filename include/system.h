@@ -10,7 +10,7 @@ extern "C" {
 #if defined(__OSWIN__)
 typedef unsigned long xs_process_id_t;
 #elif defined(__OSMAC__)
-typedef pit_t xs_process_id_t;
+typedef pid_t xs_process_id_t;
 #endif
 
 typedef struct {

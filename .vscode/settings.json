@@ -2,6 +2,9 @@
     "C_Cpp.workspaceParsingPriority": "low",
     "C_Cpp.workspaceSymbols": "Just My Code",
     "C_Cpp.intelliSenseEngine": "disabled",
+    "git.ignoreLimitWarning": true,
+    "editor.formatOnType": true,
+    "clangd.trace": "/usr/bin/clangd",
     "files.exclude": {
         "**/.git": true,
         "**/.svn": true,
@@ -10,7 +13,7 @@
         //"**/build": true
     },
     //"clangd.path": "C:\\devenv\\bin\\clangd.exe",
-    "clangd.path": "C:\\msys64\\clang64\\bin\\clangd.exe",
+    "clangd.path": "/usr/bin/clangd",
     "clangd.arguments": [
         "--background-index",
         "-j=8",
@@ -134,8 +137,5 @@
         "__verbose_abort": "cpp",
         "execution": "cpp",
         "print": "cpp"
-    },
-    "git.ignoreLimitWarning": true,
-    "editor.formatOnType": true,
-    "clangd.trace": "clangd.exe",
+    }
 }

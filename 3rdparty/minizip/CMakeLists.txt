@@ -2,6 +2,7 @@ project (minizip C)
 #set(CMAKE_CXX_STANDARD 17)
 #set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+if(WIN32)
 set(SOURCES 
 ${CMAKE_CURRENT_SOURCE_DIR}/../zlib/contrib/minizip/minizip.c
 ${CMAKE_CURRENT_SOURCE_DIR}/../zlib/contrib/minizip/ioapi.c
@@ -11,6 +12,16 @@ ${CMAKE_CURRENT_SOURCE_DIR}/../zlib/contrib/minizip/unzip.c
 ${CMAKE_CURRENT_SOURCE_DIR}/../zlib/contrib/minizip/zip.c
 ${CMAKE_CURRENT_SOURCE_DIR}/../zlib/contrib/minizip/miniunz.c
 )
+elseif(APPLE)
+set(SOURCES 
+${CMAKE_CURRENT_SOURCE_DIR}/../zlib/contrib/minizip/minizip.c
+${CMAKE_CURRENT_SOURCE_DIR}/../zlib/contrib/minizip/ioapi.c
+${CMAKE_CURRENT_SOURCE_DIR}/../zlib/contrib/minizip/mztools.c
+${CMAKE_CURRENT_SOURCE_DIR}/../zlib/contrib/minizip/unzip.c
+${CMAKE_CURRENT_SOURCE_DIR}/../zlib/contrib/minizip/zip.c
+${CMAKE_CURRENT_SOURCE_DIR}/../zlib/contrib/minizip/miniunz.c
+)
+endif()
 
 
 if(MSVC)
