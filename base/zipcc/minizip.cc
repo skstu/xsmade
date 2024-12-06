@@ -73,7 +73,7 @@ bool Zipcc::zipUnCompress(const std::u16string &inputZipFile,
                                 nullptr, 0, nullptr, 0) != UNZ_OK)
         break;
       const std::u16string filename_in_zip_full =
-          outputUnzipPath + u"\\" + Utfpp::u8_to_u16(filename_in_zip);
+          outputUnzipPath + u"/" + Utfpp::u8_to_u16(filename_in_zip);
 
       if (*std::prev(filename_in_zip_full.end()) == u'\\' ||
           *std::prev(filename_in_zip_full.end()) == u'/') {

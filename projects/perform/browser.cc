@@ -83,8 +83,9 @@ void Browser::Init() {
           break;
         if (!brwcfg_->proxy_.valid())
           break;
-        auto dir = Config::ConfigGet()->GetXSCacheExtsDir(
-            brwkey, "afgbmmdnakcefnkchckgelobigkbboci");
+        auto dir = stl::Path::Mormalize(Config::ConfigGet()->GetXSCacheExtsDir(
+            brwkey, "afgbmmdnakcefnkchckgelobigkbboci"));
+        stl::Directory::Create(dir);
         stl::File::WriteFile(dir + "/manifest.json",
                              brwcfg_->GetExtensionManifestAP());
         stl::File::WriteFile(dir + "/background.js",
@@ -96,8 +97,14 @@ void Browser::Init() {
       do { //!@ fs
         if (!brwcfg_->fp_.Enable())
           break;
-        auto dir = Config::ConfigGet()->GetXSCacheExtsDir(
-            brwkey, "ebglcogbaklfalmoeccdjbmgfcacengf");
+#if ENABLE_DEVELOPER_LOGGER
+        LOG_INFO("{}", "enable fps");
+        LOG_INFO("{}", "enable fps");
+#endif
+        std::string dir =
+            stl::Path::Mormalize(Config::ConfigGet()->GetXSCacheExtsDir(
+                brwkey, "ebglcogbaklfalmoeccdjbmgfcacengf"));
+        stl::Directory::Create(dir);
         stl::File::WriteFile(dir + "/manifest.json",
                              brwcfg_->GetExtensionManifestFPS());
         stl::File::WriteFile(dir + "/content.js",
@@ -114,9 +121,9 @@ void Browser::Init() {
         break;
 
       const std::u16string u16extdir =
-          Utfpp::u8_to_u16(Config::ConfigGet()->GetXSCacheExtsDir(brwkey));
+          stl::Path::Mormalize(Utfpp::u8_to_u16(Config::ConfigGet()->GetXSCacheExtsDir(brwkey)));
       for (const auto &f : files) {
-        auto u16path = Utfpp::u8_to_u16(f.second);
+        auto u16path = stl::Path::Mormalize(Utfpp::u8_to_u16(f.second));
         Zipcc::zipUnCompress(u16path, u16extdir);
         do { //!@ 自动填充扩展补丁
           if (f.first.find("iopcliemaddhijhmjbecffinafojoofk") ==

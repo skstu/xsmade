@@ -268,6 +268,10 @@ void Config::SettingsInit() {
     }
     auto xx = 0;
   } while (0);
+
+#if defined(DEBUG)
+  settings_.developer.enable = true;
+#endif
 }
 ////////////////////////////////////////////////////////////////////////////
 static Config *__gpConfig = nullptr;
