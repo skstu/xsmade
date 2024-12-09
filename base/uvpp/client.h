@@ -7,6 +7,7 @@ class Client final : public IService {
 public:
   static Client *Create();
   static void Destroy();
+
 private:
   Client(/*const unsigned long&*/);
   ~Client();

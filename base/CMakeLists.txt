@@ -10,5 +10,6 @@
 add_subdirectory(stl)
 add_subdirectory(sys)
 add_subdirectory(zipcc)
-add_subdirectory(wxui)
-#add_subdirectory(uvpp)
+#add_subdirectory(wxui)
+add_subdirectory(uvpp)
+add_subdirectory(curlcc)

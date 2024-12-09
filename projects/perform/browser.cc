@@ -42,6 +42,18 @@ void Browser::Init() {
       brw_startup_args_.emplace_back("--no-default-browser-check");
     } while (0);
 
+    do {//!@ append args - f12
+      if (brwcfg_->worker_.enable_f12)
+        break;
+      brw_startup_args_.emplace_back("--xs-ddevtool");
+    } while (0);
+    
+    do {//!@ append args - pwdsavetip
+      if (brwcfg_->worker_.enable_pwdsavetip)
+        break;
+      brw_startup_args_.emplace_back("--xs-dsaveprompt");
+    }while(0);
+
     do { //!@ 指定版本
       std::map<std::string, std::string> dirs, files;
       stl::Directory::EnumU8(chromium_dir, dirs, files, false);
@@ -97,10 +109,6 @@ void Browser::Init() {
       do { //!@ fs
         if (!brwcfg_->fp_.Enable())
           break;
-#if ENABLE_DEVELOPER_LOGGER
-        LOG_INFO("{}", "enable fps");
-        LOG_INFO("{}", "enable fps");
-#endif
         std::string dir =
             stl::Path::Mormalize(Config::ConfigGet()->GetXSCacheExtsDir(
                 brwkey, "ebglcogbaklfalmoeccdjbmgfcacengf"));

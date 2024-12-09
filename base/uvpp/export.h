@@ -183,7 +183,7 @@ public:
                                      const IBuffer *);
   using tfOnClientErrorCb = tfOnServerErrorCb;
   using tfOnServerExitCb = void (*)(void);
-  using tfOnServerExitBefore = void(*)(const ISession *);
+  using tfOnServerExitBefore = void (*)(const ISession *);
   using tfOnClientExitCb = tfOnServerExitCb;
   using tfOnServerReadyCb = void (*)(void);
   using tfOnServerHelloCb = void (*)(const ISession *, const IBuffer *,

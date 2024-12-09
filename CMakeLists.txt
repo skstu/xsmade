@@ -92,6 +92,7 @@ set(xsOUTPUT_DIR ${xsSOURCE_DIR}/out)
 set(xsLIBS_DIR ${xsSOURCE_DIR}/out/libs)
 set(xsBIN_DIR ${xsSOURCE_DIR}/out/bin)
 set(xsPROJECTS_DIR ${xsSOURCE_DIR}/projects)
+set(xsBASE_DIR ${xsSOURCE_DIR}/base)
 set(xsBUILD_DIR ${xsSOURCE_DIR}/build)
 set(xsBUILD_INSTALLED_DIR ${xsBUILD_DIR}/installed)
 
@@ -122,24 +123,94 @@ set(CMAKE_CXX_FLAGS_MINSIZEREL "-Os -DNDEBUG") # MinSizeRel
 message(STATUS "Build type: ${CMAKE_BUILD_TYPE}")
 message(STATUS "C++ Flags: ${CMAKE_CXX_FLAGS_${CMAKE_BUILD_TYPE}}")
 
-project(xsmade)
+set(CMAKE_DEBUG_POSTFIX
+    ""
+    CACHE STRING "" FORCE)
+set(CMAKE_POSITION_INDEPENDENT_CODE
+    ON
+    CACHE BOOL "" FORCE)
 
 set(xsUSE_CURL ON)
 if(xsUSE_CURL)
-set(BUILD_CURL_EXE OFF CACHE BOOL "" FORCE)
-set(BUILD_SHARED_LIBS OFF CACHE BOOL "" FORCE)
-set(BUILD_TESTING OFF CACHE BOOL "" FORCE)
-set(BUILD_STATIC_CURL ON CACHE BOOL "" FORCE)
-set(CURL_STATIC_CRT ON CACHE BOOL "" FORCE)
-set(BUILD_STATIC_LIBS ON CACHE BOOL "" FORCE)
-set(CURL_ZLIB ON CACHE BOOL "" FORCE)
-set(CURL_ENABLE_SSL ON CACHE BOOL "" FORCE)
-set(CURL_USE_OPENSSL ON CACHE BOOL "" FORCE)
-#/clang64/lib/libz.a
-#"-DZLIB_LIBRARY=${ZLIB_LIBRARY}",
-#"-DZLIB_INCLUDE_DIR=${ZLIB_INCLUDE_DIR}",
-#"-DOPENSSL_ROOT_DIR=\"${OPENSSL_DIR_ROOT}\"",
+  set(BUILD_STATIC_LIBS
+      ON
+      CACHE BOOL "" FORCE)
+  set(BUILD_SHARED_LIBS
+      OFF
+      CACHE BOOL "" FORCE)
+  set(CURL_STATIC_CRT
+      ON
+      CACHE BOOL "" FORCE)
+  set(BUILD_CURL_EXE
+      OFF
+      CACHE BOOL "" FORCE)
+  set(BUILD_TESTING
+      OFF
+      CACHE BOOL "" FORCE)
+  set(BUILD_EXAMPLES
+      OFF
+      CACHE BOOL "" FORCE)
+  set(BUILD_LIBCURL_DOCS
+      OFF
+      CACHE BOOL "" FORCE)
+  set(BUILD_STATIC_CURL
+      ON
+      CACHE BOOL "" FORCE)
+  set(CURL_ZLIB
+      ON
+      CACHE BOOL "" FORCE)
+  set(CURL_ENABLE_SSL
+      ON
+      CACHE BOOL "" FORCE)
+  set(CURL_USE_OPENSSL
+      ON
+      CACHE BOOL "" FORCE)
+  set(OPENSSL_ROOT_DIR
+      "${MSYS2_CLANG64_DIR}/"
+      CACHE STRING "" FORCE)
+  set(ZLIB_INCLUDE_DIR
+      "${MSYS2_CLANG64_DIR}/include"
+      CACHE STRING "" FORCE)
+  set(ZLIB_LIBRARY
+      "${MSYS2_CLANG64_DIR}/lib/libz.a"
+      CACHE STRING "" FORCE)
+
+  set(USE_NGHTTP2
+      OFF
+      CACHE BOOL "" FORCE)
+  set(NGHTTP2_INCLUDE_DIR
+      "${MSYS2_CLANG64_DIR}/include"
+      CACHE STRING "" FORCE)
+  set(NGHTTP2_LIBRARY
+      "${MSYS2_CLANG64_DIR}/lib/libnghttp2.a"
+      CACHE STRING "" FORCE)
+
+  set(USE_LIBIDN2
+      ON
+      CACHE BOOL "" FORCE)
+  set(LIBIDN2_INCLUDE_DIR
+      "${MSYS2_CLANG64_DIR}/include"
+      CACHE STRING "" FORCE)
+  set(LIBIDN2_LIBRARY
+      "${MSYS2_CLANG64_DIR}/lib/libidn2.a"
+      CACHE STRING "" FORCE)
+
+  set(LIBPSL_INCLUDE_DIR
+      "${MSYS2_CLANG64_DIR}/include"
+      CACHE STRING "" FORCE)
+  set(LIBPSL_LIBRARY
+      "${MSYS2_CLANG64_DIR}/lib/libpsl.a"
+      CACHE STRING "" FORCE)
+
+  set(LIBSSH2_INCLUDE_DIR
+      "${MSYS2_CLANG64_DIR}/include"
+      CACHE STRING "" FORCE)
+  set(LIBSSH2_LIBRARY
+      "${MSYS2_CLANG64_DIR}/lib/libssh2.a"
+      CACHE STRING "" FORCE)
+  add_subdirectory(${xs3RDPARTY_DIR}/curl/ "CURL")
 endif()
+
 set(xsUSE_WXWIDGETS OFF)
 if(xsUSE_WXWIDGETS)
   set(wxBUILD_SHARED
@@ -207,6 +278,8 @@ set(LIBUV_BUILD_SHARED
     OFF
     CACHE BOOL "" FORCE)
 add_subdirectory(${xs3RDPARTY_DIR}/libuv/ "uv_a")
+
+project(xsmade)
 
 include(build/cmake/main.cmake)
 # LIST(APPEND CMAKE_MODULE_PATH ${LOCAL_CMAKE_MODULES_PATH}) include(global)

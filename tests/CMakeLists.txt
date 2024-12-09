@@ -7,8 +7,9 @@
 # Licence:     skstu licence
 #############################################################################
 
-add_subdirectory(test_wxui)
-add_subdirectory(test_main)
+add_subdirectory(test_curlcc)
+#add_subdirectory(test_wxui)
+#add_subdirectory(test_main)
 #add_subdirectory(test_ffx)
-add_subdirectory(test_uvpp_server)
-add_subdirectory(test_uvpp_client)
+#add_subdirectory(test_uvpp_server)
+#add_subdirectory(test_uvpp_client)

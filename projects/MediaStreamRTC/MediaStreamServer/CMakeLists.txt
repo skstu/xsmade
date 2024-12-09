@@ -1,23 +1,24 @@
-project(perform)
+project(MediaStreamServer)
 
 gfn_project_source_get(${CMAKE_CURRENT_SOURCE_DIR} OUT_HEADER_S OUT_SOURCE_S)
-set(SOURCES ${OUT_HEADER_S} ${OUT_SOURCE_S}
-            ${xs3RDPARTY_DIR}/wxWidgets/include/wx/msw/wx.rc)
+set(SOURCES ${OUT_HEADER_S} ${OUT_SOURCE_S})
 
 add_executable(${PROJECT_NAME} ${SOURCES})
 
+add_dependencies(${PROJECT_NAME} MediaStreamComm)
+
 target_include_directories(
   ${PROJECT_NAME}
-  PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}
-          ${xsROOT_DIR}
+  PRIVATE ${xsROOT_DIR}
           ${xsINCLUDE_DIR}
-          ${xs3RDPARTY_DIR}/utfcpp/source/
-          ${xs3RDPARTY_DIR}/http-parser/
-          ${xs3RDPARTY_DIR}/cpp-httplib/
-          ${xsOPENSSL_INCLUDE}
+          ${CMAKE_CURRENT_SOURCE_DIR}
+          ${CMAKE_CURRENT_SOURCE_DIR}/..
           ${MSYS2_CLANG64_DIR}/include
-          ${xs3RDPARTY_DIR}/tinyxml2/
-          ${xs3RDPARTY_DIR}/wxWidgets/include/)
+          ${xs3RDPARTY_DIR}/utfcpp/source
+          ${xs3RDPARTY_DIR}/http-parser
+          ${xs3RDPARTY_DIR}/cpp-httplib
+          ${xsOPENSSL_INCLUDE}
+          ${xs3RDPARTY_DIR}/tinyxml2)
 
 target_link_directories(${PROJECT_NAME} PRIVATE ${xsLIBS_DIR})
 
@@ -34,26 +35,19 @@ if(WIN32)
             IPHLPAPI.lib
             Userenv.lib
             Dbghelp.lib
-            Rpcrt4.lib
-            Comctl32.lib
-            gdiplus.lib
-            UxTheme.lib
-            version.lib
-            Shlwapi.lib
-            Msimg32.lib
-            # Oleacc.lib
             libfmt.a
             libsys.a
             libstl.a
             libzipcc.a
             libpthread.a
+            libMediaStreamComm.a
             ${xsOUTPUT_DIR}/http_parser/libhttp_parser.a
             ${xsOUTPUT_DIR}/zlib/libzlibstatic.a
             ${xsOUTPUT_DIR}/tinyxml2/libtinyxml2.a
             ${xsOPENSSL_LIBRARY})
 
-  set_target_properties(${PROJECT_NAME} PROPERTIES LINK_FLAGS "-mwindows"
-                                                   WIN32_EXECUTABLE YES)
+  #set_target_properties(${PROJECT_NAME} PROPERTIES LINK_FLAGS "-mwindows"
+  #                                                 WIN32_EXECUTABLE YES)
 
 elseif(APPLE)
   target_include_directories(

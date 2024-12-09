@@ -752,6 +752,8 @@ public:
     std::vector<std::string> urls; //!@ 启动页
     std::string cache;             //!@ 前端数据路由|缓存(json object)
     std::string brwver;            //!@ 打开指定浏览器版本号
+    bool enable_f12 = true;
+    bool enable_pwdsavetip = true;
     inline std::string GetCache() const {
       return cache.empty() ? "{}" : cache;
     }
@@ -781,6 +783,14 @@ public:
         }
         if (wokerObj.HasMember("brwver") && wokerObj["brwver"].IsString()) {
           brwver = wokerObj["brwver"].GetString();
+        }
+        if (wokerObj.HasMember("enable_f12") &&
+            wokerObj["enable_f12"].IsBool()) {
+          enable_f12 = wokerObj["enable_f12"].GetBool();
+        }
+        if (wokerObj.HasMember("enable_pwdsavetip") &&
+            wokerObj["enable_pwdsavetip"].IsBool()) {
+          enable_pwdsavetip = wokerObj["enable_pwdsavetip"].GetBool();
         }
         if (wokerObj.HasMember("cache") && wokerObj["cache"].IsObject()) {
           cache = Configure::toString(wokerObj["cache"]);

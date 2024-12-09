@@ -1,34 +1,31 @@
-project(uvpp)
+project(brwcfg)
 
 gfn_project_source_get(${CMAKE_CURRENT_SOURCE_DIR} OUT_HEADER_S OUT_SOURCE_S)
-
 set(SOURCES ${OUT_HEADER_S} ${OUT_SOURCE_S})
 
 add_definitions(-DSHARED_IMPLEMENTATION)
 add_library(${PROJECT_NAME} SHARED ${SOURCES})
 
-set_target_properties(${PROJECT_NAME} PROPERTIES POSITION_INDEPENDENT_CODE
-TRUE)
+add_dependencies(${PROJECT_NAME} sys stl)
+
+set_target_properties(${PROJECT_NAME} PROPERTIES POSITION_INDEPENDENT_CODE TRUE)
 
 target_include_directories(
-  ${PROJECT_NAME}
-  PRIVATE ${CMAKE_CURRENT_SOURCE_DIR} ${xsINCLUDE_DIR}
-          ${xs3RDPARTY_DIR}/utfcpp/source/ ${xs3RDPARTY_DIR}/libuv/include/)
+  ${PROJECT_NAME} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR} ${xsINCLUDE_DIR}
+                          ${xs3RDPARTY_DIR}/utfcpp/source/)
+
 target_link_directories(${PROJECT_NAME} PRIVATE ${xsLIBS_DIR})
+
 if(WIN32)
   target_link_libraries(
     ${PROJECT_NAME}
     ${MSYS2_CLANG64_DIR}/lib/libc++.a
-    Dbghelp.lib
-    Userenv.lib
-    ws2_32.lib
-    IPHLPAPI.lib
     libfmt.a
     libsys.a
     libstl.a
-    libzipcc.a
     libpthread.a
-    ${xsOUTPUT_DIR}/uv_a/libuv.a
+    ${MSYS2_CLANG64_DIR}/lib/libz.a
+    ${MSYS2_CLANG64_DIR}/lib/libiconv.a
     ${xsOUTPUT_DIR}/zlib/libzlibstatic.a)
 
   add_custom_command(
