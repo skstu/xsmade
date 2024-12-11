@@ -43,24 +43,33 @@ void FrameBgk::OnMouseLeftDown(wxMouseEvent &event) {
 }
 
 void FrameBgk::OnMouseLeftUp(wxMouseEvent &event) {
-  endPoint_ = event.GetPosition();
-  drawing_.store(false);
-  Refresh();
-  Show(false);
-  auto handle = wxApp::GetInstance();
   do {
-    wxCommandEvent *evtObj = new wxCommandEvent(wxEVT_COMMAND_THREAD);
-    evtObj->SetClientData(new wxRect(startPoint_.x, startPoint_.y,
-                                     endPoint_.x - startPoint_.x,
-                                     endPoint_.y - startPoint_.y));
-    auto tEvt = new wxThreadEvent(wxEVT_THREAD, wxAppThreadEvt_CaptureFinished);
-    tEvt->SetEventObject(evtObj);
-    wxQueueEvent(wxApp::GetInstance(), tEvt);
-    startPoint_.x = 0;
-    startPoint_.y = 0;
-    endPoint_.x = 0;
-    endPoint_.y = 0;
+    if (!drawing_.load())
+      break;
+    endPoint_ = event.GetPosition();
+    drawing_.store(false);
     Refresh();
+    // if (CapturingHostType::CAPTUREING_RECORDING ==
+    //     wxDynamicCast(wxApp::GetInstance(), App)->GetCapturingHostType()) {
+    //   Show(false);
+    // }
+    Show(false);
+    auto handle = wxApp::GetInstance();
+    do {
+      wxCommandEvent *evtObj = new wxCommandEvent(wxEVT_COMMAND_THREAD);
+      evtObj->SetClientData(new wxRect(startPoint_.x, startPoint_.y,
+                                       endPoint_.x - startPoint_.x,
+                                       endPoint_.y - startPoint_.y));
+      auto tEvt =
+          new wxThreadEvent(wxEVT_THREAD, wxAppThreadEvt_CaptureFinished);
+      tEvt->SetEventObject(evtObj);
+      wxQueueEvent(wxApp::GetInstance(), tEvt);
+      startPoint_.x = 0;
+      startPoint_.y = 0;
+      endPoint_.x = 0;
+      endPoint_.y = 0;
+      Refresh();
+    } while (0);
   } while (0);
 }
 

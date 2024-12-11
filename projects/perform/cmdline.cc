@@ -1,4 +1,4 @@
-#include "config.h"
+#include "perform.h"
 
 PerformCmdLine::PerformCmdLine(const std::string &input_cmdline)
     : stl::CmdLine(input_cmdline) {
@@ -16,6 +16,8 @@ void PerformCmdLine::Init() {
     type_ = PerformProcessType::IBROWSER;
   } else if (stl::Common::strIcmp(key_type, "download")) {
     type_ = PerformProcessType::DOWNLOAD;
+  } else if (stl::Common::strIcmp(key_type, "streampp")) {
+    type_ = PerformProcessType::STREAMPP;
   }
   url_ = GetValue("url");
   ofile_ = GetValue("ofile");

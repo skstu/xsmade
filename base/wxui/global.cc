@@ -1,12 +1,46 @@
 #include "wxui.h"
+void Global::ffxHideScreenShotToolbar() {
+  do {
+    auto app = wxDynamicCast(wxApp::GetInstance(), App);
+    if (!app)
+      break;
+    auto toolbar = dynamic_cast<wxFrame *>(app->FrameScreenShotToolGet());
+    if (!toolbar)
+      break;
+    if (!toolbar->IsShown())
+      break;
+    toolbar->Show(false);
+  } while (0);
+}
+void Global::ffxShowBkg(const bool &flag) {
+  do {
+    auto app = wxDynamicCast(wxApp::GetInstance(), App);
+    if (!app)
+      break;
+    auto frame_bkg = dynamic_cast<wxFrame *>(app->FrameBgkGet());
+    frame_bkg->Show(flag);
+  } while (0);
+}
+void Global::ffxShowScreenShotToolbar(const wxRect &select_rectangle) {
+  do {
+    auto app = wxDynamicCast(wxApp::GetInstance(), App);
+    if (!app)
+      break;
+    auto toolbar = dynamic_cast<wxFrame *>(app->FrameScreenShotToolGet());
+    if (!toolbar)
+      break;
+    toolbar->SetPosition(wxPoint(0, 0));
+    if (!toolbar->IsShown())
+      toolbar->Show(true);
+  } while (0);
+}
 void Global::ffxLayout() {
   do {
     auto app = wxDynamicCast(wxApp::GetInstance(), App);
     if (!app)
       break;
     wxFrame *frame_tool = dynamic_cast<wxFrame *>(app->FrameToolGet());
-    wxFrame *frame_work = dynamic_cast<wxFrame *>(
-        wxDynamicCast(wxApp::GetInstance(), App)->FrameWorkGet());
+    wxFrame *frame_work = dynamic_cast<wxFrame *>(app->FrameWorkGet());
     if (!frame_work || !frame_tool)
       break;
     wxRect rtWindow = frame_tool->GetRect();
@@ -42,8 +76,7 @@ void Global::ffxFullScreen(const bool &entry, const wxSize &prev_frame_tool,
     if (!app)
       break;
     wxFrame *frame_tool = dynamic_cast<wxFrame *>(app->FrameToolGet());
-    wxFrame *frame_work = dynamic_cast<wxFrame *>(
-        wxDynamicCast(wxApp::GetInstance(), App)->FrameWorkGet());
+    wxFrame *frame_work = dynamic_cast<wxFrame *>(app->FrameWorkGet());
     if (!frame_work || !frame_tool)
       break;
     if (entry) {
@@ -69,8 +102,7 @@ void Global::ffxShowWindow(const bool &flag) {
     if (!app)
       break;
     wxFrame *frame_tool = dynamic_cast<wxFrame *>(app->FrameToolGet());
-    wxFrame *frame_work = dynamic_cast<wxFrame *>(
-        wxDynamicCast(wxApp::GetInstance(), App)->FrameWorkGet());
+    wxFrame *frame_work = dynamic_cast<wxFrame *>(app->FrameWorkGet());
     if (!frame_work || !frame_tool)
       break;
     if (flag) {
@@ -90,11 +122,24 @@ void Global::ffxShowWindow(const bool &flag) {
     if (flag) {
 #if defined(__OSWIN__)
       SetWindowPos(frame_tool->GetHWND(), HWND_TOPMOST, 0, 0, 0, 0,
-                   SWP_NOMOVE | SWP_NOSIZE | SWP_SHOWWINDOW);
+                   SWP_NOMOVE | SWP_NOSIZE /*| SWP_SHOWWINDOW*/);
       SetWindowPos(frame_work->GetHWND(), HWND_TOPMOST, 0, 0, 0, 0,
-                   SWP_NOMOVE | SWP_NOSIZE | SWP_SHOWWINDOW);
+                   SWP_NOMOVE | SWP_NOSIZE /*| SWP_SHOWWINDOW*/);
 #endif
+    } else {
+      frame_tool->Show(false);
+      frame_work->Show(false);
     }
+#if 0
+        else {
+      // frame_work->Show(false);
+      // frame_tool->Show(false);
+      SetWindowPos(frame_tool->GetHWND(), NULL, 0, 0, 0, 0,
+                   SWP_NOMOVE | SWP_NOSIZE /*| SWP_HIDEWINDOW*/);
+      SetWindowPos(frame_work->GetHWND(), NULL, 0, 0, 0, 0,
+                   SWP_NOMOVE | SWP_NOSIZE /*| SWP_HIDEWINDOW*/);
+    }
+#endif
   } while (0);
 }
 void Global::ffxScaling(const float &scaling) {
@@ -103,8 +148,7 @@ void Global::ffxScaling(const float &scaling) {
     if (!app)
       break;
     wxFrame *frame_tool = dynamic_cast<wxFrame *>(app->FrameToolGet());
-    wxFrame *frame_work = dynamic_cast<wxFrame *>(
-        wxDynamicCast(wxApp::GetInstance(), App)->FrameWorkGet());
+    wxFrame *frame_work = dynamic_cast<wxFrame *>(app->FrameWorkGet());
     if (!frame_work || !frame_tool)
       break;
     wxSize sizeShape = frame_work->GetSize();
@@ -135,16 +179,17 @@ void Global::ffxTopmost() {
     if (!app)
       break;
     wxFrame *frame_tool = dynamic_cast<wxFrame *>(app->FrameToolGet());
-    wxFrame *frame_work = dynamic_cast<wxFrame *>(
-        wxDynamicCast(wxApp::GetInstance(), App)->FrameWorkGet());
+    wxFrame *frame_work = dynamic_cast<wxFrame *>(app->FrameWorkGet());
     if (!frame_work || !frame_tool)
       break;
 #if defined(__OSWIN__)
     SetWindowPos(frame_tool->GetHWND(), HWND_TOPMOST, 0, 0, 0, 0,
-                 SWP_NOMOVE | SWP_NOSIZE | SWP_SHOWWINDOW);
+                 SWP_NOMOVE | SWP_NOSIZE /*| SWP_SHOWWINDOW*/);
     SetWindowPos(frame_work->GetHWND(), HWND_TOPMOST, 0, 0, 0, 0,
-                 SWP_NOMOVE | SWP_NOSIZE | SWP_SHOWWINDOW);
+                 SWP_NOMOVE | SWP_NOSIZE /*| SWP_SHOWWINDOW*/);
 #endif
+    frame_tool->Show(true);
+    frame_work->Show(true);
   } while (0);
 }
 void Global::ffxCenter() {
@@ -153,8 +198,7 @@ void Global::ffxCenter() {
     if (!app)
       break;
     wxFrame *frame_tool = dynamic_cast<wxFrame *>(app->FrameToolGet());
-    wxFrame *frame_work = dynamic_cast<wxFrame *>(
-        wxDynamicCast(wxApp::GetInstance(), App)->FrameWorkGet());
+    wxFrame *frame_work = dynamic_cast<wxFrame *>(app->FrameWorkGet());
     if (!frame_work || !frame_tool)
       break;
     frame_work->Center();
@@ -164,7 +208,8 @@ void Global::ffxCenter() {
                         rect.GetWidth(), frame_tool->GetSize().GetHeight());
   } while (0);
 }
-void Global::ffxSetPos(const wxRect &rect) {
+void Global::ffxSetPos(const wxRect &rect,
+                       const CapturingHostType &captureType) {
   do {
     if (rect.GetWidth() < 100 || rect.GetHeight() < 100)
       break;
@@ -172,16 +217,33 @@ void Global::ffxSetPos(const wxRect &rect) {
     if (!app)
       break;
     wxFrame *frame_tool = dynamic_cast<wxFrame *>(app->FrameToolGet());
-    wxFrame *frame_work = dynamic_cast<wxFrame *>(
-        wxDynamicCast(wxApp::GetInstance(), App)->FrameWorkGet());
-    if (!frame_work || !frame_tool)
+    wxFrame *frame_work = dynamic_cast<wxFrame *>(app->FrameWorkGet());
+    wxFrame *frame_screenshot =
+        dynamic_cast<wxFrame *>(app->FrameScreenShotToolGet());
+    if (!frame_work || !frame_tool || !frame_screenshot)
       break;
     frame_work->SetSize(frame_work->GetPosition().x,
                         frame_work->GetPosition().y, rect.GetWidth(),
                         rect.GetHeight());
-    frame_tool->SetSize(rect.GetLeft(),
-                        rect.GetTop() - frame_tool->GetSize().GetHeight(),
-                        rect.GetWidth(), frame_tool->GetSize().GetHeight());
+    switch (captureType) {
+    case CapturingHostType::CAPTUREING_RECORDING: {
+      frame_tool->SetSize(rect.GetLeft(),
+                          rect.GetTop() - frame_tool->GetSize().GetHeight(),
+                          rect.GetWidth(), frame_tool->GetSize().GetHeight());
+    } break;
+    case CapturingHostType::CAPTUREING_SCREENSHOT: {
+      frame_tool->Show(false);
+      frame_work->Show(true);
+      wxRect rtWork = frame_work->GetRect();
+      frame_screenshot->SetSize(
+          rtWork.GetRight() - frame_screenshot->GetSize().GetWidth(),
+          rtWork.GetBottom(), frame_screenshot->GetSize().GetWidth(),
+          frame_screenshot->GetSize().GetHeight());
+      frame_screenshot->Show(true);
+    } break;
+    default:
+      break;
+    }
 
   } while (0);
 }

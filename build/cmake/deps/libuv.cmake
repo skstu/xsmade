@@ -1,0 +1,9 @@
+set(LIBUV_PROJECT_NAME "uv_a")
+
+set(BUILD_TESTING
+    OFF
+    CACHE BOOL "" FORCE)
+set(LIBUV_BUILD_SHARED
+    OFF
+    CACHE BOOL "" FORCE)
+add_subdirectory(${xs3RDPARTY_DIR}/libuv/ ${LIBUV_PROJECT_NAME})

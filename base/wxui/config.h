@@ -11,8 +11,20 @@ enum CommandTool {
   TOOL_SETTINGS = 10007,
   TOOL_RECORDING_START = 10008,
   TOOL_RECORDING_STOP = 10009,
+  TOOL_SCREENSHOT_EIDT = 10101,
+  TOOL_SCREENSHOT_CLOSE = 10102,
+  TOOL_SCREENSHOT_OK = 10103,
+  TOOL_SCREENSHOT_RECTANGLE = 10104,
+  TOOL_SCREENSHOT_ROUND = 10105,
+  TOOL_SCREENSHOT_TEXT = 10106,
+  TOOL_SCREENSHOT_REVOCATION = 10107,
 };
 
+// Who is capturing
+enum CapturingHostType {
+  CAPTUREING_SCREENSHOT = 0x00, //!@ 截屏捕获
+  CAPTUREING_RECORDING = 0x01,  //!@ 录屏捕获
+};
 class Config final : public IConfig {
 public:
   static Config *Get();
@@ -39,6 +51,7 @@ public:
   void OnRecordingStart(const IRecordingArgs *) const;
   void OnRecordingStop() const;
   void OnSystemExit() const;
+
 private:
   FrameType type_ = FrameType::FRAME;
   std::vector<Theme *> themes_;

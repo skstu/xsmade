@@ -1,31 +1,7 @@
 #if !defined(__918F8A06_5054_4610_918C_97CFBD43D91B__)
 #define __918F8A06_5054_4610_918C_97CFBD43D91B__
 
-#define ENABLE_DEVELOPER_LOGGER 1
-
-#include <sys.hpp>
-#include <macros.h>
-#include <httplib.h>
-#include <rapidjson.h>
-#include <tinyxml2.hpp>
-#include <fmt/format.h>
-#include <utfpp.hpp>
-#include <zipcc.h>
-#include <log.hpp>
-#include <base/wxui/export.h>
-#include "local.h"
-#include "configure.h"
-#include "browser.h"
-#include "plugins/plugins.h"
-#include "components/components.h"
-#include "components/ffmpeg/ffxargs.h"
-#include "components/ffmpeg/ffmpeg.h"
-#include "process/server.h"
-#include "process/download.h"
-#include "cmdline.h"
-#include "perform.h"
-
-class Config {
+class BrowserConfig final : public IConfig {
 public:
   class Paths {
   public:
@@ -59,12 +35,8 @@ public:
   };
 
 public:
-  static Config *ConfigGet();
-  static void Destroy();
-
-private:
-  Config();
-  ~Config();
+  BrowserConfig();
+  virtual ~BrowserConfig();
 
 private:
   void Init();
@@ -99,6 +71,9 @@ private:
 
 public:
   const std::string project_name_ = "MarsProjects";
+
+protected:
+  void __impl__() const override final {}
 };
 
 /// /*_ Memade®（新生™） _**/

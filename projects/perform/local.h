@@ -4,8 +4,9 @@
 enum class PerformProcessType : unsigned long {
   DEFAULT = 0x00,
   UTILITY = DEFAULT,
-  IBROWSER = 0x01,
-  DOWNLOAD = 0x02,
+  IBROWSER = 0x01,  //!@ browser interface service
+  DOWNLOAD = 0x02,  //!@ downloader
+  STREAMPP = 0x03, //!@ FlowRelay service 'stream' "STUN" and "TURN"
 };
 
 enum class FFXStreamServerType : unsigned short {
@@ -25,11 +26,19 @@ enum class ComponentType : unsigned long long {
       FFX_RTSP_SERVER | (unsigned long long)FFXStreamServerType::LOOP,
 };
 
+class IConfig {
+protected:
+  virtual void __impl__() const = 0;
+};
 class IPerform {
 public:
   virtual void Release() const = 0;
   virtual bool Start() = 0;
   virtual void Stop() = 0;
+  virtual IConfig *ConfigGet() const = 0;
+
+protected:
+  virtual void __impl__() const = 0;
 };
 /// /*_ Memade®（新生™） _**/
 /// /*_ Fri, 22 Nov 2024 12:32:11 GMT _**/

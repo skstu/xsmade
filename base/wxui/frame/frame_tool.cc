@@ -88,6 +88,16 @@ FrameTool::FrameTool(wxWindow *parent, wxWindowID id, const wxString &title,
     btn_screenshot_->SetToolTip(
         gpCommandToolTipMap[CommandTool::TOOL_SCREENSHOT]);
   }
+  // img = Config::Get()->GetResImage("btn_screenshot_edit.png");
+  // if (img) {
+  //   img->Rescale(btn_size, btn_size);
+  //   btn_screenshot_edit_ =
+  //       new wxBitmapButton(this, CommandTool::TOOL_SCREENSHOT_EIDT,
+  //                          wxBitmapBundle::FromImage(*img));
+  //   btn_screenshot_edit_->SetSize(wxSize(btn_size, btn_size));
+  //   btn_screenshot_edit_->SetToolTip(
+  //       gpCommandToolTipMap[CommandTool::TOOL_SCREENSHOT_EIDT]);
+  // }
   LayoutEx();
   Bind(wxEVT_BUTTON, &FrameTool::OnToolEvent, this);
 }
@@ -95,24 +105,39 @@ FrameTool::~FrameTool() {
   Unbind(wxEVT_BUTTON, &FrameTool::OnToolEvent, this);
 }
 void FrameTool::LayoutEx() {
+  int offset_r = 1;
+  int offset_l = 1;
   wxSize cursize = GetSize();
   wxPoint curpt = GetPosition();
   if (btn_close_) {
-    btn_close_->SetPosition(wxPoint(
-        cursize.GetWidth() - btn_size - btn_offset_x_ * 1, btn_offset_y_));
+    btn_close_->SetPosition(
+        wxPoint(cursize.GetWidth() - btn_size - btn_offset_x_ * offset_r,
+                btn_offset_y_));
+  }
+  if (btn_screenshot_edit_) {
+    ++offset_r;
+    btn_screenshot_edit_->SetPosition(wxPoint(
+        cursize.GetWidth() - btn_size * offset_r - btn_offset_x_ * offset_r,
+        btn_offset_y_));
   }
   if (btn_screenshot_) {
+    ++offset_r;
     btn_screenshot_->SetPosition(wxPoint(
-        cursize.GetWidth() - btn_size * 2 - btn_offset_x_ * 2, btn_offset_y_));
+        cursize.GetWidth() - btn_size * offset_r - btn_offset_x_ * offset_r,
+        btn_offset_y_));
   }
 
   if (btn_recording_start_) {
+    ++offset_r;
     btn_recording_start_->SetPosition(wxPoint(
-        cursize.GetWidth() - btn_size * 3 - btn_offset_x_ * 3, btn_offset_y_));
+        cursize.GetWidth() - btn_size * offset_r - btn_offset_x_ * offset_r,
+        btn_offset_y_));
   }
   if (btn_recording_stop_) {
+    ++offset_r;
     btn_recording_stop_->SetPosition(wxPoint(
-        cursize.GetWidth() - btn_size * 3 - btn_offset_x_ * 3, btn_offset_y_));
+        cursize.GetWidth() - btn_size * offset_r - btn_offset_x_ * offset_r,
+        btn_offset_y_));
   }
 
   if (btn_settings_) {
@@ -145,6 +170,7 @@ void FrameTool::OnToolEvent(wxCommandEvent &evt) {
 
   } break;
   case CommandTool::TOOL_SCREENSHOT: {
+#if 0
     auto app = wxDynamicCast(wxApp::GetInstance(), App);
     auto frame_shape = dynamic_cast<wxFrame *>(app->FrameWorkGet());
     if (!frame_shape)
@@ -176,13 +202,20 @@ void FrameTool::OnToolEvent(wxCommandEvent &evt) {
     wxString msg =
         wxString::Format(wxT("截屏完成!\n图片保存在[%s]\n"), save_path);
     wxMessageBox(msg, wxT("提示"));
-  } break;
-  case CommandTool::TOOL_WINDOW: {
+#endif
+    //!@ 进入框选
+    Global::ffxShowWindow(false);
     auto app = wxDynamicCast(wxApp::GetInstance(), App);
+    app->SetCapturingHostType(CapturingHostType::CAPTUREING_SCREENSHOT);
     auto frame_bgk = dynamic_cast<wxFrame *>(app->FrameBgkGet());
     if (!frame_bgk)
       break;
     frame_bgk->Show();
+  } break;
+  case CommandTool::TOOL_WINDOW: {
+    auto app = wxDynamicCast(wxApp::GetInstance(), App);
+    app->SetCapturingHostType(CapturingHostType::CAPTUREING_RECORDING);
+    Global::ffxShowBkg(true);
     Global::ffxShowWindow(false);
   } break;
   case CommandTool::TOOL_RECORDING_START: {

@@ -10,21 +10,26 @@ public:
   int OnExit() override;
   void OnFrameCreate();
   void OnFrameDestroy();
-  IFrame* FrameGet() const;
+  IFrame *FrameGet() const;
   IFrame *FrameToolGet() const;
   IFrame *FrameWorkGet() const;
   IFrame *FrameBgkGet() const;
-
+  IFrame *FrameScreenShotToolGet() const;
+  void SetCapturingHostType(const CapturingHostType &type);
+  CapturingHostType GetCapturingHostType() const;
 private:
   IFrame *frame_ = nullptr;
   IFrame *frame_tool_ = nullptr;
   IFrame *frame_work_ = nullptr;
   IFrame *frame_bgk_ = nullptr;
+  IFrame *frame_screenshot_tool_ = nullptr;
   void OnThreadEvtFrameDestroy(wxThreadEvent &event);
   void OnThreadEvtCaptureFinished(wxThreadEvent &event);
   void MainProc();
   std::atomic_bool open_ = false;
   stl::tfThreads threads_;
+  std::atomic<CapturingHostType> who_is_capturing_ =
+      CapturingHostType::CAPTUREING_RECORDING;
 };
 extern const int wxAppThreadEvt_CaptureFinished;
 extern const int wxAppThreadEvt_FrameDestroy;

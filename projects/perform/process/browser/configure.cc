@@ -1,4 +1,5 @@
-#include "config.h"
+#include "perform.h"
+
 Configure::Configure() {
   *this << source_;
 }

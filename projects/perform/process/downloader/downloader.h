@@ -9,10 +9,16 @@ public:
 private:
   void Init();
   void UnInit();
+
 public:
   void Release() const override final;
   bool Start() override final;
   void Stop() override final;
+  IConfig *ConfigGet() const override final;
+
+protected:
+  void __impl__() const override final {
+  }
 };
 /// /*_ Memade®（新生™） _**/
 /// /*_ Wed, 04 Dec 2024 03:19:13 GMT _**/

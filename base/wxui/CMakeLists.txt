@@ -6,6 +6,8 @@ set(SOURCES ${OUT_HEADER_S} ${OUT_SOURCE_S})
 add_definitions(-DSHARED_IMPLEMENTATION)
 add_library(${PROJECT_NAME} SHARED ${SOURCES})
 
+add_dependencies(${PROJECT_NAME} sys stl)
+
 gfn_find_wxwidgets(wxINCLUDES wxLIBS)
 
 target_include_directories(

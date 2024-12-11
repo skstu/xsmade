@@ -1,4 +1,4 @@
-#include "config.h"
+#include "perform.h"
 
 Download::Download() {
   Init();
@@ -20,6 +20,9 @@ void Download::Init() {
   } while (0);
 }
 void Download::UnInit() {
+}
+IConfig *Download::ConfigGet() const {
+  return nullptr;
 }
 bool Download::Start() {
   return false;

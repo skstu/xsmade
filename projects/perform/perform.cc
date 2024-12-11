@@ -1,4 +1,4 @@
-#include "config.h"
+#include "perform.h"
 
 Perform::Perform() {
 }
@@ -11,27 +11,33 @@ void Perform::Release() const {
 void Perform::Run() {
   std::thread([this]() {
     bool needStop = true;
-    IPerform *perform = nullptr;
     do {
       switch (PerformCmdLine::Get()->ProcessType()) {
       case PerformProcessType::UTILITY: {
         needStop = true;
       } break;
       case PerformProcessType::DOWNLOAD: {
-        perform = new Download();
+        current_ = new Download();
 
         needStop = true;
       } break;
+      case PerformProcessType::STREAMPP: {
+        current_ = new IStreamPP();
+        if (!current_->Start())
+          break;
+        needStop = false;
+      } break;
       case PerformProcessType::IBROWSER: {
-        Server *server = dynamic_cast<Server *>(perform);
+        IBrowserInterfaceServer *server =
+            dynamic_cast<IBrowserInterfaceServer *>(current_);
         if (server) {
           server->Process();
           break;
         }
         if (0 == xs_sys_process_already_exists(0))
           break;
-        perform = new Server();
-        if (!perform->Start())
+        current_ = new IBrowserInterfaceServer();
+        if (!current_->Start())
           break;
         needStop = false;
       } break;
@@ -39,9 +45,9 @@ void Perform::Run() {
         break;
       }
       if (needStop) {
-        if (perform) {
-          perform->Stop();
-          perform->Release();
+        if (current_) {
+          current_->Stop();
+          current_->Release();
         }
         break;
       }
@@ -57,6 +63,18 @@ Perform *Perform::Create() {
     __gpPerform = new Perform();
   return __gpPerform;
 }
+Perform *Perform::Get() {
+  return Perform::Create();
+}
 void Perform::Destroy() {
   SK_DELETE_PTR(__gpPerform);
+}
+IConfig *Perform::ConfigGet() {
+  IConfig *result = nullptr;
+  if (__gpPerform) {
+    if (__gpPerform->current_) {
+      result = __gpPerform->current_->ConfigGet();
+    }
+  }
+  return result;
 }

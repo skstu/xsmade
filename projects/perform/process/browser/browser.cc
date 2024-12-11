@@ -1,4 +1,4 @@
-#include "config.h"
+#include "perform.h"
 
 Browser::Browser(const std::string &cfg) : cfg_(cfg) {
   Init();
@@ -10,12 +10,15 @@ void Browser::Release() const {
   delete this;
 }
 void Browser::Init() {
+  auto config = dynamic_cast<BrowserConfig *>(Perform::ConfigGet());
+  if (!config)
+    return;
   do {
     std::string cfg_cache;
     do { //!@ 获取缓存配置 用于初始化
       Configure tmpcfg(cfg_);
       cfg_cache = stl::File::ReadFile(
-          Config::ConfigGet()->GetXSCacheConfigureFName(tmpcfg.rule_.key));
+          config->GetXSCacheConfigureFName(tmpcfg.rule_.key));
     } while (0);
 
     brwcfg_ = new Configure(cfg_cache);
@@ -24,12 +27,11 @@ void Browser::Init() {
     std::string brwkey = brwcfg_->rule_.key;
     std::string brwver = brwcfg_->worker_.brwver;
     //!@ 浏览器目录
-    std::string chromium_dir = Config::ConfigGet()->PathGet().chromium_dir;
-    std::string chromium_user_data_dir =
-        Config::ConfigGet()->GetBrwUserDataDir(brwkey);
+    std::string chromium_dir = config->PathGet().chromium_dir;
+    std::string chromium_user_data_dir = config->GetBrwUserDataDir(brwkey);
     stl::Directory::Create(chromium_user_data_dir);
 
-    Config::ConfigGet()->XSCacheClean(brwkey);
+    config->XSCacheClean(brwkey);
 
     do { //!@ default args
       brw_startup_args_.emplace_back("--no-first-run");
@@ -42,17 +44,17 @@ void Browser::Init() {
       brw_startup_args_.emplace_back("--no-default-browser-check");
     } while (0);
 
-    do {//!@ append args - f12
+    do { //!@ append args - f12
       if (brwcfg_->worker_.enable_f12)
         break;
       brw_startup_args_.emplace_back("--xs-ddevtool");
     } while (0);
-    
-    do {//!@ append args - pwdsavetip
+
+    do { //!@ append args - pwdsavetip
       if (brwcfg_->worker_.enable_pwdsavetip)
         break;
       brw_startup_args_.emplace_back("--xs-dsaveprompt");
-    }while(0);
+    } while (0);
 
     do { //!@ 指定版本
       std::map<std::string, std::string> dirs, files;
@@ -80,10 +82,9 @@ void Browser::Init() {
     }
 
     do {
-      auto dir = Config::ConfigGet()->GetXSCacheCfgsDir(brwkey);
-      stl::File::WriteFile(
-          Config::ConfigGet()->GetXSCacheConfigureFName(brwkey),
-          brwcfg_->source_);
+      auto dir = config->GetXSCacheCfgsDir(brwkey);
+      stl::File::WriteFile(config->GetXSCacheConfigureFName(brwkey),
+                           brwcfg_->source_);
     } while (0);
 
     do { //!@ extensions
@@ -95,7 +96,7 @@ void Browser::Init() {
           break;
         if (!brwcfg_->proxy_.valid())
           break;
-        auto dir = stl::Path::Mormalize(Config::ConfigGet()->GetXSCacheExtsDir(
+        auto dir = stl::Path::Mormalize(config->GetXSCacheExtsDir(
             brwkey, "afgbmmdnakcefnkchckgelobigkbboci"));
         stl::Directory::Create(dir);
         stl::File::WriteFile(dir + "/manifest.json",
@@ -109,9 +110,8 @@ void Browser::Init() {
       do { //!@ fs
         if (!brwcfg_->fp_.Enable())
           break;
-        std::string dir =
-            stl::Path::Mormalize(Config::ConfigGet()->GetXSCacheExtsDir(
-                brwkey, "ebglcogbaklfalmoeccdjbmgfcacengf"));
+        std::string dir = stl::Path::Mormalize(config->GetXSCacheExtsDir(
+            brwkey, "ebglcogbaklfalmoeccdjbmgfcacengf"));
         stl::Directory::Create(dir);
         stl::File::WriteFile(dir + "/manifest.json",
                              brwcfg_->GetExtensionManifestFPS());
@@ -122,14 +122,13 @@ void Browser::Init() {
       } while (0);
       //!@ Install custom extensions
       std::map<std::string, std::string> dirs, files;
-      stl::Directory::EnumU8(
-          Config::ConfigGet()->PathGet().chromium_extensions_dir, dirs, files,
-          false);
+      stl::Directory::EnumU8(config->PathGet().chromium_extensions_dir, dirs,
+                             files, false);
       if (files.empty())
         break;
 
-      const std::u16string u16extdir =
-          stl::Path::Mormalize(Utfpp::u8_to_u16(Config::ConfigGet()->GetXSCacheExtsDir(brwkey)));
+      const std::u16string u16extdir = stl::Path::Mormalize(
+          Utfpp::u8_to_u16(config->GetXSCacheExtsDir(brwkey)));
       for (const auto &f : files) {
         auto u16path = stl::Path::Mormalize(Utfpp::u8_to_u16(f.second));
         Zipcc::zipUnCompress(u16path, u16extdir);

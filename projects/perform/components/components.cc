@@ -1,4 +1,4 @@
-#include "config.h"
+#include "perform.h"
 
 Components::Components() {
   Init();
@@ -9,6 +9,7 @@ Components::~Components() {
 }
 
 void Components::Init() {
+  #if 0
   do {
     const std::u16string current_path =
         Utfpp::u8_to_u16(Config::ConfigGet()->PathGet().root_dir);
@@ -63,6 +64,7 @@ void Components::Init() {
       }
     }
   } while (0);
+  #endif
 }
 
 void Components::UnInit() {

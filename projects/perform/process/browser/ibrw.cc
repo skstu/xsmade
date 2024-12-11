@@ -1,4 +1,4 @@
-#include "config.h"
+#include "perform.h"
 
 static wxui::IWxui *gpsWxui = nullptr;
 static std::atomic_bool gbWxuiStatus = false;
@@ -86,30 +86,29 @@ private:
 };
 } // namespace
 
-Server::Server() {
+IBrowserInterfaceServer::IBrowserInterfaceServer() {
   Init();
 }
 
-Server::~Server() {
+IBrowserInterfaceServer::~IBrowserInterfaceServer() {
   UnInit();
 }
-void Server::Release() const {
+void IBrowserInterfaceServer::Release() const {
   delete this;
 }
-void Server::Init() {
+void IBrowserInterfaceServer::Init() {
+  config_ = new BrowserConfig();
   server_ = new httplib::Server();
 }
-void Server::UnInit() {
-  if (server_) {
-    delete server_;
-    server_ = nullptr;
-  }
+void IBrowserInterfaceServer::UnInit() {
+  SK_DELETE_PTR(server_);
+  SK_DELETE_PTR(config_);
 }
-bool Server::Start() {
+bool IBrowserInterfaceServer::Start() {
   do {
     if (open_.load() || !server_)
       break;
-    if (Config::ConfigGet()->GetSettings().developer.enable) {
+    if (config_->GetSettings().developer.enable) {
       port_ = 65535;
     } else {
       port_ = xs_sys_get_free_port();
@@ -122,7 +121,7 @@ bool Server::Start() {
   } while (0);
   return open_.load();
 }
-void Server::Stop() {
+void IBrowserInterfaceServer::Stop() {
   do {
     if (!open_.load())
       break;
@@ -138,7 +137,7 @@ void Server::Stop() {
     threads_.clear();
   } while (0);
 }
-void Server::Process() {
+void IBrowserInterfaceServer::Process() {
   do { //!@ plugin - ffx
     if (gbWxuiStatus)
       break;
@@ -150,7 +149,7 @@ void Server::Process() {
   do {
     brws_.iterate_clear([&](const auto &key, const auto &brw, bool &itclear) {
       if (0 == xs_sys_process_has_exit(brw->GetPid())) {
-        client_notifys_.push(Config::CreateBrwCloseNotifyPak(key));
+        client_notifys_.push(BrowserConfig::CreateBrwCloseNotifyPak(key));
         brw->Release();
         itclear = true;
       }
@@ -159,8 +158,7 @@ void Server::Process() {
   do {
     if (client_notifys_.empty())
       break;
-    const unsigned int notify_port =
-        Config::ConfigGet()->RouteConfigureGetClientPort();
+    const unsigned int notify_port = config_->RouteConfigureGetClientPort();
     if (notify_port <= 0)
       break;
     auto msgs = client_notifys_.pops();
@@ -172,8 +170,12 @@ void Server::Process() {
     }
   } while (0);
 }
-void Server::OnRequest(const RequestType &reqType, const std::string &body,
-                       std::string &res) {
+IConfig *IBrowserInterfaceServer::ConfigGet() const {
+  return dynamic_cast<IConfig*>(config_);
+}
+void IBrowserInterfaceServer::OnRequest(const RequestType &reqType,
+                                        const std::string &body,
+                                        std::string &res) {
   int code = -1;
   std::string message;
   long long brwpid = 0;
@@ -248,7 +250,7 @@ void Server::OnRequest(const RequestType &reqType, const std::string &body,
     if (found) {
       code = 0;
       message = "ok";
-      client_notifys_.push(Config::CreateBrwCloseNotifyPak(key));
+      client_notifys_.push(BrowserConfig::CreateBrwCloseNotifyPak(key));
     } else {
       code = -1003;
       message = "not found";
@@ -257,8 +259,7 @@ void Server::OnRequest(const RequestType &reqType, const std::string &body,
   case RequestType::BROWSER_GET: {
     rapidjson::Value brwObjs(rapidjson::Type::kArrayType);
     std::map<std::string, std::string> dirs, files;
-    stl::Directory::EnumU8(Config::ConfigGet()->PathGet().chromium_dir, dirs,
-                           files, false);
+    stl::Directory::EnumU8(config_->PathGet().chromium_dir, dirs, files, false);
     for (const auto &node : dirs) {
       brwObjs.PushBack(rapidjson::Value()
                            .SetString(node.first.c_str(), resDoc.GetAllocator())
@@ -347,12 +348,12 @@ void Server::OnRequest(const RequestType &reqType, const std::string &body,
         break;
       if (!gpsWxui) {
         gpsWxui = wxui::IWxui::Create(
-            (Config::ConfigGet()->PathGet().plugins_dir + "/wxui.dll").c_str());
+            (config_->PathGet().plugins_dir + "/wxui.dll").c_str());
       }
       if (!gpsWxui)
         break;
       gpsWxui->ConfigGet()->SetResourceDir(
-          (Config::ConfigGet()->PathGet().resources_dir + "/ffxui/").c_str());
+          (config_->PathGet().resources_dir + "/ffxui/").c_str());
       gpsWxui->ConfigGet()->SetFrameType(wxui::FrameType::SHAPEFRAME);
       gpsWxui->ConfigGet()->RegisterSystemExitCb(
           [](void *route) { gbWxuiStatus.store(false); }, this);
@@ -366,8 +367,7 @@ void Server::OnRequest(const RequestType &reqType, const std::string &body,
                 stl::Time::TimeStamp<std::chrono::microseconds>());
 #else
             std::string outfile = fmt::format(
-                "{}/{}.mp4",
-                Config::ConfigGet()->PathGet().chromium_user_data_dir,
+                "{}/{}.mp4", config_->PathGet().chromium_user_data_dir,
                 stl::Time::TimeStamp<std::chrono::microseconds>());
 #endif
             ffx::FFXArgs ffxArgs(ffx::tfFFXArgs{
@@ -436,7 +436,7 @@ void Server::OnRequest(const RequestType &reqType, const std::string &body,
     res = Json::toString(resDoc);
   } while (0);
 }
-void Server::Listen() {
+void IBrowserInterfaceServer::Listen() {
   server_->Post("/server/open",
                 [this](const httplib::Request &req, httplib::Response &res) {
                   std::string repRes;
@@ -514,6 +514,6 @@ void Server::Listen() {
 
   });
 
-  Config::ConfigGet()->RouteConfigureInit(port_);
+  config_->RouteConfigureInit(port_);
   server_->listen("127.0.0.1", port_);
 }

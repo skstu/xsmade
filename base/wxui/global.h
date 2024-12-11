@@ -11,10 +11,17 @@ public:
   static void ffxFullScreen(const bool &entry, const wxSize &prev_frame_tool,
                             const wxSize &perv_frame_shape);
   static void ffxShowWindow(const bool &flag);
-  static void ffxSetPos(const wxRect &);
+  static void ffxSetPos(const wxRect &,
+                        const CapturingHostType &captureType =
+                            CapturingHostType::CAPTUREING_RECORDING);
   static void ffxLayout();
   static void ffxCenter();
   static void ffxTopmost();
+
+  static void ffxHideScreenShotToolbar();
+  static void ffxShowScreenShotToolbar(const wxRect &);
+
+  static void ffxShowBkg(const bool &flag);
 };
 
 /// /*_ Memade®（新生™） _**/

@@ -1,22 +1,22 @@
-#include "config.h"
+#include "perform.h"
 
-Config::Config() {
+BrowserConfig::BrowserConfig() {
   Init();
 }
 
-Config::~Config() {
+BrowserConfig::~BrowserConfig() {
   UnInit();
 }
-void Config::Init() {
+void BrowserConfig::Init() {
   PathsInit();
   SettingsInit();
   LOG_INIT(paths_.logs_dir + "perform.log");
 }
 
-void Config::UnInit() {
+void BrowserConfig::UnInit() {
   LOG_UNINIT;
 }
-void Config::RouteConfigureInit(const unsigned int &server_port) const {
+void BrowserConfig::RouteConfigureInit(const unsigned int &server_port) const {
   std::lock_guard<std::mutex> lock{*mtx_};
   do {
     const std::string route_path = paths_.brw_projects_route_file;
@@ -44,7 +44,7 @@ void Config::RouteConfigureInit(const unsigned int &server_port) const {
     stl::File::WriteFile(route_path, Json::toString(doc));
   } while (0);
 }
-std::string Config::GetBrwUserDataDir(const std::string &brwKey) const {
+std::string BrowserConfig::GetBrwUserDataDir(const std::string &brwKey) const {
   std::string result;
   std::lock_guard<std::mutex> lock{*mtx_};
   result = fmt::format(R"({}/{}/)", paths_.chromium_user_data_dir, brwKey);
@@ -59,8 +59,8 @@ std::string Config::GetBrwUserDataDir(const std::string &brwKey) const {
         chromium_xscache_statistics_dir; //
    "/userdata/cache/${key}/Default/xscache/statis/"
 */
-std::string Config::GetXSCacheExtsDir(const std::string &brwKey,
-                                      const std::string &extId) const {
+std::string BrowserConfig::GetXSCacheExtsDir(const std::string &brwKey,
+                                             const std::string &extId) const {
   std::string result;
   std::lock_guard<std::mutex> lock{*mtx_};
   result = fmt::format(R"({}/{}/Default/XSCache/exts/{}/)",
@@ -68,7 +68,8 @@ std::string Config::GetXSCacheExtsDir(const std::string &brwKey,
   stl::Directory::Create(result);
   return result;
 }
-std::string Config::GetXSCacheConfigureFName(const std::string &brwKey) const {
+std::string
+BrowserConfig::GetXSCacheConfigureFName(const std::string &brwKey) const {
   std::string result;
   std::lock_guard<std::mutex> lock{*mtx_};
   result = fmt::format(R"({}/{}/Default/XSCache/cfgs/configure.json)",
@@ -76,7 +77,7 @@ std::string Config::GetXSCacheConfigureFName(const std::string &brwKey) const {
   stl::Directory::Create(stl::Path::PathnameToPath(result));
   return result;
 }
-std::string Config::GetXSCacheExtsDir(const std::string &brwKey) const {
+std::string BrowserConfig::GetXSCacheExtsDir(const std::string &brwKey) const {
   std::string result;
   std::lock_guard<std::mutex> lock{*mtx_};
   result = fmt::format(R"({}/{}/Default/XSCache/exts/)",
@@ -84,7 +85,7 @@ std::string Config::GetXSCacheExtsDir(const std::string &brwKey) const {
   stl::Directory::Create(result);
   return result;
 }
-std::string Config::GetXSCacheCfgsDir(const std::string &brwKey) const {
+std::string BrowserConfig::GetXSCacheCfgsDir(const std::string &brwKey) const {
   std::string result;
   std::lock_guard<std::mutex> lock{*mtx_};
   result = fmt::format(R"({}/{}/Default/XSCache/cfgs/)",
@@ -92,7 +93,8 @@ std::string Config::GetXSCacheCfgsDir(const std::string &brwKey) const {
   stl::Directory::Create(result);
   return result;
 }
-std::string Config::GetXSCacheStatisDir(const std::string &brwKey) const {
+std::string
+BrowserConfig::GetXSCacheStatisDir(const std::string &brwKey) const {
   std::string result;
   std::lock_guard<std::mutex> lock{*mtx_};
   result = fmt::format(R"({}/{}/Default/XSCache/statis/)",
@@ -100,7 +102,7 @@ std::string Config::GetXSCacheStatisDir(const std::string &brwKey) const {
   stl::Directory::Create(result);
   return result;
 }
-void Config::XSCacheClean(const std::string &brwKey) const {
+void BrowserConfig::XSCacheClean(const std::string &brwKey) const {
   std::lock_guard<std::mutex> lock{*mtx_};
   if (!brwKey.empty()) {
     std::string xscache_dir = fmt::format(
@@ -108,7 +110,7 @@ void Config::XSCacheClean(const std::string &brwKey) const {
     stl::Directory::RemoveAllU8(xscache_dir);
   }
 }
-unsigned int Config::RouteConfigureGetClientPort() const {
+unsigned int BrowserConfig::RouteConfigureGetClientPort() const {
   unsigned int result = 0;
   std::lock_guard<std::mutex> lock{*mtx_};
   do {
@@ -129,21 +131,21 @@ unsigned int Config::RouteConfigureGetClientPort() const {
   } while (0);
   return result;
 }
-std::string Config::CreateBrwCloseNotifyPak(const std::string &brwKey) {
+std::string BrowserConfig::CreateBrwCloseNotifyPak(const std::string &brwKey) {
   std::string result = fmt::format(R"("key":"{}")", brwKey);
   result.insert(0, "{");
   result.append("}");
   return result;
 }
-const Config::Settings &Config::GetSettings() const {
+const BrowserConfig::Settings &BrowserConfig::GetSettings() const {
   std::lock_guard<std::mutex> lock{*mtx_};
   return settings_;
 }
-const Config::Paths &Config::PathGet() const {
+const BrowserConfig::Paths &BrowserConfig::PathGet() const {
   std::lock_guard<std::mutex> lock{*mtx_};
   return paths_;
 }
-void Config::PathsInit() {
+void BrowserConfig::PathsInit() {
   do {
     char *path = nullptr;
     size_t path_size = 0;
@@ -179,11 +181,11 @@ void Config::PathsInit() {
   } while (0);
 }
 ////////////////////////////////////////////////////////////////////////////
-Config::Settings::Settings() {
+BrowserConfig::Settings::Settings() {
 }
-Config::Settings::~Settings() {
+BrowserConfig::Settings::~Settings() {
 }
-void Config::SettingsInit() {
+void BrowserConfig::SettingsInit() {
   do {
     std::string settings_buffer =
         stl::File::ReadFile(paths_.configure_dir + "/settings.xml");
@@ -272,16 +274,4 @@ void Config::SettingsInit() {
 #if defined(DEBUG)
   settings_.developer.enable = true;
 #endif
-}
-////////////////////////////////////////////////////////////////////////////
-static Config *__gpConfig = nullptr;
-Config *Config::ConfigGet() {
-  if (!__gpConfig)
-    __gpConfig = new Config();
-  return __gpConfig;
-}
-void Config::Destroy() {
-  if (__gpConfig)
-    delete __gpConfig;
-  __gpConfig = nullptr;
 }

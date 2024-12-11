@@ -43,11 +43,29 @@ int App::OnExit() {
 void App::OnThreadEvtFrameDestroy(wxThreadEvent &event) {
   ExitMainLoop();
 }
+void App::SetCapturingHostType(const CapturingHostType &type) {
+  who_is_capturing_.store(type);
+}
+CapturingHostType App::GetCapturingHostType() const {
+  return who_is_capturing_.load();
+}
 void App::OnThreadEvtCaptureFinished(wxThreadEvent &event) {
-  wxCommandEvent *evtObj = (wxCommandEvent *)event.GetEventObject();
-  wxRect *rect = (wxRect *)evtObj->GetClientData();
-  Global::ffxSetPos(*rect);
-  Global::ffxShowWindow(true);
+  switch (who_is_capturing_.load()) {
+  case CapturingHostType::CAPTUREING_RECORDING: {
+    wxCommandEvent *evtObj = (wxCommandEvent *)event.GetEventObject();
+    wxRect *rect = (wxRect *)evtObj->GetClientData();
+    Global::ffxSetPos(*rect);
+    Global::ffxShowWindow(true);
+  } break;
+  case CapturingHostType::CAPTUREING_SCREENSHOT: {
+    wxCommandEvent *evtObj = (wxCommandEvent *)event.GetEventObject();
+    wxRect *rect = (wxRect *)evtObj->GetClientData();
+    Global::ffxShowScreenShotToolbar(*rect);
+    Global::ffxSetPos(*rect, CapturingHostType::CAPTUREING_SCREENSHOT);
+  } break;
+  default:
+    break;
+  }
 }
 void App::OnFrameDestroy() {
   do {
@@ -70,6 +88,7 @@ void App::OnFrameCreate() {
       frame_bgk_ = new FrameBgk(nullptr);
       frame_work_ = new FrameWork(nullptr);
       frame_tool_ = new FrameTool(nullptr);
+      frame_screenshot_tool_ = new FrameToolScreenShot(nullptr);
       Global::ffxCenter();
       Global::ffxTopmost();
     } break;
@@ -78,6 +97,9 @@ void App::OnFrameCreate() {
     }
 
   } while (0);
+}
+IFrame *App::FrameScreenShotToolGet() const {
+  return frame_screenshot_tool_;
 }
 IFrame *App::FrameGet() const {
   return frame_;

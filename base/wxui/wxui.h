@@ -18,6 +18,7 @@ using namespace wxui;
 #include "frame/frame_bkg.h"
 #include "frame/frame_work.h"
 #include "frame/frame_tool.h"
+#include "frame/frame_tool_screenshot.h"
 #include "frame.h"
 #include "app.h"
 

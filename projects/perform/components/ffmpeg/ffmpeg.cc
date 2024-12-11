@@ -1,4 +1,4 @@
-#include "config.h"
+#include "perform.h"
 #if defined(__OSWIN__)
 static HANDLE ghWritePipe = nullptr;
 static PROCESS_INFORMATION g_pi = {};

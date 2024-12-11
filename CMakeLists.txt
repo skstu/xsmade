@@ -9,6 +9,15 @@
 
 cmake_minimum_required(VERSION 3.5)
 
+option(xsUSE_CURL "Enable deps CURL" ON)
+option(xsUSE_WXWIDGETS "Enable deps wxWidgets" ON)
+option(xsUSE_TINYXML2 "Enable deps tinyxml2" ON)
+option(xsUSE_LIBUV "Enable deps libuv" ON)
+option(xsUSE_SQLITE3 "Enable deps sqlite3" ON)
+option(xsUSE_ZLIB "Enable deps zlib" ON)
+option(xsUSE_MINIZIP "Enable deps minizip" ON)
+option(xsUSE_HTTPPARSER "Enable deps http_parser" ON)
+
 if(NOT CMAKE_CONFIGURATION_TYPES)
   get_property(HAVE_MULTI_CONFIG_GENERATOR GLOBAL
                PROPERTY GENERATOR_IS_MULTI_CONFIG)
@@ -120,8 +129,13 @@ set(CMAKE_CXX_FLAGS_RELEASE "-O3 -DNDEBUG")
 set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "-O2 -g") # Release with Debug Info
 set(CMAKE_CXX_FLAGS_MINSIZEREL "-Os -DNDEBUG") # MinSizeRel
 
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wno-unused-command-line-argument")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-unused-command-line-argument")
+
 message(STATUS "Build type: ${CMAKE_BUILD_TYPE}")
 message(STATUS "C++ Flags: ${CMAKE_CXX_FLAGS_${CMAKE_BUILD_TYPE}}")
+
+project(xsmade VERSION 1.0.0)
 
 set(CMAKE_DEBUG_POSTFIX
     ""
@@ -130,158 +144,5 @@ set(CMAKE_POSITION_INDEPENDENT_CODE
     ON
     CACHE BOOL "" FORCE)
 
-set(xsUSE_CURL OFF)
-if(xsUSE_CURL)
-  set(BUILD_STATIC_LIBS
-      ON
-      CACHE BOOL "" FORCE)
-  set(BUILD_SHARED_LIBS
-      OFF
-      CACHE BOOL "" FORCE)
-  set(CURL_STATIC_CRT
-      ON
-      CACHE BOOL "" FORCE)
-  set(BUILD_CURL_EXE
-      OFF
-      CACHE BOOL "" FORCE)
-  set(BUILD_TESTING
-      OFF
-      CACHE BOOL "" FORCE)
-  set(BUILD_EXAMPLES
-      OFF
-      CACHE BOOL "" FORCE)
-  set(BUILD_LIBCURL_DOCS
-      OFF
-      CACHE BOOL "" FORCE)
-  set(BUILD_STATIC_CURL
-      ON
-      CACHE BOOL "" FORCE)
-  set(CURL_ZLIB
-      ON
-      CACHE BOOL "" FORCE)
-  set(CURL_ENABLE_SSL
-      ON
-      CACHE BOOL "" FORCE)
-  set(CURL_USE_OPENSSL
-      ON
-      CACHE BOOL "" FORCE)
-  set(OPENSSL_ROOT_DIR
-      "${MSYS2_CLANG64_DIR}/"
-      CACHE STRING "" FORCE)
-  set(ZLIB_INCLUDE_DIR
-      "${MSYS2_CLANG64_DIR}/include"
-      CACHE STRING "" FORCE)
-  set(ZLIB_LIBRARY
-      "${MSYS2_CLANG64_DIR}/lib/libz.a"
-      CACHE STRING "" FORCE)
-
-  set(USE_NGHTTP2
-      OFF
-      CACHE BOOL "" FORCE)
-  set(NGHTTP2_INCLUDE_DIR
-      "${MSYS2_CLANG64_DIR}/include"
-      CACHE STRING "" FORCE)
-  set(NGHTTP2_LIBRARY
-      "${MSYS2_CLANG64_DIR}/lib/libnghttp2.a"
-      CACHE STRING "" FORCE)
-
-  set(USE_LIBIDN2
-      ON
-      CACHE BOOL "" FORCE)
-  set(LIBIDN2_INCLUDE_DIR
-      "${MSYS2_CLANG64_DIR}/include"
-      CACHE STRING "" FORCE)
-  set(LIBIDN2_LIBRARY
-      "${MSYS2_CLANG64_DIR}/lib/libidn2.a"
-      CACHE STRING "" FORCE)
-
-  set(LIBPSL_INCLUDE_DIR
-      "${MSYS2_CLANG64_DIR}/include"
-      CACHE STRING "" FORCE)
-  set(LIBPSL_LIBRARY
-      "${MSYS2_CLANG64_DIR}/lib/libpsl.a"
-      CACHE STRING "" FORCE)
-
-  set(LIBSSH2_INCLUDE_DIR
-      "${MSYS2_CLANG64_DIR}/include"
-      CACHE STRING "" FORCE)
-  set(LIBSSH2_LIBRARY
-      "${MSYS2_CLANG64_DIR}/lib/libssh2.a"
-      CACHE STRING "" FORCE)
-  add_subdirectory(${xs3RDPARTY_DIR}/curl/ "CURL")
-endif()
-
-set(xsUSE_WXWIDGETS OFF)
-if(xsUSE_WXWIDGETS)
-  set(wxBUILD_SHARED
-      OFF
-      CACHE BOOL "Build wxWidgets as shared library" FORCE)
-  if(xsSYSTYPE_WINDOWS)
-    set(wxBUILD_TOOLKIT
-        "msw"
-        CACHE STRING "Choose wxWidgets toolkit" FORCE)
-    #[[
-    set(wxUSE_ACCESSIBILITY
-        OFF
-        CACHE BOOL "Choose wxWidgets toolkit" FORCE)
-        ]]
-    add_compile_options(-Wno-deprecated-declarations)
-  elseif(xsSYSTYPE_APPLE)
-    set(wxBUILD_TOOLKIT
-        "osx_cocoa"
-        CACHE STRING "Choose wxWidgets toolkit" FORCE)
-    set(wxUSE_WEBVIEW
-        OFF
-        CACHE BOOL "Choose wxWidgets toolkit" FORCE)
-  elseif(xsSYSTYPE_LINUX)
-    set(wxBUILD_TOOLKIT
-        "gtk2"
-        CACHE STRING "Choose wxWidgets toolkit" FORCE)
-  endif()
-  set(wxBUILD_SAMPLES
-      # "ALL"
-      "OFF"
-      CACHE STRING "Choose wxWidgets toolkit" FORCE)
-  set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wno-unused-command-line-argument")
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-unused-command-line-argument")
-  add_subdirectory(${xs3RDPARTY_DIR}/wxwidgets/ "wxWidgets")
-endif(xsUSE_WXWIDGETS)
-
-# tinyxml2
-add_subdirectory(${xs3RDPARTY_DIR}/tinyxml2/ "tinyxml2")
-# sqlite3
-add_subdirectory(${xs3RDPARTY_DIR}/sqlite3/ "sqlite3")
-
-set(ZLIB_BUILD_EXAMPLES
-    OFF
-    CACHE BOOL "disabled zlib build examples." FORCE)
-add_subdirectory(${xs3RDPARTY_DIR}/zlib/ "zlib")
-# set_target_properties(zlibstatic PROPERTIES FOLDER "3rdparty")
-# set_target_properties(zlib PROPERTIES FOLDER "3rdparty")
-
-set(CMAKE_DEBUG_POSTFIX
-    ""
-    CACHE STRING "..." FORCE)
-add_subdirectory(${xs3RDPARTY_DIR}/minizip/ "minizip")
-# set_target_properties(minizip PROPERTIES FOLDER "3rdparty")
-
-add_subdirectory(${xs3RDPARTY_DIR}/http-parser/ "http_parser")
-# set_target_properties(wxwidgets PROPERTIES FOLDER "3rdparty") cmake -G Ninja
-# .. -DwxBUILD_SAMPLES=ALL -DwxBUILD_SHARED=OFF
-# -DCMAKE_C_FLAGS="-Wno-unused-command-line-argument"
-# -DCMAKE_CXX_FLAGS="-Wno-unused-command-line-argument"
-
-set(BUILD_TESTING
-    OFF
-    CACHE BOOL "" FORCE)
-set(LIBUV_BUILD_SHARED
-    OFF
-    CACHE BOOL "" FORCE)
-add_subdirectory(${xs3RDPARTY_DIR}/libuv/ "uv_a")
-
-project(xsmade)
-
 include(build/cmake/main.cmake)
-# LIST(APPEND CMAKE_MODULE_PATH ${LOCAL_CMAKE_MODULES_PATH}) include(global)
-# list(APPEND CMAKE_MODULE_PATH "${wxSOURCE_DIR}/build/cmake/modules")
-# add_subdirectory(${SOLUTION_ROOT_DIR}/3rdlocal/bit7z-4.0.8/ "bit7z")
+

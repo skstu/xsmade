@@ -1,5 +1,6 @@
 #if !defined(__66D36CE1_C3F0_4601_8CB0_3DCE31E2D698__)
 #define __66D36CE1_C3F0_4601_8CB0_3DCE31E2D698__
+//!@ Browser Interface Service
 
 enum class RequestType : unsigned long long {
   UNKNOWN = 0x00000,
@@ -14,10 +15,10 @@ enum class RequestType : unsigned long long {
   PLUGIN_FFXUI_CLOSE = 0x10302,
   // BROWSER_DOWN = 0x10104,  //!@ 下载浏览器
 };
-class Server final : public IPerform {
+class IBrowserInterfaceServer final : public IPerform {
 public:
-  Server();
-  ~Server();
+  IBrowserInterfaceServer();
+  ~IBrowserInterfaceServer();
 
 public:
   bool Start() override final;
@@ -25,6 +26,8 @@ public:
   void Process();
   unsigned short GetPort() const;
   void Release() const override final;
+  IConfig *ConfigGet() const override final;
+
 private:
   void Init();
   void UnInit();
@@ -36,7 +39,11 @@ private:
   stl::container::queue<std::string> client_notifys_;
   stl::tfThreads threads_;
   httplib::Server *server_ = nullptr;
+  BrowserConfig *config_ = nullptr;
   stl::container::map<std::string /*key*/, Browser *> brws_;
+
+protected:
+  void __impl__() const override final {}
 };
 /// /*_ Memade®（新生™） _**/
 /// /*_ Mon, 11 Nov 2024 09:56:22 GMT _**/
