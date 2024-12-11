@@ -1,8 +1,7 @@
 #if !defined(__DBFEB73C_C2B1_42BD_A043_47FB3B92BE75__)
 #define __DBFEB73C_C2B1_42BD_A043_47FB3B92BE75__
 
-#include <system.h>
-#include <stl.hpp>
+#include <xs.h>
 #include <utfpp.hpp>
 
 class System {

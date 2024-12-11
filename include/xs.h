@@ -14,16 +14,18 @@
 #if defined(_WIN32) || defined(_WIN64)
 #define __OSWIN__ // Windows 系统
 #elif defined(__APPLE__)
+#define __OSAPPLE__
 #include <TargetConditionals.h>
 #if TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
 #define __OSIOS__ // iOS 系统
 #elif TARGET_OS_MAC
 #define __OSMAC__ // macOS 系统
 #endif
-#elif defined(__linux__)
+#elif defined(__linux__) || defined(__unix__)
+
 #define __OSLINUX__ // Linux 系统（包括 Ubuntu）
-#elif defined(__unix__)
-#define __OSUNIX__ // 其他 UNIX 系统
+// #elif defined(__unix__)
+// #define __OSUNIX__ // 其他 UNIX 系统
 #endif
 
 #ifndef XS_EXTERN
@@ -84,6 +86,13 @@
 #define SHARED_API_PRIVATE
 #endif
 #endif
+
+#include <macros.h>
+#include <xserr.h>
+#include <system.h>
+#include <stl.hpp>
+#include <interface.hpp>
+
 /// /*_ Memade®（新生™） _**/
 /// /*_ Tue, 19 Nov 2024 07:42:48 GMT _**/
 /// /*_____ https://www.skstu.com/ _____ **/

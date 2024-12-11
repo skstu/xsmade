@@ -17,8 +17,23 @@ void Global::ffxShowBkg(const bool &flag) {
     auto app = wxDynamicCast(wxApp::GetInstance(), App);
     if (!app)
       break;
+    FrameWorkImage *frame_work_image =
+        dynamic_cast<FrameWorkImage *>(app->FrameWorkImageGet());
     auto frame_bkg = dynamic_cast<wxFrame *>(app->FrameBgkGet());
+    wxFrame *frame_tool = dynamic_cast<wxFrame *>(app->FrameToolGet());
+    wxFrame *frame_work = dynamic_cast<wxFrame *>(app->FrameWorkGet());
+    wxFrame *frame_screenshot_toolbar_ =
+        dynamic_cast<wxFrame *>(app->FrameScreenShotToolGet());
     frame_bkg->Show(flag);
+    if (frame_work_image) {
+      frame_work_image->Show(false);
+    }
+    if (frame_tool)
+      frame_tool->Show(false);
+    if (frame_work)
+      frame_work->Show(false);
+    if (frame_screenshot_toolbar_)
+      frame_screenshot_toolbar_->Show(false);
   } while (0);
 }
 void Global::ffxShowScreenShotToolbar(const wxRect &select_rectangle) {
@@ -173,6 +188,27 @@ void Global::ffxScaling(const float &scaling) {
     frame_tool->SetSize(wxSize(final_tool_cx, final_tool_cy));
   } while (0);
 }
+void Global::ffxShowRecordingComponents() {
+  do {
+    auto app = wxDynamicCast(wxApp::GetInstance(), App);
+    if (!app)
+      break;
+    FrameWorkImage *frame_work_image =
+        dynamic_cast<FrameWorkImage *>(app->FrameWorkImageGet());
+    wxFrame *frame_bkg = dynamic_cast<wxFrame *>(app->FrameBgkGet());
+    wxFrame *frame_tool = dynamic_cast<wxFrame *>(app->FrameToolGet());
+    wxFrame *frame_work = dynamic_cast<wxFrame *>(app->FrameWorkGet());
+    wxFrame *frame_screenshot_toolbar_ =
+        dynamic_cast<wxFrame *>(app->FrameScreenShotToolGet());
+    if (!frame_work || !frame_tool)
+      break;
+    frame_bkg->Show(false);
+    frame_work_image->Show(false);
+    frame_screenshot_toolbar_->Show(false);
+    ffxShowWindow(true);
+    ffxCenter();
+  } while (0);
+}
 void Global::ffxTopmost() {
   do {
     auto app = wxDynamicCast(wxApp::GetInstance(), App);
@@ -222,8 +258,7 @@ void Global::ffxSetPos(const wxRect &rect,
         dynamic_cast<wxFrame *>(app->FrameScreenShotToolGet());
     if (!frame_work || !frame_tool || !frame_screenshot)
       break;
-    frame_work->SetSize(frame_work->GetPosition().x,
-                        frame_work->GetPosition().y, rect.GetWidth(),
+    frame_work->SetSize(rect.GetLeft(), rect.GetTop(), rect.GetWidth(),
                         rect.GetHeight());
     switch (captureType) {
     case CapturingHostType::CAPTUREING_RECORDING: {
@@ -234,16 +269,61 @@ void Global::ffxSetPos(const wxRect &rect,
     case CapturingHostType::CAPTUREING_SCREENSHOT: {
       frame_tool->Show(false);
       frame_work->Show(true);
-      wxRect rtWork = frame_work->GetRect();
-      frame_screenshot->SetSize(
-          rtWork.GetRight() - frame_screenshot->GetSize().GetWidth(),
-          rtWork.GetBottom(), frame_screenshot->GetSize().GetWidth(),
-          frame_screenshot->GetSize().GetHeight());
+
+      wxRect size;
+      size.SetLeft(rect.GetRight() - frame_screenshot->GetSize().GetWidth());
+      size.SetTop(rect.GetBottom());
+      size.SetWidth(frame_screenshot->GetSize().GetWidth());
+      size.SetHeight(frame_screenshot->GetSize().GetHeight());
+
+      frame_screenshot->SetSize(size);
+
       frame_screenshot->Show(true);
     } break;
     default:
       break;
     }
 
+  } while (0);
+}
+
+void Global::ffxCaptureScreenShot(std::string &outImgStream) {
+  outImgStream.clear();
+  do {
+    auto app = wxDynamicCast(wxApp::GetInstance(), App);
+    if (!app)
+      break;
+    wxFrame *frame_work = dynamic_cast<wxFrame *>(app->FrameWorkGet());
+    if (!frame_work)
+      break;
+    wxRect rect = frame_work->GetRect();
+    xs_image_stream_t *imgStream = nullptr;
+    frame_work->Show(false);
+    xs_sys_capturescreen(xs_position_t{rect.GetLeft(), rect.GetTop(),
+                                       rect.GetWidth(), rect.GetHeight()},
+                         xs_image_stream_type_t::PNG, &imgStream);
+    frame_work->Show(true);
+    if (!imgStream)
+      break;
+    outImgStream.append(imgStream->buffer, imgStream->len);
+    xs_sys_image_stream_destroy(&imgStream);
+  } while (0);
+}
+void Global::ffxFrameWorkImageShow(const bool &flag,
+                                   const std::string &imgPath) {
+  do {
+    auto app = wxDynamicCast(wxApp::GetInstance(), App);
+    if (!app)
+      break;
+    wxFrame *frame_work = dynamic_cast<wxFrame *>(app->FrameWorkGet());
+    FrameWorkImage *frame_work_image =
+        dynamic_cast<FrameWorkImage *>(app->FrameWorkImageGet());
+    if (!frame_work_image || !frame_work)
+      break;
+    frame_work->Show(false);
+    if (!frame_work_image->SetBackgroundBitmap(imgPath))
+      break;
+    frame_work_image->SetSize(frame_work->GetRect());
+    frame_work_image->Show();
   } while (0);
 }

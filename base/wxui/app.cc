@@ -88,6 +88,7 @@ void App::OnFrameCreate() {
       frame_bgk_ = new FrameBgk(nullptr);
       frame_work_ = new FrameWork(nullptr);
       frame_tool_ = new FrameTool(nullptr);
+      frame_work_image_ = new FrameWorkImage(nullptr);
       frame_screenshot_tool_ = new FrameToolScreenShot(nullptr);
       Global::ffxCenter();
       Global::ffxTopmost();
@@ -100,6 +101,9 @@ void App::OnFrameCreate() {
 }
 IFrame *App::FrameScreenShotToolGet() const {
   return frame_screenshot_tool_;
+}
+IFrame *App::FrameWorkImageGet() const {
+  return frame_work_image_;
 }
 IFrame *App::FrameGet() const {
   return frame_;

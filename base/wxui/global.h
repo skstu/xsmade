@@ -17,11 +17,14 @@ public:
   static void ffxLayout();
   static void ffxCenter();
   static void ffxTopmost();
-
+  static void ffxShowRecordingComponents();
   static void ffxHideScreenShotToolbar();
   static void ffxShowScreenShotToolbar(const wxRect &);
 
+  static void ffxCaptureScreenShot(std::string &imgStream);
   static void ffxShowBkg(const bool &flag);
+  static void ffxFrameWorkImageShow(const bool &flag,
+                                    const std::string &imgPath = "");
 };
 
 /// /*_ Memade®（新生™） _**/

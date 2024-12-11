@@ -186,3 +186,13 @@ GUID guidBmp = {};
   } while (0);
   return r;
 }
+
+int xs_sys_get_dll_path(xs_buffer_t *out_buffer) {
+  char path[MAX_PATH];
+  int len = GetModuleFileNameA(NULL, path, MAX_PATH);
+  out_buffer->buffer = (char *)malloc(len + 1);
+  memcpy(out_buffer->buffer, path, len);
+  out_buffer->len = len;
+  out_buffer->buffer[len] = 0;
+  return 0;
+}

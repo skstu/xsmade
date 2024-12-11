@@ -1,7 +1,7 @@
 #if !defined(__66C85601_CF91_446F_8CB5_96455760E625__)
 #define __66C85601_CF91_446F_8CB5_96455760E625__
 
-#include "xs.h"
+#include <xs.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -9,7 +9,7 @@ extern "C" {
 
 #if defined(__OSWIN__)
 typedef unsigned long xs_process_id_t;
-#elif defined(__OSMAC__)
+#elif defined(__OSAPPLE__)
 typedef pid_t xs_process_id_t;
 #endif
 
@@ -40,6 +40,8 @@ typedef struct {
   size_t len;
 } xs_image_stream_t;
 
+typedef xs_image_stream_t xs_buffer_t;
+
 XS_EXTERN void xs_sys_startup(void);
 XS_EXTERN void xs_sys_shutdown(void);
 XS_EXTERN char *xs_sys_malloc(size_t len);
@@ -62,6 +64,8 @@ XS_EXTERN int xs_sys_capturescreen(xs_position_t pos,
                                    xs_image_stream_t **stream);
 XS_EXTERN int xs_sys_get_image_type(const char *buffer, size_t buffer_size,
                                     xs_image_type_t *output_image_type);
+XS_EXTERN int xs_sys_get_dll_path(xs_buffer_t* out_buffer);
+
 
 #ifdef __cplusplus
 }

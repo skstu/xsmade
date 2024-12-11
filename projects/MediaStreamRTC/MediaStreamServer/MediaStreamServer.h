@@ -1,12 +1,8 @@
 #if !defined(__57DD9926_BA9A_4031_99FE_F02A69081173__)
 #define __57DD9926_BA9A_4031_99FE_F02A69081173__
 
-#include "macros.h"
-#include "system.h"
-#include "sys.hpp"
-#include "xs.h"
-#include "xserr.h"
-#include "stl.hpp"
+#include <xs.h>
+#include <system.hpp>
 #include "MediaStreamComm/MediaStreamComm.h"
 #if defined(__OSWIN__)
 #ifndef WIN32_LEAN_AND_MEAN

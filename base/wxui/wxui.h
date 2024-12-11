@@ -2,10 +2,7 @@
 #define __D25FAF9D_0CAE_46CA_903C_168D4186E068__
 
 #include <xs.h>
-#include <system.h>
-#include <sys.hpp>
-#include <macros.h>
-#include <stl.hpp>
+#include <system.hpp>
 #include <fmt/format.h>
 #include "export.h"
 using namespace wxui;
@@ -19,6 +16,7 @@ using namespace wxui;
 #include "frame/frame_work.h"
 #include "frame/frame_tool.h"
 #include "frame/frame_tool_screenshot.h"
+#include "frame/frame_work_image.h"
 #include "frame.h"
 #include "app.h"
 

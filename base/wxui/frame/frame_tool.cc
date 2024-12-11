@@ -170,40 +170,6 @@ void FrameTool::OnToolEvent(wxCommandEvent &evt) {
 
   } break;
   case CommandTool::TOOL_SCREENSHOT: {
-#if 0
-    auto app = wxDynamicCast(wxApp::GetInstance(), App);
-    auto frame_shape = dynamic_cast<wxFrame *>(app->FrameWorkGet());
-    if (!frame_shape)
-      break;
-#if defined(_DEBUG)
-    std::string save_path = stl::Path::Mormalize(
-        R"(C:\Users\k34ub\AppData\Roaming\MarsProjects\userdata\)");
-#else
-    std::string save_path =
-        stl::Path::Mormalize(System::GetCurrentProcessPath());
-#endif
-    save_path.append("/")
-        .append(
-            std::to_string(stl::Time::TimeStamp<std::chrono::microseconds>()))
-        .append(".png");
-
-    wxRect rect = frame_shape->GetRect();
-    xs_image_stream_t *imgStream = nullptr;
-    Global::ffxShowWindow(false);
-    xs_sys_capturescreen(xs_position_t{rect.GetLeft(), rect.GetTop(),
-                                       rect.GetWidth(), rect.GetHeight()},
-                         xs_image_stream_type_t::PNG, &imgStream);
-    Global::ffxShowWindow(true);
-    if (!imgStream)
-      break;
-    stl::File::WriteFile(save_path,
-                         std::string(imgStream->buffer, imgStream->len));
-    xs_sys_free((void **)&imgStream);
-    wxString msg =
-        wxString::Format(wxT("截屏完成!\n图片保存在[%s]\n"), save_path);
-    wxMessageBox(msg, wxT("提示"));
-#endif
-    //!@ 进入框选
     Global::ffxShowWindow(false);
     auto app = wxDynamicCast(wxApp::GetInstance(), App);
     app->SetCapturingHostType(CapturingHostType::CAPTUREING_SCREENSHOT);
@@ -314,6 +280,45 @@ void FrameTool::OnMouseLeftDown(wxMouseEvent &event) {
             ->GetSize();
   }
 }
+void FrameTool::OnMouseLeftUp(wxMouseEvent &event) {
+  if (HasCapture()) {
+    ReleaseMouse();
+  }
+  Global::ffxShowWindow(!is_fullscreen_shown_.load());
+  is_dragging_.store(false);
+}
+#if 0
+void FrameTool::OnMouseMove(wxMouseEvent &event) {
+  wxPoint pt = event.GetPosition();
+  if (event.Dragging() && event.LeftIsDown()) {
+    is_dragging_.store(true);
+    wxPoint pos = ClientToScreen(pt); // pos为点击位置
+
+    Move(wxPoint(pos.x - m_delta.x, pos.y - m_delta.y));
+
+    is_fullscreen_shown_.store((pos.y - m_delta.y) <= 0);
+    Global::ffxFullScreen(is_fullscreen_shown_.load(), prev_frame_tool_size_,
+                          prev_frame_work_size_);
+  }
+}
+void FrameTool::OnMouseLeftDClick(wxMouseEvent &event) {
+  event.Skip();
+}
+void FrameTool::OnMouseLeftDown(wxMouseEvent &event) {
+  CaptureMouse();
+  wxPoint pt = ClientToScreen(event.GetPosition());
+  wxPoint origin = GetPosition();
+  int dx = pt.x - origin.x;
+  int dy = pt.y - origin.y;
+  m_delta = wxPoint(dx, dy);
+  if (!is_fullscreen_shown_.load()) {
+    prev_frame_tool_size_ = GetSize();
+    prev_frame_work_size_ =
+        dynamic_cast<wxFrame *>(
+            wxDynamicCast(wxApp::GetInstance(), App)->FrameWorkGet())
+            ->GetSize();
+  }
+}
 
 void FrameTool::OnMouseLeftUp(wxMouseEvent &event) {
   if (HasCapture()) {
@@ -322,3 +327,4 @@ void FrameTool::OnMouseLeftUp(wxMouseEvent &event) {
   Global::ffxShowWindow(!is_fullscreen_shown_.load());
   is_dragging_.store(false);
 }
+#endif

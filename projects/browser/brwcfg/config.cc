@@ -1,5 +1,5 @@
 #include "brwcfg.h"
-
+#if 0
 Config::Config() {
 }
 Config::~Config() {
@@ -14,3 +14,4 @@ Config *Config::Create() {
 void Config::Destroy() {
   SK_DELETE_PTR(__gspConfig);
 }
+#endif

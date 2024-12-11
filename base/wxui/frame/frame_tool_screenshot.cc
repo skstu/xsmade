@@ -135,9 +135,25 @@ void FrameToolScreenShot::OnToolEvent(wxCommandEvent &evt) {
 
   } break;
   case CommandTool::TOOL_SCREENSHOT_CLOSE: {
-
+    Global::ffxShowRecordingComponents();
   } break;
   case CommandTool::TOOL_SCREENSHOT_OK: {
+    std::string imgStream;
+    Global::ffxCaptureScreenShot(imgStream);
+    if (imgStream.empty())
+      break;
+    std::string save_path = stl::Path::Mormalize(
+        System::GetCurrentProcessPath() + "/userdata/screenshot/");
+    stl::Directory::Create(save_path);
+    save_path.append("/")
+        .append(
+            std::to_string(stl::Time::TimeStamp<std::chrono::microseconds>()))
+        .append(".png");
+    stl::File::WriteFile(save_path, imgStream);
+    Global::ffxFrameWorkImageShow(true, save_path);
+    wxString msg = wxString::Format(
+        wxT("图片资源保存在[%s]\n已加载到工作区!\n"), save_path);
+    wxMessageBox(msg, wxT("截屏完成"));
 
   } break;
   case CommandTool::TOOL_SCREENSHOT_RECTANGLE: {

@@ -359,6 +359,7 @@ void IBrowserInterfaceServer::OnRequest(const RequestType &reqType,
           [](void *route) { gbWxuiStatus.store(false); }, this);
       gpsWxui->ConfigGet()->RegisterRecordingStartCb(
           [](const wxui::IRecordingArgs *args, void *route) {
+            IBrowserInterfaceServer* __this = reinterpret_cast<IBrowserInterfaceServer*>(route);
             std::string size =
                 fmt::format("{}x{}", args->GetCX(), args->GetCY());
 #if defined(DEBUG)
@@ -367,9 +368,9 @@ void IBrowserInterfaceServer::OnRequest(const RequestType &reqType,
                 stl::Time::TimeStamp<std::chrono::microseconds>());
 #else
             std::string outfile = fmt::format(
-                "{}/{}.mp4", config_->PathGet().chromium_user_data_dir,
+                "{}/{}.mp4", __this->config_->PathGet().chromium_user_data_dir,
                 stl::Time::TimeStamp<std::chrono::microseconds>());
-#endif
+#endifc
             ffx::FFXArgs ffxArgs(ffx::tfFFXArgs{
                 {0, {"-y", ""}},
                 {1, {"-f", "gdigrab"}},

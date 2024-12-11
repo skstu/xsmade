@@ -1,7 +1,7 @@
 #if !defined(__E68008C8_057E_4381_9570_8EEE30A32462__)
 #define __E68008C8_057E_4381_9570_8EEE30A32462__
 
-#include "macros.h"
+#include <xs.h>
 #include "export.h"
 using namespace browser;
 #include "config.h"
@@ -14,9 +14,10 @@ public:
 private:
   Brwcfg();
   virtual ~Brwcfg();
+  void Init();
+  void UnInit();
 
 protected:
-  IConfig *ConfigGet() const override final;
   void OnMainProcessStartup(void) override final;
   void OnMainProcessShutdown(int rv) override final;
 };

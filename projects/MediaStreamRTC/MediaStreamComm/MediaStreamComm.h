@@ -1,11 +1,8 @@
 #if !defined(__8B18DDA2_A53D_401F_8BF2_33F80D1D1FC5__)
 #define __8B18DDA2_A53D_401F_8BF2_33F80D1D1FC5__
 
-#include "system.h"
-#include "sys.hpp"
-#include "xs.h"
-#include "xserr.h"
-#include "stl.hpp"
+#include <xs.h>
+#include <system.hpp>
 #include <rapidjson.h>
 #include <tinyxml2.hpp>
 #include <fmt/format.h>

@@ -1,11 +1,14 @@
 #include "brwcfg.h"
 
 Brwcfg::Brwcfg() {
+  Init();
 }
 Brwcfg::~Brwcfg() {
+  UnInit();
 }
-IConfig *Brwcfg::ConfigGet() const {
-  return dynamic_cast<IConfig *>(Config::Create());
+void Brwcfg::Init() {
+}
+void Brwcfg::UnInit() {
 }
 //!@ [\src\chrome\app\chrome_main.cc (16)]
 //!@ [\src\chrome\app\chrome_main.cc (232-242)]
@@ -34,12 +37,11 @@ void Brwcfg::Destroy() {
 extern "C" {
 #endif
 SHARED_API void *interface_init(void *, unsigned long) {
-  Config::Create();
-  Brwcfg::Create();
+  IBrwcfg *result = dynamic_cast<IBrwcfg *>(Brwcfg::Create());
+  return result;
 }
 SHARED_API void interface_uninit() {
   Brwcfg::Destroy();
-  Config::Destroy();
 }
 #ifdef __cplusplus
 }

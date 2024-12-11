@@ -58,3 +58,39 @@ XS_EXTERN int xs_sys_capturescreen(xs_position_t pos,
 #endif
   return 0;
 }
+int xs_sys_get_dll_path(xs_buffer_t *out_buffer) {
+  // const char *path = _dyld_get_image_name(0);
+  // return std::string(path);
+  #if 0
+#include <iostream>
+#include <string>
+
+#if defined(_WIN32) || defined(_WIN64)
+#include <windows.h>
+std::string GetDllPath() {
+    char path[MAX_PATH];
+    HMODULE hModule = NULL;
+    GetModuleFileName(hModule, path, MAX_PATH);
+    return std::string(path);
+}
+#elif defined(__linux__) || defined(__unix__)
+#include <dlfcn.h>
+std::string GetDllPath() {
+    Dl_info dlInfo;
+    if (dladdr((void*)GetDllPath, &dlInfo) != 0) {
+        return std::string(dlInfo.dli_fname);
+    }
+    return "";
+}
+#elif defined(__APPLE__)
+#include <dlfcn.h>
+std::string GetDllPath() {
+    const char* path = _dyld_get_image_name(0);
+    return std::string(path);
+}
+#else
+#error "Unsupported platform"
+#endif
+#endif
+  return -1;
+}

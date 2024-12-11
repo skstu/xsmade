@@ -3,8 +3,8 @@
 
 #define ENABLE_DEVELOPER_LOGGER 1
 
-#include <sys.hpp>
-#include <macros.h>
+#include <xs.h>
+#include <system.hpp>
 #include <httplib.h>
 #include <rapidjson.h>
 #include <tinyxml2.hpp>

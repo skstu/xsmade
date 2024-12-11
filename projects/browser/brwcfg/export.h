@@ -1,14 +1,9 @@
 #if !defined(__5F0E26E1_8D0C_418A_86B1_831DD24458AF__)
 #define __5F0E26E1_8D0C_418A_86B1_831DD24458AF__
-#include "interface.hpp"
+#include <interface.hpp>
 namespace browser {
-class IConfig {
-public:
-};
-
 class IBrwcfg {
 public:
-  virtual IConfig* ConfigGet() const = 0;
   virtual void OnMainProcessStartup(void) = 0;
   virtual void OnMainProcessShutdown(int rv) = 0;
 };

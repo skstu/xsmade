@@ -15,6 +15,7 @@ public:
   IFrame *FrameWorkGet() const;
   IFrame *FrameBgkGet() const;
   IFrame *FrameScreenShotToolGet() const;
+  IFrame *FrameWorkImageGet() const;
   void SetCapturingHostType(const CapturingHostType &type);
   CapturingHostType GetCapturingHostType() const;
 private:
@@ -23,6 +24,7 @@ private:
   IFrame *frame_work_ = nullptr;
   IFrame *frame_bgk_ = nullptr;
   IFrame *frame_screenshot_tool_ = nullptr;
+  IFrame *frame_work_image_ = nullptr;
   void OnThreadEvtFrameDestroy(wxThreadEvent &event);
   void OnThreadEvtCaptureFinished(wxThreadEvent &event);
   void MainProc();

@@ -51,7 +51,7 @@ void FrameWork::OnPaint(wxPaintEvent &event) {
   dc.SetPen(redPen);
   dc.SetBrush(*wxTRANSPARENT_BRUSH);
   wxSize size = GetSize();
-  // dc.DrawRectangle(2, 2, size.x - 2, size.y - 2);
+  dc.DrawRectangle(2, 2, size.x - 2, size.y - 2);
   dc.DrawLine(2, 2, 2, size.y - 2);
   dc.DrawLine(size.x - 2, 2, size.x - 2, size.y - 2);
   dc.DrawLine(2, size.y - 2, size.x - 2, size.y - 2);
