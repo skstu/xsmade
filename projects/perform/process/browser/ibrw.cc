@@ -171,7 +171,7 @@ void IBrowserInterfaceServer::Process() {
   } while (0);
 }
 IConfig *IBrowserInterfaceServer::ConfigGet() const {
-  return dynamic_cast<IConfig*>(config_);
+  return dynamic_cast<IConfig *>(config_);
 }
 void IBrowserInterfaceServer::OnRequest(const RequestType &reqType,
                                         const std::string &body,
@@ -359,18 +359,18 @@ void IBrowserInterfaceServer::OnRequest(const RequestType &reqType,
           [](void *route) { gbWxuiStatus.store(false); }, this);
       gpsWxui->ConfigGet()->RegisterRecordingStartCb(
           [](const wxui::IRecordingArgs *args, void *route) {
-            IBrowserInterfaceServer* __this = reinterpret_cast<IBrowserInterfaceServer*>(route);
-            std::string size =
-                fmt::format("{}x{}", args->GetCX(), args->GetCY());
+        IBrowserInterfaceServer *__this =
+            reinterpret_cast<IBrowserInterfaceServer *>(route);
+        std::string size = fmt::format("{}x{}", args->GetCX(), args->GetCY());
 #if defined(DEBUG)
-            std::string outfile = fmt::format(
-                R"(C:\Users\k34ub\AppData\Roaming\MarsProjects\userdata\{}.mp4)",
-                stl::Time::TimeStamp<std::chrono::microseconds>());
+        std::string outfile = fmt::format(
+            R"(C:\Users\k34ub\AppData\Roaming\MarsProjects\userdata\{}.mp4)",
+            stl::Time::TimeStamp<std::chrono::microseconds>());
 #else
             std::string outfile = fmt::format(
                 "{}/{}.mp4", __this->config_->PathGet().chromium_user_data_dir,
                 stl::Time::TimeStamp<std::chrono::microseconds>());
-#endifc
+#endif
             ffx::FFXArgs ffxArgs(ffx::tfFFXArgs{
                 {0, {"-y", ""}},
                 {1, {"-f", "gdigrab"}},

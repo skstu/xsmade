@@ -36,6 +36,7 @@ private:
   wxBitmapButton *btn_screenshot_toolbar_revocation_ = nullptr;
   wxBitmapButton *btn_screenshot_toolbar_round_ = nullptr;
   wxBitmapButton *btn_screenshot_toolbar_text_ = nullptr;
+  wxBitmapButton *btn_screenshot_toolbar_mosaic_ = nullptr;
 };
 
 /// /*_ Memade®（新生™） _**/

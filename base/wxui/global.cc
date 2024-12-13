@@ -20,6 +20,8 @@ void Global::ffxShowBkg(const bool &flag) {
     FrameWorkImage *frame_work_image =
         dynamic_cast<FrameWorkImage *>(app->FrameWorkImageGet());
     auto frame_bkg = dynamic_cast<wxFrame *>(app->FrameBgkGet());
+    if (!frame_bkg)
+      break;
     wxFrame *frame_tool = dynamic_cast<wxFrame *>(app->FrameToolGet());
     wxFrame *frame_work = dynamic_cast<wxFrame *>(app->FrameWorkGet());
     wxFrame *frame_screenshot_toolbar_ =

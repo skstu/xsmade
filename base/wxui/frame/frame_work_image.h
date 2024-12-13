@@ -12,15 +12,20 @@ public:
   virtual ~FrameWorkImage();
 
 public:
-  bool SetBackgroundBitmap(const std::string& imgPath);
+  bool SetBackgroundBitmap(const std::string &imgPath);
+
 private:
-  wxBitmap* backgroundBitmap_ = nullptr;
+  wxBitmap *backgroundBitmap_ = nullptr;
+  wxPoint m_delta;
 
 private:
   void OnSize(wxSizeEvent &event);
   void OnClose(wxCloseEvent &event);
   void OnPaint(wxPaintEvent &event);
-
+  void OnMove(wxMoveEvent &);
+  void OnMouseMove(wxMouseEvent &event);
+  void OnMouseLeftDown(wxMouseEvent &event);
+  void OnMouseLeftUp(wxMouseEvent &event);
   wxDECLARE_EVENT_TABLE();
 };
 

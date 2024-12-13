@@ -1,7 +1,9 @@
 #include "wxui.h"
 wxBEGIN_EVENT_TABLE(FrameWorkImage, wxFrame) EVT_SIZE(FrameWorkImage::OnSize)
     EVT_CLOSE(FrameWorkImage::OnClose) EVT_PAINT(FrameWorkImage::OnPaint)
-        wxEND_EVENT_TABLE();
+        EVT_MOVE(FrameWorkImage::OnMove) EVT_MOTION(FrameWorkImage::OnMouseMove)
+            EVT_LEFT_DOWN(FrameWorkImage::OnMouseLeftDown)
+                EVT_LEFT_UP(FrameWorkImage::OnMouseLeftUp) wxEND_EVENT_TABLE();
 
 FrameWorkImage::FrameWorkImage(wxWindow *parent, wxWindowID id,
                                const wxString &title, const wxPoint &pos,
@@ -43,9 +45,34 @@ void FrameWorkImage::OnPaint(wxPaintEvent &event) {
       SK_DELETE_PTR(backgroundBitmap_);
       break;
     }
-    wxPaintDC dc(this);
+    wxPaintDC dc(dynamic_cast<wxWindow *>(this));
     dc.DrawBitmap(*backgroundBitmap_, 0, 0, true);
   } while (0);
 
   event.Skip();
+}
+void FrameWorkImage::OnMove(wxMoveEvent &event) {
+  event.Skip();
+}
+void FrameWorkImage::OnMouseMove(wxMouseEvent &event) {
+  wxPoint pt = event.GetPosition();
+  if (event.Dragging() && event.LeftIsDown()) {
+    is_dragging_.store(true);
+    wxPoint pos = ClientToScreen(pt);
+
+    Move(wxPoint(pos.x - m_delta.x, pos.y - m_delta.y), wxSIZE_USE_EXISTING);
+  }
+}
+void FrameWorkImage::OnMouseLeftDown(wxMouseEvent &event) {
+  CaptureMouse();
+  wxPoint pt = ClientToScreen(event.GetPosition());
+  wxPoint origin = GetPosition();
+  int dx = pt.x - origin.x;
+  int dy = pt.y - origin.y;
+  m_delta = wxPoint(dx, dy);
+}
+void FrameWorkImage::OnMouseLeftUp(wxMouseEvent &event) {
+  if (HasCapture()) {
+    ReleaseMouse();
+  }
 }

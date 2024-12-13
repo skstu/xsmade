@@ -18,6 +18,12 @@ using namespace wxui;
 #include "frame/frame_tool_screenshot.h"
 #include "frame/frame_work_image.h"
 #include "frame.h"
+#include "frame/background.h"
+#include "frame/toolbar.h"
+#include "frame/workspace.h"
+#include "frame/frame_component.h"
+#include "frame/recording.h"
+#include "frame/screenshot.h"
 #include "app.h"
 
 class Wxui final : public IWxui {

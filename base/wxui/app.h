@@ -18,6 +18,15 @@ public:
   IFrame *FrameWorkImageGet() const;
   void SetCapturingHostType(const CapturingHostType &type);
   CapturingHostType GetCapturingHostType() const;
+
+public:
+  wxFrame *FrameAppend(const ComponentFrameType &, wxFrame *);
+  wxFrame *FrameGet(const ComponentFrameType &) const;
+  IFrameComponent* FrameComponentGet(const FrameComponentType&) const;
+private:
+  std::map<FrameComponentType, IFrameComponent *> frame_comps_;
+  std::map<ComponentFrameType, wxFrame *> frames_;
+
 private:
   IFrame *frame_ = nullptr;
   IFrame *frame_tool_ = nullptr;

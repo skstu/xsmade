@@ -1,21 +1,24 @@
-#include "wxui.h"
-
-wxBEGIN_EVENT_TABLE(FrameToolScreenShot, wxFrame)
-    EVT_SIZE(FrameToolScreenShot::OnSize) EVT_MOVE(FrameToolScreenShot::OnMove)
-        EVT_CLOSE(FrameToolScreenShot::OnClose)
-            EVT_MOTION(FrameToolScreenShot::OnMouseMove)
-                EVT_LEFT_DOWN(FrameToolScreenShot::OnMouseLeftDown)
-                    EVT_LEFT_DCLICK(FrameToolScreenShot::OnMouseLeftDClick)
-                        EVT_LEFT_UP(FrameToolScreenShot::OnMouseLeftUp)
+#include <wxui.h>
+////////////////////////////////////////////////////////////////////////////////////
+// Toolbar
+////////////////////////////////////////////////////////////////////////////////////
+wxBEGIN_EVENT_TABLE(FrameScreenShot::Toolbar,
+                    wxFrame) EVT_SIZE(FrameScreenShot::Toolbar::OnSize)
+    EVT_MOVE(FrameScreenShot::Toolbar::OnMove)
+        EVT_CLOSE(FrameScreenShot::Toolbar::OnClose)
+            EVT_MOTION(FrameScreenShot::Toolbar::OnMouseMove)
+                EVT_LEFT_DOWN(FrameScreenShot::Toolbar::OnMouseLeftDown)
+                    EVT_LEFT_DCLICK(FrameScreenShot::Toolbar::OnMouseLeftDClick)
+                        EVT_LEFT_UP(FrameScreenShot::Toolbar::OnMouseLeftUp)
                             wxEND_EVENT_TABLE();
 
-FrameToolScreenShot::FrameToolScreenShot(wxWindow *parent, wxWindowID id,
-                                         const wxString &title,
-                                         const wxPoint &pos, const wxSize &size,
-                                         long style, const wxString &name)
-    : FrameBase(parent, id, title, wxPoint(0, 0), wxSize(300, 40),
-                /*(wxDEFAULT_FRAME_STYLE & ~wxCLOSE_BOX & ~wxCAPTION)*/
-                wxNO_BORDER | wxFRAME_NO_TASKBAR /*| wxRESIZE_BORDER*/, name) {
+FrameScreenShot::Toolbar::Toolbar(wxWindow *parent, wxWindowID id,
+                                  const wxString &title, const wxPoint &pos,
+                                  const wxSize &size, long style,
+                                  const wxString &name)
+    : wxFrame(parent, id, title, wxPoint(0, 0), wxSize(300, 40),
+              /*(wxDEFAULT_FRAME_STYLE & ~wxCLOSE_BOX & ~wxCAPTION)*/
+              wxNO_BORDER | wxFRAME_NO_TASKBAR /*| wxRESIZE_BORDER*/, name) {
 
   SetBackgroundColour(wxColour(252, 252, 252));
 
@@ -99,12 +102,12 @@ FrameToolScreenShot::FrameToolScreenShot(wxWindow *parent, wxWindowID id,
         gpCommandToolTipMap[CommandTool::TOOL_SCREENSHOT_TEXT]);
   }
   LayoutEx();
-  Bind(wxEVT_BUTTON, &FrameToolScreenShot::OnToolEvent, this);
+  Bind(wxEVT_BUTTON, &FrameScreenShot::Toolbar::OnToolEvent, this);
 }
-FrameToolScreenShot::~FrameToolScreenShot() {
-  Unbind(wxEVT_BUTTON, &FrameToolScreenShot::OnToolEvent, this);
+FrameScreenShot::Toolbar::~Toolbar() {
+  Unbind(wxEVT_BUTTON, &FrameScreenShot::Toolbar::OnToolEvent, this);
 }
-void FrameToolScreenShot::LayoutEx() {
+void FrameScreenShot::Toolbar::LayoutEx() {
   wxSize cursize = GetSize();
   wxPoint curpt = GetPosition();
   if (btn_screenshot_toolbar_rectangle_) {
@@ -143,13 +146,21 @@ void FrameToolScreenShot::LayoutEx() {
         btn_size * (++offset_r) + btn_offset_x_ * (++offset_l), btn_offset_y_));
   }
 }
-void FrameToolScreenShot::OnToolEvent(wxCommandEvent &evt) {
+void FrameScreenShot::Toolbar::OnToolEvent(wxCommandEvent &evt) {
+  auto app = wxDynamicCast(wxApp::GetInstance(), App);
   switch (evt.GetId()) {
   case CommandTool::TOOL_SCREENSHOT_EIDT: {
 
   } break;
   case CommandTool::TOOL_SCREENSHOT_CLOSE: {
-    Global::ffxShowRecordingComponents();
+    // Global::ffxShowRecordingComponents();
+    auto app = wxDynamicCast(wxApp::GetInstance(), App);
+    auto comp_recording = app->FrameComponentGet(FrameComponentType::RECORDING);
+    auto comp_screenshot =
+        app->FrameComponentGet(FrameComponentType::SCREENSHOT);
+    comp_screenshot->Show(false);
+    comp_recording->Show(true);
+    comp_recording->Center();
   } break;
   case CommandTool::TOOL_SCREENSHOT_OK: {
     std::string imgStream;
@@ -179,27 +190,31 @@ void FrameToolScreenShot::OnToolEvent(wxCommandEvent &evt) {
 
   } break;
   case CommandTool::TOOL_SCREENSHOT_REVOCATION: {
+#if 0
     Show(false);
     Global::ffxShowWindow(false);
     auto app = wxDynamicCast(wxApp::GetInstance(), App);
     app->SetCapturingHostType(CapturingHostType::CAPTUREING_SCREENSHOT);
     Global::ffxShowBkg(true);
+#endif
+    app->FrameComponentGet(FrameComponentType::SCREENSHOT)
+        ->ShowBackground(true);
   } break;
   default:
     break;
   }
   evt.Skip();
 }
-void FrameToolScreenShot::OnSize(wxSizeEvent &event) {
+void FrameScreenShot::Toolbar::OnSize(wxSizeEvent &event) {
   LayoutEx();
   Refresh();
   event.Skip();
 }
-void FrameToolScreenShot::OnMove(wxMoveEvent &event) {
+void FrameScreenShot::Toolbar::OnMove(wxMoveEvent &event) {
   LayoutEx();
   event.Skip();
 }
-void FrameToolScreenShot::OnClose(wxCloseEvent &event) {
+void FrameScreenShot::Toolbar::OnClose(wxCloseEvent &event) {
   auto shape = dynamic_cast<wxFrame *>(
       wxDynamicCast(wxApp::GetInstance(), App)->FrameWorkGet());
   int res = wxMessageBox(L"Are you sure you want to exit system?", L"Memade®",
@@ -215,7 +230,7 @@ void FrameToolScreenShot::OnClose(wxCloseEvent &event) {
     event.Skip();
   }
 }
-void FrameToolScreenShot::OnMouseMove(wxMouseEvent &event) {
+void FrameScreenShot::Toolbar::OnMouseMove(wxMouseEvent &event) {
   wxPoint pt = event.GetPosition();
   if (event.Dragging() && event.LeftIsDown()) {
     is_dragging_.store(true);
@@ -224,16 +239,17 @@ void FrameToolScreenShot::OnMouseMove(wxMouseEvent &event) {
     Move(wxPoint(pos.x - m_delta.x, pos.y - m_delta.y));
   }
 }
-void FrameToolScreenShot::OnMouseLeftDClick(wxMouseEvent &event) {
+void FrameScreenShot::Toolbar::OnMouseLeftDClick(wxMouseEvent &event) {
   event.Skip();
 }
-void FrameToolScreenShot::OnMouseLeftDown(wxMouseEvent &event) {
+void FrameScreenShot::Toolbar::OnMouseLeftDown(wxMouseEvent &event) {
   CaptureMouse();
   wxPoint pt = ClientToScreen(event.GetPosition());
   wxPoint origin = GetPosition();
   int dx = pt.x - origin.x;
   int dy = pt.y - origin.y;
   m_delta = wxPoint(dx, dy);
+#if 0
   if (!is_fullscreen_shown_.load()) {
     prev_frame_tool_size_ = GetSize();
     prev_frame_work_size_ =
@@ -241,9 +257,10 @@ void FrameToolScreenShot::OnMouseLeftDown(wxMouseEvent &event) {
             wxDynamicCast(wxApp::GetInstance(), App)->FrameWorkGet())
             ->GetSize();
   }
+#endif
 }
 
-void FrameToolScreenShot::OnMouseLeftUp(wxMouseEvent &event) {
+void FrameScreenShot::Toolbar::OnMouseLeftUp(wxMouseEvent &event) {
   if (HasCapture()) {
     ReleaseMouse();
   }
