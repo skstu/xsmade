@@ -27,6 +27,8 @@ public:
   }
   virtual void OnPosChanged() const = 0;
   virtual void OnFullScreenShown() = 0;
+  virtual void OnWorkspacePosUpdate(const wxRect &) = 0;
+  virtual void OnToolbarPosUpdate(const wxRect &) = 0;
 
 protected:
   const FrameComponentType type_;

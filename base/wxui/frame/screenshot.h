@@ -13,7 +13,7 @@ public:
                const wxString &name = wxASCII_STR(wxFrameNameStr));
     virtual ~Background();
   };
-  class Toolbar final : public wxFrame {
+  class Toolbar final : public IToolbar {
   public:
     Toolbar(wxWindow *parent, wxWindowID id = wxID_ANY,
             const wxString &title = wxEmptyString,
@@ -22,6 +22,11 @@ public:
             long style = wxDEFAULT_FRAME_STYLE,
             const wxString &name = wxASCII_STR(wxFrameNameStr));
     virtual ~Toolbar();
+
+  protected:
+    void LayoutEx() override final;
+    void OnToolEvent(wxCommandEvent &event) override final;
+    void OnToolbarSizeChanged(const wxRect &) override final;
 
   private:
     const int btn_size = 20;
@@ -35,23 +40,6 @@ public:
     wxBitmapButton *btn_screenshot_toolbar_round_ = nullptr;
     wxBitmapButton *btn_screenshot_toolbar_text_ = nullptr;
     wxBitmapButton *btn_screenshot_toolbar_mosaic_ = nullptr;
-
-  private:
-    std::atomic_bool is_dragging_ = false;
-    std::atomic_bool is_fullscreen_shown_ = false;
-    void LayoutEx();
-    wxSize prev_frame_tool_size_;
-    wxSize prev_frame_work_size_;
-    wxPoint m_delta;
-    void OnSize(wxSizeEvent &);
-    void OnClose(wxCloseEvent &);
-    void OnMove(wxMoveEvent &);
-    void OnMouseMove(wxMouseEvent &event);
-    void OnMouseLeftDown(wxMouseEvent &event);
-    void OnMouseLeftUp(wxMouseEvent &event);
-    void OnMouseLeftDClick(wxMouseEvent &event);
-    void OnToolEvent(wxCommandEvent &event);
-    DECLARE_EVENT_TABLE()
   };
   class WorkSpace final : public IWorkSpace {
   public:
@@ -62,6 +50,9 @@ public:
               long style = wxDEFAULT_FRAME_STYLE,
               const wxString &name = wxASCII_STR(wxFrameNameStr));
     virtual ~WorkSpace();
+
+  protected:
+    void OnWorkSpaceSizeChanged(const wxRect &) override final;
   };
 
 public:
@@ -78,6 +69,9 @@ protected:
   void OnPosChanged() const override final {
   }
   void OnFullScreenShown() override final {
+  }
+  void OnWorkspacePosUpdate(const wxRect &) override final;
+  void OnToolbarPosUpdate(const wxRect &) override final {
   }
   void SetPos(const wxRect &) override final;
   void ShowBackground(const bool &flag) override final;

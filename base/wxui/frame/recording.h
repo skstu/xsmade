@@ -25,9 +25,10 @@ public:
 
   protected:
     void OnToolEvent(wxCommandEvent &event) override;
-    void OnPosUpdated() const override;
     void OnFullScreenShown() override;
     void LayoutEx() override;
+    void OnToolbarSizeChanged(const wxRect &) override;
+    void OnClose(wxCloseEvent &event) override final;
 
   protected:
     const int btn_size = 20;
@@ -53,6 +54,9 @@ public:
               long style = wxDEFAULT_FRAME_STYLE,
               const wxString &name = wxASCII_STR(wxFrameNameStr));
     virtual ~WorkSpace();
+
+  protected:
+    void OnWorkSpaceSizeChanged(const wxRect &) override;
   };
 
 public:
@@ -69,6 +73,8 @@ protected:
   void OnPosChanged() const override final;
   void OnFullScreenShown() override final;
   void ShowBackground(const bool &flag) override final;
+  void OnWorkspacePosUpdate(const wxRect &) override final;
+  void OnToolbarPosUpdate(const wxRect &) override final;
 
 private:
   Background *frame_background_ = nullptr;

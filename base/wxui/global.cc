@@ -1,5 +1,6 @@
 #include "wxui.h"
 void Global::ffxHideScreenShotToolbar() {
+#if 0
   do {
     auto app = wxDynamicCast(wxApp::GetInstance(), App);
     if (!app)
@@ -11,8 +12,10 @@ void Global::ffxHideScreenShotToolbar() {
       break;
     toolbar->Show(false);
   } while (0);
+#endif
 }
 void Global::ffxShowBkg(const bool &flag) {
+#if 0
   do {
     auto app = wxDynamicCast(wxApp::GetInstance(), App);
     if (!app)
@@ -37,8 +40,10 @@ void Global::ffxShowBkg(const bool &flag) {
     if (frame_screenshot_toolbar_)
       frame_screenshot_toolbar_->Show(false);
   } while (0);
+#endif
 }
 void Global::ffxShowScreenShotToolbar(const wxRect &select_rectangle) {
+#if 0
   do {
     auto app = wxDynamicCast(wxApp::GetInstance(), App);
     if (!app)
@@ -50,8 +55,10 @@ void Global::ffxShowScreenShotToolbar(const wxRect &select_rectangle) {
     if (!toolbar->IsShown())
       toolbar->Show(true);
   } while (0);
+#endif
 }
 void Global::ffxLayout() {
+#if 0
   do {
     auto app = wxDynamicCast(wxApp::GetInstance(), App);
     if (!app)
@@ -85,9 +92,11 @@ void Global::ffxLayout() {
 #endif
 #endif
   } while (0);
+#endif
 }
 void Global::ffxFullScreen(const bool &entry, const wxSize &prev_frame_tool,
                            const wxSize &perv_frame_shape) {
+#if 0
   do {
     auto app = wxDynamicCast(wxApp::GetInstance(), App);
     if (!app)
@@ -112,8 +121,10 @@ void Global::ffxFullScreen(const bool &entry, const wxSize &prev_frame_tool,
                           frame_tool->GetSize().GetHeight());
     }
   } while (0);
+#endif
 }
 void Global::ffxShowWindow(const bool &flag) {
+#if 0
   do {
     auto app = wxDynamicCast(wxApp::GetInstance(), App);
     if (!app)
@@ -158,8 +169,10 @@ void Global::ffxShowWindow(const bool &flag) {
     }
 #endif
   } while (0);
+#endif
 }
 void Global::ffxScaling(const float &scaling) {
+#if 0
   do {
     auto app = wxDynamicCast(wxApp::GetInstance(), App);
     if (!app)
@@ -189,8 +202,10 @@ void Global::ffxScaling(const float &scaling) {
     frame_tool->SetPosition(wxPoint(final_pos_x, final_pos_y));
     frame_tool->SetSize(wxSize(final_tool_cx, final_tool_cy));
   } while (0);
+#endif
 }
 void Global::ffxShowRecordingComponents() {
+#if 0
   do {
     auto app = wxDynamicCast(wxApp::GetInstance(), App);
     if (!app)
@@ -210,8 +225,10 @@ void Global::ffxShowRecordingComponents() {
     ffxShowWindow(true);
     ffxCenter();
   } while (0);
+#endif
 }
 void Global::ffxTopmost() {
+#if 0
   do {
     auto app = wxDynamicCast(wxApp::GetInstance(), App);
     if (!app)
@@ -229,8 +246,10 @@ void Global::ffxTopmost() {
     frame_tool->Show(true);
     frame_work->Show(true);
   } while (0);
+#endif
 }
 void Global::ffxCenter() {
+#if 0
   do {
     auto app = wxDynamicCast(wxApp::GetInstance(), App);
     if (!app)
@@ -245,9 +264,11 @@ void Global::ffxCenter() {
                         rect.GetTop() - frame_tool->GetSize().GetHeight(),
                         rect.GetWidth(), frame_tool->GetSize().GetHeight());
   } while (0);
+#endif
 }
 void Global::ffxSetPos(const wxRect &rect,
                        const CapturingHostType &captureType) {
+#if 0
   do {
     if (rect.GetWidth() < 100 || rect.GetHeight() < 100)
       break;
@@ -287,9 +308,11 @@ void Global::ffxSetPos(const wxRect &rect,
     }
 
   } while (0);
+#endif
 }
 
 void Global::ffxCaptureScreenShot(std::string &outImgStream) {
+#if 0
   outImgStream.clear();
   do {
     auto app = wxDynamicCast(wxApp::GetInstance(), App);
@@ -310,9 +333,11 @@ void Global::ffxCaptureScreenShot(std::string &outImgStream) {
     outImgStream.append(imgStream->buffer, imgStream->len);
     xs_sys_image_stream_destroy(&imgStream);
   } while (0);
+#endif
 }
 void Global::ffxFrameWorkImageShow(const bool &flag,
                                    const std::string &imgPath) {
+#if 0
   do {
     auto app = wxDynamicCast(wxApp::GetInstance(), App);
     if (!app)
@@ -328,4 +353,5 @@ void Global::ffxFrameWorkImageShow(const bool &flag,
     frame_work_image->SetSize(frame_work->GetRect());
     frame_work_image->Show();
   } while (0);
+#endif
 }

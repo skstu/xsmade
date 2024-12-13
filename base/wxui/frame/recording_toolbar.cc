@@ -46,6 +46,7 @@ FrameRecording::Toolbar::Toolbar(wxWindow *parent, wxWindowID id,
     btn_window_->SetToolTip(gpCommandToolTipMap[CommandTool::TOOL_WINDOW]);
     btn_window_->SetSize(wxSize(btn_size, btn_size));
   }
+#if 0
   img = Config::Get()->GetResImage("btn_scaling_down.png");
   if (img) {
     img->Rescale(btn_size, btn_size);
@@ -64,6 +65,7 @@ FrameRecording::Toolbar::Toolbar(wxWindow *parent, wxWindowID id,
         gpCommandToolTipMap[CommandTool::TOOL_SCALING_UP]);
     btn_scaling_up_->SetSize(wxSize(btn_size, btn_size));
   }
+#endif
   img = Config::Get()->GetResImage("btn_settings.png");
   if (img) {
     img->Rescale(btn_size, btn_size);
@@ -96,20 +98,6 @@ FrameRecording::Toolbar::Toolbar(wxWindow *parent, wxWindowID id,
 }
 FrameRecording::Toolbar::~Toolbar() {
   Unbind(wxEVT_BUTTON, &FrameRecording::Toolbar::OnToolEvent, this);
-}
-void FrameRecording::Toolbar::OnPosUpdated() const {
-  do {
-    auto app = wxDynamicCast(wxApp::GetInstance(), App);
-    if (!app)
-      break;
-    auto workspace = app->FrameGet(ComponentFrameType::RECORDING_WORKSPACE);
-    if (!workspace)
-      break;
-    const wxRect rtWindow = GetRect();
-    workspace->SetSize(rtWindow.GetLeft(),
-                       rtWindow.GetTop() + rtWindow.GetHeight(),
-                       rtWindow.GetWidth(), workspace->GetSize().GetHeight());
-  } while (0);
 }
 void FrameRecording::Toolbar::OnFullScreenShown() {
   do {
@@ -186,7 +174,19 @@ void FrameRecording::Toolbar::LayoutEx() {
     btn_scaling_down_->SetPosition(
         wxPoint(btn_size * 3 + btn_offset_x_ * 4, btn_offset_y_));
   }
-  OnPosUpdated();
+  OnToolbarSizeChanged(GetRect());
+}
+void FrameRecording::Toolbar::OnToolbarSizeChanged(const wxRect &rect) {
+  do {
+    auto app = wxDynamicCast(wxApp::GetInstance(), App);
+    if (!app)
+      break;
+    auto workspace = app->FrameGet(ComponentFrameType::RECORDING_WORKSPACE);
+    if (!workspace)
+      break;
+    workspace->SetSize(rect.GetLeft(), rect.GetTop() + rect.GetHeight(),
+                       rect.GetWidth(), workspace->GetSize().GetHeight());
+  } while (0);
 }
 void FrameRecording::Toolbar::OnToolEvent(wxCommandEvent &evt) {
   switch (evt.GetId()) {
@@ -208,12 +208,15 @@ void FrameRecording::Toolbar::OnToolEvent(wxCommandEvent &evt) {
     comp_screenshot->ShowBackground(true);
   } break;
   case CommandTool::TOOL_WINDOW: {
+#if 0
     auto app = wxDynamicCast(wxApp::GetInstance(), App);
     app->SetCapturingHostType(CapturingHostType::CAPTUREING_RECORDING);
     Global::ffxShowBkg(true);
     Global::ffxShowWindow(false);
+#endif
   } break;
   case CommandTool::TOOL_RECORDING_START: {
+#if 0
     auto app = wxDynamicCast(wxApp::GetInstance(), App);
     auto frame_shape = dynamic_cast<wxFrame *>(app->FrameWorkGet());
     if (!frame_shape)
@@ -235,6 +238,7 @@ void FrameRecording::Toolbar::OnToolEvent(wxCommandEvent &evt) {
     wxBitmapButton *btn = (wxBitmapButton *)evt.GetEventObject();
     btn->Show(false);
     btn_recording_stop_->Show();
+#endif
   } break;
   case CommandTool::TOOL_RECORDING_STOP: {
     if (!recording_running_.load())
@@ -252,4 +256,20 @@ void FrameRecording::Toolbar::OnToolEvent(wxCommandEvent &evt) {
     break;
   }
   evt.Skip();
+}
+void FrameRecording::Toolbar::OnClose(wxCloseEvent &event) {
+  int res = wxMessageBox(L"Are you sure you want to exit system?", L"Memade®",
+                         wxYES_NO, this);
+  if (res != wxYES) {
+    event.Veto();
+  } else {
+    auto handle = wxApp::GetInstance();
+    auto frame_component_recording =
+        wxDynamicCast(handle, App)
+            ->FrameComponentGet(FrameComponentType::RECORDING);
+    frame_component_recording->Show(false);
+    wxQueueEvent(handle,
+                 new wxThreadEvent(wxEVT_THREAD, wxAppThreadEvt_FrameDestroy));
+    event.Skip();
+  }
 }

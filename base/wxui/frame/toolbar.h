@@ -12,12 +12,16 @@ public:
   virtual ~IToolbar();
 
 protected:
-  virtual void OnPosUpdated() const;
-  virtual void OnFullScreenShown();
-  virtual void LayoutEx();
+  virtual void OnFullScreenShown() {
+  }
+  virtual void LayoutEx() {
+  }
   virtual void OnToolEvent(wxCommandEvent &event);
+  virtual void OnToolbarSizeChanged(const wxRect &) {
+  }
 
 protected:
+  std::atomic_bool is_allow_move_ = true;
   std::atomic_bool is_dragging_ = false;
   std::atomic_bool is_fullscreen_shown_ = false;
   std::atomic_bool recording_running_ = false;
@@ -25,7 +29,9 @@ protected:
   wxRect prev_frame_work_rect_;
   wxPoint m_delta;
   void OnSize(wxSizeEvent &);
-  void OnClose(wxCloseEvent &);
+  virtual void OnClose(wxCloseEvent &evt) {
+    evt.Skip();
+  }
   void OnMove(wxMoveEvent &);
   void OnMouseMove(wxMouseEvent &event);
   void OnMouseLeftDown(wxMouseEvent &event);

@@ -54,3 +54,15 @@ void FrameScreenShot::SetPos(const wxRect &pos) {
       frame_toolbar_->Show();
   } while (0);
 }
+void FrameScreenShot::OnWorkspacePosUpdate(const wxRect &rect) {
+  do {
+    if (!frame_toolbar_)
+      break;
+    frame_toolbar_->SetSize(
+        rect.GetRight() - frame_toolbar_->GetSize().GetWidth(),
+        rect.GetBottom(), frame_toolbar_->GetSize().GetWidth(),
+        frame_toolbar_->GetSize().GetHeight());
+    if (!frame_toolbar_->IsShown())
+      frame_toolbar_->Show();
+  } while (0);
+}

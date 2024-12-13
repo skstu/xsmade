@@ -38,6 +38,10 @@ protected:
   std::atomic<ResizeMode> resize_mode_ = ResizeMode::None;
 
 protected:
+  virtual void OnWorkSpaceSizeChanged(const wxRect &) {
+  }
+
+protected:
   void OnSize(wxSizeEvent &event);
   void OnClose(wxCloseEvent &event);
   void OnPaint(wxPaintEvent &event);

@@ -60,7 +60,7 @@ void Wxui::MainProc() {
 }
 IFrame *Wxui::GetFrame() const {
   App *app = wxDynamicCast(wxApp::GetInstance(), App);
-  return app->FrameToolGet();
+  return app->FrameGet();
 }
 void Wxui::NotifyRecordingEnd() const {
 }

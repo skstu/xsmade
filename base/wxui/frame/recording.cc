@@ -61,3 +61,14 @@ void FrameRecording::OnPosChanged() const {
 }
 void FrameRecording::OnFullScreenShown() {
 }
+void FrameRecording::OnToolbarPosUpdate(const wxRect &) {
+}
+void FrameRecording::OnWorkspacePosUpdate(const wxRect &rect) {
+  do {
+    if (!frame_toolbar_)
+      break;
+    frame_toolbar_->SetSize(
+        rect.GetLeft(), rect.GetTop() - frame_toolbar_->GetSize().GetHeight(),
+        rect.GetWidth(), frame_toolbar_->GetSize().GetHeight());
+  } while (0);
+}

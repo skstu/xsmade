@@ -1,25 +1,12 @@
 #include <wxui.h>
-////////////////////////////////////////////////////////////////////////////////////
-// Toolbar
-////////////////////////////////////////////////////////////////////////////////////
-wxBEGIN_EVENT_TABLE(FrameScreenShot::Toolbar,
-                    wxFrame) EVT_SIZE(FrameScreenShot::Toolbar::OnSize)
-    EVT_MOVE(FrameScreenShot::Toolbar::OnMove)
-        EVT_CLOSE(FrameScreenShot::Toolbar::OnClose)
-            EVT_MOTION(FrameScreenShot::Toolbar::OnMouseMove)
-                EVT_LEFT_DOWN(FrameScreenShot::Toolbar::OnMouseLeftDown)
-                    EVT_LEFT_DCLICK(FrameScreenShot::Toolbar::OnMouseLeftDClick)
-                        EVT_LEFT_UP(FrameScreenShot::Toolbar::OnMouseLeftUp)
-                            wxEND_EVENT_TABLE();
-
 FrameScreenShot::Toolbar::Toolbar(wxWindow *parent, wxWindowID id,
                                   const wxString &title, const wxPoint &pos,
                                   const wxSize &size, long style,
                                   const wxString &name)
-    : wxFrame(parent, id, title, wxPoint(0, 0), wxSize(300, 40),
-              /*(wxDEFAULT_FRAME_STYLE & ~wxCLOSE_BOX & ~wxCAPTION)*/
-              wxNO_BORDER | wxFRAME_NO_TASKBAR /*| wxRESIZE_BORDER*/, name) {
-
+    : IToolbar(parent, id, title, wxPoint(0, 0), wxSize(340, 40),
+               /*(wxDEFAULT_FRAME_STYLE & ~wxCLOSE_BOX & ~wxCAPTION)*/
+               wxNO_BORDER | wxFRAME_NO_TASKBAR /*| wxRESIZE_BORDER*/, name) {
+  is_allow_move_.store(false);
   SetBackgroundColour(wxColour(252, 252, 252));
 
   wxImage *img = Config::Get()->GetResImage("btn_screenshot_toolbar_close.png");
@@ -205,64 +192,5 @@ void FrameScreenShot::Toolbar::OnToolEvent(wxCommandEvent &evt) {
   }
   evt.Skip();
 }
-void FrameScreenShot::Toolbar::OnSize(wxSizeEvent &event) {
-  LayoutEx();
-  Refresh();
-  event.Skip();
-}
-void FrameScreenShot::Toolbar::OnMove(wxMoveEvent &event) {
-  LayoutEx();
-  event.Skip();
-}
-void FrameScreenShot::Toolbar::OnClose(wxCloseEvent &event) {
-  auto shape = dynamic_cast<wxFrame *>(
-      wxDynamicCast(wxApp::GetInstance(), App)->FrameWorkGet());
-  int res = wxMessageBox(L"Are you sure you want to exit system?", L"Memade®",
-                         wxYES_NO, shape ? shape : this);
-  if (res != wxYES) {
-    event.Veto();
-  } else {
-    auto handle = wxApp::GetInstance();
-    if (handle) {
-      wxQueueEvent(
-          handle, new wxThreadEvent(wxEVT_THREAD, wxAppThreadEvt_FrameDestroy));
-    }
-    event.Skip();
-  }
-}
-void FrameScreenShot::Toolbar::OnMouseMove(wxMouseEvent &event) {
-  wxPoint pt = event.GetPosition();
-  if (event.Dragging() && event.LeftIsDown()) {
-    is_dragging_.store(true);
-    wxPoint pos = ClientToScreen(pt); // pos为点击位置
-
-    Move(wxPoint(pos.x - m_delta.x, pos.y - m_delta.y));
-  }
-}
-void FrameScreenShot::Toolbar::OnMouseLeftDClick(wxMouseEvent &event) {
-  event.Skip();
-}
-void FrameScreenShot::Toolbar::OnMouseLeftDown(wxMouseEvent &event) {
-  CaptureMouse();
-  wxPoint pt = ClientToScreen(event.GetPosition());
-  wxPoint origin = GetPosition();
-  int dx = pt.x - origin.x;
-  int dy = pt.y - origin.y;
-  m_delta = wxPoint(dx, dy);
-#if 0
-  if (!is_fullscreen_shown_.load()) {
-    prev_frame_tool_size_ = GetSize();
-    prev_frame_work_size_ =
-        dynamic_cast<wxFrame *>(
-            wxDynamicCast(wxApp::GetInstance(), App)->FrameWorkGet())
-            ->GetSize();
-  }
-#endif
-}
-
-void FrameScreenShot::Toolbar::OnMouseLeftUp(wxMouseEvent &event) {
-  if (HasCapture()) {
-    ReleaseMouse();
-  }
-  is_dragging_.store(false);
+void FrameScreenShot::Toolbar::OnToolbarSizeChanged(const wxRect &) {
 }

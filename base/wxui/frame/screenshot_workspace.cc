@@ -12,3 +12,13 @@ FrameScreenShot::WorkSpace::WorkSpace(wxWindow *parent, wxWindowID id,
 }
 FrameScreenShot::WorkSpace::~WorkSpace() {
 }
+void FrameScreenShot::WorkSpace::OnWorkSpaceSizeChanged(const wxRect &rect) {
+  do {
+    auto app = wxDynamicCast(wxApp::GetInstance(), App);
+    IFrameComponent *frame_screenshot =
+        app->FrameComponentGet(FrameComponentType::SCREENSHOT);
+    if (!frame_screenshot)
+      break;
+    frame_screenshot->OnWorkspacePosUpdate(rect);
+  } while (0);
+}

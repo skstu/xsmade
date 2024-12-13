@@ -11,38 +11,21 @@ public:
   void OnFrameCreate();
   void OnFrameDestroy();
   IFrame *FrameGet() const;
-  IFrame *FrameToolGet() const;
-  IFrame *FrameWorkGet() const;
-  IFrame *FrameBgkGet() const;
-  IFrame *FrameScreenShotToolGet() const;
-  IFrame *FrameWorkImageGet() const;
-  void SetCapturingHostType(const CapturingHostType &type);
-  CapturingHostType GetCapturingHostType() const;
 
 public:
   wxFrame *FrameAppend(const ComponentFrameType &, wxFrame *);
   wxFrame *FrameGet(const ComponentFrameType &) const;
-  IFrameComponent* FrameComponentGet(const FrameComponentType&) const;
+  IFrameComponent *FrameComponentGet(const FrameComponentType &) const;
+
 private:
   std::map<FrameComponentType, IFrameComponent *> frame_comps_;
   std::map<ComponentFrameType, wxFrame *> frames_;
 
 private:
   IFrame *frame_ = nullptr;
-  IFrame *frame_tool_ = nullptr;
-  IFrame *frame_work_ = nullptr;
-  IFrame *frame_bgk_ = nullptr;
-  IFrame *frame_screenshot_tool_ = nullptr;
-  IFrame *frame_work_image_ = nullptr;
   void OnThreadEvtFrameDestroy(wxThreadEvent &event);
   void OnThreadEvtCaptureFinished(wxThreadEvent &event);
-  void MainProc();
-  std::atomic_bool open_ = false;
-  stl::tfThreads threads_;
-  std::atomic<CapturingHostType> who_is_capturing_ =
-      CapturingHostType::CAPTUREING_RECORDING;
 };
-extern const int wxAppThreadEvt_CaptureFinished;
 extern const int wxAppThreadEvt_FrameDestroy;
 extern const int wxAppThreadEvt_BroadcastEvent;
 /// /*_ Memade®（新生™） _**/

@@ -13,3 +13,13 @@ FrameRecording::WorkSpace::WorkSpace(wxWindow *parent, wxWindowID id,
 }
 FrameRecording::WorkSpace::~WorkSpace() {
 }
+void FrameRecording::WorkSpace::OnWorkSpaceSizeChanged(const wxRect &rect) {
+  do {
+    auto app = wxDynamicCast(wxApp::GetInstance(), App);
+    IFrameComponent *frame_record =
+        app->FrameComponentGet(FrameComponentType::RECORDING);
+    if (!frame_record)
+      break;
+    frame_record->OnWorkspacePosUpdate(rect);
+  } while (0);
+}

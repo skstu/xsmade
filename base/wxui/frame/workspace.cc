@@ -20,6 +20,11 @@ IWorkSpace::~IWorkSpace() {
 }
 void IWorkSpace::OnSize(wxSizeEvent &event) {
   Refresh();
+  OnWorkSpaceSizeChanged(GetRect());
+  event.Skip();
+}
+void IWorkSpace::OnMove(wxMoveEvent &event) {
+  OnWorkSpaceSizeChanged(GetRect());
   event.Skip();
 }
 void IWorkSpace::OnClose(wxCloseEvent &event) {
@@ -36,9 +41,6 @@ void IWorkSpace::OnPaint(wxPaintEvent &event) {
   dc.DrawLine(2, 2, 2, size.y - 2);
   dc.DrawLine(size.x - 2, 2, size.x - 2, size.y - 2);
   dc.DrawLine(2, size.y - 2, size.x - 2, size.y - 2);
-  event.Skip();
-}
-void IWorkSpace::OnMove(wxMoveEvent &event) {
   event.Skip();
 }
 void IWorkSpace::OnMouseMove(wxMouseEvent &event) {
