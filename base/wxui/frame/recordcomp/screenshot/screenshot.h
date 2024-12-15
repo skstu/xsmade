@@ -23,23 +23,49 @@ public:
             const wxString &name = wxASCII_STR(wxFrameNameStr));
     virtual ~Toolbar();
 
+  private:
+    void Init();
+    void UnInit();
+
+  public:
+    void GetExpandToolbar(wxPanel** outPanel,wxBoxSizer **outSizer) override final;
+void RefreshToolbar() override final;
   protected:
-    void LayoutEx() override final;
+    void OnLayout() override final;
     void OnToolEvent(wxCommandEvent &event) override final;
     void OnToolbarSizeChanged(const wxRect &) override final;
 
   private:
+    wxPanel *panel = nullptr;
+    wxBoxSizer *sizer = nullptr;
+    wxBoxSizer *sizer_top = nullptr;
+    wxBoxSizer *sizer_expand = nullptr;
+    const wxSize btn_scale_size_ = {20, 20};
+    const wxSize btn_size_ = {40, 40};
+  };
+  class FontToolbar final : public IToolbar {
+  public:
+    FontToolbar(wxWindow *parent, wxWindowID id = wxID_ANY,
+                const wxString &title = wxEmptyString,
+                const wxPoint &pos = wxDefaultPosition,
+                const wxSize &size = wxDefaultSize,
+                long style = wxDEFAULT_FRAME_STYLE,
+                const wxString &name = wxASCII_STR(wxFrameNameStr));
+    virtual ~FontToolbar();
+
+  protected:
+    void OnLayout() override final;
+    void OnToolEvent(wxCommandEvent &event) override final;
+    void OnToolbarSizeChanged(const wxRect &) override final;
+
+  private:
+    wxArrayString m_arrItems_pixel;
+    wxArrayString m_arrItems_font;
     const int btn_size = 20;
     const int btn_offset_x_ = 20;
     const int btn_offset_y_ = 10;
-    wxBitmapButton *btn_screenshot_toolbar_close_ = nullptr;
-    wxBitmapButton *btn_screenshot_toolbar_edit_ = nullptr;
-    wxBitmapButton *btn_screenshot_toolbar_ok_ = nullptr;
-    wxBitmapButton *btn_screenshot_toolbar_rectangle_ = nullptr;
-    wxBitmapButton *btn_screenshot_toolbar_revocation_ = nullptr;
-    wxBitmapButton *btn_screenshot_toolbar_round_ = nullptr;
-    wxBitmapButton *btn_screenshot_toolbar_text_ = nullptr;
-    wxBitmapButton *btn_screenshot_toolbar_mosaic_ = nullptr;
+    // wxBitmapButton *btn_screenshot_toolbar_close_ = nullptr;
+    // wxBitmapButton *btn_screenshot_toolbar_edit_ = nullptr;
   };
   class WorkSpace final : public IWorkSpace {
   public:
@@ -79,6 +105,7 @@ protected:
 private:
   Background *frame_background_ = nullptr;
   Toolbar *frame_toolbar_ = nullptr;
+  FontToolbar *font_toolbar_ = nullptr;
   WorkSpace *frame_workspace_ = nullptr;
 };
 

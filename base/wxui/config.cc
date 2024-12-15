@@ -113,7 +113,7 @@ std::map<CommandTool, wxString> gpCommandToolTipMap = {
     {CommandTool::TOOL_SYSTEM_CLOSE, wxT("退出")},
     {CommandTool::TOOL_SETTINGS, wxT("设置")},
     {CommandTool::TOOL_WINDOW, wxT("选定录屏区域")},
-    {CommandTool::TOOL_SCREENSHOT_EIDT, wxT("edit")},
+    {CommandTool::TOOL_SCREENSHOT_EIDT, wxT("brush")},
     {CommandTool::TOOL_SCREENSHOT_CLOSE, wxT("close")},
     {CommandTool::TOOL_SCREENSHOT_OK, wxT("ok")},
     {CommandTool::TOOL_SCREENSHOT_RECTANGLE, wxT("rectangle")},
@@ -121,6 +121,8 @@ std::map<CommandTool, wxString> gpCommandToolTipMap = {
     {CommandTool::TOOL_SCREENSHOT_TEXT, wxT("text")},
     {CommandTool::TOOL_SCREENSHOT_REVOCATION, wxT("revocation")},
     {CommandTool::TOOL_SCREENSHOT_MOSAIC, wxT("mosaic")},
+    {CommandTool::TOOL_SCREENSHOT_ARROW, wxT("arrow")},
+
 };
 
 //////////////////////////////////////////////////////////

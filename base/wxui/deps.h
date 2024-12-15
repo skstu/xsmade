@@ -74,6 +74,7 @@
 #include "wx/colordlg.h"
 #include "wx/fontdlg.h"
 #include "wx/aboutdlg.h"
+#include "wx/combo.h"
 #include "wx/odcombo.h"
 #include "wx/dynlib.h"
 #if defined(__WXMSW__)

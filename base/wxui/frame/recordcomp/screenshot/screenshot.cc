@@ -14,11 +14,15 @@ void FrameScreenShot::Init() {
   frame_toolbar_ = new Toolbar(nullptr);
   app->FrameAppend(ComponentFrameType::SCREENSHOT_TOOLBAR,
                    dynamic_cast<wxFrame *>(frame_toolbar_));
+  font_toolbar_ = new FontToolbar(nullptr);
+  app->FrameAppend(ComponentFrameType::SCREENSHOT_TOOLBAR_FONT,
+                   dynamic_cast<wxFrame *>(font_toolbar_));
   frame_workspace_ = new WorkSpace(nullptr);
   app->FrameAppend(ComponentFrameType::SCREENSHOT_WORKSPACE,
                    dynamic_cast<wxFrame *>(frame_workspace_));
 }
 void FrameScreenShot::UnInit() {
+  font_toolbar_->Show(false);
   frame_toolbar_->Show(false);
   frame_workspace_->Show(false);
   frame_background_->Show(false);
@@ -45,9 +49,9 @@ void FrameScreenShot::SetPos(const wxRect &pos) {
     wxRect frame_toolbar_rect;
     frame_toolbar_rect.SetLeft(pos.GetRight() -
                                frame_toolbar_->GetSize().GetWidth());
-    frame_toolbar_rect.SetTop(pos.GetBottom());
+    frame_toolbar_rect.SetTop(pos.GetBottom() + 2);
     frame_toolbar_rect.SetRight(pos.GetRight());
-    frame_toolbar_rect.SetBottom(pos.GetBottom() +
+    frame_toolbar_rect.SetBottom(frame_toolbar_rect.GetTop() +
                                  frame_toolbar_->GetSize().GetHeight());
     frame_toolbar_->SetSize(frame_toolbar_rect);
     if (!frame_toolbar_->IsShown())

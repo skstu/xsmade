@@ -9,6 +9,7 @@ enum class FrameComponentType : unsigned long long {
 enum class ComponentFrameType : unsigned long long {
   UNKNOWN = 0x00,
   SCREENSHOT_TOOLBAR = 0x0110,
+  SCREENSHOT_TOOLBAR_FONT = 0x0111,
   SCREENSHOT_WORKSPACE = 0x0120,
   SCREENSHOT_BACKGROUND = 0x0130,
   RECORDING_TOOLBAR = 0x0210,

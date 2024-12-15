@@ -266,9 +266,10 @@ void Global::ffxCenter() {
   } while (0);
 #endif
 }
+#if 0
 void Global::ffxSetPos(const wxRect &rect,
                        const CapturingHostType &captureType) {
-#if 0
+
   do {
     if (rect.GetWidth() < 100 || rect.GetHeight() < 100)
       break;
@@ -308,9 +309,9 @@ void Global::ffxSetPos(const wxRect &rect,
     }
 
   } while (0);
-#endif
-}
 
+}
+#endif
 void Global::ffxCaptureScreenShot(std::string &outImgStream) {
 #if 0
   outImgStream.clear();

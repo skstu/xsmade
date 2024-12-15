@@ -24,6 +24,7 @@
         "**/.svn": true,
         "**/node_modules": true,
         "**/.__backup__": true,
+        "**/*.zip": true,
         //"**/build": true
     },
     "clangd.arguments": [
@@ -33,6 +34,7 @@
         "--completion-style=detailed",
         "--header-insertion=never",
         "--compile-commands-dir=${workspaceFolder}/out",
+        "--query-driver=C:/msys64/clang64/bin/g*",
         "--pch-storage=memory",
         "--limit-results=50",
         "--log=error"

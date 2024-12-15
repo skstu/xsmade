@@ -9,91 +9,9 @@ FrameRecording::Toolbar::Toolbar(wxWindow *parent, wxWindowID id,
 
   SetBackgroundColour(wxColour(252, 252, 252));
 
-  wxImage *img = Config::Get()->GetResImage("btn_close.png");
-  if (img) {
-    img->Rescale(btn_size, btn_size);
-    btn_close_ = new wxBitmapButton(this, CommandTool::TOOL_SYSTEM_CLOSE,
-                                    wxBitmapBundle::FromImage(*img));
-    btn_close_->SetToolTip(gpCommandToolTipMap[CommandTool::TOOL_SYSTEM_CLOSE]);
-    btn_close_->SetSize(wxSize(btn_size, btn_size));
-  }
-  img = Config::Get()->GetResImage("btn_recording_start.png");
-  if (img) {
-    img->Rescale(btn_size, btn_size);
-    btn_recording_start_ =
-        new wxBitmapButton(this, CommandTool::TOOL_RECORDING_START,
-                           wxBitmapBundle::FromImage(*img));
-    btn_recording_start_->SetToolTip(
-        gpCommandToolTipMap[CommandTool::TOOL_RECORDING_START]);
-    btn_recording_start_->SetSize(wxSize(btn_size, btn_size));
-  }
-  img = Config::Get()->GetResImage("btn_recording_stop.png");
-  if (img) {
-    img->Rescale(btn_size, btn_size);
-    btn_recording_stop_ =
-        new wxBitmapButton(this, CommandTool::TOOL_RECORDING_STOP,
-                           wxBitmapBundle::FromImage(*img));
-    btn_recording_stop_->SetToolTip(
-        gpCommandToolTipMap[CommandTool::TOOL_RECORDING_STOP]);
-    btn_recording_stop_->SetSize(wxSize(btn_size, btn_size));
-    btn_recording_stop_->Show(false);
-  }
-  img = Config::Get()->GetResImage("btn_window.png");
-  if (img) {
-    img->Rescale(btn_size, btn_size);
-    btn_window_ = new wxBitmapButton(this, CommandTool::TOOL_WINDOW,
-                                     wxBitmapBundle::FromImage(*img));
-    btn_window_->SetToolTip(gpCommandToolTipMap[CommandTool::TOOL_WINDOW]);
-    btn_window_->SetSize(wxSize(btn_size, btn_size));
-  }
-#if 0
-  img = Config::Get()->GetResImage("btn_scaling_down.png");
-  if (img) {
-    img->Rescale(btn_size, btn_size);
-    btn_scaling_down_ = new wxBitmapButton(this, CommandTool::TOOL_SCALING_DOWN,
-                                           wxBitmapBundle::FromImage(*img));
-    btn_scaling_down_->SetToolTip(
-        gpCommandToolTipMap[CommandTool::TOOL_SCALING_DOWN]);
-    btn_scaling_down_->SetSize(wxSize(btn_size, btn_size));
-  }
-  img = Config::Get()->GetResImage("btn_scaling_up.png");
-  if (img) {
-    img->Rescale(btn_size, btn_size);
-    btn_scaling_up_ = new wxBitmapButton(this, CommandTool::TOOL_SCALING_UP,
-                                         wxBitmapBundle::FromImage(*img));
-    btn_scaling_up_->SetToolTip(
-        gpCommandToolTipMap[CommandTool::TOOL_SCALING_UP]);
-    btn_scaling_up_->SetSize(wxSize(btn_size, btn_size));
-  }
-#endif
-  img = Config::Get()->GetResImage("btn_settings.png");
-  if (img) {
-    img->Rescale(btn_size, btn_size);
-    btn_settings_ = new wxBitmapButton(this, CommandTool::TOOL_SETTINGS,
-                                       wxBitmapBundle::FromImage(*img));
-    btn_settings_->SetSize(wxSize(btn_size, btn_size));
-    btn_settings_->SetToolTip(gpCommandToolTipMap[CommandTool::TOOL_SETTINGS]);
-  }
-  img = Config::Get()->GetResImage("btn_screenshot.png");
-  if (img) {
-    img->Rescale(btn_size, btn_size);
-    btn_screenshot_ = new wxBitmapButton(this, CommandTool::TOOL_SCREENSHOT,
-                                         wxBitmapBundle::FromImage(*img));
-    btn_screenshot_->SetSize(wxSize(btn_size, btn_size));
-    btn_screenshot_->SetToolTip(
-        gpCommandToolTipMap[CommandTool::TOOL_SCREENSHOT]);
-  }
-  // img = Config::Get()->GetResImage("btn_screenshot_edit.png");
-  // if (img) {
-  //   img->Rescale(btn_size, btn_size);
-  //   btn_screenshot_edit_ =
-  //       new wxBitmapButton(this, CommandTool::TOOL_SCREENSHOT_EIDT,
-  //                          wxBitmapBundle::FromImage(*img));
-  //   btn_screenshot_edit_->SetSize(wxSize(btn_size, btn_size));
-  //   btn_screenshot_edit_->SetToolTip(
-  //       gpCommandToolTipMap[CommandTool::TOOL_SCREENSHOT_EIDT]);
-  // }
-  LayoutEx();
+  InitButtons();
+
+  OnLayout();
   Bind(wxEVT_BUTTON, &FrameRecording::Toolbar::OnToolEvent, this);
 }
 FrameRecording::Toolbar::~Toolbar() {
@@ -123,7 +41,7 @@ void FrameRecording::Toolbar::OnFullScreenShown() {
     }
   } while (0);
 }
-void FrameRecording::Toolbar::LayoutEx() {
+void FrameRecording::Toolbar::OnLayout() {
   int offset_r = 1;
   int offset_l = 1;
   wxSize cursize = GetSize();
@@ -239,6 +157,8 @@ void FrameRecording::Toolbar::OnToolEvent(wxCommandEvent &evt) {
     btn->Show(false);
     btn_recording_stop_->Show();
 #endif
+    btn_recording_start_->SetBitmapLabel(wxBitmapBundle::FromImage(
+        *Config::Get()->GetResImage("btn_recording_stop.png")));
   } break;
   case CommandTool::TOOL_RECORDING_STOP: {
     if (!recording_running_.load())
@@ -272,4 +192,93 @@ void FrameRecording::Toolbar::OnClose(wxCloseEvent &event) {
                  new wxThreadEvent(wxEVT_THREAD, wxAppThreadEvt_FrameDestroy));
     event.Skip();
   }
+}
+void FrameRecording::Toolbar::InitButtons() {
+  wxImage *img = Config::Get()->GetResImage("btn_close.png");
+  if (img) {
+    img->Rescale(btn_size, btn_size);
+    btn_close_ = new wxBitmapButton(this, CommandTool::TOOL_SYSTEM_CLOSE,
+                                    wxBitmapBundle::FromImage(*img));
+    btn_close_->SetToolTip(gpCommandToolTipMap[CommandTool::TOOL_SYSTEM_CLOSE]);
+    btn_close_->SetSize(wxSize(btn_size, btn_size));
+  }
+  img = Config::Get()->GetResImage("btn_recording_start.png");
+  if (img) {
+    img->Rescale(btn_size, btn_size);
+    btn_recording_start_ =
+        new wxBitmapButton(this, CommandTool::TOOL_RECORDING_START,
+                           wxBitmapBundle::FromImage(*img));
+    btn_recording_start_->SetToolTip(
+        gpCommandToolTipMap[CommandTool::TOOL_RECORDING_START]);
+    btn_recording_start_->SetSize(wxSize(btn_size, btn_size));
+  }
+  img = Config::Get()->GetResImage("btn_recording_stop.png");
+  if (img) {
+    img->Rescale(btn_size, btn_size);
+    btn_recording_stop_ =
+        new wxBitmapButton(this, CommandTool::TOOL_RECORDING_STOP,
+                           wxBitmapBundle::FromImage(*img));
+
+    btn_recording_stop_->SetToolTip(
+        gpCommandToolTipMap[CommandTool::TOOL_RECORDING_STOP]);
+    btn_recording_stop_->SetSize(wxSize(btn_size, btn_size));
+    btn_recording_stop_->Show(false);
+    // btn_recording_start_->SetBitmapPressed(*btn_recording_stop_);
+    btn_recording_start_->SetBitmapSelected(wxBitmap(*img));
+  }
+  img = Config::Get()->GetResImage("btn_window.png");
+  if (img) {
+    img->Rescale(btn_size, btn_size);
+    btn_window_ = new wxBitmapButton(this, CommandTool::TOOL_WINDOW,
+                                     wxBitmapBundle::FromImage(*img));
+    btn_window_->SetToolTip(gpCommandToolTipMap[CommandTool::TOOL_WINDOW]);
+    btn_window_->SetSize(wxSize(btn_size, btn_size));
+  }
+#if 0
+  img = Config::Get()->GetResImage("btn_scaling_down.png");
+  if (img) {
+    img->Rescale(btn_size, btn_size);
+    btn_scaling_down_ = new wxBitmapButton(this, CommandTool::TOOL_SCALING_DOWN,
+                                           wxBitmapBundle::FromImage(*img));
+    btn_scaling_down_->SetToolTip(
+        gpCommandToolTipMap[CommandTool::TOOL_SCALING_DOWN]);
+    btn_scaling_down_->SetSize(wxSize(btn_size, btn_size));
+  }
+  img = Config::Get()->GetResImage("btn_scaling_up.png");
+  if (img) {
+    img->Rescale(btn_size, btn_size);
+    btn_scaling_up_ = new wxBitmapButton(this, CommandTool::TOOL_SCALING_UP,
+                                         wxBitmapBundle::FromImage(*img));
+    btn_scaling_up_->SetToolTip(
+        gpCommandToolTipMap[CommandTool::TOOL_SCALING_UP]);
+    btn_scaling_up_->SetSize(wxSize(btn_size, btn_size));
+  }
+#endif
+  img = Config::Get()->GetResImage("btn_settings.png");
+  if (img) {
+    img->Rescale(btn_size, btn_size);
+    btn_settings_ = new wxBitmapButton(this, CommandTool::TOOL_SETTINGS,
+                                       wxBitmapBundle::FromImage(*img));
+    btn_settings_->SetSize(wxSize(btn_size, btn_size));
+    btn_settings_->SetToolTip(gpCommandToolTipMap[CommandTool::TOOL_SETTINGS]);
+  }
+  img = Config::Get()->GetResImage("btn_screenshot.png");
+  if (img) {
+    img->Rescale(btn_size, btn_size);
+    btn_screenshot_ = new wxBitmapButton(this, CommandTool::TOOL_SCREENSHOT,
+                                         wxBitmapBundle::FromImage(*img));
+    btn_screenshot_->SetSize(wxSize(btn_size, btn_size));
+    btn_screenshot_->SetToolTip(
+        gpCommandToolTipMap[CommandTool::TOOL_SCREENSHOT]);
+  }
+  // img = Config::Get()->GetResImage("btn_screenshot_edit.png");
+  // if (img) {
+  //   img->Rescale(btn_size, btn_size);
+  //   btn_screenshot_edit_ =
+  //       new wxBitmapButton(this, CommandTool::TOOL_SCREENSHOT_EIDT,
+  //                          wxBitmapBundle::FromImage(*img));
+  //   btn_screenshot_edit_->SetSize(wxSize(btn_size, btn_size));
+  //   btn_screenshot_edit_->SetToolTip(
+  //       gpCommandToolTipMap[CommandTool::TOOL_SCREENSHOT_EIDT]);
+  // }
 }

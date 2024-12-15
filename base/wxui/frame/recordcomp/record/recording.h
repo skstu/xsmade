@@ -23,10 +23,12 @@ public:
             const wxString &name = wxASCII_STR(wxFrameNameStr));
     virtual ~Toolbar();
 
+  private:
+    void InitButtons();
   protected:
     void OnToolEvent(wxCommandEvent &event) override;
     void OnFullScreenShown() override;
-    void LayoutEx() override;
+    void OnLayout() override;
     void OnToolbarSizeChanged(const wxRect &) override;
     void OnClose(wxCloseEvent &event) override final;
 

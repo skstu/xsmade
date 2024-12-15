@@ -19,13 +19,9 @@ enum CommandTool {
   TOOL_SCREENSHOT_TEXT = 10106,
   TOOL_SCREENSHOT_REVOCATION = 10107,
   TOOL_SCREENSHOT_MOSAIC = 10108,
+  TOOL_SCREENSHOT_ARROW = 10109,
 };
 
-// Who is capturing
-enum CapturingHostType {
-  CAPTUREING_SCREENSHOT = 0x00, //!@ 截屏捕获
-  CAPTUREING_RECORDING = 0x01,  //!@ 录屏捕获
-};
 class Config final : public IConfig {
 public:
   static Config *Get();

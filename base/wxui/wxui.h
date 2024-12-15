@@ -13,12 +13,7 @@ using namespace wxui;
 #include "recording_args.h"
 #include "frame/frame_base.h"
 #include "frame.h"
-#include "frame/background.h"
-#include "frame/toolbar.h"
-#include "frame/workspace.h"
-#include "frame/frame_component.h"
-#include "frame/recording.h"
-#include "frame/screenshot.h"
+#include "frame/guide.h"
 #include "app.h"
 
 class Wxui final : public IWxui {

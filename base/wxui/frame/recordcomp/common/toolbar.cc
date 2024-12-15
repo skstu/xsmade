@@ -19,7 +19,7 @@ void IToolbar::OnToolEvent(wxCommandEvent &evt) {
   evt.Skip();
 }
 void IToolbar::OnSize(wxSizeEvent &event) {
-  LayoutEx();
+  OnLayout();
   Refresh();
   event.Skip();
 }
@@ -35,8 +35,8 @@ void IToolbar::OnMouseMove(wxMouseEvent &event) {
     if (event.Dragging() && event.LeftIsDown()) {
       is_dragging_.store(true);
       wxPoint pos = ClientToScreen(pt); // pos为点击位置
-      Move(wxPoint(pos.x - m_delta.x, pos.y - m_delta.y));
-      is_fullscreen_shown_.store((pos.y - m_delta.y) <= 0);
+      Move(wxPoint(pos.x - delta_.x, pos.y - delta_.y));
+      is_fullscreen_shown_.store((pos.y - delta_.y) <= 0);
       OnFullScreenShown();
     }
   } while (0);
@@ -53,7 +53,7 @@ void IToolbar::OnMouseLeftDown(wxMouseEvent &event) {
     wxPoint origin = GetPosition();
     int dx = pt.x - origin.x;
     int dy = pt.y - origin.y;
-    m_delta = wxPoint(dx, dy);
+    delta_ = wxPoint(dx, dy);
     if (!is_fullscreen_shown_.load()) {
       prev_frame_tool_rect_ = GetRect();
       prev_frame_work_rect_ =

@@ -11,10 +11,14 @@ public:
            const wxString &name = wxASCII_STR(wxFrameNameStr));
   virtual ~IToolbar();
 
+public:
+  virtual void GetExpandToolbar(wxPanel **outPanel, wxBoxSizer **outSizer) {
+  }
+  virtual void RefreshToolbar() {}
 protected:
   virtual void OnFullScreenShown() {
   }
-  virtual void LayoutEx() {
+  virtual void OnLayout() {
   }
   virtual void OnToolEvent(wxCommandEvent &event);
   virtual void OnToolbarSizeChanged(const wxRect &) {
@@ -27,16 +31,18 @@ protected:
   std::atomic_bool recording_running_ = false;
   wxRect prev_frame_tool_rect_;
   wxRect prev_frame_work_rect_;
-  wxPoint m_delta;
-  void OnSize(wxSizeEvent &);
+  wxPoint delta_;
+
+protected:
+  virtual void OnSize(wxSizeEvent &);
   virtual void OnClose(wxCloseEvent &evt) {
     evt.Skip();
   }
-  void OnMove(wxMoveEvent &);
-  void OnMouseMove(wxMouseEvent &event);
-  void OnMouseLeftDown(wxMouseEvent &event);
-  void OnMouseLeftUp(wxMouseEvent &event);
-  void OnMouseLeftDClick(wxMouseEvent &event);
+  virtual void OnMove(wxMoveEvent &);
+  virtual void OnMouseMove(wxMouseEvent &event);
+  virtual void OnMouseLeftDown(wxMouseEvent &event);
+  virtual void OnMouseLeftUp(wxMouseEvent &event);
+  virtual void OnMouseLeftDClick(wxMouseEvent &event);
   DECLARE_EVENT_TABLE()
 };
 /// /*_ Memade®（新生™） _**/

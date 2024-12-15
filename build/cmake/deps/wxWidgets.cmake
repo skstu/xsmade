@@ -26,7 +26,7 @@ elseif(xsSYSTYPE_LINUX)
 endif()
 set(wxBUILD_SAMPLES
     "ALL"
-    # "OFF"
+    #"OFF"
     CACHE STRING "Choose ${WXWIDGETS_PROJECT_NAME} toolkit" FORCE)
 
 add_subdirectory(${xs3RDPARTY_DIR}/wxwidgets/ ${WXWIDGETS_PROJECT_NAME})
