@@ -23,8 +23,42 @@ void FrameRecording::UnInit() {
   frame_workspace_->Show(false);
   frame_background_->Show(false);
 }
+void FrameRecording::SetPos(const wxRect &region) {
+  do {
+    if (!frame_background_ || !frame_toolbar_ || !frame_workspace_)
+      break;
+    frame_background_->Show(false);
+    frame_workspace_->SetSize(region);
+
+    frame_toolbar_->SetSize(
+        region.GetLeft(),
+        region.GetTop() - frame_toolbar_->GetSize().GetHeight(),
+        region.GetWidth(), frame_toolbar_->GetSize().GetHeight());
+  } while (0);
+}
+wxRect FrameRecording::GetRegion() const {
+  wxRect result;
+  do {
+    if (!frame_toolbar_ || !frame_workspace_)
+      break;
+    wxRect rt_toolbar = frame_toolbar_->GetRect();
+    wxRect rt_workspace = frame_workspace_->GetRect();
+
+    result.SetLeft(rt_toolbar.GetLeft());
+    result.SetTop(rt_toolbar.GetTop());
+    result.SetRight(rt_toolbar.GetRight());
+    result.SetBottom(rt_workspace.GetBottom());
+  } while (0);
+  return result;
+}
 void FrameRecording::ShowBackground(const bool &flag) {
-  frame_background_->Show(flag);
+  do {
+    if (!frame_background_ || !frame_toolbar_ || !frame_workspace_)
+      break;
+    frame_toolbar_->Show(!flag);
+    frame_workspace_->Show(!flag);
+    frame_background_->Show(flag);
+  } while (0);
 }
 void FrameRecording::Show(const bool &flag) {
   if (!frame_toolbar_ || !frame_workspace_ || !frame_background_)

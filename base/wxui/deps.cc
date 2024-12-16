@@ -1,18 +1,16 @@
 #include "wxui.h"
 
-bool wxComm::LoadImg(const std::string &imgPath, wxImage **outputImg) {
+bool wxComm::LoadImgFormStream(const std::string &imageStream,
+                               wxImage **outputImg) {
   bool result = false;
   *outputImg = nullptr;
   do {
-    if (!stl::File::Exists(imgPath))
-      break;
-    std::string buffer = stl::File::ReadFile(imgPath);
-    if (buffer.empty())
+    if (imageStream.empty())
       break;
     wxMemoryInputStream *mstream =
-        new wxMemoryInputStream(buffer.data(), buffer.size());
+        new wxMemoryInputStream(imageStream.data(), imageStream.size());
     xs_image_type_t imgType;
-    xs_sys_get_image_type(buffer.data(), buffer.size(), &imgType);
+    xs_sys_get_image_type(imageStream.data(), imageStream.size(), &imgType);
     switch (imgType) {
     case xs_image_type_t::_PNG: {
       *outputImg = new wxImage(*mstream, wxBitmapType::wxBITMAP_TYPE_PNG);
@@ -57,6 +55,21 @@ bool wxComm::LoadImg(const std::string &imgPath, wxImage **outputImg) {
     default:
       break;
     }
+  } while (0);
+  return result;
+}
+bool wxComm::LoadImg(const std::string &imgPath, wxImage **outputImg) {
+  bool result = false;
+  *outputImg = nullptr;
+  do {
+    if (!stl::File::Exists(imgPath))
+      break;
+    std::string buffer = stl::File::ReadFile(imgPath);
+    if (buffer.empty())
+      break;
+    if (!wxComm::LoadImgFormStream(buffer, outputImg))
+      break;
+    result = true;
   } while (0);
   return result;
 }

@@ -24,8 +24,15 @@ private:
 private:
   IFrame *frame_ = nullptr;
   void OnThreadEvtFrameDestroy(wxThreadEvent &event);
-  void OnThreadEvtCaptureFinished(wxThreadEvent &event);
+  void OnThreadEvtScreenShotFinished(wxThreadEvent &event);
+  void OnThreadEvtScreenShotClose(wxThreadEvent &event);
+  void OnThreadEvtRecordingBoxSelection(wxThreadEvent &event);
+  void OnThreadEvtRecordingBoxSelectionFinished(wxThreadEvent &event);
 };
+extern const int wxAppThreadEvt_ScreenShotFinished;
+extern const int wxAppThreadEvt_ScreenShotClose;
+extern const int wxAppThreadEvt_RecordingBoxSelection;
+extern const int wxAppThreadEvt_RecordingBoxSelectionFinished;
 extern const int wxAppThreadEvt_FrameDestroy;
 extern const int wxAppThreadEvt_BroadcastEvent;
 /// /*_ Memade®（新生™） _**/

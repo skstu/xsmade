@@ -7,6 +7,12 @@
 #include "recordcomp/common/frame_component.h"
 #include "recordcomp/record/recording.h"
 
+#include "recordcomp/record/tools/action_tool.h"
+#include "recordcomp/record/tools/action_recording.h"
+#include "recordcomp/record/tools/action_box_selection.h"
+#include "recordcomp/record/tools/action_screenshot.h"
+#include "recordcomp/record/tools/action_system_close.h"
+
 #include "recordcomp/screenshot/tools/draw_tool.h"
 #include "recordcomp/screenshot/tools/draw_arrow.h"
 #include "recordcomp/screenshot/tools/draw_brush.h"

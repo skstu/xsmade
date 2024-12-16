@@ -258,6 +258,7 @@ void FrameScreenShot::Toolbar::OnLayout() {
 #endif
 }
 void FrameScreenShot::Toolbar::OnToolEvent(wxCommandEvent &evt) {
+#if 0
   auto app = wxDynamicCast(wxApp::GetInstance(), App);
   switch (evt.GetId()) {
   case CommandTool::TOOL_SCREENSHOT_EIDT: {
@@ -329,6 +330,7 @@ void FrameScreenShot::Toolbar::OnToolEvent(wxCommandEvent &evt) {
   default:
     break;
   }
+#endif
   evt.Skip();
 }
 void FrameScreenShot::Toolbar::OnToolbarSizeChanged(const wxRect &) {

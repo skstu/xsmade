@@ -51,6 +51,7 @@ void IBackground::OnMouseLeftUp(wxMouseEvent &event) {
     Refresh();
     Show(false);
     do {
+#if 0
       auto app = wxDynamicCast(wxApp::GetInstance(), App);
       auto comp_screenshot =
           app->FrameComponentGet(FrameComponentType::SCREENSHOT);
@@ -60,6 +61,18 @@ void IBackground::OnMouseLeftUp(wxMouseEvent &event) {
 
       comp_screenshot->SetPos(rect);
       comp_screenshot->Show(true);
+#endif
+      do {
+        wxCommandEvent sender;
+        sender.SetClientData(new wxRect(startPoint_.x, startPoint_.y,
+                                        endPoint_.x - startPoint_.x,
+                                        endPoint_.y - startPoint_.y));
+        auto tevt = new wxThreadEvent(
+            wxEVT_THREAD, wxAppThreadEvt_RecordingBoxSelectionFinished);
+        tevt->SetEventObject(&sender);
+        wxQueueEvent(wxApp::GetInstance(), tevt);
+      } while (0);
+
       startPoint_.x = 0;
       startPoint_.y = 0;
       endPoint_.x = 0;

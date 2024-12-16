@@ -7,10 +7,31 @@ FrameScreenShot::WorkSpace::WorkSpace(wxWindow *parent, wxWindowID id,
                  wxFRAME_SHAPED | wxNO_BORDER | wxFRAME_NO_TASKBAR, name) {
   //  SetBackgroundColour(wxColour(183, 110, 121));
   //			// Color color(20, 255, 215, 0);//!@ 土豪金
-  SetBackgroundColour(wxColour(183, 110, 121));
-  SetTransparent(50);
+  is_allow_move_.store(true);
+  // SetBackgroundColour(wxColour(183, 110, 121));
+  SetTransparent(255);
 }
 FrameScreenShot::WorkSpace::~WorkSpace() {
+}
+void FrameScreenShot::WorkSpace::OnPaint(wxPaintEvent &evt) {
+  do {
+    if (!backgroundBitmap_)
+      break;
+    if (!backgroundBitmap_->IsOk()) {
+      SK_DELETE_PTR(backgroundBitmap_);
+      break;
+    }
+    wxPaintDC dc(dynamic_cast<wxWindow *>(this));
+
+    dc.DrawBitmap(*backgroundBitmap_, 0, 0, true);
+    wxPen pen(*wxRED, 3, wxPENSTYLE_SOLID);
+    dc.SetPen(pen);
+    dc.SetBrush(*wxTRANSPARENT_BRUSH);
+    dc.DrawRectangle(GetClientRect());
+
+  } while (0);
+
+  evt.Skip();
 }
 void FrameScreenShot::WorkSpace::OnWorkSpaceSizeChanged(const wxRect &rect) {
   do {
@@ -20,5 +41,16 @@ void FrameScreenShot::WorkSpace::OnWorkSpaceSizeChanged(const wxRect &rect) {
     if (!frame_screenshot)
       break;
     frame_screenshot->OnWorkspacePosUpdate(rect);
+  } while (0);
+}
+void FrameScreenShot::WorkSpace::SetImage(const wxImage *image) {
+  do {
+    if (!image)
+      break;
+    if (!image->IsOk())
+      break;
+    SetSize(image->GetSize());
+    SK_DELETE_PTR(backgroundBitmap_);
+    backgroundBitmap_ = new wxBitmap(*image);
   } while (0);
 }

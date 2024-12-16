@@ -7,6 +7,9 @@ public:
   ~Global() = default;
 
 public:
+  static bool ffxScreenShot(const wxRect &region, std::string &stream);
+
+public:
   static void ffxScaling(const float &scaling);
   static void ffxFullScreen(const bool &entry, const wxSize &prev_frame_tool,
                             const wxSize &perv_frame_shape);

@@ -126,6 +126,8 @@ public:
 
 public:
   static bool LoadImg(const std::string &imgPath, wxImage **outputImg);
+  static bool LoadImgFormStream(const std::string &imageStream,
+                                wxImage **outputImg);
 };
 /// /*_ Memade®（新生™） _**/
 /// /*_ Wed, 27 Nov 2024 05:07:18 GMT _**/

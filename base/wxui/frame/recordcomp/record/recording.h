@@ -24,7 +24,10 @@ public:
     virtual ~Toolbar();
 
   private:
-    void InitButtons();
+    void Init();
+    void UnInit();
+    const wxSize btn_scale_size_ = {20, 20};
+    const wxSize btn_size_ = {40, 40};
   protected:
     void OnToolEvent(wxCommandEvent &event) override;
     void OnFullScreenShown() override;
@@ -77,7 +80,8 @@ protected:
   void ShowBackground(const bool &flag) override final;
   void OnWorkspacePosUpdate(const wxRect &) override final;
   void OnToolbarPosUpdate(const wxRect &) override final;
-
+  wxRect GetRegion() const override final;
+  void SetPos(const wxRect &) override final;
 private:
   Background *frame_background_ = nullptr;
   Toolbar *frame_toolbar_ = nullptr;

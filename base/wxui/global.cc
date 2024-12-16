@@ -1,4 +1,20 @@
 #include "wxui.h"
+bool Global::ffxScreenShot(const wxRect &region, std::string &stream) {
+  bool result = false;
+  stream.clear();
+  do {
+    xs_image_stream_t *imgStream = nullptr;
+    xs_sys_capturescreen(xs_position_t{region.GetLeft(), region.GetTop(),
+                                       region.GetWidth(), region.GetHeight()},
+                         xs_image_stream_type_t::PNG, &imgStream);
+    if (!imgStream)
+      break;
+    stream.append(imgStream->buffer, imgStream->len);
+    xs_sys_image_stream_destroy(&imgStream);
+    result = true;
+  } while (0);
+  return result;
+}
 void Global::ffxHideScreenShotToolbar() {
 #if 0
   do {

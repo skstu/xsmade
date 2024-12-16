@@ -15,6 +15,7 @@ protected:
   void OnClicked(wxCommandEvent &) override final;
 };
 } // namespace screenshot
+
 /// /*_ Memade®（新生™） _**/
 /// /*_ Sat, 14 Dec 2024 23:53:12 GMT _**/
 /// /*_____ https://www.skstu.com/ _____ **/

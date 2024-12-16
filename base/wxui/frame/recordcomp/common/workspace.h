@@ -12,17 +12,20 @@ public:
   virtual ~IWorkSpace();
 
 protected:
-  wxRect mouse_left_down_rect_;
-  wxPoint mouse_left_down_point_;
-  std::atomic_bool is_dragging_ = false;
   //!@ 拖动开关
-  bool is_allow_move_ = true;
+  std::atomic_bool is_allow_move_ = false;
   //!@ 拉伸开关
-  bool is_allow_stretch_ = true;
+  std::atomic_bool is_allow_stretch_ = false;
   //!@ 边框宽度
   int border_width_ = 5;
   int area_width_min_ = 200;
   int area_height_min_ = 200;
+
+private:
+  wxRect mouse_left_down_rect_;
+  wxPoint mouse_left_down_point_;
+  std::atomic_bool is_dragging_ = false;
+
   enum class ResizeMode {
     None,
     Left,
@@ -44,7 +47,7 @@ protected:
 protected:
   void OnSize(wxSizeEvent &event);
   void OnClose(wxCloseEvent &event);
-  void OnPaint(wxPaintEvent &event);
+  virtual void OnPaint(wxPaintEvent &event);
   void OnMove(wxMoveEvent &);
   void OnMouseMove(wxMouseEvent &event);
   void OnMouseLeftDown(wxMouseEvent &event);

@@ -9,12 +9,11 @@ wxBEGIN_EVENT_TABLE(IWorkSpace, wxFrame) EVT_SIZE(IWorkSpace::OnSize)
 IWorkSpace::IWorkSpace(wxWindow *parent, wxWindowID id, const wxString &title,
                        const wxPoint &pos, const wxSize &size, long style,
                        const wxString &name)
-    : wxFrame(parent, id, title, pos, size,
-              wxFRAME_SHAPED | wxNO_BORDER | wxFRAME_NO_TASKBAR, name) {
+    : wxFrame(parent, id, title, pos, size, style, name) {
   //  SetBackgroundColour(wxColour(183, 110, 121));
   //			// Color color(20, 255, 215, 0);//!@ 土豪金
-  SetBackgroundColour(wxColour(183, 110, 121));
-  SetTransparent(50);
+  // SetBackgroundColour(wxColour(183, 110, 121));
+  // SetTransparent(50);
 }
 IWorkSpace::~IWorkSpace() {
 }
@@ -49,9 +48,10 @@ void IWorkSpace::OnMouseMove(wxMouseEvent &event) {
   wxGetMousePosition(&desk_x, &desk_y);
   if (event.Dragging() && event.LeftIsDown()) {
     is_dragging_.store(true);
-
     switch (resize_mode_.load()) {
     case ResizeMode::Left: {
+      if (!is_allow_stretch_.load())
+        break;
       long offset_x = mouse_left_down_rect_.GetLeft() - desk_x;
       wxRect current = mouse_left_down_rect_;
       current.SetWidth(mouse_left_down_rect_.GetWidth() + offset_x);
@@ -61,6 +61,8 @@ void IWorkSpace::OnMouseMove(wxMouseEvent &event) {
       SetSize(current);
     } break;
     case ResizeMode::Right: {
+      if (!is_allow_stretch_.load())
+        break;
       long offset_x = mouse_left_down_rect_.GetLeft() - desk_x;
       wxRect current = mouse_left_down_rect_;
       current.SetWidth(mouse_left_down_rect_.GetWidth() + offset_x);
@@ -70,6 +72,8 @@ void IWorkSpace::OnMouseMove(wxMouseEvent &event) {
       SetSize(current);
     } break;
     case ResizeMode::Bottom: {
+      if (!is_allow_stretch_.load())
+        break;
       long offset_y = mouse_left_down_rect_.GetTop() - desk_y;
       wxRect current = mouse_left_down_rect_;
       current.SetHeight(mouse_left_down_rect_.GetHeight() + offset_y);
@@ -79,6 +83,8 @@ void IWorkSpace::OnMouseMove(wxMouseEvent &event) {
       SetSize(current);
     } break;
     case ResizeMode::LeftBottom: {
+      if (!is_allow_stretch_.load())
+        break;
       long offset_x = mouse_left_down_rect_.GetLeft() - desk_x;
       long offset_y = mouse_left_down_rect_.GetTop() - desk_y;
       wxRect current = mouse_left_down_rect_;
@@ -93,6 +99,8 @@ void IWorkSpace::OnMouseMove(wxMouseEvent &event) {
       SetSize(current);
     } break;
     case ResizeMode::RightBottom: {
+      if (!is_allow_stretch_.load())
+        break;
       long offset_x = mouse_left_down_rect_.GetLeft() - desk_x;
       long offset_y = mouse_left_down_rect_.GetTop() - desk_y;
       wxRect current = mouse_left_down_rect_;
@@ -107,7 +115,8 @@ void IWorkSpace::OnMouseMove(wxMouseEvent &event) {
       SetSize(current);
     } break;
     case ResizeMode::None: {
-      //!@ 是移动
+      if (!is_allow_move_.load())
+        break;
       wxPoint pos = ClientToScreen(pt); // pos为点击位置
       Move(wxPoint(pos.x - mouse_left_down_point_.x,
                    pos.y - mouse_left_down_point_.y));
@@ -120,6 +129,8 @@ void IWorkSpace::OnMouseMove(wxMouseEvent &event) {
   }
 
   do { //!@ 拖动(设置光标图标)
+    if (!is_allow_move_.load())
+      break;
     if (is_dragging_.load())
       break;
     wxPoint pos = event.GetPosition();
@@ -156,7 +167,9 @@ void IWorkSpace::OnMouseMove(wxMouseEvent &event) {
   } while (0);
 }
 void IWorkSpace::OnMouseLeftDown(wxMouseEvent &event) {
-  CaptureMouse();
+  if (!HasCapture()) {
+    CaptureMouse();
+  }
   wxPoint pt = ClientToScreen(event.GetPosition());
   wxPoint origin = GetPosition();
   int dx = pt.x - origin.x;

@@ -28,8 +28,10 @@ public:
     void UnInit();
 
   public:
-    void GetExpandToolbar(wxPanel** outPanel,wxBoxSizer **outSizer) override final;
-void RefreshToolbar() override final;
+    void GetExpandToolbar(wxPanel **outPanel,
+                          wxBoxSizer **outSizer) override final;
+    void RefreshToolbar() override final;
+
   protected:
     void OnLayout() override final;
     void OnToolEvent(wxCommandEvent &event) override final;
@@ -77,8 +79,15 @@ void RefreshToolbar() override final;
               const wxString &name = wxASCII_STR(wxFrameNameStr));
     virtual ~WorkSpace();
 
+  public:
+    void SetImage(const wxImage *);
+
   protected:
+    void OnPaint(wxPaintEvent&) override final;
     void OnWorkSpaceSizeChanged(const wxRect &) override final;
+
+  private:
+    wxBitmap* backgroundBitmap_ = nullptr;
   };
 
 public:
@@ -101,6 +110,8 @@ protected:
   }
   void SetPos(const wxRect &) override final;
   void ShowBackground(const bool &flag) override final;
+  wxRect GetRegion() const override final;
+  void SetWorkSpace(const std::string &imageStream) override final;
 
 private:
   Background *frame_background_ = nullptr;

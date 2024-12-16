@@ -30,6 +30,9 @@ public:
   virtual void OnFullScreenShown() = 0;
   virtual void OnWorkspacePosUpdate(const wxRect &) = 0;
   virtual void OnToolbarPosUpdate(const wxRect &) = 0;
+  virtual wxRect GetRegion() const = 0;
+  virtual void SetWorkSpace(const std::string &imageStream) {
+  }
 
 protected:
   const FrameComponentType type_;

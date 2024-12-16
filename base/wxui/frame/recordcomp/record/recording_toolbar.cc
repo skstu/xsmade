@@ -3,19 +3,77 @@ FrameRecording::Toolbar::Toolbar(wxWindow *parent, wxWindowID id,
                                  const wxString &title, const wxPoint &pos,
                                  const wxSize &size, long style,
                                  const wxString &name)
-    : IToolbar(parent, id, title, wxPoint(0, 0), wxSize(800, 40),
+    : IToolbar(parent, id, title, wxDefaultPosition, wxDefaultSize,
                /*(wxDEFAULT_FRAME_STYLE & ~wxCLOSE_BOX & ~wxCAPTION)*/
                wxNO_BORDER | wxFRAME_NO_TASKBAR /*| wxRESIZE_BORDER*/, name) {
-
   SetBackgroundColour(wxColour(252, 252, 252));
+  Init();
 
-  InitButtons();
-
-  OnLayout();
-  Bind(wxEVT_BUTTON, &FrameRecording::Toolbar::OnToolEvent, this);
+  // OnLayout();
+  // Bind(wxEVT_BUTTON, &FrameRecording::Toolbar::OnToolEvent, this);
 }
 FrameRecording::Toolbar::~Toolbar() {
-  Unbind(wxEVT_BUTTON, &FrameRecording::Toolbar::OnToolEvent, this);
+  // Unbind(wxEVT_BUTTON, &FrameRecording::Toolbar::OnToolEvent, this);
+  UnInit();
+}
+void FrameRecording::Toolbar::Init() {
+  // wxPanel *panel = new wxPanel(this);
+  wxBoxSizer *sizer = new wxBoxSizer(wxHORIZONTAL);
+
+  sizer->AddStretchSpacer();
+
+  do {
+    auto img = Config::Get()->GetResImage("btn_recording_screenshot.png");
+    if (!img)
+      break;
+    img->Rescale(btn_scale_size_.GetWidth(), btn_scale_size_.GetHeight());
+    auto btn = new record::ActionScreenshot(this, CommandTool::TOOL_SCREENSHOT,
+                                            wxBitmapBundle::FromImage(*img),
+                                            wxDefaultPosition, btn_size_);
+    sizer->Add(btn, 0, wxALL, 0);
+  } while (0);
+
+  do {
+    auto img_start = Config::Get()->GetResImage("btn_recording_start.png");
+    auto img_stop = Config::Get()->GetResImage("btn_recording_stop.png");
+    if (!img_start || !img_stop)
+      break;
+    img_start->Rescale(btn_scale_size_.GetWidth(), btn_scale_size_.GetHeight());
+    img_stop->Rescale(btn_scale_size_.GetWidth(), btn_scale_size_.GetHeight());
+    auto btn = new record::ActionRecording(
+        this, CommandTool::TOOL_RECORDING_START,
+        wxBitmapBundle::FromImage(*img_start), wxDefaultPosition, btn_size_);
+    btn->SetBitmapSelected(wxBitmap(*img_stop));
+    sizer->Add(btn, 0, wxALL, 0);
+  } while (0);
+
+  do {
+    auto img = Config::Get()->GetResImage("btn_recording_box_selection.png");
+    if (!img)
+      break;
+    img->Rescale(btn_scale_size_.GetWidth(), btn_scale_size_.GetHeight());
+    auto btn = new record::ActionBoxSelection(this, CommandTool::TOOL_WINDOW,
+                                              wxBitmapBundle::FromImage(*img),
+                                              wxDefaultPosition, btn_size_);
+    sizer->Add(btn, 0, wxALL, 0);
+  } while (0);
+
+  do {
+    auto img = Config::Get()->GetResImage("btn_recording_close.png");
+    if (!img)
+      break;
+    img->Rescale(btn_scale_size_.GetWidth(), btn_scale_size_.GetHeight());
+    auto btn = new record::ActionSystemClose(
+        this, CommandTool::TOOL_SYSTEM_CLOSE, wxBitmapBundle::FromImage(*img),
+        wxDefaultPosition, btn_size_);
+    sizer->Add(btn, 0, wxALL, 0);
+  } while (0);
+
+  SetSizer(sizer);
+  sizer->SetSizeHints(this);
+  SetSize(sizer->GetSize());
+}
+void FrameRecording::Toolbar::UnInit() {
 }
 void FrameRecording::Toolbar::OnFullScreenShown() {
   do {
@@ -107,6 +165,7 @@ void FrameRecording::Toolbar::OnToolbarSizeChanged(const wxRect &rect) {
   } while (0);
 }
 void FrameRecording::Toolbar::OnToolEvent(wxCommandEvent &evt) {
+#if 0
   switch (evt.GetId()) {
   case CommandTool::TOOL_SCALING_UP: {
     Global::ffxScaling(1.2f);
@@ -175,6 +234,7 @@ void FrameRecording::Toolbar::OnToolEvent(wxCommandEvent &evt) {
   default:
     break;
   }
+#endif
   evt.Skip();
 }
 void FrameRecording::Toolbar::OnClose(wxCloseEvent &event) {
@@ -193,6 +253,7 @@ void FrameRecording::Toolbar::OnClose(wxCloseEvent &event) {
     event.Skip();
   }
 }
+#if 0
 void FrameRecording::Toolbar::InitButtons() {
   wxImage *img = Config::Get()->GetResImage("btn_close.png");
   if (img) {
@@ -282,3 +343,4 @@ void FrameRecording::Toolbar::InitButtons() {
   //       gpCommandToolTipMap[CommandTool::TOOL_SCREENSHOT_EIDT]);
   // }
 }
+#endif
