@@ -7,6 +7,7 @@
 extern "C" {
 #endif
 
+
 XS_EXTERN char *xs_ffx_malloc(size_t len);
 XS_EXTERN void xs_ffx_free(void **p);
 XS_EXTERN int test_x264_encoder(const char *input_file,
