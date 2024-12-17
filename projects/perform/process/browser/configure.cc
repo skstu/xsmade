@@ -56,7 +56,8 @@ void Configure::operator<<(const std::string &input) {
     rule_ << input;
     proxy_ << input;
     develop_ << input;
-    source_ = Configure::toString(docInput);
+    cookies_ << input;
+    source_ = Json::toString(docInput);
   } while (0);
 }
 void Configure::operator>>(std::string &output) const {
@@ -179,6 +180,63 @@ chrome.windows.onCreated.addListener(async () => {
       urls.pop_back();
       result = temp.replace(temp.find("__URLS__"), strlen("__URLS__"), urls);
     }
+  } while (0);
+  return result;
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////
+Configure::Cookies::Cookies() {
+}
+Configure::Cookies::~Cookies() {
+}
+std::string Configure::Cookies::GetCookiesRequest() const {
+  std::string result;
+  do {
+    if (!doc.IsObject())
+      break;
+    if (doc.ObjectEmpty())
+      break;
+    result = Json::toString(doc);
+  } while (0);
+  return result;
+}
+bool Configure::Cookies::operator<<(const std::string &input) {
+  bool result = false;
+  do {
+    /*
+"cookies": {
+    "sequence":1,
+    "action": "req",
+    "type":"getAllCookies",
+    "cookies": [
+
+    ]
+  }
+*/
+    if (input.empty())
+      break;
+    rapidjson::Document docInput;
+    if (docInput.Parse(input.data(), input.size()).HasParseError())
+      break;
+    if (!docInput.IsObject() || docInput.ObjectEmpty())
+      break;
+    if (!docInput.HasMember("cookies") || !docInput["cookies"].IsObject() ||
+        docInput["cookies"].ObjectEmpty())
+      break;
+    std::string src = Json::toString(docInput["cookies"]);
+    if (doc.Parse(src.data(), src.size()).HasParseError())
+      break;
+
+    if (doc.HasMember("sequence") && doc["sequence"].IsUint64()) {
+      sequence = doc["sequence"].GetUint64();
+    }
+    if (doc.HasMember("action") && doc["action"].IsString()) {
+      action = doc["action"].GetString();
+    }
+    if (doc.HasMember("type") && doc["type"].IsString()) {
+      type = doc["type"].GetString();
+    }
+    result = true;
   } while (0);
   return result;
 }

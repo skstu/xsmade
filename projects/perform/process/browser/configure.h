@@ -4,98 +4,6 @@
 
 class Configure {
 public:
-  static std::string PathParent(const std::string &input) {
-    std::string result;
-    do {
-      std::filesystem::path fullPath(input);
-      std::filesystem::path parentPath = fullPath.parent_path();
-      result = parentPath.string();
-    } while (0);
-    return result;
-  }
-  static std::string PathnameToPath(const std::string &input_pathname) {
-    std::string result;
-    do {
-      if (!std::filesystem::is_regular_file(
-              std::filesystem::path(input_pathname))) {
-        result = input_pathname;
-        break;
-      }
-      std::filesystem::path fullPath(input_pathname);
-      std::filesystem::path parentPath = fullPath.parent_path();
-      result = parentPath.string();
-    } while (0);
-    return result;
-  }
-  static std::string ReadFile(const std::string &file_,
-                              const int &mode_ = std::ios::in |
-                                                 std::ios::binary) {
-    std::string result;
-    std::fstream of(file_, static_cast<std::ios_base::openmode>(mode_));
-    do {
-      if (!of.is_open()) {
-        break;
-      }
-      of.seekg(0, of.end);
-      size_t size = static_cast<size_t>(of.tellg());
-      if (size <= 0) {
-        break;
-      }
-      result.resize(size, 0x00);
-      of.seekg(0, of.beg);
-      of.read(&result[0], (long)size);
-    } while (0);
-    if (of.is_open()) {
-      of.close();
-    }
-    return result;
-  }
-  static bool CreateDirectory(const std::string &path) {
-    bool result = false;
-    do {
-      if (path.empty()) {
-        break;
-      }
-      std::filesystem::path _path = path;
-      if (std::filesystem::exists(_path)) {
-        result = true;
-        break;
-      }
-      result = std::filesystem::create_directories(_path.lexically_normal());
-    } while (0);
-    return result;
-  }
-  static bool WriteFile(const std::string &file_, const std::string &data_,
-                        const int &mode_ = static_cast<int>(std::ios::binary) |
-                                           static_cast<int>(std::ios::out) |
-                                           static_cast<int>(std::ios::trunc)) {
-    bool result = false;
-    do {
-      if (data_.empty()) {
-        break;
-      }
-      CreateDirectory(PathParent(file_));
-      std::fstream of(file_, static_cast<std::ios_base::openmode>(mode_));
-      if (!of.is_open()) {
-        break;
-      }
-      of << data_;
-      of.close();
-      result = true;
-    } while (0);
-    return result;
-  }
-  static std::string toString(const rapidjson::Value &valObj) {
-    std::string result;
-    rapidjson::StringBuffer jbuffer;
-    rapidjson::Writer<rapidjson::StringBuffer> jwriter(jbuffer);
-    if (valObj.Accept(jwriter)) {
-      result = std::string(jbuffer.GetString(), jbuffer.GetLength());
-    }
-    return result;
-  }
-
-public:
   class Fp { //!@ 指纹配置
   public:
     Fp();
@@ -793,7 +701,7 @@ public:
           enable_pwdsavetip = wokerObj["enable_pwdsavetip"].GetBool();
         }
         if (wokerObj.HasMember("cache") && wokerObj["cache"].IsObject()) {
-          cache = Configure::toString(wokerObj["cache"]);
+          cache = Json::toString(wokerObj["cache"]);
         }
         result = true;
       } while (0);
@@ -1016,6 +924,23 @@ public:
     }
 #endif
   };
+  class Cookies final {
+  public:
+    Cookies();
+    ~Cookies();
+    bool operator<<(const std::string &input);
+
+    std::string GetCookiesRequest() const;
+  public:
+    rapidjson::Document doc;
+    bool enable = true;
+    unsigned long long sequence = 0;
+    std::string action;
+    std::string type;
+    inline bool Enable() const {
+      return enable;
+    }
+  };
 
 public:
   bool empty() const;
@@ -1049,6 +974,7 @@ public:
   Worker worker_;
   Develop develop_;
   Account account_;
+  Cookies cookies_;
   unsigned long action_ = 0; //!@ 扩展命令码
   Fp fp_;                    //!@ 指纹配置
   std::string extension_id_; //!@ 扩展ID
@@ -1499,7 +1425,6 @@ inline Configure::Rule::Rule() {
 }
 inline Configure::Rule::~Rule() {
 }
-
 inline Configure::Fp::f::f() {
 }
 inline Configure::Fp::f::~f() {

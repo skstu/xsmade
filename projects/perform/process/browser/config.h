@@ -52,6 +52,8 @@ public:
   std::string GetXSCacheExtsDir(const std::string &brwKey) const;
   std::string GetXSCacheExtsDir(const std::string &brwKey,
                                 const std::string &extId) const;
+  std::string GetXSCacheRouteReqsDir(const std::string &brwKey) const;
+  std::string GetXSCacheRouteRepsDir(const std::string &brwKey) const;
   std::string GetXSCacheCfgsDir(const std::string &brwKey) const;
   std::string GetXSCacheStatisDir(const std::string &brwKey) const;
   std::string GetXSCacheConfigureFName(const std::string &brwKey) const;

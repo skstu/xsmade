@@ -138,6 +138,45 @@ void IBrowserInterfaceServer::Stop() {
   } while (0);
 }
 void IBrowserInterfaceServer::Process() {
+  do { // get browser request response.
+    std::map<std::string, std::string> brwUserdataDirs, brwUserdataFiles,
+        repDirs, repFiles;
+    if (!stl::Directory::ExistsU8(config_->PathGet().chromium_user_data_dir))
+      break;
+    stl::Directory::EnumU8(config_->PathGet().chromium_user_data_dir,
+                           brwUserdataDirs, brwUserdataFiles, false);
+    for (const auto &userdatadir : brwUserdataDirs) {
+      const auto key = userdatadir.first;
+      repDirs.clear();
+      repFiles.clear();
+      stl::Directory::EnumU8(config_->GetXSCacheRouteRepsDir(key), repDirs,
+                             repFiles, false);
+
+      for (const auto &f : repFiles) {
+        do {
+          std::string fBuffer = stl::File::ReadFile(f.second);
+          if (fBuffer.empty())
+            break;
+          rapidjson::Document doc;
+          if (doc.Parse(fBuffer.data(), fBuffer.size()).HasParseError())
+            break;
+          if (!doc.IsObject())
+            break;
+          if (doc.HasMember("key"))
+            doc.RemoveMember("key");
+          doc.AddMember(
+              rapidjson::Value().SetString("key", doc.GetAllocator()).Move(),
+              rapidjson::Value()
+                  .SetString(key.c_str(), doc.GetAllocator())
+                  .Move(),
+              doc.GetAllocator());
+          client_notifys_.push(std::make_tuple<std::string, std::string>(
+              "/browser/cookies", Json::toString(doc)));
+        } while (0);
+        stl::File::Remove(f.second);
+      }
+    }
+  } while (0);
   do { //!@ plugin - ffx
     if (gbWxuiStatus)
       break;
@@ -149,7 +188,8 @@ void IBrowserInterfaceServer::Process() {
   do {
     brws_.iterate_clear([&](const auto &key, const auto &brw, bool &itclear) {
       if (0 == xs_sys_process_has_exit(brw->GetPid())) {
-        client_notifys_.push(BrowserConfig::CreateBrwCloseNotifyPak(key));
+        client_notifys_.push(std::make_tuple<std::string, std::string>(
+            "/close", BrowserConfig::CreateBrwCloseNotifyPak(key)));
         brw->Release();
         itclear = true;
       }
@@ -163,10 +203,12 @@ void IBrowserInterfaceServer::Process() {
       break;
     auto msgs = client_notifys_.pops();
     for (const auto &msg : msgs) {
+      std::string path = std::get<0>(msg);
+      std::string content = std::get<1>(msg);
+
       httplib::Client cli("127.0.0.1", notify_port);
       httplib::Headers heads = {{"content-type", "application/json"}};
-      auto view = msg.c_str();
-      cli.Post("/close", heads, msg.data(), msg.size(), "application/json");
+      cli.Post(path, heads, content.data(), content.size(), "application/json");
     }
   } while (0);
 }
@@ -250,7 +292,8 @@ void IBrowserInterfaceServer::OnRequest(const RequestType &reqType,
     if (found) {
       code = 0;
       message = "ok";
-      client_notifys_.push(BrowserConfig::CreateBrwCloseNotifyPak(key));
+      client_notifys_.push(std::make_tuple<std::string, std::string>(
+          "/close", BrowserConfig::CreateBrwCloseNotifyPak(key)));
     } else {
       code = -1003;
       message = "not found";
@@ -274,7 +317,16 @@ void IBrowserInterfaceServer::OnRequest(const RequestType &reqType,
     code = 0;
     message = "ok";
   } break;
+  case RequestType::BROWSER_COOKIES_GET: {
 
+    auto sss = 0;
+  } break;
+  case RequestType::BROWSER_COOKIES_SET: {
+    auto sss = 0;
+  } break;
+  case RequestType::BROWSER_COOKIES_DEL: {
+    auto sss = 0;
+  } break;
   case RequestType::FFX_START_SCREEN_RECORDING: {
 #if 0
     Components::Component *pComp = Components::Get()->GetComp(u"ffx");
@@ -359,13 +411,14 @@ void IBrowserInterfaceServer::OnRequest(const RequestType &reqType,
           [](void *route) { gbWxuiStatus.store(false); }, this);
       gpsWxui->ConfigGet()->RegisterRecordingStartCb(
           [](const wxui::IRecordingArgs *args, void *route) {
-        IBrowserInterfaceServer *__this =
-            reinterpret_cast<IBrowserInterfaceServer *>(route);
-        std::string size = fmt::format("{}x{}", args->GetCX(), args->GetCY());
+            IBrowserInterfaceServer *__this =
+                reinterpret_cast<IBrowserInterfaceServer *>(route);
+            std::string size =
+                fmt::format("{}x{}", args->GetCX(), args->GetCY());
 #if defined(DEBUG)
-        std::string outfile = fmt::format(
-            R"(C:\Users\k34ub\AppData\Roaming\MarsProjects\userdata\{}.mp4)",
-            stl::Time::TimeStamp<std::chrono::microseconds>());
+            std::string outfile = fmt::format(
+                R"(C:\Users\k34ub\AppData\Roaming\MarsProjects\userdata\{}.mp4)",
+                stl::Time::TimeStamp<std::chrono::microseconds>());
 #else
             std::string outfile = fmt::format(
                 "{}/{}.mp4", __this->config_->PathGet().chromium_user_data_dir,
@@ -480,7 +533,27 @@ void IBrowserInterfaceServer::Listen() {
                   res.set_content(repRes.empty() ? "{}" : repRes,
                                   "application/json; charset=utf-8");
                 });
-
+  server_->Post("/browser/get_cookies",
+                [this](const httplib::Request &req, httplib::Response &res) {
+                  std::string repRes;
+                  OnRequest(RequestType::BROWSER_COOKIES_GET, req.body, repRes);
+                  res.set_content(repRes.empty() ? "{}" : repRes,
+                                  "application/json; charset=utf-8");
+                });
+  server_->Post("/browser/set_cookies",
+                [this](const httplib::Request &req, httplib::Response &res) {
+                  std::string repRes;
+                  OnRequest(RequestType::BROWSER_COOKIES_SET, req.body, repRes);
+                  res.set_content(repRes.empty() ? "{}" : repRes,
+                                  "application/json; charset=utf-8");
+                });
+  server_->Post("/browser/del_cookies",
+                [this](const httplib::Request &req, httplib::Response &res) {
+                  std::string repRes;
+                  OnRequest(RequestType::BROWSER_COOKIES_DEL, req.body, repRes);
+                  res.set_content(repRes.empty() ? "{}" : repRes,
+                                  "application/json; charset=utf-8");
+                });
   server_->Post("/ffx/start_screen_recording",
                 [this](const httplib::Request &req, httplib::Response &res) {
                   std::string repRes;

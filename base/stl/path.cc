@@ -37,10 +37,13 @@ std::string Path::Mormalize(const std::string &PathOrPathname) {
     ++it;
   }
   do {
-    auto found = result.find("//");
-    if (found == std::string::npos)
-      break;
-    result.replace(found, ::strlen("//"), "/");
+    auto found = result.find("\\\\");
+    if (found == std::string::npos) {
+      found = result.find("//");
+      if (found == std::string::npos)
+        break;
+    }
+    result.replace(found, 2, "/");
   } while (1);
   return result;
 }

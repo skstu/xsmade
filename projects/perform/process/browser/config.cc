@@ -69,6 +69,24 @@ std::string BrowserConfig::GetXSCacheExtsDir(const std::string &brwKey,
   return result;
 }
 std::string
+BrowserConfig::GetXSCacheRouteReqsDir(const std::string &brwKey) const {
+  std::string result;
+  std::lock_guard<std::mutex> lock{*mtx_};
+  result = fmt::format(R"({}/{}/Default/XSCache/route/reqs/)",
+                       paths_.chromium_user_data_dir, brwKey);
+  stl::Directory::Create(result);
+  return result;
+}
+std::string
+BrowserConfig::GetXSCacheRouteRepsDir(const std::string &brwKey) const {
+  std::string result;
+  std::lock_guard<std::mutex> lock{*mtx_};
+  result = fmt::format(R"({}/{}/Default/XSCache/route/reps/)",
+                       paths_.chromium_user_data_dir, brwKey);
+  stl::Directory::Create(result);
+  return result;
+}
+std::string
 BrowserConfig::GetXSCacheConfigureFName(const std::string &brwKey) const {
   std::string result;
   std::lock_guard<std::mutex> lock{*mtx_};

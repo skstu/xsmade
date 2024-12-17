@@ -4,11 +4,14 @@
 
 enum class RequestType : unsigned long long {
   UNKNOWN = 0x00000,
-  SERVER_OPEN = 0x10010,   //!@ 打开(初始化)服务
-  SERVER_CLOSE = 0x10020,  //!@ 退出(关闭)服务
-  BROWSER_OPEN = 0x10101,  //!@ 打开浏览器
-  BROWSER_CLOSE = 0x10102, //!@ 关闭浏览器
-  BROWSER_GET = 0x10103,   //!@ 获取浏览器列表
+  SERVER_OPEN = 0x10010,         //!@ 打开(初始化)服务
+  SERVER_CLOSE = 0x10020,        //!@ 退出(关闭)服务
+  BROWSER_OPEN = 0x10101,        //!@ 打开浏览器
+  BROWSER_CLOSE = 0x10102,       //!@ 关闭浏览器
+  BROWSER_GET = 0x10103,         //!@ 获取浏览器列表
+  BROWSER_COOKIES_GET = 0x10110, //!@ 获取cookies
+  BROWSER_COOKIES_SET = 0x10111, //!@ 设置cookies
+  BROWSER_COOKIES_DEL = 0x10112, //!@ 删除cookies
   FFX_START_SCREEN_RECORDING = 0x10201,
   FFX_STOP_SCREEN_RECORDING = 0x10202,
   PLUGIN_FFXUI_OPEN = 0x10301,
@@ -36,14 +39,17 @@ private:
                  std::string &res);
   unsigned short port_ = 0;
   std::atomic_bool open_ = false;
-  stl::container::queue<std::string> client_notifys_;
+  stl::container::queue<
+      std::tuple<std::string /*http.path*/, std::string /*content*/>>
+      client_notifys_;
   stl::tfThreads threads_;
   httplib::Server *server_ = nullptr;
   BrowserConfig *config_ = nullptr;
   stl::container::map<std::string /*key*/, Browser *> brws_;
 
 protected:
-  void __impl__() const override final {}
+  void __impl__() const override final {
+  }
 };
 /// /*_ Memade®（新生™） _**/
 /// /*_ Mon, 11 Nov 2024 09:56:22 GMT _**/

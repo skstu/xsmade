@@ -182,6 +182,19 @@ void Browser::Init() {
       for (const auto &url : brwcfg_->worker_.urls)
         brw_startup_args_.emplace_back(fmt::format(R"({})", url));
     } while (0);
+
+    do { //!@ cookies
+      if (brwcfg_->cookies_.sequence <= 0)
+        break;
+      std::string cookies_reqData = brwcfg_->cookies_.GetCookiesRequest();
+      if (cookies_reqData.empty())
+        break;
+      stl::File::WriteFile(fmt::format("{}/{}",
+                                       config->GetXSCacheRouteReqsDir(brwkey),
+                                       brwcfg_->cookies_.sequence),
+                           cookies_reqData);
+    } while (0);
+
     if (brwcfg_->develop_.enable_ && !brwcfg_->develop_.brwargs_.empty()) {
       brw_startup_args_.clear();
       brw_startup_args_.emplace_back(brwcfg_->develop_.brwargs_);
