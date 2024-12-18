@@ -4,7 +4,9 @@ wxBEGIN_EVENT_TABLE(IWorkSpace, wxFrame) EVT_SIZE(IWorkSpace::OnSize)
     EVT_CLOSE(IWorkSpace::OnClose) EVT_PAINT(IWorkSpace::OnPaint)
         EVT_MOVE(IWorkSpace::OnMove) EVT_MOTION(IWorkSpace::OnMouseMove)
             EVT_LEFT_DOWN(IWorkSpace::OnMouseLeftDown)
-                EVT_LEFT_UP(IWorkSpace::OnMouseLeftUp) wxEND_EVENT_TABLE();
+                EVT_LEFT_UP(IWorkSpace::OnMouseLeftUp)
+                    EVT_COMMAND(wxID_ANY, wxEVT_NotifyType,
+                                IWorkSpace::OnDrawToolbar) wxEND_EVENT_TABLE();
 
 IWorkSpace::IWorkSpace(wxWindow *parent, wxWindowID id, const wxString &title,
                        const wxPoint &pos, const wxSize &size, long style,

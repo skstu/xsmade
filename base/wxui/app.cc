@@ -5,12 +5,13 @@ App::~App() {
 }
 bool App::OnInit() {
   xs_sys_startup();
-  bool result = false;
   do {
     if (!wxApp::OnInit()) {
       break;
     }
     wxAppBase::SetExitOnFrameDelete(false);
+    wxEvtHandler::Bind(wxEVT_THREAD, &App::OnThreadEvtBroadcastEvent, this,
+                       wxAppThreadEvt_BroadcastEvent);
     wxEvtHandler::Bind(wxEVT_THREAD, &App::OnThreadEvtFrameDestroy, this,
                        wxAppThreadEvt_FrameDestroy);
     wxEvtHandler::Bind(wxEVT_THREAD, &App::OnThreadEvtScreenShotFinished, this,
@@ -24,9 +25,10 @@ bool App::OnInit() {
                        wxAppThreadEvt_RecordingBoxSelectionFinished);
 
     OnFrameCreate();
-    result = true;
+    open_.store(true);
+    threads_.emplace_back([this]() { EventProc(); });
   } while (0);
-  return result;
+  return open_.load();
 }
 int App::OnExit() {
   int result = 0;
@@ -43,8 +45,14 @@ int App::OnExit() {
     wxEvtHandler::Unbind(wxEVT_THREAD,
                          &App::OnThreadEvtRecordingBoxSelectionFinished, this,
                          wxAppThreadEvt_RecordingBoxSelectionFinished);
+    wxEvtHandler::Unbind(wxEVT_THREAD, &App::OnThreadEvtBroadcastEvent, this,
+                         wxAppThreadEvt_BroadcastEvent);
     result = wxApp::OnExit();
   } while (0);
+  open_.store(false);
+  for (auto &t : threads_)
+    t.join();
+  threads_.clear();
   xs_sys_shutdown();
   return result;
 }
@@ -95,10 +103,11 @@ void App::OnFrameCreate() {
 }
 wxFrame *App::FrameAppend(const ComponentFrameType &frame_type,
                           wxFrame *frame) {
-  auto found = frames_.find(frame_type);
-  if (found != frames_.end())
-    frames_.erase(found);
-  frames_.emplace(frame_type, frame);
+  auto found = comp_frames_.find(frame_type);
+  if (found != comp_frames_.end())
+    comp_frames_.erase(found);
+  comp_frames_.emplace(frame_type, frame);
+  frames_.push(frame);
   return frame;
 }
 IFrameComponent *App::FrameComponentGet(const FrameComponentType &type) const {
@@ -108,8 +117,8 @@ IFrameComponent *App::FrameComponentGet(const FrameComponentType &type) const {
   return found->second;
 }
 wxFrame *App::FrameGet(const ComponentFrameType &frame_type) const {
-  auto found = frames_.find(frame_type);
-  if (found == frames_.end())
+  auto found = comp_frames_.find(frame_type);
+  if (found == comp_frames_.end())
     return nullptr;
   return found->second;
 }
@@ -198,11 +207,80 @@ void App::OnThreadEvtRecordingBoxSelectionFinished(wxThreadEvent &evt) {
     screenshot_component->Show(true);
   } while (0);
 }
+void App::OnThreadEvtBroadcastEvent(wxThreadEvent &evt) {
+  wxCommandEvent route = evt.GetPayload<wxCommandEvent>();
+  evts_.push(route);
+}
+void App::EnumerateChildren(wxWindow *parent,
+                            std::unordered_set<wxWindow *> &childs) const {
+  if (!parent)
+    return;
+  childs.emplace(parent);
+  wxWindowList &children = parent->GetChildren();
+  for (wxWindowList::iterator it = children.begin(); it != children.end();
+       ++it) {
+    wxWindow *child = *it;
+    childs.emplace(child);
+    if (!child->GetChildren().IsEmpty()) {
+      EnumerateChildren(child, childs);
+    }
+  }
+}
+
+void App::BroadcastEvent(wxWindow *target, wxCommandEvent &route,
+                         std::unordered_set<wxWindowID> &processed) const {
+  if (!target || processed.find(target->GetId()) != processed.end()) {
+    return;
+  }
+  // target->GetEventHandler()->ProcessEvent(route);
+  processed.emplace(target->GetId());
+  wxPostEvent(target, route);
+  for (wxWindow *child : target->GetChildren()) {
+    processed.emplace(target->GetId());
+    BroadcastEvent(child, route, processed);
+  }
+}
+void App::EventProc() {
+  do {
+    do {
+      if (evts_.empty())
+        break;
+      auto evts = evts_.pops();
+      frames_.iterate([&](wxFrame *frame) {
+        do {
+          std::unordered_set<wxWindow *> childs;
+          EnumerateChildren(frame, childs);
+          if (childs.empty())
+            break;
+          for (auto &evt : evts) {
+            evt.SetEventObject(frame);
+            wxPostEvent(frame, evt);
+            for (const auto &child : childs) {
+              /*if (evt.GetEventObject() == child)
+                continue;*/
+              evt.SetEventObject(child);
+              wxPostEvent(child, evt);
+            }
+          }
+        } while (0);
+      });
+
+    } while (0);
+    if (!open_.load())
+      break;
+    std::this_thread::sleep_for(std::chrono::milliseconds(500));
+  } while (1);
+}
 /////////////////////////////////////////////////////////////////////////////
 wxIMPLEMENT_APP_NO_MAIN(App);
+
+wxDEFINE_EVENT(wxEVT_NotifyType, wxCommandEvent);
+wxDEFINE_EVENT(wxEVT_NotifyRecordComp, wxCommandEvent);
+
 const int wxAppThreadEvt_FrameDestroy = wxNewId();
 const int wxAppThreadEvt_BroadcastEvent = wxNewId();
 const int wxAppThreadEvt_ScreenShotFinished = wxNewId();
 const int wxAppThreadEvt_ScreenShotClose = wxNewId();
 const int wxAppThreadEvt_RecordingBoxSelection = wxNewId();
+const int wxAppThreadEvt_WorkSpaceModeChanged = wxNewId();
 const int wxAppThreadEvt_RecordingBoxSelectionFinished = wxNewId();

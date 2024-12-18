@@ -16,25 +16,44 @@ public:
   wxFrame *FrameAppend(const ComponentFrameType &, wxFrame *);
   wxFrame *FrameGet(const ComponentFrameType &) const;
   IFrameComponent *FrameComponentGet(const FrameComponentType &) const;
-
+  void PushThreadEvent(const wxEventType& evtType,const wxCommandEvent&);
 private:
   std::map<FrameComponentType, IFrameComponent *> frame_comps_;
-  std::map<ComponentFrameType, wxFrame *> frames_;
+  std::map<ComponentFrameType, wxFrame *> comp_frames_;
+
+private:
+  void EnumerateChildren(wxWindow *parent,
+                         std::unordered_set<wxWindow *> &childs) const;
+  void BroadcastEvent(wxWindow *target, wxCommandEvent &route,
+                      std::unordered_set<wxWindowID> &processed) const;
+  std::atomic_bool open_ = false;
+  stl::container::queue<wxCommandEvent> evts_;
+  void EventProc();
+  stl::tfThreads threads_;
 
 private:
   IFrame *frame_ = nullptr;
+  stl::container::set<wxFrame*> frames_;
+  void OnThreadEvtBroadcastEvent(wxThreadEvent &evt);
   void OnThreadEvtFrameDestroy(wxThreadEvent &event);
   void OnThreadEvtScreenShotFinished(wxThreadEvent &event);
   void OnThreadEvtScreenShotClose(wxThreadEvent &event);
   void OnThreadEvtRecordingBoxSelection(wxThreadEvent &event);
   void OnThreadEvtRecordingBoxSelectionFinished(wxThreadEvent &event);
 };
+
+wxDECLARE_EVENT(wxEVT_NotifyType, wxCommandEvent);
+wxDECLARE_EVENT(wxEVT_NotifyRecordComp, wxCommandEvent);
+
+
+
 extern const int wxAppThreadEvt_ScreenShotFinished;
 extern const int wxAppThreadEvt_ScreenShotClose;
 extern const int wxAppThreadEvt_RecordingBoxSelection;
 extern const int wxAppThreadEvt_RecordingBoxSelectionFinished;
 extern const int wxAppThreadEvt_FrameDestroy;
 extern const int wxAppThreadEvt_BroadcastEvent;
+extern const int wxAppThreadEvt_WorkSpaceModeChanged;
 /// /*_ Memade®（新生™） _**/
 /// /*_ Wed, 27 Nov 2024 05:13:12 GMT _**/
 /// /*_____ https://www.skstu.com/ _____ **/

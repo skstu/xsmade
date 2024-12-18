@@ -5,13 +5,18 @@ FrameScreenShot::WorkSpace::WorkSpace(wxWindow *parent, wxWindowID id,
                                       const wxString &name)
     : IWorkSpace(parent, id, title, pos, size,
                  wxFRAME_SHAPED | wxNO_BORDER | wxFRAME_NO_TASKBAR, name) {
+
   //  SetBackgroundColour(wxColour(183, 110, 121));
   //			// Color color(20, 255, 215, 0);//!@ 土豪金
   is_allow_move_.store(true);
   // SetBackgroundColour(wxColour(183, 110, 121));
   SetTransparent(255);
+  wxEvtHandler::Bind(wxEVT_NotifyType,
+                     &FrameScreenShot::WorkSpace::OnDrawToolbar, this);
 }
 FrameScreenShot::WorkSpace::~WorkSpace() {
+  wxEvtHandler::Unbind(wxEVT_NotifyType,
+                       &FrameScreenShot::WorkSpace::OnDrawToolbar, this);
 }
 void FrameScreenShot::WorkSpace::OnPaint(wxPaintEvent &evt) {
   do {
@@ -53,4 +58,22 @@ void FrameScreenShot::WorkSpace::SetImage(const wxImage *image) {
     SK_DELETE_PTR(backgroundBitmap_);
     backgroundBitmap_ = new wxBitmap(*image);
   } while (0);
+}
+void FrameScreenShot::WorkSpace::OnDrawToolbar(wxCommandEvent &evt) {
+  auto p = evt.GetEventObject();
+  if (this != evt.GetEventObject())
+    return;
+  switch (evt.GetId()) {
+  case CommandTool::TOOL_SCREENSHOT_RECTANGLE: {
+
+    SetCursor(wxCursor(wxCURSOR_CROSS));
+    auto sss = 0;
+  } break;
+  case CommandTool::TOOL_SCREENSHOT_ARROW: {
+
+  } break;
+  default:
+    break;
+  }
+  evt.Skip();
 }

@@ -48,6 +48,8 @@ protected:
   void OnSize(wxSizeEvent &event);
   void OnClose(wxCloseEvent &event);
   virtual void OnPaint(wxPaintEvent &event);
+  virtual void OnDrawToolbar(wxCommandEvent &evt) {
+  }
   void OnMove(wxMoveEvent &);
   void OnMouseMove(wxMouseEvent &event);
   void OnMouseLeftDown(wxMouseEvent &event);

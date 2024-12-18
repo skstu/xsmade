@@ -7,6 +7,9 @@ public:
   ~Global() = default;
 
 public:
+  static void SendEvent(wxCommandEvent &);
+
+public:
   static bool ffxScreenShot(const wxRect &region, std::string &stream);
 
 public:

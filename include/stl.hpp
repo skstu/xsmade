@@ -1008,7 +1008,7 @@ public:
       m_set.erase(data);
       result = true;
     }
-    m_set.insert(data).second;
+    m_set.insert(data);
     return result;
   }
 

@@ -83,11 +83,12 @@ public:
     void SetImage(const wxImage *);
 
   protected:
-    void OnPaint(wxPaintEvent&) override final;
+    void OnDrawToolbar(wxCommandEvent &) override final;
+    void OnPaint(wxPaintEvent &) override final;
     void OnWorkSpaceSizeChanged(const wxRect &) override final;
 
   private:
-    wxBitmap* backgroundBitmap_ = nullptr;
+    wxBitmap *backgroundBitmap_ = nullptr;
   };
 
 public:

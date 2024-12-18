@@ -4,7 +4,9 @@
 #include <xs.h>
 #include "export.h"
 using namespace browser;
+#include <base/uvpp/export.h>
 #include "config.h"
+#include "client.h"
 
 class Brwcfg final : public IBrwcfg {
 public:

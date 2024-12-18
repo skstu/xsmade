@@ -9,87 +9,6 @@ FrameScreenShot::Toolbar::Toolbar(wxWindow *parent, wxWindowID id,
   is_allow_move_.store(false);
   SetBackgroundColour(wxColour(252, 252, 252));
   Init();
-#if 0
-  wxImage *img = Config::Get()->GetResImage("btn_screenshot_toolbar_close.png");
-  if (img) {
-    img->Rescale(btn_size, btn_size);
-    btn_screenshot_toolbar_close_ =
-        new wxBitmapButton(this, CommandTool::TOOL_SCREENSHOT_CLOSE,
-                           wxBitmapBundle::FromImage(*img));
-    btn_screenshot_toolbar_close_->SetToolTip(
-        gpCommandToolTipMap[CommandTool::TOOL_SCREENSHOT_CLOSE]);
-    btn_screenshot_toolbar_close_->SetSize(wxSize(btn_size, btn_size));
-  }
-  img = Config::Get()->GetResImage("btn_screenshot_toolbar_edit.png");
-  if (img) {
-    img->Rescale(btn_size, btn_size);
-    btn_screenshot_toolbar_edit_ =
-        new wxBitmapButton(this, CommandTool::TOOL_SCREENSHOT_EIDT,
-                           wxBitmapBundle::FromImage(*img));
-    btn_screenshot_toolbar_edit_->SetToolTip(
-        gpCommandToolTipMap[CommandTool::TOOL_SCREENSHOT_EIDT]);
-    btn_screenshot_toolbar_edit_->SetSize(wxSize(btn_size, btn_size));
-  }
-  img = Config::Get()->GetResImage("btn_screenshot_toolbar_ok.png");
-  if (img) {
-    img->Rescale(btn_size, btn_size);
-    btn_screenshot_toolbar_ok_ = new wxBitmapButton(
-        this, CommandTool::TOOL_SCREENSHOT_OK, wxBitmapBundle::FromImage(*img));
-    btn_screenshot_toolbar_ok_->SetToolTip(
-        gpCommandToolTipMap[CommandTool::TOOL_SCREENSHOT_OK]);
-    btn_screenshot_toolbar_ok_->SetSize(wxSize(btn_size, btn_size));
-  }
-  img = Config::Get()->GetResImage("btn_screenshot_toolbar_rectangle.png");
-  if (img) {
-    img->Rescale(btn_size, btn_size);
-    btn_screenshot_toolbar_rectangle_ =
-        new wxBitmapButton(this, CommandTool::TOOL_SCREENSHOT_RECTANGLE,
-                           wxBitmapBundle::FromImage(*img));
-    btn_screenshot_toolbar_rectangle_->SetToolTip(
-        gpCommandToolTipMap[CommandTool::TOOL_SCREENSHOT_RECTANGLE]);
-    btn_screenshot_toolbar_rectangle_->SetSize(wxSize(btn_size, btn_size));
-  }
-  img = Config::Get()->GetResImage("btn_screenshot_toolbar_revocation.png");
-  if (img) {
-    img->Rescale(btn_size, btn_size);
-    btn_screenshot_toolbar_revocation_ =
-        new wxBitmapButton(this, CommandTool::TOOL_SCREENSHOT_REVOCATION,
-                           wxBitmapBundle::FromImage(*img));
-    btn_screenshot_toolbar_revocation_->SetToolTip(
-        gpCommandToolTipMap[CommandTool::TOOL_SCREENSHOT_REVOCATION]);
-    btn_screenshot_toolbar_revocation_->SetSize(wxSize(btn_size, btn_size));
-  }
-  img = Config::Get()->GetResImage("btn_screenshot_toolbar_round.png");
-  if (img) {
-    img->Rescale(btn_size, btn_size);
-    btn_screenshot_toolbar_round_ =
-        new wxBitmapButton(this, CommandTool::TOOL_SCREENSHOT_ROUND,
-                           wxBitmapBundle::FromImage(*img));
-    btn_screenshot_toolbar_round_->SetToolTip(
-        gpCommandToolTipMap[CommandTool::TOOL_SCREENSHOT_ROUND]);
-    btn_screenshot_toolbar_round_->SetSize(wxSize(btn_size, btn_size));
-  }
-  img = Config::Get()->GetResImage("btn_screenshot_toolbar_mosaic.png");
-  if (img) {
-    img->Rescale(btn_size, btn_size);
-    btn_screenshot_toolbar_mosaic_ =
-        new wxBitmapButton(this, CommandTool::TOOL_SCREENSHOT_MOSAIC,
-                           wxBitmapBundle::FromImage(*img));
-    btn_screenshot_toolbar_mosaic_->SetToolTip(
-        gpCommandToolTipMap[CommandTool::TOOL_SCREENSHOT_MOSAIC]);
-    btn_screenshot_toolbar_mosaic_->SetSize(wxSize(btn_size, btn_size));
-  }
-  img = Config::Get()->GetResImage("btn_screenshot_toolbar_text.png");
-  if (img) {
-    img->Rescale(btn_size, btn_size);
-    btn_screenshot_toolbar_text_ =
-        new wxBitmapButton(this, CommandTool::TOOL_SCREENSHOT_TEXT,
-                           wxBitmapBundle::FromImage(*img));
-    btn_screenshot_toolbar_text_->SetSize(wxSize(btn_size, btn_size));
-    btn_screenshot_toolbar_text_->SetToolTip(
-        gpCommandToolTipMap[CommandTool::TOOL_SCREENSHOT_TEXT]);
-  }
-#endif
   OnLayout();
   Bind(wxEVT_BUTTON, &FrameScreenShot::Toolbar::OnToolEvent, this);
 }
@@ -217,45 +136,7 @@ void FrameScreenShot::Toolbar::Init() {
 void FrameScreenShot::Toolbar::UnInit() {
 }
 void FrameScreenShot::Toolbar::OnLayout() {
-#if 0
-  wxSize cursize = GetSize();
-  wxPoint curpt = GetPosition();
-  if (btn_screenshot_toolbar_rectangle_) {
-    btn_screenshot_toolbar_rectangle_->SetPosition(
-        wxPoint(0 + btn_offset_x_ * 1, btn_offset_y_));
-  }
-  int offset_r = 0;
-  int offset_l = 1;
 
-  if (btn_screenshot_toolbar_round_) {
-    btn_screenshot_toolbar_round_->SetPosition(wxPoint(
-        btn_size * (++offset_r) + btn_offset_x_ * (++offset_l), btn_offset_y_));
-  }
-  if (btn_screenshot_toolbar_edit_) {
-    btn_screenshot_toolbar_edit_->SetPosition(wxPoint(
-        btn_size * (++offset_r) + btn_offset_x_ * (++offset_l), btn_offset_y_));
-  }
-  if (btn_screenshot_toolbar_mosaic_) {
-    btn_screenshot_toolbar_mosaic_->SetPosition(wxPoint(
-        btn_size * (++offset_r) + btn_offset_x_ * (++offset_l), btn_offset_y_));
-  }
-  if (btn_screenshot_toolbar_text_) {
-    btn_screenshot_toolbar_text_->SetPosition(wxPoint(
-        btn_size * (++offset_r) + btn_offset_x_ * (++offset_l), btn_offset_y_));
-  }
-  if (btn_screenshot_toolbar_revocation_) {
-    btn_screenshot_toolbar_revocation_->SetPosition(wxPoint(
-        btn_size * (++offset_r) + btn_offset_x_ * (++offset_l), btn_offset_y_));
-  }
-  if (btn_screenshot_toolbar_close_) {
-    btn_screenshot_toolbar_close_->SetPosition(wxPoint(
-        btn_size * (++offset_r) + btn_offset_x_ * (++offset_l), btn_offset_y_));
-  }
-  if (btn_screenshot_toolbar_ok_) {
-    btn_screenshot_toolbar_ok_->SetPosition(wxPoint(
-        btn_size * (++offset_r) + btn_offset_x_ * (++offset_l), btn_offset_y_));
-  }
-#endif
 }
 void FrameScreenShot::Toolbar::OnToolEvent(wxCommandEvent &evt) {
 #if 0

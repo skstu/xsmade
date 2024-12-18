@@ -1,4 +1,16 @@
 #include "wxui.h"
+void Global::SendEvent(wxCommandEvent &cmdevt) {
+  do {
+    wxThreadEvent *tevt =
+        new wxThreadEvent(wxEVT_THREAD, wxAppThreadEvt_BroadcastEvent);
+    tevt->SetPayload(cmdevt);
+    wxQueueEvent(wxApp::GetInstance(), tevt);
+  } while (0);
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+// backup codes
+///////////////////////////////////////////////////////////////////////////////////
 bool Global::ffxScreenShot(const wxRect &region, std::string &stream) {
   bool result = false;
   stream.clear();

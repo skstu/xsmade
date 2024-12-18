@@ -166,41 +166,45 @@ void DrawRectangleTool::OnClicked(wxCommandEvent &evt) {
   if (!sizer || !panel)
     return;
   sizer->Clear(true);
+  pressed_.store(!pressed_.load());
+  if (!pressed_.load()) {
+    do {
+      wxArrayString arrItems_pixel_;
+      arrItems_pixel_.Add("1");
+      arrItems_pixel_.Add("3");
+      arrItems_pixel_.Add("5");
+      arrItems_pixel_.Add("7");
+      arrItems_pixel_.Add("10");
+      auto combo_pixel_ = new wxPixelComboBox();
 
-  do {
-    wxArrayString arrItems_pixel_;
-    arrItems_pixel_.Add("1");
-    arrItems_pixel_.Add("3");
-    arrItems_pixel_.Add("5");
-    arrItems_pixel_.Add("7");
-    arrItems_pixel_.Add("10");
-    auto combo_pixel_ = new wxPixelComboBox();
+      combo_pixel_->Create(panel, wxID_ANY, wxEmptyString, wxDefaultPosition,
+                           wxSize(80, 30), arrItems_pixel_,
+                           /*wxCB_READONLY*/ wxNO_BORDER | wxCB_READONLY);
+      combo_pixel_->SetSelection(3);
 
-    combo_pixel_->Create(panel, wxID_ANY, wxEmptyString, wxDefaultPosition,
-                         wxSize(80, 30), arrItems_pixel_,
-                         /*wxCB_READONLY*/ wxNO_BORDER | wxCB_READONLY);
-    combo_pixel_->SetSelection(3);
+      sizer->Add(combo_pixel_, 0, wxALL, 0);
+    } while (0);
 
-    sizer->Add(combo_pixel_, 0, wxALL, 0);
-  } while (0);
+    do {
+      wxArrayString arrItems_color_;
+      arrItems_color_.Add("red");
+      arrItems_color_.Add("yellow");
+      arrItems_color_.Add("blue");
+      arrItems_color_.Add("green");
+      arrItems_color_.Add("black");
+      arrItems_color_.Add("white");
+      auto combo_color_ = new wxColorComboBox();
+      combo_color_->Create(panel, wxID_ANY, wxEmptyString, wxDefaultPosition,
+                           wxSize(50, 30), arrItems_color_,
+                           /*wxCB_READONLY*/ wxNO_BORDER | wxCB_READONLY);
+      combo_color_->SetSelection(0);
 
-  do {
-    wxArrayString arrItems_color_;
-    arrItems_color_.Add("red");
-    arrItems_color_.Add("yellow");
-    arrItems_color_.Add("blue");
-    arrItems_color_.Add("green");
-    arrItems_color_.Add("black");
-    arrItems_color_.Add("white");
-    auto combo_color_ = new wxColorComboBox();
-    combo_color_->Create(panel, wxID_ANY, wxEmptyString, wxDefaultPosition,
-                         wxSize(50, 30), arrItems_color_,
-                         /*wxCB_READONLY*/ wxNO_BORDER | wxCB_READONLY);
-    combo_color_->SetSelection(0);
+      sizer->Add(combo_color_, 0, wxALL, 0);
+    } while (0);
 
-    sizer->Add(combo_color_, 0, wxALL, 0);
-  } while (0);
-
+    wxCommandEvent routeEvt(wxEVT_NotifyType, GetId());
+    Global::SendEvent(routeEvt);
+  }
   parent->RefreshToolbar();
 }
 } // namespace screenshot

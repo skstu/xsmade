@@ -22,6 +22,14 @@ target_include_directories(
 target_link_directories(${PROJECT_NAME} PRIVATE ${xsLIBS_DIR})
 
 if(WIN32)
+  set_target_properties(
+    ${PROJECT_NAME}
+    PROPERTIES
+      WIN32_EXECUTABLE YES
+      LINK_FLAGS
+      "/MANIFEST /MANIFESTFILE:${CMAKE_SOURCE_DIR}/require_administrator.manifest"
+  )
+
   target_link_libraries(
     ${PROJECT_NAME}
     PRIVATE ${MSYS2_CLANG64_DIR}/lib/libc++.a

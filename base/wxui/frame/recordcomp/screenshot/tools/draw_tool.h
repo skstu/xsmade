@@ -13,6 +13,13 @@ public:
 
 protected:
   virtual void OnClicked(wxCommandEvent &evt);
+  virtual void OnNotify(wxCommandEvent &evt);
+
+protected:
+  std::atomic_bool pressed_ = false;
+
+private:
+  wxDECLARE_EVENT_TABLE();
 };
 } // namespace screenshot
 /// /*_ Memade®（新生™） _**/

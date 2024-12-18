@@ -12,7 +12,7 @@ set_target_properties(${PROJECT_NAME} PROPERTIES POSITION_INDEPENDENT_CODE TRUE)
 
 target_include_directories(
   ${PROJECT_NAME}
-  PRIVATE ${CMAKE_CURRENT_SOURCE_DIR} ${xsINCLUDE_DIR}
+  PRIVATE ${xsROOT_DIR} ${CMAKE_CURRENT_SOURCE_DIR} ${xsINCLUDE_DIR}
           ${xs3RDPARTY_DIR}/utfcpp/source/ ${xs3RDPARTY_DIR}/tinyxml2/)
 
 target_link_directories(${PROJECT_NAME} PRIVATE ${xsLIBS_DIR})
