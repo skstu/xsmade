@@ -10,6 +10,20 @@ public:
   ~Utfpp() = default;
 
 public:
+  static std::u16string ws_to_u16(const std::wstring &input) {
+    std::u16string result;
+    if (!input.empty()) {
+      result = std::u16string(input.begin(), input.end());
+    }
+    return result;
+  }
+  static std::wstring u16_to_ws(const std::u16string &input) {
+    std::wstring result;
+    if (!input.empty()) {
+      result = std::wstring(input.begin(), input.end());
+    }
+    return result;
+  }
   static std::u16string u8_to_u16(const std::string &input) {
     std::u16string result;
     do {
@@ -29,6 +43,22 @@ public:
         break;
       utf8::utf16to8(input.begin(), input.end(), std::back_inserter(result));
     } while (0);
+    return result;
+  }
+  static std::string ws_to_u8(const std::wstring &input) {
+    std::string result;
+    if (!input.empty()) {
+      std::u16string u16str = ws_to_u16(input);
+      result = u16_to_u8(u16str);
+    }
+    return result;
+  }
+  static std::wstring u8_to_ws(const std::string &input) {
+    std::wstring result;
+    if (!input.empty()) {
+      std::u16string u16str = u8_to_u16(input);
+      result = u16_to_ws(u16str);
+    }
     return result;
   }
 };

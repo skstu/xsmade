@@ -355,6 +355,7 @@ public:
   static bool Create(const std::u16string &);
   static bool Create(const std::wstring &);
   static bool RemoveAllU8(const std::string &);
+  static bool RemoveAllU16(const std::u16string &);
   static bool RemoveAllW(const std::wstring &);
   static std::string GetTempDir();
   static bool ExistsU8(const std::string &);
@@ -369,7 +370,8 @@ public:
                       std::map<std::u16string /*full path*/,
                                std::u16string /*relative path*/> &dirs,
                       std::map<std::u16string /*full path*/,
-                               std::u16string /*relative path*/> &files);
+                               std::u16string /*relative path*/> &files,
+                      const bool &recursive);
   static void
   EnumW(const std::wstring &inputPath,
         std::map<std::wstring /*full path*/, std::wstring /*relative path*/>
@@ -380,8 +382,8 @@ public:
 
 class Path {
 public:
-  static std::string Mormalize(const std::string &PathOrPathname);
-  static std::u16string Mormalize(const std::u16string &PathOrPathname);
+  static std::string Normalize(const std::string &PathOrPathname);
+  static std::u16string Normalize(const std::u16string &PathOrPathname);
   static std::u16string U8PathToU16Path(const std::string &);
   static std::string U16PathToU8Path(const std::u16string &);
   static std::wstring U16PathToWPath(const std::u16string &);
@@ -943,6 +945,123 @@ public:
 
 private:
   std::map<K, V> map_;
+};
+
+template <typename T> class list final : public base {
+public:
+  list() : m_list() {
+  }
+  virtual ~list() {
+  }
+
+public:
+  void operator=(const std::list<T> &_Target) {
+    std::lock_guard<std::mutex> lock(*mutex_);
+    m_list.clear();
+    m_list = _Target;
+  }
+  void operator=(const stl::container::list<T> &_Target) {
+    std::lock_guard<std::mutex> lock(*mutex_);
+    m_list.clear();
+    m_list = _Target.m_list;
+  }
+
+public:
+  void push_front(const T &data) {
+    std::lock_guard<std::mutex> lock(*mutex_);
+    m_list.push_front(data);
+  }
+  void push_back(const T &data) {
+    std::lock_guard<std::mutex> lock(*mutex_);
+    m_list.push_back(data);
+  }
+  std::shared_ptr<T> pop_back() {
+    std::shared_ptr<T> result;
+    std::lock_guard<std::mutex> lock(*mutex_);
+    if (m_list.empty()) {
+      return result;
+    }
+    result = std::make_shared<T>(m_list.back());
+    m_list.pop_back();
+    return result;
+  }
+  std::shared_ptr<T> pop_front() {
+    std::shared_ptr<T> result;
+    std::lock_guard<std::mutex> lock(*mutex_);
+    if (m_list.empty()) {
+      return result;
+    }
+    result = std::make_shared<T>(m_list.front());
+    m_list.pop_front();
+    return result;
+  }
+  std::shared_ptr<T> back() {
+    std::shared_ptr<T> result;
+    std::lock_guard<std::mutex> lock(*mutex_);
+    if (!m_list.empty()) {
+      result = std::make_shared<T>(m_list.back());
+    }
+    return result;
+  }
+  std::shared_ptr<T> back(const size_t &idx) {
+    std::shared_ptr<T> result;
+    std::lock_guard<std::mutex> lock(*mutex_);
+    if (idx < m_list.size()) {
+      auto it = m_list.begin();
+      std::advance(it, m_list.size() - 1 - idx);
+      result = std::make_shared<T>(*it);
+    }
+    return result;
+  }
+  std::shared_ptr<T> front() {
+    std::shared_ptr<T> result;
+    std::lock_guard<std::mutex> lock(*mutex_);
+    if (!m_list.empty()) {
+      result = std::make_shared<T>(m_list.front());
+    }
+    return result;
+  }
+  std::size_t size() {
+    std::lock_guard<std::mutex> lock(*mutex_);
+    return m_list.size();
+  }
+  bool empty() {
+    std::lock_guard<std::mutex> lock(*mutex_);
+    return m_list.empty();
+  }
+  void clear() {
+    std::lock_guard<std::mutex> lock(*mutex_);
+    m_list.clear();
+  }
+  T *search(const T &data) {
+    std::lock_guard<std::mutex> lock(*mutex_);
+    auto find = std::find(m_list.begin(), m_list.end(), data);
+    if (find != m_list.end()) {
+      return &(*find);
+    } else {
+      return nullptr;
+    }
+  }
+  void iterate(const std::function<void(T &)> &iterate_cb) {
+    std::lock_guard<std::mutex> lock(*mutex_);
+    for (auto it = m_list.begin(); it != m_list.end(); ++it) {
+      if (iterate_cb) {
+        iterate_cb(*it);
+      }
+    }
+  }
+
+  std::vector<T> Vector() const {
+    std::vector<T> result;
+    std::lock_guard<std::mutex> lock(*mutex_);
+    for (const auto &node : m_list) {
+      result.emplace_back(node);
+    }
+    return result;
+  }
+
+private:
+  std::list<T> m_list;
 };
 
 template <typename T> class set final : public base {

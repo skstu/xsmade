@@ -21,7 +21,7 @@ protected:
   int area_width_min_ = 200;
   int area_height_min_ = 200;
 
-private:
+protected:
   wxRect mouse_left_down_rect_;
   wxPoint mouse_left_down_point_;
   std::atomic_bool is_dragging_ = false;
@@ -45,15 +45,14 @@ protected:
   }
 
 protected:
-  void OnSize(wxSizeEvent &event);
+  virtual void OnSize(wxSizeEvent &event);
   void OnClose(wxCloseEvent &event);
   virtual void OnPaint(wxPaintEvent &event);
-  virtual void OnDrawToolbar(wxCommandEvent &evt) {
-  }
-  void OnMove(wxMoveEvent &);
-  void OnMouseMove(wxMouseEvent &event);
-  void OnMouseLeftDown(wxMouseEvent &event);
-  void OnMouseLeftUp(wxMouseEvent &event);
+  virtual void OnMove(wxMoveEvent &);
+  virtual void OnMouseMove(wxMouseEvent &event);
+  virtual void OnMouseLeftDown(wxMouseEvent &event);
+  virtual void OnMouseLeftUp(wxMouseEvent &event);
+  virtual void OnEraseBackground(wxEraseEvent& event);
   wxDECLARE_EVENT_TABLE();
 };
 

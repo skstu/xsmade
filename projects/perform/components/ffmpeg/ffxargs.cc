@@ -10,7 +10,7 @@ void FFXArgs::Push(const std::string &key, const std::string &value) {
   do {
     std::string inster_value(value);
     if (!key.compare("-xs-outfile")) {
-      inster_value = stl::Path::Mormalize(System::GetCurrentProcessPath() +
+      inster_value = stl::Path::Normalize(System::GetCurrentProcessPath() +
                                           "/" + inster_value);
     }
     bool found = false;

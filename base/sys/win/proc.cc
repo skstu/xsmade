@@ -1,10 +1,10 @@
 #include "sys.h"
 
-XS_EXTERN int xs_sys_process_spawn(const char *proc, const char **args,
+XS_EXTERN int xs_sys_process_spawn(const char *proc_u8, const char **args,
                                    int show_flag, xs_process_id_t *out_pid) {
   int r = -1;
   do {
-    STARTUPINFOA si = {0};
+    STARTUPINFOW si = {0};
     PROCESS_INFORMATION pi = {0};
     si.cb = sizeof(si);
     si.dwFlags = STARTF_USESHOWWINDOW;
@@ -19,19 +19,21 @@ XS_EXTERN int xs_sys_process_spawn(const char *proc, const char **args,
         count++;
       }
     }
-    BOOL status = CreateProcessA(
-        proc, // No module name (use command line)
-        cmdlines.empty()
-            ? NULL
-            : const_cast<char *>(("/c " + cmdlines).c_str()), // Command line
-        NULL,               // Process handle not inheritable
-        NULL,               // Thread handle not inheritable
-        FALSE,              // Set handle inheritance to FALSE
-        CREATE_NEW_CONSOLE, // No creation flags
-        NULL,               // Use parent's environment block
-        NULL,               // Use parent's starting directory
-        &si,                // Pointer to STARTUPINFO structure
-        &pi);               // Pointer to PROCESS_INFORMATION structure
+    std::wstring proc_ws = Utfpp::u8_to_ws(proc_u8);
+    std::wstring cmdlines_ws = Utfpp::u8_to_ws(cmdlines);
+    BOOL status = CreateProcessW(
+        proc_ws.c_str(), // No module name (use command line)
+        cmdlines.empty() ? NULL
+                         : const_cast<wchar_t *>(
+                               (L"/c " + cmdlines_ws).c_str()), // Command line
+        NULL, // Process handle not inheritable
+        NULL, // Thread handle not inheritable
+        TRUE, // Set handle inheritance to FALSE
+        NULL, // CREATE_NEW_CONSOLE, // No creation flags
+        NULL, // Use parent's environment block
+        NULL, // Use parent's starting directory
+        &si,  // Pointer to STARTUPINFO structure
+        &pi); // Pointer to PROCESS_INFORMATION structure
     if (FALSE == status)
       break;
     *out_pid = pi.dwProcessId;
@@ -90,15 +92,16 @@ XS_EXTERN int xs_sys_process_getpath(char **path, size_t *path_len) {
   *path = NULL;
   *path_len = 0;
   do {
-    std::string strPath;
+    std::wstring strPath;
     strPath.resize(PATH_MAX, 0x00);
-    *path_len = GetModuleFileNameA(NULL, &strPath[0], strPath.size());
-    if (*path_len <= 0)
+    int len = GetModuleFileNameW(NULL, &strPath[0], strPath.size());
+    if (len <= 0)
       break;
-    *path_len += 1;
-    strPath.resize(*path_len, 0x00);
+    strPath.resize(len);
+    std::string u8 = Utfpp::ws_to_u8(strPath);
+    *path_len = u8.size();
     *path = (char *)malloc(*path_len);
-    memcpy(*path, strPath.data(), *path_len);
+    memcpy(*path, u8.data(), u8.size());
     r = 0;
   } while (0);
   return r;
@@ -120,7 +123,7 @@ xs_sys_process_already_exists(xs_process_id_t pid /*==0 ? current*/) {
   do {
     if (pid != 0)
       break;
-    HANDLE hMutex = CreateMutexA(NULL, FALSE, "LaunchProjectsMutex.Service");
+    HANDLE hMutex = CreateMutexW(NULL, FALSE, L"LaunchProjectsMutex.Service");
     if (ERROR_ALREADY_EXISTS == GetLastError()) {
       r = 0;
       break;

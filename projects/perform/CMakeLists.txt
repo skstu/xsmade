@@ -1,8 +1,7 @@
 project(perform)
 
 gfn_project_source_get(${CMAKE_CURRENT_SOURCE_DIR} OUT_HEADER_S OUT_SOURCE_S)
-set(SOURCES ${OUT_HEADER_S} ${OUT_SOURCE_S}
-            ${xs3RDPARTY_DIR}/wxWidgets/include/wx/msw/wx.rc)
+set(SOURCES ${OUT_HEADER_S} ${OUT_SOURCE_S})
 
 add_executable(${PROJECT_NAME} ${SOURCES})
 
@@ -22,14 +21,6 @@ target_include_directories(
 target_link_directories(${PROJECT_NAME} PRIVATE ${xsLIBS_DIR})
 
 if(WIN32)
-  set_target_properties(
-    ${PROJECT_NAME}
-    PROPERTIES
-      WIN32_EXECUTABLE YES
-      LINK_FLAGS
-      "/MANIFEST /MANIFESTFILE:${CMAKE_SOURCE_DIR}/require_administrator.manifest"
-  )
-
   target_link_libraries(
     ${PROJECT_NAME}
     PRIVATE ${MSYS2_CLANG64_DIR}/lib/libc++.a
@@ -62,7 +53,6 @@ if(WIN32)
 
   set_target_properties(${PROJECT_NAME} PROPERTIES LINK_FLAGS "-mwindows"
                                                    WIN32_EXECUTABLE YES)
-
 elseif(APPLE)
   target_include_directories(
     ${PROJECT_NAME}

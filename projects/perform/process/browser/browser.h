@@ -23,7 +23,7 @@ private:
   std::atomic_bool ready_ = false;
   xs_process_id_t pid_ = 0;
   const std::string cfg_;
-  std::string brw_module_pathname_;
+  std::u16string brw_module_pathname_;
   std::vector<std::string> brw_startup_args_;
   std::shared_ptr<std::mutex> mtx_ = std::make_shared<std::mutex>();
 };

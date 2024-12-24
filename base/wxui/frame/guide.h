@@ -24,6 +24,7 @@
 #include "recordcomp/screenshot/tools/draw_ok.h"
 #include "recordcomp/screenshot/tools/draw_no.h"
 #include "recordcomp/screenshot/tools/draw_close.h"
+#include "recordcomp/screenshot/screenshot_input.h"
 #include "recordcomp/screenshot/screenshot.h"
 
 /// /*_ Memade®（新生™） _**/

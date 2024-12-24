@@ -2,28 +2,30 @@
 using namespace stl;
 using namespace std;
 namespace fs = filesystem;
-std::u16string Path::Mormalize(const std::u16string &PathOrPathname) {
+std::u16string Path::Normalize(const std::u16string &PathOrPathname) {
   std::u16string result{PathOrPathname};
   if (result.empty())
     return result;
-  for (auto it = result.begin(); it != result.end();) {
-    if (*it == u'\\') {
-      *it = u'/';
-    } else if (*it == 0) {
-      it = result.erase(it);
-      continue;
+
+  // 首先将 '\\' 替换为 '/'
+  for (auto &ch : result) {
+    if (ch == u'\\') {
+      ch = u'/';
     }
-    ++it;
   }
-  do {
-    auto found = result.find(u"//");
-    if (found == std::u16string::npos)
-      break;
-    result.replace(found, std::u16string(u"//").size(), u"/");
-  } while (1);
+
+  // 移除 '\0' 字符
+  result.erase(std::remove(result.begin(), result.end(), u'\0'), result.end());
+
+  // 替换连续的 "//" 为单个 "/"
+  std::size_t startPos = 0;
+  while ((startPos = result.find(u"//", startPos)) != std::u16string::npos) {
+    result.replace(startPos, 2, u"/");
+  }
+
   return result;
 }
-std::string Path::Mormalize(const std::string &PathOrPathname) {
+std::string Path::Normalize(const std::string &PathOrPathname) {
   std::string result{PathOrPathname};
   if (result.empty())
     return result;
@@ -43,7 +45,8 @@ std::string Path::Mormalize(const std::string &PathOrPathname) {
       if (found == std::string::npos)
         break;
     }
-    result.replace(found, 2, "/");
+    std::string sss("/");
+    result.replace(found, sss.size(), sss);
   } while (1);
   return result;
 }

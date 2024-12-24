@@ -18,17 +18,18 @@ void Browser::Init() {
     do { //!@ 获取缓存配置 用于初始化
       Configure tmpcfg(cfg_);
       cfg_cache = stl::File::ReadFile(
-          config->GetXSCacheConfigureFName(tmpcfg.rule_.key));
+          config->GetXSCacheConfigureFName(Utfpp::u8_to_u16(tmpcfg.rule_.key)));
     } while (0);
 
     brwcfg_ = new Configure(cfg_cache);
     *brwcfg_ << cfg_;
 
-    std::string brwkey = brwcfg_->rule_.key;
-    std::string brwver = brwcfg_->worker_.brwver;
+    std::u16string brwkey = Utfpp::u8_to_u16(brwcfg_->rule_.key);
+    std::u16string brwver = Utfpp::u8_to_u16(brwcfg_->worker_.brwver);
     //!@ 浏览器目录
-    std::string chromium_dir = config->PathGet().chromium_dir;
-    std::string chromium_user_data_dir = config->GetBrwUserDataDir(brwkey);
+    std::u16string chromium_dir = config->PathGet().chromium_dir;
+    std::u16string chromium_user_data_dir =
+        stl::Path::Normalize(config->GetBrwUserDataDir(brwkey));
     stl::Directory::Create(chromium_user_data_dir);
 
     config->XSCacheClean(brwkey);
@@ -42,6 +43,7 @@ void Browser::Init() {
           "--disable-features=ChromeSignin,AccountConsistency");
       brw_startup_args_.emplace_back("--disable-background-mode");
       brw_startup_args_.emplace_back("--no-default-browser-check");
+      // brw_startup_args_.emplace_back("--no-sandbox");
     } while (0);
 
     do { //!@ append args - f12
@@ -57,8 +59,8 @@ void Browser::Init() {
     } while (0);
 
     do { //!@ 指定版本
-      std::map<std::string, std::string> dirs, files;
-      stl::Directory::EnumU8(chromium_dir, dirs, files, false);
+      std::map<std::u16string, std::u16string> dirs, files;
+      stl::Directory::EnumU16(chromium_dir, dirs, files, false);
       if (dirs.empty())
         break;
       //!@ 如果未指定版本 => 使用当前最新版
@@ -67,20 +69,21 @@ void Browser::Init() {
       if (found == dirs.end()) {
         brwver = dirs.begin()->first;
       }
-      brw_module_pathname_ = fmt::format(R"({}/{}/{})", chromium_dir, brwver,
+      brw_module_pathname_ = Utfpp::u8_to_u16(
+          fmt::format(R"({}/{}/{})", Utfpp::u16_to_u8(chromium_dir),
+                      Utfpp::u16_to_u8(brwver),
 #if defined(__OSMAC__)
-                                         "/chrome.app/Contents/MacOS/chromium"
+                      "/chrome.app/Contents/MacOS/chromium"
 #elif defined(__OSWIN__)
-                                         "/chrome.exe"
+                      "/chrome.exe"
 #endif
-      );
+                      ));
     } while (0);
 
     if (!brwcfg_->Enable()) {
       ready_.store(true);
       break;
     }
-
     do {
       auto dir = config->GetXSCacheCfgsDir(brwkey);
       stl::File::WriteFile(config->GetXSCacheConfigureFName(brwkey),
@@ -96,12 +99,12 @@ void Browser::Init() {
           break;
         if (!brwcfg_->proxy_.valid())
           break;
-        auto dir = stl::Path::Mormalize(config->GetXSCacheExtsDir(
-            brwkey, "afgbmmdnakcefnkchckgelobigkbboci"));
+        auto dir = stl::Path::Normalize(config->GetXSCacheExtsDir(
+            brwkey, u"afgbmmdnakcefnkchckgelobigkbboci"));
         stl::Directory::Create(dir);
-        stl::File::WriteFile(dir + "/manifest.json",
+        stl::File::WriteFile(dir + u"/manifest.json",
                              brwcfg_->GetExtensionManifestAP());
-        stl::File::WriteFile(dir + "/background.js",
+        stl::File::WriteFile(dir + u"/background.js",
                              brwcfg_->GetExtensionBackgroundAP());
         brw_startup_args_.emplace_back(fmt::format(R"(--proxy-server={}:{})",
                                                    brwcfg_->proxy_.addr,
@@ -110,33 +113,35 @@ void Browser::Init() {
       do { //!@ fs
         if (!brwcfg_->fp_.Enable())
           break;
-        std::string dir = stl::Path::Mormalize(config->GetXSCacheExtsDir(
-            brwkey, "ebglcogbaklfalmoeccdjbmgfcacengf"));
+        std::u16string dir = stl::Path::Normalize(config->GetXSCacheExtsDir(
+            brwkey, u"ebglcogbaklfalmoeccdjbmgfcacengf"));
         stl::Directory::Create(dir);
-        stl::File::WriteFile(dir + "/manifest.json",
+        stl::File::WriteFile(dir + u"/manifest.json",
                              brwcfg_->GetExtensionManifestFPS());
-        stl::File::WriteFile(dir + "/content.js",
+        stl::File::WriteFile(dir + u"/content.js",
                              brwcfg_->GetExtensionContentFps());
-        stl::File::WriteFile(dir + "/background.js",
+        stl::File::WriteFile(dir + u"/background.js",
                              brwcfg_->GetExtensionBackgroundFps());
       } while (0);
       //!@ Install custom extensions
-      std::map<std::string, std::string> dirs, files;
-      stl::Directory::EnumU8(config->PathGet().chromium_extensions_dir, dirs,
-                             files, false);
+      std::map<std::u16string, std::u16string> dirs, files;
+      stl::Directory::EnumU16(config->PathGet().chromium_extensions_dir, dirs,
+                              files, false);
       if (files.empty())
         break;
 
-      const std::u16string u16extdir = stl::Path::Mormalize(
-          Utfpp::u8_to_u16(config->GetXSCacheExtsDir(brwkey)));
+      const std::u16string u16extdir =
+          stl::Path::Normalize(config->GetXSCacheExtsDir(brwkey));
       for (const auto &f : files) {
-        auto u16path = stl::Path::Mormalize(Utfpp::u8_to_u16(f.second));
+        auto u16path = stl::Path::Normalize(f.second);
         Zipcc::zipUnCompress(u16path, u16extdir);
+        LOG_INFO("{}", Utfpp::u16_to_u8(u16path));
+        LOG_INFO("{}", Utfpp::u16_to_u8(u16extdir));
         do { //!@ 自动填充扩展补丁
-          if (f.first.find("iopcliemaddhijhmjbecffinafojoofk") ==
-              std::string::npos)
+          if (f.first.find(u"iopcliemaddhijhmjbecffinafojoofk") ==
+              std::u16string::npos)
             break;
-          std::u16string content_js_path = stl::Path::Mormalize(
+          std::u16string content_js_path = stl::Path::Normalize(
               u16extdir + u"/iopcliemaddhijhmjbecffinafojoofk/content.js");
           std::string content_js = stl::File::ReadFile(content_js_path);
           if (content_js.empty())
@@ -151,7 +156,6 @@ void Browser::Init() {
         } while (0);
       }
     } while (0);
-
     do { //!@ userAgent
       if (brwcfg_->fp_.f_.vs_.navigator_.userAgent.empty())
         break;
@@ -167,11 +171,11 @@ void Browser::Init() {
           fmt::format(R"(--lang={})", brwcfg_->fp_.f_.vs_.navigator_.language);
       brw_startup_args_.emplace_back(node);
     } while (0);
-
     do { //!@ user-data-dir
       std::string node;
-      node = fmt::format(R"(--user-data-dir={})",
-                         stl::Path::Mormalize(chromium_user_data_dir));
+      node = fmt::format(
+          R"(--user-data-dir={})",
+          stl::Path::Normalize(Utfpp::u16_to_u8(chromium_user_data_dir)));
       brw_startup_args_.emplace_back(node);
     } while (0);
 
@@ -182,19 +186,17 @@ void Browser::Init() {
       for (const auto &url : brwcfg_->worker_.urls)
         brw_startup_args_.emplace_back(fmt::format(R"({})", url));
     } while (0);
-
     do { //!@ cookies
       if (brwcfg_->cookies_.sequence <= 0)
         break;
       std::string cookies_reqData = brwcfg_->cookies_.GetCookiesRequest();
       if (cookies_reqData.empty())
         break;
-      stl::File::WriteFile(fmt::format("{}/{}",
-                                       config->GetXSCacheRouteReqsDir(brwkey),
-                                       brwcfg_->cookies_.sequence),
-                           cookies_reqData);
+      std::u16string path =
+          config->GetXSCacheRouteReqsDir(brwkey) + u"/" +
+          Utfpp::u8_to_u16(std::to_string(brwcfg_->cookies_.sequence));
+      stl::File::WriteFile(path, cookies_reqData);
     } while (0);
-
     if (brwcfg_->develop_.enable_ && !brwcfg_->develop_.brwargs_.empty()) {
       brw_startup_args_.clear();
       brw_startup_args_.emplace_back(brwcfg_->develop_.brwargs_);
@@ -210,14 +212,16 @@ bool Browser::Open() {
   do {
     if (open_.load() || !ready_.load())
       break;
+    LOG_INFO("open -- {}", Utfpp::u16_to_u8(brw_module_pathname_));
     if (!stl::File::Exists(brw_module_pathname_))
       break;
     std::vector<const char *> startup_args;
     for (const auto &node : brw_startup_args_)
       startup_args.emplace_back(node.c_str());
     startup_args.emplace_back(nullptr);
-    int status = xs_sys_process_spawn(brw_module_pathname_.c_str(),
-                                      &startup_args[0], 1, &pid_);
+    int status =
+        xs_sys_process_spawn(Utfpp::u16_to_u8(brw_module_pathname_).c_str(),
+                             &startup_args[0], 1, &pid_);
     if (status != 0)
       break;
     open_.store(true);

@@ -209,7 +209,7 @@ void App::OnThreadEvtRecordingBoxSelectionFinished(wxThreadEvent &evt) {
 }
 void App::OnThreadEvtBroadcastEvent(wxThreadEvent &evt) {
   wxCommandEvent route = evt.GetPayload<wxCommandEvent>();
-  evts_.push(route);
+  evts_.push(new wxCommandEvent(route));
 }
 void App::EnumerateChildren(wxWindow *parent,
                             std::unordered_set<wxWindow *> &childs) const {
@@ -246,29 +246,32 @@ void App::EventProc() {
       if (evts_.empty())
         break;
       auto evts = evts_.pops();
-      frames_.iterate([&](wxFrame *frame) {
-        do {
+      for (wxCommandEvent *evt : evts) {
+        std::set<wxWindow *> cache;
+        frames_.iterate([&](wxFrame *frame) {
+          wxWindow *frame_window = wxDynamicCast(frame, wxWindow);
+          if (cache.find(frame_window) == cache.end()) {
+            evt->SetEventObject(frame);
+            wxPostEvent(frame, *evt);
+            cache.emplace(frame_window);
+          }
           std::unordered_set<wxWindow *> childs;
           EnumerateChildren(frame, childs);
-          if (childs.empty())
-            break;
-          for (auto &evt : evts) {
-            evt.SetEventObject(frame);
-            wxPostEvent(frame, evt);
-            for (const auto &child : childs) {
-              /*if (evt.GetEventObject() == child)
-                continue;*/
-              evt.SetEventObject(child);
-              wxPostEvent(child, evt);
-            }
+          for (wxWindow *child : childs) {
+            auto exists = cache.find(child);
+            if (exists != cache.end())
+              continue;
+            cache.emplace(child);
+            evt->SetEventObject(child);
+            wxPostEvent(child, *evt);
           }
-        } while (0);
-      });
-
+        });
+        delete evt;
+      }
     } while (0);
     if (!open_.load())
       break;
-    std::this_thread::sleep_for(std::chrono::milliseconds(500));
+    std::this_thread::sleep_for(std::chrono::milliseconds(200));
   } while (1);
 }
 /////////////////////////////////////////////////////////////////////////////

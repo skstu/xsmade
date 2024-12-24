@@ -7,7 +7,7 @@ public:
   DrawArrowTool(wxWindow *parent, wxWindowID id, const wxBitmapBundle &bitmap,
                 const wxPoint &pos = wxDefaultPosition,
                 const wxSize &size = wxDefaultSize, long style = 0,
-                  const wxValidator &validator = wxDefaultValidator,
+                const wxValidator &validator = wxDefaultValidator,
                 const wxString &name = wxASCII_STR(wxButtonNameStr));
   virtual ~DrawArrowTool();
 

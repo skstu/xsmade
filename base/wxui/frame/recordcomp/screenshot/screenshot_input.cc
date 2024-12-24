@@ -1,25 +1,259 @@
 #include <wxui.h>
-FrameScreenShot::WorkSpace::WorkSpace(wxWindow *parent, wxWindowID id,
-                                      const wxString &title, const wxPoint &pos,
-                                      const wxSize &size, long style,
-                                      const wxString &name)
+
+FrameScreenShot::WorkSpace::TextInputCtrl::TextInputCtrl(
+    wxWindow *parent, wxWindowID id, const wxString &value, const wxPoint &pos,
+    const wxSize &size, long style)
+    : wxRichTextCtrl(parent, id, value, pos, size,
+                     wxTE_MULTILINE | wxBORDER_NONE) {
+  Bind(wxEVT_PAINT, &FrameScreenShot::WorkSpace::TextInputCtrl::OnPaint, this);
+  Bind(wxEVT_TEXT, &FrameScreenShot::WorkSpace::TextInputCtrl::OnTextChanged,
+       this);
+  // 动态文本输入
+  // 禁止背景绘制，允许透明背景
+  SetBackgroundStyle(wxBG_STYLE_CUSTOM);
+}
+FrameScreenShot::WorkSpace::TextInputCtrl::~TextInputCtrl() {
+  Unbind(wxEVT_PAINT, &FrameScreenShot::WorkSpace::TextInputCtrl::OnPaint,
+         this);
+  Unbind(wxEVT_TEXT, &FrameScreenShot::WorkSpace::TextInputCtrl::OnTextChanged,
+         this);
+}
+
+// 设置背景图片
+void FrameScreenShot::WorkSpace::TextInputCtrl::SetBackgroundBitmap(
+    wxImage *image) {
+  if (image && image->IsOk()) {
+    // 设置控件大小为图片大小
+    SetSize(image->GetSize());
+    SK_DELETE_PTR(backgroundBitmap_);
+    backgroundBitmap_ = new wxBitmap(*image);
+    Refresh();
+    Update();
+  }
+}
+
+void FrameScreenShot::WorkSpace::TextInputCtrl::OnTextChanged(
+    wxCommandEvent &event) {
+#if 0
+  // 限制输入内容到客户区
+  int clientWidth, clientHeight;
+  GetClientSize(&clientWidth, &clientHeight);
+
+  wxClientDC dc(this);
+  dc.SetFont(GetFont());
+
+  // 获取单个字符的宽度和高度
+  int charWidth, charHeight;
+  dc.GetTextExtent(" ", &charWidth, &charHeight);
+
+  int maxCharsPerLine = clientWidth / charWidth;
+  int maxLines = clientHeight / charHeight;
+
+  // 限制内容
+  wxString value = GetValue();
+  wxArrayString lines = wxStringTokenize(value, "\n");
+
+  wxString newValue;
+  for (size_t i = 0; i < lines.size() && i < static_cast<size_t>(maxLines);
+       ++i) {
+    wxString line = lines[i];
+    if (line.Length() > static_cast<size_t>(maxCharsPerLine)) {
+      line = line.Mid(0, maxCharsPerLine);
+    }
+    newValue += line + "\n";
+  }
+
+  if (newValue != value) {
+    SetValue(newValue);
+    SetInsertionPointEnd(); // 保持光标位置在末尾
+  }
+  event.Skip();
+#endif
+  // 在文本更改时，刷新界面
+  Refresh();
+}
+
+// 处理绘制事件
+void FrameScreenShot::WorkSpace::TextInputCtrl::OnPaint(wxPaintEvent &evt) {
+  wxPaintDC dc(this);
+
+  // 绘制背景图片，如果有的话
+  if (backgroundBitmap_ && backgroundBitmap_->IsOk()) {
+    dc.DrawBitmap(*backgroundBitmap_, 0, 0, true);
+  }
+
+  // 设置字体和文本颜色
+  wxFont font(14, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL,
+              wxFONTWEIGHT_NORMAL);
+  dc.SetFont(font);
+  dc.SetTextForeground(*wxRED); // 设置文本颜色
+
+  // 获取控件文本并绘制
+  wxString text = GetValue();
+  wxSize textSize = dc.GetTextExtent(text);
+
+  // 计算文本位置并绘制
+  // int textX = 5;
+  // int textY = (GetClientSize().y - textSize.y) / 2; // 垂直居中
+  dc.DrawText(text, 20, 0);
+
+  // 允许 wxRichTextCtrl 继续绘制其文本
+  // evt.Skip();
+}
+
+#if 0
+namespace {
+
+#if 0
+class TransparentTextCtrl : public wxTextCtrl {
+public:
+  TransparentTextCtrl(wxWindow *parent, wxWindowID id, const wxString &value,
+                      const wxPoint &pos = wxDefaultPosition,
+                      const wxSize &size = wxDefaultSize, long style = 0)
+      : wxTextCtrl(parent, id, value, pos, size,
+                   wxTE_MULTILINE | wxTE_RICH | wxBORDER_NONE) {
+    // Set the background style to wxBG_STYLE_PAINT
+    SetBackgroundStyle(wxBG_STYLE_PAINT);
+    // Set the text color to red
+    SetDefaultStyle(wxTextAttr(*wxRED));
+  }
+
+protected:
+  void OnPaint(wxPaintEvent &event) {
+    wxPaintDC dc(this);
+    PrepareDC(dc);
+
+    // Clear the background
+    dc.SetBrush(*wxTRANSPARENT_BRUSH); // Transparent brush
+    dc.SetPen(*wxTRANSPARENT_PEN);     // Transparent pen
+    dc.DrawRectangle(GetClientRect()); // Draw the background rectangle
+
+    // Draw the text
+    wxFont font(14, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL,
+                wxFONTWEIGHT_NORMAL);
+    dc.SetFont(font);
+    dc.SetTextForeground(*wxRED); // Set text color
+
+    // Calculate the text size and adjust position accordingly
+    wxSize textSize = dc.GetTextExtent(GetValue());
+    int textX = 5;
+    int textY = (GetClientSize().y - textSize.y) / 2; // Center vertically
+    dc.DrawText(GetValue(), textX, textY);
+
+    // No need to manually draw the cursor, let wxTextCtrl handle it
+    // Remove the commented cursor code block
+
+    event.Skip(); // Ensure normal event processing
+  }
+
+  wxDECLARE_EVENT_TABLE();
+};
+
+wxBEGIN_EVENT_TABLE(TransparentTextCtrl, wxTextCtrl)
+    EVT_PAINT(TransparentTextCtrl::OnPaint) wxEND_EVENT_TABLE()
+#endif
+class TransparentRichTextCtrl : public wxRichTextCtrl {
+public:
+  TransparentRichTextCtrl(wxWindow *parent, wxWindowID id,
+                          const wxString &value,
+                          const wxPoint &pos = wxDefaultPosition,
+                          const wxSize &size = wxDefaultSize, long style = 0)
+      : wxRichTextCtrl(parent, id, value, pos, size,
+                       wxTE_MULTILINE | wxBORDER_NONE) {
+    Bind(wxEVT_PAINT, &TransparentRichTextCtrl::OnPaint, this);
+    Bind(wxEVT_TEXT, &TransparentRichTextCtrl::OnTextChanged,
+         this); // 动态文本输入
+    // 禁止背景绘制，允许透明背景
+    SetBackgroundStyle(wxBG_STYLE_CUSTOM);
+  }
+
+  virtual ~TransparentRichTextCtrl() {
+    Unbind(wxEVT_PAINT, &TransparentRichTextCtrl::OnPaint, this);
+    Unbind(wxEVT_TEXT, &TransparentRichTextCtrl::OnTextChanged, this);
+  }
+
+  // 设置背景图片
+  void SetBackgroundBitmap(wxImage *image) {
+    if (image && image->IsOk()) {
+      // 设置控件大小为图片大小
+      SetSize(image->GetSize());
+      if (backgroundBitmap_) {
+        delete backgroundBitmap_;
+      }
+      backgroundBitmap_ = new wxBitmap(*image);
+      Refresh();
+      Update();
+    }
+  }
+
+  // 动态更新文本时调用
+  void OnTextChanged(wxCommandEvent &event) {
+    // 在文本更改时，刷新界面
+    Refresh();
+  }
+
+protected:
+  // 处理绘制事件
+  void OnPaint(wxPaintEvent &evt) {
+    wxPaintDC dc(this);
+
+    // 绘制背景图片，如果有的话
+    if (backgroundBitmap_ && backgroundBitmap_->IsOk()) {
+      dc.DrawBitmap(*backgroundBitmap_, 0, 0, true);
+    }
+
+    // 设置字体和文本颜色
+    wxFont font(14, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL,
+                wxFONTWEIGHT_NORMAL);
+    dc.SetFont(font);
+    dc.SetTextForeground(*wxRED); // 设置文本颜色
+
+    // 获取控件文本并绘制
+    wxString text = GetValue();
+    wxSize textSize = dc.GetTextExtent(text);
+
+    // 计算文本位置并绘制
+    // int textX = 5;
+    // int textY = (GetClientSize().y - textSize.y) / 2; // 垂直居中
+    dc.DrawText(text, 20, 0);
+
+    // 允许 wxRichTextCtrl 继续绘制其文本
+    // evt.Skip();
+  }
+
+private:
+  wxBitmap *backgroundBitmap_ = nullptr;
+};
+
+} // namespace
+FrameScreenShot::WorkSpaceInput::WorkSpaceInput(wxWindow *parent, wxWindowID id,
+                                                const wxString &title,
+                                                const wxPoint &pos,
+                                                const wxSize &size, long style,
+                                                const wxString &name)
     : IWorkSpace(parent, id, title, pos, size,
                  wxFRAME_SHAPED | wxNO_BORDER | wxFRAME_NO_TASKBAR, name) {
-  // SetBackgroundColour(wxColour(183, 110, 121));
-  // Color color(20, 255, 215, 0);//!@ 土豪金
-  text_input_ctrl_ = new TextInputCtrl(this, wxID_ANY, wxT(""));
-  text_input_ctrl_->Show(false);
+  wxImage *bgk = nullptr;
+  wxComm::LoadImg(R"(C:\Users\k34ub\Desktop\666.png)", &bgk);
+  bgk->Rescale(GetSize().GetWidth(), GetSize().GetHeight());
+  auto text_ctrl = new TransparentRichTextCtrl(this, wxID_ANY, wxT(""),
+                                               wxPoint(0, 0), GetSize());
+  text_ctrl->SetBackgroundBitmap(bgk);
+  //   SetBackgroundColour(wxColour(183, 110, 121));
+  //			// Color color(20, 255, 215, 0);//!@ 土豪金
+  // C:\Users\k34ub\Desktop\666.png
   is_allow_move_.store(true);
   // SetBackgroundColour(wxColour(183, 110, 121));
   SetTransparent(255);
   wxEvtHandler::Bind(wxEVT_NotifyType,
-                     &FrameScreenShot::WorkSpace::OnDrawToolbar, this);
+                     &FrameScreenShot::WorkSpaceInput::OnDrawToolbar, this);
+  Center();
 }
-FrameScreenShot::WorkSpace::~WorkSpace() {
+FrameScreenShot::WorkSpaceInput::~WorkSpaceInput() {
   wxEvtHandler::Unbind(wxEVT_NotifyType,
-                       &FrameScreenShot::WorkSpace::OnDrawToolbar, this);
+                       &FrameScreenShot::WorkSpaceInput::OnDrawToolbar, this);
 }
-void FrameScreenShot::WorkSpace::OnMouseMove(wxMouseEvent &event) {
+void FrameScreenShot::WorkSpaceInput::OnMouseMove(wxMouseEvent &event) {
   do {
     if (OnUserDraw(event))
       break;
@@ -148,12 +382,12 @@ void FrameScreenShot::WorkSpace::OnMouseMove(wxMouseEvent &event) {
     } while (0);
   } while (0);
 }
-void FrameScreenShot::WorkSpace::OnMove(wxMoveEvent &evt) {
+void FrameScreenShot::WorkSpaceInput::OnMove(wxMoveEvent &evt) {
   // evt.SetPosition(wxGetMousePosition());
   OnWorkSpaceSizeChanged(GetRect());
   evt.Skip();
 }
-void FrameScreenShot::WorkSpace::OnMouseLeftDown(wxMouseEvent &event) {
+void FrameScreenShot::WorkSpaceInput::OnMouseLeftDown(wxMouseEvent &event) {
   do {
     if (OnUserDraw(event))
       break;
@@ -168,7 +402,7 @@ void FrameScreenShot::WorkSpace::OnMouseLeftDown(wxMouseEvent &event) {
     mouse_left_down_rect_ = GetRect();
   } while (0);
 }
-void FrameScreenShot::WorkSpace::OnMouseLeftUp(wxMouseEvent &event) {
+void FrameScreenShot::WorkSpaceInput::OnMouseLeftUp(wxMouseEvent &event) {
   do {
     if (OnUserDraw(event))
       break;
@@ -178,7 +412,8 @@ void FrameScreenShot::WorkSpace::OnMouseLeftUp(wxMouseEvent &event) {
     is_dragging_.store(false);
   } while (0);
 }
-void FrameScreenShot::WorkSpace::OnWorkSpaceSizeChanged(const wxRect &rect) {
+void FrameScreenShot::WorkSpaceInput::OnWorkSpaceSizeChanged(
+    const wxRect &rect) {
   do {
     auto app = wxDynamicCast(wxApp::GetInstance(), App);
     IFrameComponent *frame_screenshot =
@@ -188,15 +423,15 @@ void FrameScreenShot::WorkSpace::OnWorkSpaceSizeChanged(const wxRect &rect) {
     frame_screenshot->OnWorkspacePosUpdate(rect);
   } while (0);
 }
-void FrameScreenShot::WorkSpace::OnSize(wxSizeEvent &event) {
+void FrameScreenShot::WorkSpaceInput::OnSize(wxSizeEvent &event) {
   Refresh();
   OnWorkSpaceSizeChanged(GetRect());
   event.Skip();
 }
-void FrameScreenShot::WorkSpace::OnEraseBackground(wxEraseEvent &event) {
+void FrameScreenShot::WorkSpaceInput::OnEraseBackground(wxEraseEvent &event) {
   event.Skip();
 }
-void FrameScreenShot::WorkSpace::OnPaint(wxPaintEvent &evt) {
+void FrameScreenShot::WorkSpaceInput::OnPaint(wxPaintEvent &evt) {
   do {
     if (!backgroundBitmap_)
       break;
@@ -238,7 +473,7 @@ void FrameScreenShot::WorkSpace::OnPaint(wxPaintEvent &evt) {
 
   evt.Skip();
 }
-void FrameScreenShot::WorkSpace::DrawSave() {
+void FrameScreenShot::WorkSpaceInput::DrawSave() {
   wxRect window = GetRect();
   xs_image_stream_t *image_stream = nullptr;
   xs_sys_capturescreen(
@@ -251,79 +486,9 @@ void FrameScreenShot::WorkSpace::DrawSave() {
   SetImage(wximg);
 }
 
-bool FrameScreenShot::WorkSpace::OnUserDraw(const wxMouseEvent &evt) {
+bool FrameScreenShot::WorkSpaceInput::OnUserDraw(const wxMouseEvent &evt) {
   bool result = true;
   switch (draw_mode_.load()) {
-  case CommandTool::TOOL_SCREENSHOT_TEXT: {
-    if (evt.LeftDown()) {
-      if (!HasCapture()) {
-        CaptureMouse();
-        // 获取鼠标点击位置，作为文本输入的起始点
-        wxPoint start_text_position_ = evt.GetPosition();
-
-
-
-        // 计算字符填充数量
-        int clientWidth, clientHeight;
-        text_input_ctrl_->GetClientSize(&clientWidth, &clientHeight);
-
-        wxClientDC dc(text_input_ctrl_);
-        dc.SetFont(text_input_ctrl_->GetFont());
-
-        // 获取单个字符的宽度和高度
-        int charWidth, charHeight;
-        dc.GetTextExtent(" ", &charWidth, &charHeight);
-
-        int charsPerLine = clientWidth / charWidth;
-        int lines = clientHeight / charHeight;
-
-        // 填充空格字符
-        wxString filler;
-        for (int i = 0; i < lines; ++i)
-        {
-            filler += wxString(' ', charsPerLine) + "\n";
-        }
-        text_input_ctrl_->SetValue(filler);
-
-        // 设置光标位置
-        int targetPosition = 50; // 假设要移动到第50个字符
-        if (targetPosition < text_input_ctrl_->GetLastPosition())
-        {
-            text_input_ctrl_->SetInsertionPoint(targetPosition);
-        }
-
-        // 设置焦点（可选）
-        text_input_ctrl_->SetFocus();
-
-
-
-        text_input_ctrl_->SetInsertionPoint(20);
-        if (!text_input_ctrl_->IsShown()) {
-          text_input_ctrl_->Show(true);
-        }
-      }
-    } else if (evt.LeftUp()) {
-      if (HasCapture()) {
-        ReleaseMouse();
-        DrawSave();
-        overlay_.Reset();
-      }
-    } else if (evt.Dragging()) {
-#if 0
-      // 画图逻辑（假设您还想在鼠标拖动时绘制一些东西）
-      draw_arbitrary_cache_.push_back(evt.GetPosition());
-      wxOverlayDC dc(overlay_, this);
-      PrepareDC(dc);
-      dc.Clear();
-
-      // 设置画笔和画刷
-      dc.SetPen(wxPen(*wxRED, 1));  // 红色画笔
-      dc.SetBrush(wxBrush(*wxRED)); // 红色填充
-      draw_arbitrary_cache_.iterate(
-          [&](wxPoint &pt) { dc.DrawPoint(pt.x, pt.y); });
-#endif
-    }
-  } break;
   case CommandTool::TOOL_SCREENSHOT_ROUND: {
     if (evt.LeftDown()) {
       if (!HasCapture()) {
@@ -464,6 +629,59 @@ bool FrameScreenShot::WorkSpace::OnUserDraw(const wxMouseEvent &evt) {
       dc.DrawPolygon(3, arrowPoints); // 绘制一个三角形
     }
   } break;
+  case CommandTool::TOOL_SCREENSHOT_TEXT: {
+    if (evt.LeftDown()) {
+      if (!HasCapture()) {
+        CaptureMouse();
+        // 获取鼠标点击位置，作为文本输入的起始点
+        wxPoint start_text_position_ = evt.GetPosition();
+
+        // auto m_textCtrl = new TransparentTextCtrl(
+        //     this, wxID_ANY, "", start_text_position_, wxSize(200, 50));
+        // // m_textCtrl->SetBackgroundColour(
+        // //     wxColour(255, 255, 255, 0));           // 设置透明背景
+        // // m_textCtrl->SetForegroundColour(*wxBLACK); // 设置文本颜色
+        // m_textCtrl->Show();
+
+        // // 创建一个新的 wxTextCtrl，设置透明背景
+        // auto m_textCtrl = new wxTextCtrl(
+        //     this, wxID_ANY, "", start_text_position_, wxSize(200, 30),
+        //     wxTE_MULTILINE | wxBORDER_NONE | wxTE_RICH);
+        // m_textCtrl->SetBackgroundColour(
+        //     wxColour(255, 255, 255, 0));                    // 设置透明背景
+        // m_textCtrl->SetForegroundColour(wxColour(0, 0, 0)); // 设置文本颜色
+        // m_textCtrl->SetInsertionPointEnd(); // 默认光标位置在文本末尾
+
+        // m_textCtrl->Refresh();
+        // // 将焦点设置到 TextCtrl
+        // m_textCtrl->SetFocus();
+        // 创建透明文本控件
+        // TransparentTextCtrl *m_transparentTextCtrl = new TransparentTextCtrl(
+        //    this, wxID_ANY, wxT(""), start_text_position_, wxSize(200, 30));
+        // m_transparentTextCtrl->SetFocusToTextCtrl();
+      }
+    } else if (evt.LeftUp()) {
+      if (HasCapture()) {
+        ReleaseMouse();
+        DrawSave();
+        overlay_.Reset();
+      }
+    } else if (evt.Dragging()) {
+#if 0
+      // 画图逻辑（假设您还想在鼠标拖动时绘制一些东西）
+      draw_arbitrary_cache_.push_back(evt.GetPosition());
+      wxOverlayDC dc(overlay_, this);
+      PrepareDC(dc);
+      dc.Clear();
+
+      // 设置画笔和画刷
+      dc.SetPen(wxPen(*wxRED, 1));  // 红色画笔
+      dc.SetBrush(wxBrush(*wxRED)); // 红色填充
+      draw_arbitrary_cache_.iterate(
+          [&](wxPoint &pt) { dc.DrawPoint(pt.x, pt.y); });
+#endif
+    }
+  } break;
   case CommandTool::TOOL_SCREENSHOT_EIDT: { //!@ brush
     if (evt.LeftDown()) {
       if (!HasCapture()) {
@@ -550,14 +768,10 @@ bool FrameScreenShot::WorkSpace::OnUserDraw(const wxMouseEvent &evt) {
   // draw_mode_.store(CommandTool::TOOL_NULL);
   return result;
 }
-void FrameScreenShot::WorkSpace::OnDrawToolbar(wxCommandEvent &evt) {
+void FrameScreenShot::WorkSpaceInput::OnDrawToolbar(wxCommandEvent &evt) {
   if (NotifyEventID::EVT_NOTIFY_DRAWTOOL_ACTIVATE ==
       NotifyEventID(evt.GetId())) {
     draw_mode_.store(CommandTool(evt.GetInt()));
-    if (draw_mode_.load() != CommandTool::TOOL_SCREENSHOT_TEXT &&
-        text_input_ctrl_) {
-      text_input_ctrl_->Show(false);
-    }
     switch (draw_mode_.load()) {
     case CommandTool::TOOL_SCREENSHOT_ARROW: {
       SetCursor(wxCursor(wxCURSOR_RIGHT_ARROW));
@@ -605,8 +819,8 @@ void FrameScreenShot::WorkSpace::OnDrawToolbar(wxCommandEvent &evt) {
     }
   }
 }
-void FrameScreenShot::WorkSpace::SetImage(const wxImage *image,
-                                          const bool &cache /*= true*/) {
+void FrameScreenShot::WorkSpaceInput::SetImage(const wxImage *image,
+                                               const bool &cache /*= true*/) {
   do {
     if (!image)
       break;
@@ -615,12 +829,10 @@ void FrameScreenShot::WorkSpace::SetImage(const wxImage *image,
     SetSize(image->GetSize());
     SK_DELETE_PTR(backgroundBitmap_);
     backgroundBitmap_ = new wxBitmap(*image);
-    if (text_input_ctrl_) {
-      text_input_ctrl_->SetBackgroundBitmap(const_cast<wxImage *>(image));
-    }
     Refresh();
     Update();
     if (cache)
       draw_success_cache_.push_back(const_cast<wxImage *>(image));
   } while (0);
 }
+#endif

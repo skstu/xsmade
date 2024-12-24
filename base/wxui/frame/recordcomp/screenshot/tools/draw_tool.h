@@ -11,15 +11,15 @@ public:
             const wxString &name = wxASCII_STR(wxButtonNameStr));
   virtual ~IDrawTool();
 
+public:
+  virtual bool Activate() const;
+
 protected:
   virtual void OnClicked(wxCommandEvent &evt);
-  virtual void OnNotify(wxCommandEvent &evt);
+  virtual void OnActivate(wxCommandEvent &);
 
 protected:
   std::atomic_bool pressed_ = false;
-
-private:
-  wxDECLARE_EVENT_TABLE();
 };
 } // namespace screenshot
 /// /*_ Memade®（新生™） _**/

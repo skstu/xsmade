@@ -167,7 +167,7 @@ void DrawRectangleTool::OnClicked(wxCommandEvent &evt) {
     return;
   sizer->Clear(true);
   pressed_.store(!pressed_.load());
-  if (!pressed_.load()) {
+  if (pressed_.load()) {
     do {
       wxArrayString arrItems_pixel_;
       arrItems_pixel_.Add("1");
@@ -201,10 +201,13 @@ void DrawRectangleTool::OnClicked(wxCommandEvent &evt) {
 
       sizer->Add(combo_color_, 0, wxALL, 0);
     } while (0);
-
-    wxCommandEvent routeEvt(wxEVT_NotifyType, GetId());
-    Global::SendEvent(routeEvt);
   }
+
   parent->RefreshToolbar();
+
+  wxCommandEvent notify(wxEVT_NotifyType,
+                        NotifyEventID::EVT_NOTIFY_DRAWTOOL_ACTIVATE);
+  notify.SetInt(pressed_.load() ? GetId() : CommandTool::TOOL_SCREENSHOT_NULL);
+  Global::SendEvent(notify);
 }
 } // namespace screenshot

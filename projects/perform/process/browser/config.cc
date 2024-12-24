@@ -10,7 +10,11 @@ BrowserConfig::~BrowserConfig() {
 void BrowserConfig::Init() {
   PathsInit();
   SettingsInit();
-  LOG_INIT(paths_.logs_dir + "perform.log");
+  LOG_INIT(paths_.logs_dir + u"/perform.log");
+  char *proc_path;
+  size_t proc_path_len = 0;
+  xs_sys_process_getpath(&proc_path, &proc_path_len);
+  LOG_INFO("{}", std::string(proc_path, proc_path_len));
 }
 
 void BrowserConfig::UnInit() {
@@ -19,7 +23,7 @@ void BrowserConfig::UnInit() {
 void BrowserConfig::RouteConfigureInit(const unsigned int &server_port) const {
   std::lock_guard<std::mutex> lock{*mtx_};
   do {
-    const std::string route_path = paths_.brw_projects_route_file;
+    const std::u16string route_path = paths_.brw_projects_route_file;
 
     rapidjson::Document doc;
     std::string route_buffer = stl::File::ReadFile(route_path);
@@ -44,10 +48,14 @@ void BrowserConfig::RouteConfigureInit(const unsigned int &server_port) const {
     stl::File::WriteFile(route_path, Json::toString(doc));
   } while (0);
 }
-std::string BrowserConfig::GetBrwUserDataDir(const std::string &brwKey) const {
-  std::string result;
+std::u16string
+BrowserConfig::GetBrwUserDataDir(const std::u16string &brwKey) const {
+  std::u16string result;
   std::lock_guard<std::mutex> lock{*mtx_};
-  result = fmt::format(R"({}/{}/)", paths_.chromium_user_data_dir, brwKey);
+  auto u8 =
+      fmt::format(R"({}/{}/)", Utfpp::u16_to_u8(paths_.chromium_user_data_dir),
+                  Utfpp::u16_to_u8(brwKey));
+  result = Utfpp::u8_to_u16(u8);
   return result;
 }
 /*
@@ -59,80 +67,97 @@ std::string BrowserConfig::GetBrwUserDataDir(const std::string &brwKey) const {
         chromium_xscache_statistics_dir; //
    "/userdata/cache/${key}/Default/xscache/statis/"
 */
-std::string BrowserConfig::GetXSCacheExtsDir(const std::string &brwKey,
-                                             const std::string &extId) const {
-  std::string result;
+std::u16string
+BrowserConfig::GetXSCacheExtsDir(const std::u16string &brwKey,
+                                 const std::u16string &extId) const {
+  std::u16string result;
   std::lock_guard<std::mutex> lock{*mtx_};
-  result = fmt::format(R"({}/{}/Default/XSCache/exts/{}/)",
-                       paths_.chromium_user_data_dir, brwKey, extId);
+  auto u8 = fmt::format(R"({}/{}/Default/XSCache/exts/{}/)",
+                        Utfpp::u16_to_u8(paths_.chromium_user_data_dir),
+                        Utfpp::u16_to_u8(brwKey), Utfpp::u16_to_u8(extId));
+  result = Utfpp::u8_to_u16(u8);
   stl::Directory::Create(result);
   return result;
 }
-std::string
-BrowserConfig::GetXSCacheRouteReqsDir(const std::string &brwKey) const {
-  std::string result;
+std::u16string
+BrowserConfig::GetXSCacheRouteReqsDir(const std::u16string &brwKey) const {
+  std::u16string result;
   std::lock_guard<std::mutex> lock{*mtx_};
-  result = fmt::format(R"({}/{}/Default/XSCache/route/reqs/)",
-                       paths_.chromium_user_data_dir, brwKey);
+  auto u8result = fmt::format(R"({}/{}/Default/XSCache/route/reqs/)",
+                              Utfpp::u16_to_u8(paths_.chromium_user_data_dir),
+                              Utfpp::u16_to_u8(brwKey));
+  result = Utfpp::u8_to_u16(u8result);
   stl::Directory::Create(result);
   return result;
 }
-std::string
-BrowserConfig::GetXSCacheRouteRepsDir(const std::string &brwKey) const {
-  std::string result;
+std::u16string
+BrowserConfig::GetXSCacheRouteRepsDir(const std::u16string &brwKey) const {
+  std::u16string result;
   std::lock_guard<std::mutex> lock{*mtx_};
-  result = fmt::format(R"({}/{}/Default/XSCache/route/reps/)",
-                       paths_.chromium_user_data_dir, brwKey);
+  auto u8result = fmt::format(R"({}/{}/Default/XSCache/route/reps/)",
+                              Utfpp::u16_to_u8(paths_.chromium_user_data_dir),
+                              Utfpp::u16_to_u8(brwKey));
+  result = Utfpp::u8_to_u16(u8result);
   stl::Directory::Create(result);
   return result;
 }
-std::string
-BrowserConfig::GetXSCacheConfigureFName(const std::string &brwKey) const {
-  std::string result;
+std::u16string
+BrowserConfig::GetXSCacheConfigureFName(const std::u16string &brwKey) const {
+  std::u16string result;
   std::lock_guard<std::mutex> lock{*mtx_};
-  result = fmt::format(R"({}/{}/Default/XSCache/cfgs/configure.json)",
-                       paths_.chromium_user_data_dir, brwKey);
+  auto u8result = fmt::format(R"({}/{}/Default/XSCache/cfgs/configure.json)",
+                              Utfpp::u16_to_u8(paths_.chromium_user_data_dir),
+                              Utfpp::u16_to_u8(brwKey));
+  result = Utfpp::u8_to_u16(u8result);
   stl::Directory::Create(stl::Path::PathnameToPath(result));
   return result;
 }
-std::string BrowserConfig::GetXSCacheExtsDir(const std::string &brwKey) const {
-  std::string result;
+std::u16string
+BrowserConfig::GetXSCacheExtsDir(const std::u16string &brwKey) const {
+  std::u16string result;
   std::lock_guard<std::mutex> lock{*mtx_};
-  result = fmt::format(R"({}/{}/Default/XSCache/exts/)",
-                       paths_.chromium_user_data_dir, brwKey);
+  auto u8result = fmt::format(R"({}/{}/Default/XSCache/exts/)",
+                              Utfpp::u16_to_u8(paths_.chromium_user_data_dir),
+                              Utfpp::u16_to_u8(brwKey));
+  result = Utfpp::u8_to_u16(u8result);
   stl::Directory::Create(result);
   return result;
 }
-std::string BrowserConfig::GetXSCacheCfgsDir(const std::string &brwKey) const {
-  std::string result;
+std::u16string
+BrowserConfig::GetXSCacheCfgsDir(const std::u16string &brwKey) const {
+  std::u16string result;
   std::lock_guard<std::mutex> lock{*mtx_};
-  result = fmt::format(R"({}/{}/Default/XSCache/cfgs/)",
-                       paths_.chromium_user_data_dir, brwKey);
+  auto u8result = fmt::format(R"({}/{}/Default/XSCache/cfgs/)",
+                              Utfpp::u16_to_u8(paths_.chromium_user_data_dir),
+                              Utfpp::u16_to_u8(brwKey));
+  result = Utfpp::u8_to_u16(u8result);
   stl::Directory::Create(result);
   return result;
 }
-std::string
-BrowserConfig::GetXSCacheStatisDir(const std::string &brwKey) const {
-  std::string result;
+std::u16string
+BrowserConfig::GetXSCacheStatisDir(const std::u16string &brwKey) const {
+  std::u16string result;
   std::lock_guard<std::mutex> lock{*mtx_};
-  result = fmt::format(R"({}/{}/Default/XSCache/statis/)",
-                       paths_.chromium_user_data_dir, brwKey);
+  auto u8result = fmt::format(R"({}/{}/Default/XSCache/statis/)",
+                              Utfpp::u16_to_u8(paths_.chromium_user_data_dir),
+                              Utfpp::u16_to_u8(brwKey));
+  result = Utfpp::u8_to_u16(u8result);
   stl::Directory::Create(result);
   return result;
 }
-void BrowserConfig::XSCacheClean(const std::string &brwKey) const {
+void BrowserConfig::XSCacheClean(const std::u16string &brwKey) const {
   std::lock_guard<std::mutex> lock{*mtx_};
   if (!brwKey.empty()) {
-    std::string xscache_dir = fmt::format(
-        R"({}/{}/Default/XSCache/)", paths_.chromium_user_data_dir, brwKey);
-    stl::Directory::RemoveAllU8(xscache_dir);
+    std::u16string path = stl::Path::Normalize(
+        paths_.chromium_user_data_dir + u"/" + brwKey + u"/Default/XSCache/");
+    stl::Directory::RemoveAllU16(path);
   }
 }
 unsigned int BrowserConfig::RouteConfigureGetClientPort() const {
   unsigned int result = 0;
   std::lock_guard<std::mutex> lock{*mtx_};
   do {
-    std::string path = paths_.brw_projects_route_file;
+    std::u16string path = paths_.brw_projects_route_file;
     if (!stl::File::Exists(path))
       break;
     std::string route_buffer = stl::File::ReadFile(path);
@@ -149,8 +174,9 @@ unsigned int BrowserConfig::RouteConfigureGetClientPort() const {
   } while (0);
   return result;
 }
-std::string BrowserConfig::CreateBrwCloseNotifyPak(const std::string &brwKey) {
-  std::string result = fmt::format(R"("key":"{}")", brwKey);
+std::string
+BrowserConfig::CreateBrwCloseNotifyPak(const std::u16string &brwKey) {
+  std::string result = fmt::format(R"("key":"{}")", Utfpp::u16_to_u8(brwKey));
   result.insert(0, "{");
   result.append("}");
   return result;
@@ -168,24 +194,21 @@ void BrowserConfig::PathsInit() {
     char *path = nullptr;
     size_t path_size = 0;
     xs_sys_get_appdata_path(&path, &path_size);
-    paths_.root_dir = std::string(path, path_size);
-    paths_.root_dir.append(fmt::format(R"(/{}/)", project_name_));
+    paths_.root_dir =
+        stl::Path::Normalize(Utfpp::u8_to_u16(std::string(path, path_size)));
     xs_sys_free((void **)&path);
-#if 0
-    xs_sys_process_getpath(&path, &path_size);
-    paths_.root_dir = stl::Path::PathnameToPath(std::string(path, path_size));
-    xs_sys_free((void **)&path);
-#endif
-    paths_.logs_dir = paths_.root_dir + "/logs/";
-    paths_.brw_projects_route_file = paths_.root_dir + "/route.json";
-    paths_.brw_projects_configure_file = paths_.root_dir + "/configure.json";
-    paths_.chromium_dir = paths_.root_dir + "/chromium/";
-    paths_.chromium_user_data_dir = paths_.root_dir + "/userdata/";
-    paths_.chromium_extensions_dir = paths_.root_dir + "/exetnsions/";
-    paths_.configure_dir = paths_.root_dir + "/configure/";
-    paths_.plugins_dir = paths_.root_dir + "/plugins/";
-    paths_.components_dir = paths_.root_dir + "/components/";
-    paths_.resources_dir = paths_.root_dir + "/resources/";
+    paths_.root_dir.append(u"/").append(project_name_).append(u"/");
+    paths_.root_dir = stl::Path::Normalize(paths_.root_dir);
+    paths_.logs_dir = paths_.root_dir + u"/logs/";
+    paths_.brw_projects_route_file = paths_.root_dir + u"/route.json";
+    paths_.brw_projects_configure_file = paths_.root_dir + u"/configure.json";
+    paths_.chromium_dir = paths_.root_dir + u"/chromium/";
+    paths_.chromium_user_data_dir = paths_.root_dir + u"/userdata/";
+    paths_.chromium_extensions_dir = paths_.root_dir + u"/exetnsions/";
+    paths_.configure_dir = paths_.root_dir + u"/configure/";
+    paths_.plugins_dir = paths_.root_dir + u"/plugins/";
+    paths_.components_dir = paths_.root_dir + u"/components/";
+    paths_.resources_dir = paths_.root_dir + u"/resources/";
 
     stl::Directory::Create(paths_.root_dir);
     stl::Directory::Create(paths_.configure_dir);
@@ -206,7 +229,7 @@ BrowserConfig::Settings::~Settings() {
 void BrowserConfig::SettingsInit() {
   do {
     std::string settings_buffer =
-        stl::File::ReadFile(paths_.configure_dir + "/settings.xml");
+        stl::File::ReadFile(paths_.configure_dir + u"/settings.xml");
     if (settings_buffer.empty())
       break;
     tinyxml2::XMLDocument doc;

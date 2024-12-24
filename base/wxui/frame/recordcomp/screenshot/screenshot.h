@@ -71,6 +71,23 @@ public:
   };
   class WorkSpace final : public IWorkSpace {
   public:
+    class TextInputCtrl : public wxRichTextCtrl {
+    public:
+      TextInputCtrl(wxWindow *parent, wxWindowID id, const wxString &value,
+                    const wxPoint &pos = wxDefaultPosition,
+                    const wxSize &size = wxDefaultSize, long style = 0);
+      virtual ~TextInputCtrl();
+      void SetBackgroundBitmap(wxImage *image);
+      void OnTextChanged(wxCommandEvent &event);
+
+    protected:
+      void OnPaint(wxPaintEvent &evt);
+
+    private:
+      wxBitmap *backgroundBitmap_ = nullptr;
+    };
+
+  public:
     WorkSpace(wxWindow *parent, wxWindowID id = wxID_ANY,
               const wxString &title = wxEmptyString,
               const wxPoint &pos = wxDefaultPosition,
@@ -80,15 +97,38 @@ public:
     virtual ~WorkSpace();
 
   public:
-    void SetImage(const wxImage *);
+    void DrawSave();
+    void SetImage(const wxImage *, const bool &cache = true);
 
   protected:
-    void OnDrawToolbar(wxCommandEvent &) override final;
-    void OnPaint(wxPaintEvent &) override final;
+    void OnDrawToolbar(wxCommandEvent &);
     void OnWorkSpaceSizeChanged(const wxRect &) override final;
 
+  protected:
+    void OnSize(wxSizeEvent &) override final;
+    void OnPaint(wxPaintEvent &) override final;
+    void OnMove(wxMoveEvent &) override final;
+    void OnMouseMove(wxMouseEvent &event) override final;
+    void OnMouseLeftDown(wxMouseEvent &event) override final;
+    void OnMouseLeftUp(wxMouseEvent &event) override final;
+    void OnEraseBackground(wxEraseEvent &event) override final;
+
   private:
+    bool OnUserDraw(const wxMouseEvent &evt);
+
+  private:
+    wxOverlay overlay_;
+    wxPoint draw_point_begin_;
+    wxPoint draw_point_end_;
+    std::atomic<CommandTool> draw_mode_ = CommandTool::TOOL_NULL;
+    stl::container::list<std::tuple<CommandTool, std::vector<wxPoint>>>
+        draw_cache_;
+    stl::container::list<wxImage *> draw_success_cache_;
+    stl::container::list<wxPoint> draw_arbitrary_cache_;
+    stl::container::list<wxPoint> draw_mosaic_cache_;
+    wxTextCtrl *text_input_ = nullptr;
     wxBitmap *backgroundBitmap_ = nullptr;
+    TextInputCtrl *text_input_ctrl_ = nullptr;
   };
 
 public:

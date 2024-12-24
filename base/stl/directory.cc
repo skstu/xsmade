@@ -12,6 +12,16 @@ bool Directory::RemoveAllU8(const std::string &dir) {
   } while (0);
   return result;
 }
+bool Directory::RemoveAllU16(const std::u16string &dir) {
+  bool result = false;
+  do {
+    fs::path path = dir;
+    if (!fs::is_directory(path))
+      break;
+    result = fs::remove_all(path);
+  } while (0);
+  return result;
+}
 bool Directory::RemoveAllW(const std::wstring &dir) {
   bool result = false;
   do {
@@ -152,20 +162,40 @@ void Directory::EnumU16(const std::u16string &inputPath,
                         std::map<std::u16string /*full path*/,
                                  std::u16string /*relative path*/> &dirs,
                         std::map<std::u16string /*full path*/,
-                                 std::u16string /*relative path*/> &files) {
+                                 std::u16string /*relative path*/> &files,
+                        const bool &recursive) {
   do {
     if (!ExistsU16(inputPath))
       break;
-    for (const fs::directory_entry &entry :
-         fs::recursive_directory_iterator(inputPath)) {
-      fs::path relativePath = fs::relative(entry.path(), inputPath);
-      std::u16string relativePathStr = relativePath.generic_u16string();
-      if (fs::is_directory(entry.path())) {
-        dirs.emplace(relativePathStr,
-                     stl::Path::NormalU16(inputPath + u"\\" + relativePathStr));
-      } else {
-        files.emplace(relativePathStr, stl::Path::NormalU16(inputPath + u"\\" +
-                                                            relativePathStr));
+    if (recursive) {
+      auto iterator = fs::recursive_directory_iterator(inputPath);
+      for (const fs::directory_entry &entry : iterator) {
+        fs::path relativePath = fs::relative(entry.path(), inputPath);
+        std::u16string relativePathStr = relativePath.generic_u16string();
+
+        if (fs::is_directory(entry.path())) {
+          dirs.emplace(relativePathStr, stl::Path::NormalU16(inputPath + u"\\" +
+                                                             relativePathStr));
+        } else {
+          files.emplace(
+              relativePathStr,
+              stl::Path::NormalU16(inputPath + u"\\" + relativePathStr));
+        }
+      }
+    } else {
+      auto iterator = fs::directory_iterator(inputPath);
+      for (const fs::directory_entry &entry : iterator) {
+        fs::path relativePath = fs::relative(entry.path(), inputPath);
+        std::u16string relativePathStr = relativePath.generic_u16string();
+
+        if (fs::is_directory(entry.path())) {
+          dirs.emplace(relativePathStr, stl::Path::NormalU16(inputPath + u"\\" +
+                                                             relativePathStr));
+        } else {
+          files.emplace(
+              relativePathStr,
+              stl::Path::NormalU16(inputPath + u"\\" + relativePathStr));
+        }
       }
     }
   } while (0);

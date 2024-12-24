@@ -10,7 +10,11 @@ public:
                const wxValidator &validator = wxDefaultValidator,
                const wxString &name = wxASCII_STR(wxButtonNameStr));
   virtual ~DrawTextTool();
+
+protected:
+  void OnClicked(wxCommandEvent &) override final;
 };
+
 } // namespace screenshot
 
 /// /*_ Memade®（新生™） _**/

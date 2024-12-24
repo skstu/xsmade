@@ -9,5 +9,7 @@ DrawLineTool::DrawLineTool(wxWindow *parent, wxWindowID id,
 }
 DrawLineTool::~DrawLineTool() {
 }
-
+void DrawLineTool::OnClicked(wxCommandEvent &evt) {
+  evt.Skip();
+}
 } // namespace screenshot

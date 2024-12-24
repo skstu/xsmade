@@ -176,7 +176,7 @@ bool Zipcc::zipCompressDirectory(const std::u16string &inputDirpath,
   zipFile zf = NULL;
   do {
     std::map<std::u16string, std::u16string> dirs, files;
-    stl::Directory::EnumU16(inputDirpath, dirs, files);
+    stl::Directory::EnumU16(inputDirpath, dirs, files, true);
 
     zf = zipOpen(stl::Path::U16PathToU8Path(outputZipfile).c_str(),
                  APPEND_STATUS_CREATE);

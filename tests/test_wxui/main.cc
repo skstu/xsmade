@@ -8,7 +8,7 @@ int main(int argc, char **argv) {
   wxui::IWxui *pWxui = wxui::IWxui::Create(
       (System::GetCurrentProcessPath() + "/plugins/wxui.dll").c_str());
   pWxui->ConfigGet()->SetResourceDir(
-      R"(C:\Users\k34ub\AppData\Roaming\MarsProjects\resources\ffxui)");
+      R"(C:\Users\k34ub\AppData\Local\MarsProjects\resources\ffxui)");
   pWxui->ConfigGet()->SetFrameType(wxui::FrameType::SHAPEFRAME);
   pWxui->Start();
 #elif defined(__OSMAC__)

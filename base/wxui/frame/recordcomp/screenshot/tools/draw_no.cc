@@ -9,5 +9,24 @@ DrawNoTool::DrawNoTool(wxWindow *parent, wxWindowID id,
 }
 DrawNoTool::~DrawNoTool() {
 }
+void DrawNoTool::OnClicked(wxCommandEvent &evt) {
+  evt.Skip();
+  IToolbar *parent = dynamic_cast<IToolbar *>(GetParent()->GetParent());
+  if (!parent)
+    return;
+  wxBoxSizer *sizer = nullptr;
+  wxPanel *panel = nullptr;
+  parent->GetExpandToolbar(&panel, &sizer);
+  if (!sizer || !panel)
+    return;
+  sizer->Clear(true);
+  pressed_.store(false);
 
+  parent->RefreshToolbar();
+
+  wxCommandEvent notify(wxEVT_NotifyType,
+                        NotifyEventID::EVT_NOTIFY_DRAWTOOL_ACTIVATE);
+  notify.SetInt(GetId());
+  Global::SendEvent(notify);
+}
 } // namespace screenshot

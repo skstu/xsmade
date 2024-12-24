@@ -10,23 +10,26 @@ XS_EXTERN void xs_sys_shutdown(void) {
 }
 XS_EXTERN int xs_sys_get_appdata_path(char **path, size_t *path_len) {
   int r = -1;
-  std::string result;
+  std::wstring ws;
   LPITEMIDLIST ppidl = nullptr;
   do {
-    if (SHGetSpecialFolderLocation(nullptr, CSIDL_APPDATA, &ppidl) != S_OK)
+    if (SHGetSpecialFolderLocation(
+            nullptr,
+            /*CSIDL_APPDATA*/ /*CSIDL_LOCAL_APPDATA*/ CSIDL_COMMON_APPDATA,
+            &ppidl) != S_OK)
       break;
-    char pszPath[_MAX_PATH] = {0};
-    if (!SHGetPathFromIDListA(ppidl, pszPath))
+    wchar_t pszPath[_MAX_PATH] = {0};
+    if (!SHGetPathFromIDListW(ppidl, pszPath))
       break;
-    result = pszPath;
-    if (result.empty())
+    ws = pszPath;
+    if (ws.empty())
       break;
-    auto end = std::prev(result.end());
-    if (*end != '\\' && *end != '/')
-      result.append("\\");
-    *path = (char *)malloc(result.size());
-    *path_len = result.size();
-    memcpy(*path, result.data(), result.size());
+    std::u16string u16 = Utfpp::ws_to_u16(ws);
+    u16.append(u"\\");
+    std::string u8 = Utfpp::u16_to_u8(u16);
+    *path = (char *)malloc(u8.size());
+    *path_len = u8.size();
+    memcpy(*path, u8.data(), u8.size());
     r = 0;
   } while (0);
   if (ppidl) {

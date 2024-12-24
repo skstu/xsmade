@@ -9,5 +9,7 @@ DrawOkTool::DrawOkTool(wxWindow *parent, wxWindowID id,
 }
 DrawOkTool::~DrawOkTool() {
 }
-
+void DrawOkTool::OnClicked(wxCommandEvent &evt) {
+  evt.Skip();
+}
 } // namespace screenshot

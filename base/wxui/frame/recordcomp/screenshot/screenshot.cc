@@ -59,7 +59,7 @@ void FrameScreenShot::SetWorkSpace(const std::string &imageStream) {
     if (!frame_workspace_)
       break;
     frame_workspace_->SetImage(img);
-    SK_DELETE_PTR(img);
+    // SK_DELETE_PTR(img);
   } while (0);
 }
 void FrameScreenShot::Show(const bool &flag) {

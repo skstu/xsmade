@@ -103,7 +103,15 @@
 #include <wx/display.h>
 #include <wx/image.h>
 #include <wx/mstream.h>
-
+#include "wx/richtext/richtextctrl.h"
+#include "wx/richtext/richtextstyles.h"
+#include "wx/richtext/richtextxml.h"
+#include "wx/richtext/richtexthtml.h"
+#include "wx/richtext/richtextformatdlg.h"
+#include "wx/richtext/richtextsymboldlg.h"
+#include "wx/richtext/richtextstyledlg.h"
+#include "wx/richtext/richtextprint.h"
+#include "wx/richtext/richtextimagedlg.h"
 class wxComm {
 public:
 #if 0

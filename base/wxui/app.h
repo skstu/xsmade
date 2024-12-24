@@ -27,7 +27,7 @@ private:
   void BroadcastEvent(wxWindow *target, wxCommandEvent &route,
                       std::unordered_set<wxWindowID> &processed) const;
   std::atomic_bool open_ = false;
-  stl::container::queue<wxCommandEvent> evts_;
+  stl::container::queue<wxCommandEvent*> evts_;
   void EventProc();
   stl::tfThreads threads_;
 
@@ -44,8 +44,6 @@ private:
 
 wxDECLARE_EVENT(wxEVT_NotifyType, wxCommandEvent);
 wxDECLARE_EVENT(wxEVT_NotifyRecordComp, wxCommandEvent);
-
-
 
 extern const int wxAppThreadEvt_ScreenShotFinished;
 extern const int wxAppThreadEvt_ScreenShotClose;

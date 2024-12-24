@@ -5,18 +5,19 @@ class BrowserConfig final : public IConfig {
 public:
   class Paths {
   public:
-    std::string root_dir;                // "${AppData}/MarsProjects/"
-    std::string logs_dir;                // "/logs/"
-    std::string chromium_dir;            // "/chromium/"
-    std::string chromium_user_data_dir;  // "/userdata/"
-    std::string chromium_extensions_dir; // "/chromium/extensions/"
-    std::string brw_projects_route_file; // "${AppData}/MarsProjects/route.json"
-    std::string
+    std::u16string root_dir;                // "${AppData}/MarsProjects/"
+    std::u16string logs_dir;                // "/logs/"
+    std::u16string chromium_dir;            // "/chromium/"
+    std::u16string chromium_user_data_dir;  // "/userdata/"
+    std::u16string chromium_extensions_dir; // "/chromium/extensions/"
+    std::u16string
+        brw_projects_route_file; // "${AppData}/MarsProjects/route.json"
+    std::u16string
         brw_projects_configure_file; // "${AppData}/MarsProjects/configure.json"
-    std::string configure_dir;       // "/configure/"
-    std::string plugins_dir;         // "/plugins/"
-    std::string components_dir;      // "/components/"
-    std::string resources_dir;       // "/resources/"
+    std::u16string configure_dir;    // "/configure/"
+    std::u16string plugins_dir;      // "/plugins/"
+    std::u16string components_dir;   // "/components/"
+    std::u16string resources_dir;    // "/resources/"
   };
   class Settings {
   public:
@@ -48,34 +49,35 @@ public:
   void RouteConfigureInit(const unsigned int &) const;
   unsigned int RouteConfigureGetClientPort() const;
   const Paths &PathGet() const;
-  std::string GetBrwUserDataDir(const std::string &brwKey) const;
-  std::string GetXSCacheExtsDir(const std::string &brwKey) const;
-  std::string GetXSCacheExtsDir(const std::string &brwKey,
-                                const std::string &extId) const;
-  std::string GetXSCacheRouteReqsDir(const std::string &brwKey) const;
-  std::string GetXSCacheRouteRepsDir(const std::string &brwKey) const;
-  std::string GetXSCacheCfgsDir(const std::string &brwKey) const;
-  std::string GetXSCacheStatisDir(const std::string &brwKey) const;
-  std::string GetXSCacheConfigureFName(const std::string &brwKey) const;
-  void XSCacheClean(const std::string &brwKey) const;
+  std::u16string GetBrwUserDataDir(const std::u16string &brwKey) const;
+  std::u16string GetXSCacheExtsDir(const std::u16string &brwKey) const;
+  std::u16string GetXSCacheExtsDir(const std::u16string &brwKey,
+                                   const std::u16string &extId) const;
+  std::u16string GetXSCacheRouteReqsDir(const std::u16string &brwKey) const;
+  std::u16string GetXSCacheRouteRepsDir(const std::u16string &brwKey) const;
+  std::u16string GetXSCacheCfgsDir(const std::u16string &brwKey) const;
+  std::u16string GetXSCacheStatisDir(const std::u16string &brwKey) const;
+  std::u16string GetXSCacheConfigureFName(const std::u16string &brwKey) const;
+  void XSCacheClean(const std::u16string &brwKey) const;
   const Settings &GetSettings() const;
 
 public:
-  static std::string CreateBrwCloseNotifyPak(const std::string &brwId);
+  static std::string CreateBrwCloseNotifyPak(const std::u16string &brwId);
 
 private:
   Paths paths_;
-  std::string current_process_path_;
-  std::string work_projects_path_;
-  std::string chromium_path_;
+  std::u16string current_process_path_;
+  std::u16string work_projects_path_;
+  std::u16string chromium_path_;
   std::shared_ptr<std::mutex> mtx_ = std::make_shared<std::mutex>();
   Settings settings_;
 
 public:
-  const std::string project_name_ = "MarsProjects";
+  const std::u16string project_name_ = u"MarsProjects";
 
 protected:
-  void __impl__() const override final {}
+  void __impl__() const override final {
+  }
 };
 
 /// /*_ Memade®（新生™） _**/

@@ -1,5 +1,5 @@
 ﻿#include "stl.hpp"
-
+#include "utfpp.hpp"
 #ifndef __RUNTIMES_LOG_H
 #define __RUNTIMES_LOG_H
 
@@ -20,7 +20,7 @@ enum class LogOutputType : std::uint64_t {
 
 class Log final {
 public:
-  Log(const std::string &outputFilePathname = "")
+  Log(const std::u16string &outputFilePathname = u"")
       : m_OutputFilePathname(outputFilePathname) {
 
     if (!m_OutputFilePathname.empty()) {
@@ -114,7 +114,7 @@ private:
   }
 
 private:
-  const std::string m_OutputFilePathname;
+  const std::u16string m_OutputFilePathname;
   std::uint64_t m_OutputType =
       static_cast<std::uint64_t>(LogOutputType::OutputConsole);
   std::shared_ptr<std::mutex> m_Mutex;

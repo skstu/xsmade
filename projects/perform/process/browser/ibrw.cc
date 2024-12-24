@@ -139,18 +139,18 @@ void IBrowserInterfaceServer::Stop() {
 }
 void IBrowserInterfaceServer::Process() {
   do { // get browser request response.
-    std::map<std::string, std::string> brwUserdataDirs, brwUserdataFiles,
+    std::map<std::u16string, std::u16string> brwUserdataDirs, brwUserdataFiles,
         repDirs, repFiles;
-    if (!stl::Directory::ExistsU8(config_->PathGet().chromium_user_data_dir))
+    if (!stl::Directory::ExistsU16(config_->PathGet().chromium_user_data_dir))
       break;
-    stl::Directory::EnumU8(config_->PathGet().chromium_user_data_dir,
-                           brwUserdataDirs, brwUserdataFiles, false);
+    stl::Directory::EnumU16(config_->PathGet().chromium_user_data_dir,
+                            brwUserdataDirs, brwUserdataFiles, false);
     for (const auto &userdatadir : brwUserdataDirs) {
       const auto key = userdatadir.first;
       repDirs.clear();
       repFiles.clear();
-      stl::Directory::EnumU8(config_->GetXSCacheRouteRepsDir(key), repDirs,
-                             repFiles, false);
+      stl::Directory::EnumU16(config_->GetXSCacheRouteRepsDir(key), repDirs,
+                              repFiles, false);
 
       for (const auto &f : repFiles) {
         do {
@@ -167,7 +167,7 @@ void IBrowserInterfaceServer::Process() {
           doc.AddMember(
               rapidjson::Value().SetString("key", doc.GetAllocator()).Move(),
               rapidjson::Value()
-                  .SetString(key.c_str(), doc.GetAllocator())
+                  .SetString(Utfpp::u16_to_u8(key).c_str(), doc.GetAllocator())
                   .Move(),
               doc.GetAllocator());
           client_notifys_.push(std::make_tuple<std::string, std::string>(
@@ -186,14 +186,16 @@ void IBrowserInterfaceServer::Process() {
     wxui::IWxui::Destroy(&gpsWxui);
   } while (0);
   do {
-    brws_.iterate_clear([&](const auto &key, const auto &brw, bool &itclear) {
-      if (0 == xs_sys_process_has_exit(brw->GetPid())) {
-        client_notifys_.push(std::make_tuple<std::string, std::string>(
-            "/close", BrowserConfig::CreateBrwCloseNotifyPak(key)));
-        brw->Release();
-        itclear = true;
-      }
-    });
+    brws_.iterate_clear(
+        [&](const std::string &key, const auto &brw, bool &itclear) {
+          if (0 == xs_sys_process_has_exit(brw->GetPid())) {
+            client_notifys_.push(std::make_tuple<std::string, std::string>(
+                "/close",
+                BrowserConfig::CreateBrwCloseNotifyPak(Utfpp::u8_to_u16(key))));
+            brw->Release();
+            itclear = true;
+          }
+        });
   } while (0);
   do {
     if (client_notifys_.empty())
@@ -293,7 +295,8 @@ void IBrowserInterfaceServer::OnRequest(const RequestType &reqType,
       code = 0;
       message = "ok";
       client_notifys_.push(std::make_tuple<std::string, std::string>(
-          "/close", BrowserConfig::CreateBrwCloseNotifyPak(key)));
+          "/close",
+          BrowserConfig::CreateBrwCloseNotifyPak(Utfpp::u8_to_u16(key))));
     } else {
       code = -1003;
       message = "not found";
@@ -301,11 +304,13 @@ void IBrowserInterfaceServer::OnRequest(const RequestType &reqType,
   } break;
   case RequestType::BROWSER_GET: {
     rapidjson::Value brwObjs(rapidjson::Type::kArrayType);
-    std::map<std::string, std::string> dirs, files;
-    stl::Directory::EnumU8(config_->PathGet().chromium_dir, dirs, files, false);
+    std::map<std::u16string, std::u16string> dirs, files;
+    stl::Directory::EnumU16(config_->PathGet().chromium_dir, dirs, files,
+                            false);
     for (const auto &node : dirs) {
       brwObjs.PushBack(rapidjson::Value()
-                           .SetString(node.first.c_str(), resDoc.GetAllocator())
+                           .SetString(Utfpp::u16_to_u8(node.first).c_str(),
+                                      resDoc.GetAllocator())
                            .Move(),
                        resDoc.GetAllocator());
     }
@@ -400,12 +405,14 @@ void IBrowserInterfaceServer::OnRequest(const RequestType &reqType,
         break;
       if (!gpsWxui) {
         gpsWxui = wxui::IWxui::Create(
-            (config_->PathGet().plugins_dir + "/wxui.dll").c_str());
+            (Utfpp::u16_to_u8(config_->PathGet().plugins_dir) + "/wxui.dll")
+                .c_str());
       }
       if (!gpsWxui)
         break;
       gpsWxui->ConfigGet()->SetResourceDir(
-          (config_->PathGet().resources_dir + "/ffxui/").c_str());
+          (Utfpp::u16_to_u8(config_->PathGet().resources_dir) + "/ffxui/")
+              .c_str());
       gpsWxui->ConfigGet()->SetFrameType(wxui::FrameType::SHAPEFRAME);
       gpsWxui->ConfigGet()->RegisterSystemExitCb(
           [](void *route) { gbWxuiStatus.store(false); }, this);
@@ -421,7 +428,7 @@ void IBrowserInterfaceServer::OnRequest(const RequestType &reqType,
                 stl::Time::TimeStamp<std::chrono::microseconds>());
 #else
             std::string outfile = fmt::format(
-                "{}/{}.mp4", __this->config_->PathGet().chromium_user_data_dir,
+                "{}/{}.mp4", Utfpp::u16_to_u8(__this->config_->PathGet().chromium_user_data_dir),
                 stl::Time::TimeStamp<std::chrono::microseconds>());
 #endif
             ffx::FFXArgs ffxArgs(ffx::tfFFXArgs{
@@ -441,7 +448,7 @@ void IBrowserInterfaceServer::OnRequest(const RequestType &reqType,
                 {13, {"-pix_fmt", "yuv420p"}},
                 {14, {"-preset:v", "veryfast"}},
                 {15, {"-tune:v", "zerolatency"}},
-                {16, {"-xs-outfile", stl::Path::Mormalize(outfile)}},
+                {16, {"-xs-outfile", stl::Path::Normalize(outfile)}},
             });
 
             IComponent *pComp = Components::Get()->GetComp(u"ffmpeg");

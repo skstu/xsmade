@@ -2,12 +2,13 @@
 #define __2CC5C4ED_79BA_4EA1_B4F2_ABD980B03F15__
 
 #include <xs.h>
-
+#include <utfpp.hpp>
 #if defined(__OSWIN__)
 #ifndef WIN32_LEAN_AND_MEAN
 #define WIN32_LEAN_AND_MEAN
 #endif
 #include <Windows.h>
+#include <shellapi.h>
 #include <winioctl.h>
 #include <intrin.h>
 #include <winsock2.h>
