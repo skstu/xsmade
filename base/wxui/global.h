@@ -3,8 +3,20 @@
 
 class Global {
 public:
-  Global() = default;
-  ~Global() = default;
+  static Global *Get();
+
+  void SetScreenShotDrawTextFont(const wxFont &font);
+  const wxFont &GetScreenShotDrawTextFont() const;
+  void SetScreenShotDrawTextColor(const wxColour &color);
+  const wxColour &GetScreenShotDrawTextColor() const;
+private:
+  Global();
+  ~Global();
+  void Init();
+  void UnInit();
+  wxFont screenshot_draw_font_;
+  wxColour screenshot_draw_text_color_;
+  std::shared_ptr<std::mutex> mtx_ = std::make_shared<std::mutex>();
 
 public:
   static void SendEvent(wxCommandEvent &);

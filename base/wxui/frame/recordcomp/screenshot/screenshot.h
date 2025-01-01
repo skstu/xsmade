@@ -73,18 +73,52 @@ public:
   public:
     class TextInputCtrl : public wxRichTextCtrl {
     public:
-      TextInputCtrl(wxWindow *parent, wxWindowID id, const wxString &value,
+      TextInputCtrl(const wxBitmap &bgnImg, wxWindow *parent,
                     const wxPoint &pos = wxDefaultPosition,
-                    const wxSize &size = wxDefaultSize, long style = 0);
+                    const wxSize &size = wxDefaultSize,
+                    const wxString &value = wxT(""), wxWindowID id = wxID_ANY,
+                    long style = wxTE_MULTILINE | wxBORDER_NONE |
+                                 wxTE_NO_VSCROLL);
       virtual ~TextInputCtrl();
-      void SetBackgroundBitmap(wxImage *image);
-      void OnTextChanged(wxCommandEvent &event);
 
+    public:
+      bool IsTextEmtpy() const;
     protected:
       void OnPaint(wxPaintEvent &evt);
+      void OnSize(wxSizeEvent &evt);
+      void OnMove(wxMoveEvent &evt);
+      void OnMouseMove(wxMouseEvent &evt);
+      void OnMouseLeftDown(wxMouseEvent &evt);
+      void OnMouseLeftUp(wxMouseEvent &evt);
+      void OnEraseBackground(wxEraseEvent &evt);
+      void OnMouseCaptureLost(wxMouseCaptureLostEvent &evt);
+      void OnTextChanged(wxCommandEvent &event);
 
     private:
-      wxBitmap *backgroundBitmap_ = nullptr;
+      void SetCustomCaret();
+      void OnBackgroundUpdate();
+    private:
+      wxCoord text_width_;
+      wxCoord text_height_;
+      wxBitmap background_dest_;
+      const wxBitmap background_src_;
+      wxRect mouse_left_down_rect_;
+      wxPoint mouse_left_down_point_;
+      std::atomic_bool is_dragging_ = false;
+      std::atomic_bool is_allow_move_ = true;
+      enum class ResizeMode {
+        None,
+        Left,
+        Right,
+        Top,
+        Bottom,
+        LeftTop,
+        RightTop,
+        LeftBottom,
+        RightBottom
+      };
+
+      std::atomic<ResizeMode> resize_mode_ = ResizeMode::None;
     };
 
   public:
@@ -103,7 +137,7 @@ public:
   protected:
     void OnDrawToolbar(wxCommandEvent &);
     void OnWorkSpaceSizeChanged(const wxRect &) override final;
-
+    void OnScreenShot(wxCommandEvent &);
   protected:
     void OnSize(wxSizeEvent &) override final;
     void OnPaint(wxPaintEvent &) override final;
@@ -126,9 +160,8 @@ public:
     stl::container::list<wxImage *> draw_success_cache_;
     stl::container::list<wxPoint> draw_arbitrary_cache_;
     stl::container::list<wxPoint> draw_mosaic_cache_;
-    wxTextCtrl *text_input_ = nullptr;
+    stl::container::list<TextInputCtrl *> draw_text_cache_;
     wxBitmap *backgroundBitmap_ = nullptr;
-    TextInputCtrl *text_input_ctrl_ = nullptr;
   };
 
 public:

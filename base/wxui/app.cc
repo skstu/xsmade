@@ -10,16 +10,18 @@ bool App::OnInit() {
       break;
     }
     wxAppBase::SetExitOnFrameDelete(false);
+    wxEvtHandler::Bind(wxEVT_THREAD, &App::OnThreadEvtDrawToolActivate, this,
+                       wxAppThreadEvt_DrawToolActivate);
     wxEvtHandler::Bind(wxEVT_THREAD, &App::OnThreadEvtBroadcastEvent, this,
                        wxAppThreadEvt_BroadcastEvent);
     wxEvtHandler::Bind(wxEVT_THREAD, &App::OnThreadEvtFrameDestroy, this,
                        wxAppThreadEvt_FrameDestroy);
     wxEvtHandler::Bind(wxEVT_THREAD, &App::OnThreadEvtScreenShotFinished, this,
                        wxAppThreadEvt_ScreenShotFinished);
+    wxEvtHandler::Bind(wxEVT_THREAD, &App::OnThreadEvtScreenShotFinalSuccess,
+                       this, wxAppThreadEvt_ScreenShotFinalSuccess);
     wxEvtHandler::Bind(wxEVT_THREAD, &App::OnThreadEvtScreenShotClose, this,
                        wxAppThreadEvt_ScreenShotClose);
-    wxEvtHandler::Bind(wxEVT_THREAD, &App::OnThreadEvtRecordingBoxSelection,
-                       this, wxAppThreadEvt_RecordingBoxSelection);
     wxEvtHandler::Bind(wxEVT_THREAD,
                        &App::OnThreadEvtRecordingBoxSelectionFinished, this,
                        wxAppThreadEvt_RecordingBoxSelectionFinished);
@@ -34,14 +36,16 @@ int App::OnExit() {
   int result = 0;
   do {
     OnFrameDestroy();
+    wxEvtHandler::Unbind(wxEVT_THREAD, &App::OnThreadEvtDrawToolActivate, this,
+                         wxAppThreadEvt_DrawToolActivate);
     wxEvtHandler::Unbind(wxEVT_THREAD, &App::OnThreadEvtFrameDestroy, this,
                          wxAppThreadEvt_FrameDestroy);
     wxEvtHandler::Unbind(wxEVT_THREAD, &App::OnThreadEvtScreenShotFinished,
                          this, wxAppThreadEvt_ScreenShotFinished);
+    wxEvtHandler::Unbind(wxEVT_THREAD, &App::OnThreadEvtScreenShotFinalSuccess,
+                         this, wxAppThreadEvt_ScreenShotFinalSuccess);
     wxEvtHandler::Unbind(wxEVT_THREAD, &App::OnThreadEvtScreenShotClose, this,
                          wxAppThreadEvt_ScreenShotClose);
-    wxEvtHandler::Unbind(wxEVT_THREAD, &App::OnThreadEvtRecordingBoxSelection,
-                         this, wxAppThreadEvt_RecordingBoxSelection);
     wxEvtHandler::Unbind(wxEVT_THREAD,
                          &App::OnThreadEvtRecordingBoxSelectionFinished, this,
                          wxAppThreadEvt_RecordingBoxSelectionFinished);
@@ -55,6 +59,9 @@ int App::OnExit() {
   threads_.clear();
   xs_sys_shutdown();
   return result;
+}
+void App::OnThreadEvtDrawToolActivate(wxThreadEvent &evt) {
+  auto sss = 0;
 }
 void App::OnThreadEvtFrameDestroy(wxThreadEvent &event) {
   ExitMainLoop();
@@ -93,12 +100,13 @@ void App::OnFrameCreate() {
       frame_comps_.emplace(frame_recording->Type(), frame_recording);
       frame_comps_.emplace(frame_screenshot->Type(), frame_screenshot);
       frame_recording->Center();
-      frame_recording->Show(true);
+      frame_recording->Show(false);
+
+      frame_recording->ShowBackground(true);
     } break;
     default:
       break;
     }
-
   } while (0);
 }
 wxFrame *App::FrameAppend(const ComponentFrameType &frame_type,
@@ -125,34 +133,15 @@ wxFrame *App::FrameGet(const ComponentFrameType &frame_type) const {
 IFrame *App::FrameGet() const {
   return frame_;
 }
-void App::OnThreadEvtRecordingBoxSelection(wxThreadEvent &evt) {
-  do {
-    IFrameComponent *recording_component = nullptr;
-    wxRect screenshot_region;
-    for (auto &node : frame_comps_) {
-      switch (node.first) {
-      case FrameComponentType::RECORDING: {
-        recording_component = node.second;
-      } break;
-      case FrameComponentType::SCREENSHOT: {
-
-      } break;
-      default:
-        break;
-      }
-      node.second->Show(false);
-    }
-    recording_component->ShowBackground(true);
-  } while (0);
-}
 void App::OnThreadEvtScreenShotClose(wxThreadEvent &evt) {
   do {
     wxRect screenshot_region;
     for (auto &node : frame_comps_) {
       switch (node.first) {
       case FrameComponentType::RECORDING: {
-        node.second->Center();
-        node.second->Show(true);
+        // node.second->Center();
+        node.second->Show(false);
+        node.second->ShowBackground(true);
       } break;
       case FrameComponentType::SCREENSHOT: {
         node.second->Show(false);
@@ -161,6 +150,39 @@ void App::OnThreadEvtScreenShotClose(wxThreadEvent &evt) {
         break;
       }
     }
+  } while (0);
+}
+void App::OnThreadEvtScreenShotFinalSuccess(wxThreadEvent &evt) {
+  do {
+    IFrameComponent *screenshot_component = nullptr;
+    wxRect screenshot_region;
+    for (auto &node : frame_comps_) {
+      switch (node.first) {
+      case FrameComponentType::RECORDING: {
+        screenshot_region = node.second->GetRegion();
+      } break;
+      case FrameComponentType::SCREENSHOT: {
+        screenshot_component = node.second;
+      } break;
+      default:
+        break;
+      }
+      node.second->Show(false);
+    }
+    std::string screenshot_image_stream;
+    Global::ffxScreenShot(screenshot_region, screenshot_image_stream);
+
+    if (Config::Get()->OnScreenShot(screenshot_image_stream)) {
+      wxMessageBox(wxT("截图成功!"), wxT("提示"), wxOK | wxICON_INFORMATION);
+    } else {
+      wxMessageBox(wxT("截图失败!"), wxT("提示"), wxOK | wxICON_ERROR);
+    }
+#if 0
+    screenshot_component->SetWorkSpace(screenshot_image_stream);
+    // screenshot_component->Center();
+    screenshot_component->SetPos(screenshot_region);
+    screenshot_component->Show(true);
+#endif
   } while (0);
 }
 void App::OnThreadEvtScreenShotFinished(wxThreadEvent &evt) {
@@ -183,7 +205,8 @@ void App::OnThreadEvtScreenShotFinished(wxThreadEvent &evt) {
     std::string screenshot_image_stream;
     Global::ffxScreenShot(screenshot_region, screenshot_image_stream);
     screenshot_component->SetWorkSpace(screenshot_image_stream);
-    screenshot_component->Center();
+    // screenshot_component->Center();
+    screenshot_component->SetPos(screenshot_region);
     screenshot_component->Show(true);
   } while (0);
 }
@@ -193,18 +216,52 @@ void App::OnThreadEvtRecordingBoxSelectionFinished(wxThreadEvent &evt) {
         reinterpret_cast<wxCommandEvent *>(evt.GetEventObject());
     if (!cmdevt)
       break;
-    wxRect *rect = (wxRect *)cmdevt->GetClientData();
-    if (!rect)
+    MessageBoxA(NULL, "0", NULL, 0);
+    wxString rectJson = cmdevt->GetString();
+    if (rectJson.empty())
       break;
-    wxRect pos(*rect);
-    SK_DELETE_PTR(rect);
-    IFrameComponent *screenshot_component = nullptr;
+    MessageBoxA(NULL, "0", NULL, 0);
+    std::string jsonStringU8 = rectJson.ToStdString();
+    rapidjson::Document doc;
+    if (doc.Parse(jsonStringU8.c_str()).HasParseError())
+      break;
+    if (!doc.IsObject())
+      break;
+    if (!doc.HasMember("x") || !doc.HasMember("y") || !doc.HasMember("width") ||
+        !doc.HasMember("height"))
+      break;
+    MessageBoxA(NULL, "0", NULL, 0);
+    wxRect pos;
+    pos.x = doc["x"].GetInt();
+    pos.y = doc["y"].GetInt();
+    pos.width = doc["width"].GetInt();
+    pos.height = doc["height"].GetInt();
+    pos.SetLeft(pos.x);
+    pos.SetTop(pos.y);
+    pos.SetRight(pos.x + pos.width);
+    pos.SetBottom(pos.y + pos.height);
+    MessageBoxA(NULL, "1", NULL, 0);
+    IFrameComponent *record_component = nullptr;
     auto found = frame_comps_.find(FrameComponentType::RECORDING);
-    if (found == frame_comps_.end())
+    if (found == frame_comps_.end()) {
+      MessageBoxA(NULL, "2", NULL, 0);
       break;
-    screenshot_component = found->second;
-    screenshot_component->SetPos(pos);
-    screenshot_component->Show(true);
+    }
+
+    wxRect pos_prev(pos);
+    if (pos.width < 0 || pos.height < 0) {
+      pos.SetLeft(pos.x + pos.width);
+      pos.SetTop(pos.y + pos.height);
+      pos.SetRight(pos_prev.x);
+      pos.SetBottom(pos_prev.y);
+    }
+    std::string msg =
+        fmt::format("l({}),t({}),r({}),b({})", pos.GetLeft(), pos.GetTop(),
+                    pos.GetRight(), pos.GetBottom());
+    MessageBoxA(NULL, msg.c_str(), NULL, 0);
+    record_component = found->second;
+    record_component->SetPos(pos);
+    record_component->Show(true);
   } while (0);
 }
 void App::OnThreadEvtBroadcastEvent(wxThreadEvent &evt) {
@@ -279,10 +336,11 @@ wxIMPLEMENT_APP_NO_MAIN(App);
 
 wxDEFINE_EVENT(wxEVT_NotifyType, wxCommandEvent);
 wxDEFINE_EVENT(wxEVT_NotifyRecordComp, wxCommandEvent);
-
+const int wxAppThreadEvt_DrawToolActivate = wxNewId();
 const int wxAppThreadEvt_FrameDestroy = wxNewId();
 const int wxAppThreadEvt_BroadcastEvent = wxNewId();
 const int wxAppThreadEvt_ScreenShotFinished = wxNewId();
+const int wxAppThreadEvt_ScreenShotFinalSuccess = wxNewId();
 const int wxAppThreadEvt_ScreenShotClose = wxNewId();
 const int wxAppThreadEvt_RecordingBoxSelection = wxNewId();
 const int wxAppThreadEvt_WorkSpaceModeChanged = wxNewId();

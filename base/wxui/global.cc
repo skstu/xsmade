@@ -384,3 +384,44 @@ void Global::ffxFrameWorkImageShow(const bool &flag,
   } while (0);
 #endif
 }
+Global::Global() {
+  Init();
+}
+Global::~Global() {
+  UnInit();
+}
+void Global::Init() {
+  screenshot_draw_font_.SetFaceName("Arial");
+  screenshot_draw_font_.SetPointSize(12);
+  screenshot_draw_font_.SetFamily(wxFONTFAMILY_SWISS);
+  screenshot_draw_font_.SetStyle(wxFONTSTYLE_NORMAL);
+  screenshot_draw_font_.SetNumericWeight(wxFONTWEIGHT_NORMAL);
+  screenshot_draw_font_.SetUnderlined(false);
+  screenshot_draw_font_.SetStrikethrough(false);
+  screenshot_draw_text_color_.Set(255, 0, 0);
+}
+void Global::UnInit() {
+}
+void Global::SetScreenShotDrawTextColor(const wxColour &color) {
+  std::lock_guard<std::mutex> lock(*mtx_);
+  screenshot_draw_text_color_ = color;
+}
+const wxColour &Global::GetScreenShotDrawTextColor() const {
+  std::lock_guard<std::mutex> lock(*mtx_);
+  return screenshot_draw_text_color_;
+}
+void Global::SetScreenShotDrawTextFont(const wxFont &font) {
+  std::lock_guard<std::mutex> lock(*mtx_);
+  screenshot_draw_font_ = font;
+}
+const wxFont &Global::GetScreenShotDrawTextFont() const {
+  std::lock_guard<std::mutex> lock(*mtx_);
+  return screenshot_draw_font_;
+}
+////////////////////////////////////////////////////////////////////////////////////
+static Global *__gpsGlobal = nullptr;
+Global *Global::Get() {
+  if (!__gpsGlobal)
+    __gpsGlobal = new Global();
+  return __gpsGlobal;
+}

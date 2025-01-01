@@ -4,6 +4,7 @@
 #include <xs.h>
 #include <system.hpp>
 #include <fmt/format.h>
+#include <rapidjson.h>
 #include "export.h"
 using namespace wxui;
 #include "deps.h"

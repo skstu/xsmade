@@ -1,4 +1,4 @@
-#include "perform.h"
+#include <perform.h>
 
 BrowserConfig::BrowserConfig() {
   Init();
@@ -153,7 +153,7 @@ void BrowserConfig::XSCacheClean(const std::u16string &brwKey) const {
     stl::Directory::RemoveAllU16(path);
   }
 }
-unsigned int BrowserConfig::RouteConfigureGetClientPort() const {
+unsigned int BrowserConfig::RouteConfigureGetClientPort() {
   unsigned int result = 0;
   std::lock_guard<std::mutex> lock{*mtx_};
   do {
@@ -170,15 +170,65 @@ unsigned int BrowserConfig::RouteConfigureGetClientPort() const {
       break;
     if (!doc.HasMember("client_port") && !doc["client_port"].IsUint())
       break;
+#if DEBUG
+    result = 65534;
+#else
     result = doc["client_port"].GetUint();
+#endif
+    client_port_cache_.store(result);
   } while (0);
   return result;
 }
+unsigned int BrowserConfig::GetClientPortCache() const {
+  std::lock_guard<std::mutex> lock{*mtx_};
+  return client_port_cache_.load();
+}
 std::string
 BrowserConfig::CreateBrwCloseNotifyPak(const std::u16string &brwKey) {
-  std::string result = fmt::format(R"("key":"{}")", Utfpp::u16_to_u8(brwKey));
-  result.insert(0, "{");
-  result.append("}");
+  std::string result;
+  rapidjson::Document doc;
+  doc.SetObject();
+  doc.AddMember(
+      rapidjson::Value().SetString("key", doc.GetAllocator()).Move(),
+      rapidjson::Value()
+          .SetString(Utfpp::u16_to_u8(brwKey).c_str(), doc.GetAllocator())
+          .Move(),
+      doc.GetAllocator());
+  doc.AddMember(
+      rapidjson::Value().SetString("data_time_ms", doc.GetAllocator()).Move(),
+      rapidjson::Value()
+          .SetUint64(stl::Time::TimeStamp<std::chrono::milliseconds>())
+          .Move(),
+      doc.GetAllocator());
+  result = Json::toString(doc);
+  return result;
+}
+std::string
+BrowserConfig::CreateBrwCookiesNotifyPak(const std::u16string &brwKey,
+                                         const std::string &cookies) {
+  std::string result;
+  do {
+    rapidjson::Document doc;
+    if (doc.Parse(cookies.data(), cookies.size()).HasParseError())
+      break;
+    if (!doc.IsObject())
+      break;
+    if (doc.HasMember("key"))
+      doc.RemoveMember("key");
+    doc.AddMember(
+        rapidjson::Value().SetString("key", doc.GetAllocator()).Move(),
+        rapidjson::Value()
+            .SetString(Utfpp::u16_to_u8(brwKey).c_str(), doc.GetAllocator())
+            .Move(),
+        doc.GetAllocator());
+    doc.AddMember(
+        rapidjson::Value().SetString("data_time_ms", doc.GetAllocator()).Move(),
+        rapidjson::Value()
+            .SetUint64(stl::Time::TimeStamp<std::chrono::milliseconds>())
+            .Move(),
+        doc.GetAllocator());
+    result = Json::toString(doc);
+  } while (0);
   return result;
 }
 const BrowserConfig::Settings &BrowserConfig::GetSettings() const {

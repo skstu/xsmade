@@ -4,20 +4,24 @@ FrameScreenShot::WorkSpace::WorkSpace(wxWindow *parent, wxWindowID id,
                                       const wxSize &size, long style,
                                       const wxString &name)
     : IWorkSpace(parent, id, title, pos, size,
-                 wxFRAME_SHAPED | wxNO_BORDER | wxFRAME_NO_TASKBAR, name) {
+                 wxFRAME_SHAPED | wxNO_BORDER | wxFRAME_NO_TASKBAR |
+                     wxTE_NO_VSCROLL,
+                 name) {
   // SetBackgroundColour(wxColour(183, 110, 121));
   // Color color(20, 255, 215, 0);//!@ 土豪金
-  text_input_ctrl_ = new TextInputCtrl(this, wxID_ANY, wxT(""));
-  text_input_ctrl_->Show(false);
   is_allow_move_.store(true);
   // SetBackgroundColour(wxColour(183, 110, 121));
   SetTransparent(255);
   wxEvtHandler::Bind(wxEVT_NotifyType,
                      &FrameScreenShot::WorkSpace::OnDrawToolbar, this);
+  //  wxEvtHandler::Bind(wxEVT_NotifyType,
+  //                     &FrameScreenShot::WorkSpace::OnScreenShot, this);
 }
 FrameScreenShot::WorkSpace::~WorkSpace() {
   wxEvtHandler::Unbind(wxEVT_NotifyType,
                        &FrameScreenShot::WorkSpace::OnDrawToolbar, this);
+  //  wxEvtHandler::Unbind(wxEVT_NotifyType,
+  //                       &FrameScreenShot::WorkSpace::OnScreenShot, this);
 }
 void FrameScreenShot::WorkSpace::OnMouseMove(wxMouseEvent &event) {
   do {
@@ -153,6 +157,34 @@ void FrameScreenShot::WorkSpace::OnMove(wxMoveEvent &evt) {
   OnWorkSpaceSizeChanged(GetRect());
   evt.Skip();
 }
+void FrameScreenShot::WorkSpace::OnScreenShot(wxCommandEvent &event) {
+  do {
+    // if (event.GetInt() != GetId())
+    //   break;
+    DrawSave();
+    if (draw_success_cache_.empty()) {
+      break;
+    }
+    auto wxImg = *draw_success_cache_.back();
+    if (!wxImg) {
+      break;
+    }
+    std::string imgStream;
+    if (!wxComm::GetImgStream(wxImg, imgStream)) {
+      break;
+    }
+    if (imgStream.empty()) {
+      break;
+    }
+    stl::File::WriteFile(Config::Get()->GetScreecshotCachePath(), imgStream);
+    //     std::string imgStream = wxComm::SaveImgToStream(wxImg);
+    // wxComm::LoadImg(const std::string &imgPath, wxImage **outputImg) if
+    // (cache)
+    //     draw_success_cache_.push_back(const_cast<wxImage *>(image));
+
+    wxMessageBox(wxT("截图成功!"), wxT("提示"), wxOK | wxICON_INFORMATION);
+  } while (0);
+}
 void FrameScreenShot::WorkSpace::OnMouseLeftDown(wxMouseEvent &event) {
   do {
     if (OnUserDraw(event))
@@ -260,47 +292,18 @@ bool FrameScreenShot::WorkSpace::OnUserDraw(const wxMouseEvent &evt) {
         CaptureMouse();
         // 获取鼠标点击位置，作为文本输入的起始点
         wxPoint start_text_position_ = evt.GetPosition();
-
-
-
-        // 计算字符填充数量
-        int clientWidth, clientHeight;
-        text_input_ctrl_->GetClientSize(&clientWidth, &clientHeight);
-
-        wxClientDC dc(text_input_ctrl_);
-        dc.SetFont(text_input_ctrl_->GetFont());
-
-        // 获取单个字符的宽度和高度
-        int charWidth, charHeight;
-        dc.GetTextExtent(" ", &charWidth, &charHeight);
-
-        int charsPerLine = clientWidth / charWidth;
-        int lines = clientHeight / charHeight;
-
-        // 填充空格字符
-        wxString filler;
-        for (int i = 0; i < lines; ++i)
-        {
-            filler += wxString(' ', charsPerLine) + "\n";
-        }
-        text_input_ctrl_->SetValue(filler);
-
-        // 设置光标位置
-        int targetPosition = 50; // 假设要移动到第50个字符
-        if (targetPosition < text_input_ctrl_->GetLastPosition())
-        {
-            text_input_ctrl_->SetInsertionPoint(targetPosition);
-        }
-
-        // 设置焦点（可选）
-        text_input_ctrl_->SetFocus();
-
-
-
-        text_input_ctrl_->SetInsertionPoint(20);
-        if (!text_input_ctrl_->IsShown()) {
-          text_input_ctrl_->Show(true);
-        }
+        draw_text_cache_.iterate([](TextInputCtrl *ctrl, bool &clear) {
+          ctrl->Show(false);
+          if (ctrl->IsTextEmtpy()) {
+            ctrl->Close();
+            SK_DELETE_PTR(ctrl);
+            clear = true;
+          }
+        });
+        auto text_input_ctrl = new TextInputCtrl(
+            *backgroundBitmap_, this,
+            wxPoint(start_text_position_.x, start_text_position_.y));
+        draw_text_cache_.push_back(text_input_ctrl);
       }
     } else if (evt.LeftUp()) {
       if (HasCapture()) {
@@ -551,13 +554,12 @@ bool FrameScreenShot::WorkSpace::OnUserDraw(const wxMouseEvent &evt) {
   return result;
 }
 void FrameScreenShot::WorkSpace::OnDrawToolbar(wxCommandEvent &evt) {
-  if (NotifyEventID::EVT_NOTIFY_DRAWTOOL_ACTIVATE ==
+  if (NotifyEventID::EVT_NOTIFY_DRAWTOOL_SCREENSHOT ==
       NotifyEventID(evt.GetId())) {
+    OnScreenShot(evt);
+  } else if (NotifyEventID::EVT_NOTIFY_DRAWTOOL_ACTIVATE ==
+             NotifyEventID(evt.GetId())) {
     draw_mode_.store(CommandTool(evt.GetInt()));
-    if (draw_mode_.load() != CommandTool::TOOL_SCREENSHOT_TEXT &&
-        text_input_ctrl_) {
-      text_input_ctrl_->Show(false);
-    }
     switch (draw_mode_.load()) {
     case CommandTool::TOOL_SCREENSHOT_ARROW: {
       SetCursor(wxCursor(wxCURSOR_RIGHT_ARROW));
@@ -615,10 +617,7 @@ void FrameScreenShot::WorkSpace::SetImage(const wxImage *image,
     SetSize(image->GetSize());
     SK_DELETE_PTR(backgroundBitmap_);
     backgroundBitmap_ = new wxBitmap(*image);
-    if (text_input_ctrl_) {
-      text_input_ctrl_->SetBackgroundBitmap(const_cast<wxImage *>(image));
-    }
-    Refresh();
+    Refresh(false);
     Update();
     if (cache)
       draw_success_cache_.push_back(const_cast<wxImage *>(image));

@@ -1,5 +1,34 @@
 #include "wxui.h"
 
+bool wxComm::GetImgStream(const wxImage *img, std::string &imgStream) {
+  bool result = false;
+  do {
+    if (!img)
+      break;
+    if (!img->IsOk())
+      break;
+
+    // 使用 wxMemoryOutputStream
+    wxMemoryOutputStream mstream;
+
+    // 将 wxImage 写入流中
+    if (!img->SaveFile(mstream, wxBitmapType::wxBITMAP_TYPE_PNG))
+      break;
+
+    // 提取数据
+    size_t length = mstream.GetLength(); // 获取流长度
+    if (length == 0)
+      break;
+
+    imgStream.resize(length);                 // 调整字符串大小以容纳流内容
+    mstream.CopyTo(imgStream.data(), length); // 将流复制到字符串中
+
+    result = true;
+  } while (0);
+
+  return result;
+}
+
 bool wxComm::LoadImgFormStream(const std::string &imageStream,
                                wxImage **outputImg) {
   bool result = false;

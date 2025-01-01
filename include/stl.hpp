@@ -1045,12 +1045,21 @@ public:
   void iterate(const std::function<void(T &)> &iterate_cb) {
     std::lock_guard<std::mutex> lock(*mutex_);
     for (auto it = m_list.begin(); it != m_list.end(); ++it) {
-      if (iterate_cb) {
-        iterate_cb(*it);
-      }
+      iterate_cb(*it);
     }
   }
-
+  void iterate(const std::function<void(T &, bool &clear)> &iterate_cb) {
+    std::lock_guard<std::mutex> lock(*mutex_);
+    for (auto it = m_list.begin(); it != m_list.end();) {
+      bool is_clear = false;
+      iterate_cb(*it, is_clear);
+      if (is_clear) {
+        it = m_list.erase(it);
+        continue;
+      }
+      ++it;
+    }
+  }
   std::vector<T> Vector() const {
     std::vector<T> result;
     std::lock_guard<std::mutex> lock(*mutex_);

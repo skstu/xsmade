@@ -2,9 +2,11 @@
 #define __E68008C8_057E_4381_9570_8EEE30A32462__
 
 #include <xs.h>
+#include <system.hpp>
 #include "export.h"
 using namespace browser;
 #include <base/uvpp/export.h>
+#include <base/wxui/export.h>
 #include "config.h"
 #include "client.h"
 
@@ -20,8 +22,15 @@ private:
   void UnInit();
 
 protected:
+  bool Start() override final;
+  void Stop() override final;
+  bool Ready() const override final;
   void OnMainProcessStartup(void) override final;
   void OnMainProcessShutdown(int rv) override final;
+  void OnBrowserStarted() override final;
+  void OnCreateWindowExBefore(void **parent, unsigned long *style,
+                              unsigned long *exstyle) override final;
+  void OnCreateWindowExAfter(void *hwnd) override final;
 };
 
 #ifdef __cplusplus

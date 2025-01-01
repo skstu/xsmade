@@ -1,8 +1,7 @@
-project(test_wxui)
+project(test_httpserver)
 
 gfn_project_source_get(${CMAKE_CURRENT_SOURCE_DIR} OUT_HEADER_S OUT_SOURCE_S)
-set(SOURCES ${OUT_HEADER_S} ${OUT_SOURCE_S}
-            ${xs3RDPARTY_DIR}/wxWidgets/include/wx/msw/wx.rc)
+set(SOURCES ${OUT_HEADER_S} ${OUT_SOURCE_S})
 
 add_executable(${PROJECT_NAME} ${SOURCES})
 
@@ -10,6 +9,7 @@ if(WIN32)
   target_include_directories(
     ${PROJECT_NAME}
     PRIVATE ${xsROOT_DIR} ${xsINCLUDE_DIR} ${xs3RDPARTY_DIR}/utfcpp/source/
+            ${xs3RDPARTY_DIR}/http-parser/ ${xs3RDPARTY_DIR}/cpp-httplib/
             ${xs3RDPARTY_DIR}/wxWidgets/include/)
 
   target_link_directories(${PROJECT_NAME} PRIVATE ${xsLIBS_DIR})
@@ -55,7 +55,7 @@ elseif(APPLE)
   # target_link_directories(${PROJECT_NAME} PRIVATE
   # ${xsOUTPUT_DIR}/wxWidgets/lib/)
   target_link_directories(${PROJECT_NAME} PRIVATE ${xsLIBS_DIR})
-  
+
   target_link_libraries(
     ${PROJECT_NAME}
     "-framework CoreFoundation"

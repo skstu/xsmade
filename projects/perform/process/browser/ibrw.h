@@ -1,23 +1,6 @@
 #if !defined(__66D36CE1_C3F0_4601_8CB0_3DCE31E2D698__)
 #define __66D36CE1_C3F0_4601_8CB0_3DCE31E2D698__
 //!@ Browser Interface Service
-
-enum class RequestType : unsigned long long {
-  UNKNOWN = 0x00000,
-  SERVER_OPEN = 0x10010,         //!@ 打开(初始化)服务
-  SERVER_CLOSE = 0x10020,        //!@ 退出(关闭)服务
-  BROWSER_OPEN = 0x10101,        //!@ 打开浏览器
-  BROWSER_CLOSE = 0x10102,       //!@ 关闭浏览器
-  BROWSER_GET = 0x10103,         //!@ 获取浏览器列表
-  BROWSER_COOKIES_GET = 0x10110, //!@ 获取cookies
-  BROWSER_COOKIES_SET = 0x10111, //!@ 设置cookies
-  BROWSER_COOKIES_DEL = 0x10112, //!@ 删除cookies
-  FFX_START_SCREEN_RECORDING = 0x10201,
-  FFX_STOP_SCREEN_RECORDING = 0x10202,
-  PLUGIN_FFXUI_OPEN = 0x10301,
-  PLUGIN_FFXUI_CLOSE = 0x10302,
-  // BROWSER_DOWN = 0x10104,  //!@ 下载浏览器
-};
 class IBrowserInterfaceServer final : public IPerform {
 public:
   IBrowserInterfaceServer();
@@ -46,6 +29,8 @@ private:
   httplib::Server *server_ = nullptr;
   BrowserConfig *config_ = nullptr;
   stl::container::map<std::string /*key*/, Browser *> brws_;
+  wxui::IWxui *gpsWxui = nullptr;
+  std::atomic_bool gbWxuiStatus = false;
 
 protected:
   void __impl__() const override final {

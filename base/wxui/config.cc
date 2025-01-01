@@ -8,6 +8,16 @@ Config::~Config() {
 }
 void Config::Init() {
   do {
+    // C:\ProgramData\MarsProjects
+    // char *appdata_path = nullptr;
+    // size_t appdata_path_len = 0;
+    // xs_sys_get_appdata_path(&appdata_path, &appdata_path_len);
+    // work_projects_path_ = Utfpp::u8_to_u16(appdata_path);
+    // work_projects_path_.append(u"/MarsProjects/");
+    work_projects_path_ = System::GetCurrentProcessPathU16();
+    work_projects_cache_path_ =
+        stl::Path::Normalize(work_projects_path_ + u"/cache/");
+    screecshot_cache_path_ = work_projects_cache_path_ + u"screecshot/";
     wxInitAllImageHandlers();
   } while (0);
 }
@@ -15,6 +25,33 @@ void Config::UnInit() {
   for (auto &it : imgres_)
     SK_DELETE_PTR(it.second);
   imgres_.clear();
+}
+bool Config::OnScreenShot(const std::string &imageStream) const {
+  bool result = false;
+  std::lock_guard<std::mutex> lock{*mtx_};
+  do {
+    if (imageStream.empty())
+      break;
+    if (!stl::Directory::ExistsU16(screecshot_cache_path_))
+      stl::Directory::Create(screecshot_cache_path_);
+    std::u16string path =
+        screecshot_cache_path_ +
+        Utfpp::u8_to_u16(std::to_string(stl::Time::TimeStamp())) + u".png";
+    result = stl::File::WriteFile(path, imageStream);
+  } while (0);
+  return result;
+}
+std::u16string Config::GetWorkProjectsPath() const {
+  std::lock_guard<std::mutex> lock{*mtx_};
+  return work_projects_path_;
+}
+std::u16string Config::GetWorkProjectsCachePath() const {
+  std::lock_guard<std::mutex> lock{*mtx_};
+  return work_projects_cache_path_;
+}
+std::u16string Config::GetScreecshotCachePath() const {
+  std::lock_guard<std::mutex> lock{*mtx_};
+  return screecshot_cache_path_;
 }
 void Config::SetFrameType(const FrameType &type) {
   std::lock_guard<std::mutex> lock{*mtx_};

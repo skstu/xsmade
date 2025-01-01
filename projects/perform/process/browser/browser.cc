@@ -1,4 +1,4 @@
-#include "perform.h"
+#include <perform.h>
 
 Browser::Browser(const std::string &cfg) : cfg_(cfg) {
   Init();
@@ -37,6 +37,7 @@ void Browser::Init() {
     do { //!@ default args
       brw_startup_args_.emplace_back("--no-first-run");
       brw_startup_args_.emplace_back("--disable-sync");
+      brw_startup_args_.emplace_back("--disable-top-sites");
       brw_startup_args_.emplace_back("--disable-gaia-services");
       brw_startup_args_.emplace_back("--disable-account-consistency");
       brw_startup_args_.emplace_back(
@@ -153,6 +154,33 @@ void Browser::Init() {
           std::string finish = content_js.replace(flagPos, flagString.size(),
                                                   brwcfg_->account_.route_);
           stl::File::WriteFile(content_js_path, finish);
+        } while (0);
+
+        do { //!@ cookie 扩展补丁
+          if (f.first.find(u"facgnnelgcipeopfbjcajpaibhhdjgcp") ==
+              std::u16string::npos)
+            break;
+          std::u16string background_js_path = stl::Path::Normalize(
+              u16extdir + u"/facgnnelgcipeopfbjcajpaibhhdjgcp/background.js");
+          if (!stl::File::Exists(background_js_path))
+            break;
+#if 0
+          let envId = __ENVID__
+          let envId = "1bcdb1fe0f931b2a07430628ec03213b"
+#endif
+          std::string background_js = stl::File::ReadFile(background_js_path);
+          const std::string flagString = "__ENVID__";
+          const size_t flagPos = background_js.find(flagString);
+          if (flagPos == std::string::npos)
+            break;
+          auto patch_code = fmt::format(R"("key":"{}","client_port":{})",
+                                        Utfpp::u16_to_u8(brwkey),
+                                        config->GetClientPortCache());
+          patch_code.insert(0, "{");
+          patch_code.push_back('}');
+          std::string finish =
+              background_js.replace(flagPos, flagString.size(), patch_code);
+          stl::File::WriteFile(background_js_path, finish);
         } while (0);
       }
     } while (0);

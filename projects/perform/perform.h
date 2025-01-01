@@ -19,6 +19,8 @@
 //!@ browser
 #include "process/browser/config.h"
 #include "process/browser/configure.h"
+#include "process/browser/response.h"
+#include "process/browser/request.h"
 #include "process/browser/browser.h"
 #include "process/browser/ibrw.h"
 //!@ downloader

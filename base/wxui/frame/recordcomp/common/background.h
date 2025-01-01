@@ -3,11 +3,11 @@
 class IBackground : public wxFrame {
 public:
   IBackground(wxWindow *parent, wxWindowID id = wxID_ANY,
-             const wxString &title = wxEmptyString,
-             const wxPoint &pos = wxDefaultPosition,
-             const wxSize &size = wxDefaultSize,
-             long style = wxDEFAULT_FRAME_STYLE,
-             const wxString &name = wxASCII_STR(wxFrameNameStr));
+              const wxString &title = wxEmptyString,
+              const wxPoint &pos = wxDefaultPosition,
+              const wxSize &size = wxDefaultSize,
+              long style = wxDEFAULT_FRAME_STYLE,
+              const wxString &name = wxASCII_STR(wxFrameNameStr));
   virtual ~IBackground();
 
 protected:
@@ -17,6 +17,9 @@ protected:
   void OnMouseLeftDown(wxMouseEvent &event);
   void OnMouseLeftUp(wxMouseEvent &event);
   void OnPaint(wxPaintEvent &event);
+  void OnShow(wxShowEvent &event);
+  void OnKeyDown(wxKeyEvent &event);
+  void OnChar(wxKeyEvent &event);
 
   wxPoint startPoint_;
   wxPoint endPoint_;

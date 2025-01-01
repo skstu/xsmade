@@ -3,7 +3,9 @@ wxBEGIN_EVENT_TABLE(IBackground, wxFrame) EVT_SIZE(IBackground::OnSize)
     EVT_CLOSE(IBackground::OnClose) EVT_MOTION(IBackground::OnMouseMove)
         EVT_LEFT_DOWN(IBackground::OnMouseLeftDown)
             EVT_LEFT_UP(IBackground::OnMouseLeftUp)
-                EVT_PAINT(IBackground::OnPaint) wxEND_EVENT_TABLE();
+                EVT_KEY_DOWN(IBackground::OnKeyDown)
+                    EVT_CHAR(IBackground::OnChar) EVT_SHOW(IBackground::OnShow)
+                        EVT_PAINT(IBackground::OnPaint) wxEND_EVENT_TABLE();
 
 IBackground::IBackground(wxWindow *parent, wxWindowID id, const wxString &title,
                          const wxPoint &pos, const wxSize &size, long style,
@@ -41,7 +43,35 @@ void IBackground::OnMouseLeftDown(wxMouseEvent &event) {
   endPoint_ = startPoint_;
   drawing_.store(true);
 }
-
+void IBackground::OnKeyDown(wxKeyEvent &event) {
+  event.Skip();
+}
+void IBackground::OnChar(wxKeyEvent &event) {
+  switch (wxKeyCode(event.GetKeyCode())) {
+  case wxKeyCode::WXK_ESCAPE: {
+#if 0
+    drawing_.store(false);
+    Refresh();
+    Show(false);
+#endif
+    wxQueueEvent(wxApp::GetInstance(),
+                 new wxThreadEvent(wxEVT_THREAD, wxAppThreadEvt_FrameDestroy));
+  } break;
+  default:
+    break;
+  }
+  event.Skip();
+}
+void IBackground::OnShow(wxShowEvent &event) {
+  if (event.IsShown()) {
+    SetCursor(wxCursor(wxCURSOR_CROSS));
+    SetWindowStyle(GetWindowStyle() | wxSTAY_ON_TOP);
+  } else {
+    SetCursor(wxCursor(wxCURSOR_ARROW));
+    SetWindowStyle(GetWindowStyle() & ~wxSTAY_ON_TOP);
+  }
+  event.Skip();
+}
 void IBackground::OnMouseLeftUp(wxMouseEvent &event) {
   do {
     if (!drawing_.load())
@@ -63,14 +93,38 @@ void IBackground::OnMouseLeftUp(wxMouseEvent &event) {
       comp_screenshot->Show(true);
 #endif
       do {
+        auto app = wxDynamicCast(wxApp::GetInstance(), App);
+        wxRect pos(startPoint_.x, startPoint_.y, endPoint_.x - startPoint_.x,
+                   endPoint_.y - startPoint_.y);
+
+        IFrameComponent *record_component =
+            app->FrameComponentGet(FrameComponentType::RECORDING);
+        if (!record_component)
+          break;
+
+        wxRect pos_prev(pos);
+        if (pos.width < 0 || pos.height < 0) {
+          pos.SetLeft(pos.x + pos.width);
+          pos.SetTop(pos.y + pos.height);
+          pos.SetRight(pos_prev.x);
+          pos.SetBottom(pos_prev.y);
+        }
+        record_component->SetPos(pos);
+        record_component->Show(true);
+
+#if 0
         wxCommandEvent sender;
-        sender.SetClientData(new wxRect(startPoint_.x, startPoint_.y,
-                                        endPoint_.x - startPoint_.x,
-                                        endPoint_.y - startPoint_.y));
-        auto tevt = new wxThreadEvent(
+
+        std::string jsonRect = fmt::format("x:{},y:{},width:{},height:{}",
+                                           pos.x, pos.y, pos.width, pos.height);
+        jsonRect.insert(0, "{");
+        jsonRect.append("}");
+        sender.SetString(wxString(jsonRect));
+        auto tEvt = new wxThreadEvent(
             wxEVT_THREAD, wxAppThreadEvt_RecordingBoxSelectionFinished);
-        tevt->SetEventObject(&sender);
-        wxQueueEvent(wxApp::GetInstance(), tevt);
+        tEvt->SetEventObject(&sender);
+        wxQueueEvent(wxApp::GetInstance(), tEvt);
+#endif
       } while (0);
 
       startPoint_.x = 0;

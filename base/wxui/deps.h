@@ -133,6 +133,7 @@ public:
   ~wxComm() = default;
 
 public:
+  static bool GetImgStream(const wxImage* img,std::string& imgStream);
   static bool LoadImg(const std::string &imgPath, wxImage **outputImg);
   static bool LoadImgFormStream(const std::string &imageStream,
                                 wxImage **outputImg);

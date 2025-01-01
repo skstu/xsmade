@@ -26,6 +26,7 @@ enum CommandTool {
 enum NotifyEventID : int {
   EVT_NOTIFY_UNKONWN = 0x0000,
   EVT_NOTIFY_DRAWTOOL_ACTIVATE = 0x10010,
+  EVT_NOTIFY_DRAWTOOL_SCREENSHOT = 0x10011,
 
 };
 
@@ -55,13 +56,20 @@ public:
   void OnRecordingStart(const IRecordingArgs *) const;
   void OnRecordingStop() const;
   void OnSystemExit() const;
-
+  void OnScreenShotSuccess(const std::u16string &path);
+  std::u16string GetWorkProjectsPath() const;
+  std::u16string GetWorkProjectsCachePath() const;
+  std::u16string GetScreecshotCachePath() const;
+  bool OnScreenShot(const std::string &imageStream) const;
 private:
   FrameType type_ = FrameType::FRAME;
   std::vector<Theme *> themes_;
   std::shared_ptr<std::mutex> mtx_ = std::make_shared<std::mutex>();
   std::map<std::string, wxImage *> imgres_;
   std::string resource_dir_;
+  std::u16string work_projects_path_;
+  std::u16string work_projects_cache_path_;
+  std::u16string screecshot_cache_path_;
   tfRecordingStartCb recording_start_cb_ = nullptr;
   void *recording_start_cb_route_ = nullptr;
   tfRecordingStopCb recording_stop_cb_ = nullptr;

@@ -12,8 +12,9 @@ ActionBoxSelection::~ActionBoxSelection() {
   auto ss = 0;
 }
 void ActionBoxSelection::OnClicked(wxCommandEvent &evt) {
-  wxQueueEvent(
-      wxApp::GetInstance(),
-      new wxThreadEvent(wxEVT_THREAD, wxAppThreadEvt_RecordingBoxSelection));
+  // wxQueueEvent(
+  //     wxApp::GetInstance(),
+  //     new wxThreadEvent(wxEVT_THREAD, wxAppThreadEvt_RecordingBoxSelection));
+  //MessageBoxW(NULL, L"333", NULL, 0);
   evt.Skip();
 }

@@ -47,7 +47,7 @@ private:
 
 public:
   void RouteConfigureInit(const unsigned int &) const;
-  unsigned int RouteConfigureGetClientPort() const;
+  unsigned int RouteConfigureGetClientPort();
   const Paths &PathGet() const;
   std::u16string GetBrwUserDataDir(const std::u16string &brwKey) const;
   std::u16string GetXSCacheExtsDir(const std::u16string &brwKey) const;
@@ -61,10 +61,15 @@ public:
   void XSCacheClean(const std::u16string &brwKey) const;
   const Settings &GetSettings() const;
 
+  unsigned int GetClientPortCache() const;
+
 public:
   static std::string CreateBrwCloseNotifyPak(const std::u16string &brwId);
+  static std::string CreateBrwCookiesNotifyPak(const std::u16string &brwId,
+                                               const std::string &cookies);
 
 private:
+  std::atomic_uint client_port_cache_ = 0;
   Paths paths_;
   std::u16string current_process_path_;
   std::u16string work_projects_path_;
