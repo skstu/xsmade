@@ -21,6 +21,7 @@ if(WIN32)
   target_link_libraries(
     ${PROJECT_NAME}
     ${MSYS2_CLANG64_DIR}/lib/libc++.a
+    gdiplus.lib
     libfmt.a
     libsys.a
     libstl.a

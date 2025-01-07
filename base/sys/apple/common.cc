@@ -58,7 +58,7 @@ XS_EXTERN int xs_sys_capturescreen(xs_position_t pos,
 #endif
   return 0;
 }
-int xs_sys_get_dll_path(xs_buffer_t *out_buffer) {
+int xs_sys_get_dll_path(xs_buffer_t **out_buffer,void *static_dummy_variable) {
   // const char *path = _dyld_get_image_name(0);
   // return std::string(path);
   #if 0

@@ -9,8 +9,9 @@ public:
 private:
   void Init();
   void UnInit();
+
 private:
-  uvpp::IService* uvclient_ = nullptr;
+  uvpp::IService *uvclient_ = nullptr;
 };
 /// /*_ Memade®（新生™） _**/
 /// /*_ Wed, 18 Dec 2024 01:24:50 GMT _**/

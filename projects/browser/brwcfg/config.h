@@ -1,17 +1,24 @@
-#if !defined(__8BD7CA80_953A_4E5F_B2FA_F0796B2B8737__)
-#define __8BD7CA80_953A_4E5F_B2FA_F0796B2B8737__
-#if 0
-class Config final : public IConfig {
+#if !defined(__0B1DC6A0_CC0F_41C4_94F9_ACA9A35E8A52__)
+#define __0B1DC6A0_CC0F_41C4_94F9_ACA9A35E8A52__
+
+class Config final : public IBrwcfg::IConfig {
 public:
   static Config *Create();
   static void Destroy();
+
+protected:
+  bool EnableDevTools(void) const override final;
+  bool EnableShowBadFlagsSecurityWarnings(void) const override final;
+  bool EnableLockFirstTabPage(void) const override final;
+  bool EnableProductLogo(void) const override final;
+  bool EnableSessionCrashedBubbleViewShow(void) const override final;
 
 private:
   Config();
   virtual ~Config();
 };
-#endif
+
 /// /*_ Memade®（新生™） _**/
-/// /*_ Mon, 09 Dec 2024 07:58:17 GMT _**/
+/// /*_ Tue, 07 Jan 2025 06:56:48 GMT _**/
 /// /*_____ https://www.skstu.com/ _____ **/
-#endif ///__8BD7CA80_953A_4E5F_B2FA_F0796B2B8737__
+#endif ///__0B1DC6A0_CC0F_41C4_94F9_ACA9A35E8A52__

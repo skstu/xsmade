@@ -9,13 +9,13 @@ int main(int argc, char **argv) {
       (System::GetCurrentProcessPath() + "/plugins/brwcfg.dll").c_str());
 #elif defined(__OSMAC__)
 #endif
-
+  pBrwcfg->OnMainProcessStartup();
   std::string input;
   do {
     input.clear();
     std::getline(std::cin, input);
     if (input == "q" || std::cin.eof()) {
-      pBrwcfg->Stop();
+      pBrwcfg->OnMainProcessShutdown(0);
       break;
     }
   } while (1);

@@ -1,9 +1,24 @@
 #include "brwcfg.h"
-#if 0
 Config::Config() {
 }
 Config::~Config() {
 }
+bool Config::EnableDevTools(void) const {
+  return true;
+}
+bool Config::EnableShowBadFlagsSecurityWarnings(void) const {
+  return true;
+}
+bool Config::EnableSessionCrashedBubbleViewShow(void) const {
+  return true;
+}
+bool Config::EnableLockFirstTabPage(void) const {
+  return false;
+}
+bool Config::EnableProductLogo(void) const {
+  return false;
+}
+
 ///////////////////////////////////////////////////////////////////////
 static Config *__gspConfig = nullptr;
 Config *Config::Create() {
@@ -14,4 +29,3 @@ Config *Config::Create() {
 void Config::Destroy() {
   SK_DELETE_PTR(__gspConfig);
 }
-#endif

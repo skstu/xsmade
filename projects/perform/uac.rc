@@ -7,3 +7,5 @@
 #endif
 
 ID_MANIFEST RT_MANIFEST "require_administrator.manifest"
+
+IDI_APP_ICON ICON "logo.ico"

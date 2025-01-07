@@ -21,8 +21,8 @@ int main(int argc, char **argv) {
                [](const httplib::Request &req, httplib::Response &res) {
                  std::string repRes = R"({"status":"ok"})";
 
-                 std::string body = req.body;
-                 std::cout << "body: " << body << std::endl;
+                //  std::string body = req.body;
+                //  std::cout << "body: " << body << std::endl;
                  res.status = 200;
                  res.set_content(repRes.empty() ? "{}" : repRes,
                                  "application/json; charset=utf-8");

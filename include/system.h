@@ -46,6 +46,7 @@ XS_EXTERN void xs_sys_startup(void);
 XS_EXTERN void xs_sys_shutdown(void);
 XS_EXTERN char *xs_sys_malloc(size_t len);
 XS_EXTERN void xs_sys_free(void **p);
+XS_EXTERN void xs_sys_free_buffer(xs_buffer_t **);
 XS_EXTERN unsigned short xs_sys_get_free_port(void);
 XS_EXTERN int xs_sys_process_spawn(const char *proc, const char **args,
                                    int show_flag, xs_process_id_t *out_pid);
@@ -64,8 +65,8 @@ XS_EXTERN int xs_sys_capturescreen(xs_position_t pos,
                                    xs_image_stream_t **stream);
 XS_EXTERN int xs_sys_get_image_type(const char *buffer, size_t buffer_size,
                                     xs_image_type_t *output_image_type);
-XS_EXTERN int xs_sys_get_dll_path(xs_buffer_t* out_buffer);
-
+XS_EXTERN int xs_sys_get_dll_path(xs_buffer_t **out_buffer,
+                                  void *static_dummy_variable);
 
 #ifdef __cplusplus
 }

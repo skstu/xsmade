@@ -112,7 +112,13 @@ void IBrowserInterfaceServer::Process() {
 
       httplib::Client cli("127.0.0.1", notify_port);
       httplib::Headers heads = {{"content-type", "application/json"}};
-      cli.Post(path, heads, content.data(), content.size(), "application/json");
+      auto postRes = cli.Post(path, heads, content.data(), content.size(),
+                              "application/json");
+      if (!postRes || postRes->status != 200) {
+        LOG_ERROR("POST({}) FAIL", path);
+      } else {
+        LOG_INFO("POST({}) CONTENT({})", path, content);
+      }
     }
   } while (0);
 }
@@ -121,20 +127,22 @@ IConfig *IBrowserInterfaceServer::ConfigGet() const {
 }
 
 void IBrowserInterfaceServer::Listen() {
-  server_->Post("/server/open",
-                [this](const httplib::Request &req, httplib::Response &res) {
-                  std::string repRes;
-                  OnRequest(RequestType::SERVER_OPEN, req.body, repRes);
-                  res.set_content(repRes.empty() ? "{}" : repRes,
-                                  "application/json; charset=utf-8");
-                });
-  server_->Post("/server/close",
-                [this](const httplib::Request &req, httplib::Response &res) {
-                  std::string repRes;
-                  OnRequest(RequestType::SERVER_CLOSE, req.body, repRes);
-                  res.set_content(repRes.empty() ? "{}" : repRes,
-                                  "application/json; charset=utf-8");
-                });
+  server_->Post("/server/open", [this](const httplib::Request &req,
+                                       httplib::Response &res) {
+    std::string repRes;
+    OnRequest(RequestType::SERVER_OPEN, req.body, repRes);
+    LOG_INFO("REQ({}) BODY({}) RES({})", "/server/open", req.body, repRes);
+    res.set_content(repRes.empty() ? "{}" : repRes,
+                    "application/json; charset=utf-8");
+  });
+  server_->Post("/server/close", [this](const httplib::Request &req,
+                                        httplib::Response &res) {
+    std::string repRes;
+    OnRequest(RequestType::SERVER_CLOSE, req.body, repRes);
+    LOG_INFO("REQ({}) BODY({}) RES({})", "/server/close", req.body, repRes);
+    res.set_content(repRes.empty() ? "{}" : repRes,
+                    "application/json; charset=utf-8");
+  });
   server_->Post("/browser/down",
                 [this](const httplib::Request &req, httplib::Response &res) {
                   std::string repRes;
@@ -142,31 +150,36 @@ void IBrowserInterfaceServer::Listen() {
                   res.set_content(repRes.empty() ? "{}" : repRes,
                                   "application/json; charset=utf-8");
                 });
-  server_->Post("/browser/open",
-                [this](const httplib::Request &req, httplib::Response &res) {
-                  std::string repRes;
-                  OnRequest(RequestType::BROWSER_OPEN, req.body, repRes);
-                  res.set_content(repRes.empty() ? "{}" : repRes,
-                                  "application/json; charset=utf-8");
-                });
-  server_->Post("/browser/close",
-                [this](const httplib::Request &req, httplib::Response &res) {
-                  std::string repRes;
-                  OnRequest(RequestType::BROWSER_CLOSE, req.body, repRes);
-                  res.set_content(repRes.empty() ? "{}" : repRes,
-                                  "application/json; charset=utf-8");
-                });
-  server_->Post("/browser/get",
-                [this](const httplib::Request &req, httplib::Response &res) {
-                  std::string repRes;
-                  OnRequest(RequestType::BROWSER_GET, req.body, repRes);
-                  res.set_content(repRes.empty() ? "{}" : repRes,
-                                  "application/json; charset=utf-8");
-                });
+  server_->Post("/browser/open", [this](const httplib::Request &req,
+                                        httplib::Response &res) {
+    std::string repRes;
+    OnRequest(RequestType::BROWSER_OPEN, req.body, repRes);
+    LOG_INFO("REQ({}) BODY({}) RES({})", "/browser/open", req.body, repRes);
+    res.set_content(repRes.empty() ? "{}" : repRes,
+                    "application/json; charset=utf-8");
+  });
+  server_->Post("/browser/close", [this](const httplib::Request &req,
+                                         httplib::Response &res) {
+    std::string repRes;
+    OnRequest(RequestType::BROWSER_CLOSE, req.body, repRes);
+    LOG_INFO("REQ({}) BODY({})", "/browser/close", req.body, repRes);
+    res.set_content(repRes.empty() ? "{}" : repRes,
+                    "application/json; charset=utf-8");
+  });
+  server_->Post("/browser/get", [this](const httplib::Request &req,
+                                       httplib::Response &res) {
+    std::string repRes;
+    OnRequest(RequestType::BROWSER_GET, req.body, repRes);
+    LOG_INFO("REQ({}) BODY({}) RES({})", "/browser/get", req.body, repRes);
+    res.set_content(repRes.empty() ? "{}" : repRes,
+                    "application/json; charset=utf-8");
+  });
   server_->Post("/browser/get_cookies",
                 [this](const httplib::Request &req, httplib::Response &res) {
                   std::string repRes;
                   OnRequest(RequestType::BROWSER_COOKIES_GET, req.body, repRes);
+                  LOG_INFO("REQ({}) BODY({}) RES({})", "/browser/get_cookies",
+                           req.body, repRes);
                   res.set_content(repRes.empty() ? "{}" : repRes,
                                   "application/json; charset=utf-8");
                 });
@@ -174,6 +187,8 @@ void IBrowserInterfaceServer::Listen() {
                 [this](const httplib::Request &req, httplib::Response &res) {
                   std::string repRes;
                   OnRequest(RequestType::BROWSER_COOKIES_SET, req.body, repRes);
+                  LOG_INFO("REQ({}) BODY({}) RES({})", "/browser/set_cookies",
+                           req.body, repRes);
                   res.set_content(repRes.empty() ? "{}" : repRes,
                                   "application/json; charset=utf-8");
                 });
@@ -181,6 +196,8 @@ void IBrowserInterfaceServer::Listen() {
                 [this](const httplib::Request &req, httplib::Response &res) {
                   std::string repRes;
                   OnRequest(RequestType::BROWSER_COOKIES_DEL, req.body, repRes);
+                  LOG_INFO("REQ({}) BODY({}) RES({})", "/browser/del_cookies",
+                           req.body, repRes);
                   res.set_content(repRes.empty() ? "{}" : repRes,
                                   "application/json; charset=utf-8");
                 });

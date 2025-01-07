@@ -1,12 +1,15 @@
 #if !defined(__E68008C8_057E_4381_9570_8EEE30A32462__)
 #define __E68008C8_057E_4381_9570_8EEE30A32462__
-
 #include <xs.h>
 #include <system.hpp>
+#include <rapidjson.h>
+#include <tinyxml2.h>
 #include "export.h"
 using namespace browser;
 #include <base/uvpp/export.h>
 #include <base/wxui/export.h>
+#include "data.h"
+#include "array.h"
 #include "config.h"
 #include "client.h"
 
@@ -20,10 +23,11 @@ private:
   virtual ~Brwcfg();
   void Init();
   void UnInit();
+  bool Start();
+  void Stop();
 
 protected:
-  bool Start() override final;
-  void Stop() override final;
+  IConfig* ConfigGet() const override final;
   bool Ready() const override final;
   void OnMainProcessStartup(void) override final;
   void OnMainProcessShutdown(int rv) override final;
@@ -31,16 +35,17 @@ protected:
   void OnCreateWindowExBefore(void **parent, unsigned long *style,
                               unsigned long *exstyle) override final;
   void OnCreateWindowExAfter(void *hwnd) override final;
+
+  IData* CreateData(const char*,const size_t&) const override final;
+  IDataArray* CreateDataArray() const override final;
+private:
+  void ConfiguringEnvironmentVariables() const;
+
+private:
+  Config* config_ = nullptr;
 };
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-SHARED_API void *interface_init(void *, unsigned long);
-SHARED_API void interface_uninit();
-#ifdef __cplusplus
-}
-#endif
+#include "interface.h"
 /// /*_ Memade®（新生™） _**/
 /// /*_ Sat, 07 Dec 2024 06:46:24 GMT _**/
 /// /*_____ https://www.skstu.com/ _____ **/

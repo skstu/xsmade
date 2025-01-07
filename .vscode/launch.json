@@ -14,7 +14,9 @@
       //"program": "${workspaceFolder}/out/bin/test_ffx.exe",
       //"program": "${workspaceFolder}/out/bin/test_uvpp_server.exe",
       //"program": "${workspaceFolder}/out/bin/test_uvpp_client.exe",
-      "program": "${workspaceFolder}/out/bin/test_wxui.exe",
+      // "program": "${workspaceFolder}/out/bin/test_wxui.exe",
+      // "args": [],
+      "program": "${workspaceFolder}/out/bin/test_brwcfg.exe",
       "args": [],
       // "program": "${workspaceFolder}/out/bin/perform.exe",
       // "args": [

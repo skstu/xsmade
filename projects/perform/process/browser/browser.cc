@@ -10,6 +10,8 @@ void Browser::Release() const {
   delete this;
 }
 void Browser::Init() {
+  // chrome --host-resolver-rules="MAP * ~NOTFOUND , EXCLUDE 127.0.0.1"
+  // --proxy-server=socks://127.0.0.1:1080
   auto config = dynamic_cast<BrowserConfig *>(Perform::ConfigGet());
   if (!config)
     return;
@@ -44,7 +46,9 @@ void Browser::Init() {
           "--disable-features=ChromeSignin,AccountConsistency");
       brw_startup_args_.emplace_back("--disable-background-mode");
       brw_startup_args_.emplace_back("--no-default-browser-check");
-      // brw_startup_args_.emplace_back("--no-sandbox");
+      if (brwcfg_->worker_.enable_lockhp) {
+        brw_startup_args_.emplace_back("--xs-lockhp");
+      }
     } while (0);
 
     do { //!@ append args - f12
@@ -81,10 +85,10 @@ void Browser::Init() {
                       ));
     } while (0);
 
-    if (!brwcfg_->Enable()) {
-      ready_.store(true);
-      break;
-    }
+    // if (!brwcfg_->Enable()) {
+    //   ready_.store(true);
+    //   break;
+    // }
     do {
       auto dir = config->GetXSCacheCfgsDir(brwkey);
       stl::File::WriteFile(config->GetXSCacheConfigureFName(brwkey),
@@ -98,22 +102,51 @@ void Browser::Init() {
       do { //!@ ap
         if (!brwcfg_->proxy_.Enable())
           break;
+        //!@ 如果启用了流量中转
+        if (brwcfg_->proxy_.traffic_forwarding) {
+          // brw_startup_args_.emplace_back(fmt::format(
+          //     R"(--host-resolver-rules="MAP * ~NOTFOUND , EXCLUDE {}
+          //     --proxy-server=socks://{}:{})", "127.0.0.1", "127.0.0.1",
+          //     brwcfg_->worker_.flow_port));
+          brw_startup_args_.emplace_back(fmt::format(
+              R"(--host-resolver-rules="MAP * ~NOTFOUND , EXCLUDE {})",
+              "127.0.0.1"));
+        }
+
         if (!brwcfg_->proxy_.valid())
           break;
-        auto dir = stl::Path::Normalize(config->GetXSCacheExtsDir(
-            brwkey, u"afgbmmdnakcefnkchckgelobigkbboci"));
-        stl::Directory::Create(dir);
-        stl::File::WriteFile(dir + u"/manifest.json",
-                             brwcfg_->GetExtensionManifestAP());
-        stl::File::WriteFile(dir + u"/background.js",
-                             brwcfg_->GetExtensionBackgroundAP());
-        brw_startup_args_.emplace_back(fmt::format(R"(--proxy-server={}:{})",
-                                                   brwcfg_->proxy_.addr,
-                                                   brwcfg_->proxy_.port));
+        switch (Configure::ProxyType(brwcfg_->proxy_.type)) {
+        case Configure::ProxyType::HTTP:
+        case Configure::ProxyType::HTTPS: {
+          brw_startup_args_.emplace_back(fmt::format(R"(--proxy-server={}:{})",
+                                                     brwcfg_->proxy_.addr,
+                                                     brwcfg_->proxy_.port));
+          if (brwcfg_->proxy_.traffic_forwarding)
+            break;
+          auto dir = stl::Path::Normalize(config->GetXSCacheExtsDir(
+              brwkey, u"afgbmmdnakcefnkchckgelobigkbboci"));
+          stl::Directory::Create(dir);
+          stl::File::WriteFile(dir + u"/manifest.json",
+                               brwcfg_->GetExtensionManifestAP());
+          stl::File::WriteFile(dir + u"/background.js",
+                               brwcfg_->GetExtensionBackgroundAP());
+        } break;
+        case Configure::ProxyType::SOCKS4:
+        case Configure::ProxyType::SOCKS4A:
+        case Configure::ProxyType::SOCKS5: {
+          brw_startup_args_.emplace_back(
+              fmt::format(R"(--proxy-server=socks://{}:{})",
+                          brwcfg_->proxy_.addr, brwcfg_->proxy_.port));
+        } break;
+        default: {
+
+        } break;
+        }
+
       } while (0);
       do { //!@ fs
-        if (!brwcfg_->fp_.Enable())
-          break;
+        // if (!brwcfg_->fp_.Enable())
+        //   break;
         std::u16string dir = stl::Path::Normalize(config->GetXSCacheExtsDir(
             brwkey, u"ebglcogbaklfalmoeccdjbmgfcacengf"));
         stl::Directory::Create(dir);
@@ -136,8 +169,6 @@ void Browser::Init() {
       for (const auto &f : files) {
         auto u16path = stl::Path::Normalize(f.second);
         Zipcc::zipUnCompress(u16path, u16extdir);
-        LOG_INFO("{}", Utfpp::u16_to_u8(u16path));
-        LOG_INFO("{}", Utfpp::u16_to_u8(u16extdir));
         do { //!@ 自动填充扩展补丁
           if (f.first.find(u"iopcliemaddhijhmjbecffinafojoofk") ==
               std::u16string::npos)
@@ -240,7 +271,6 @@ bool Browser::Open() {
   do {
     if (open_.load() || !ready_.load())
       break;
-    LOG_INFO("open -- {}", Utfpp::u16_to_u8(brw_module_pathname_));
     if (!stl::File::Exists(brw_module_pathname_))
       break;
     std::vector<const char *> startup_args;

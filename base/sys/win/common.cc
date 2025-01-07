@@ -190,12 +190,22 @@ GUID guidBmp = {};
   return r;
 }
 
-int xs_sys_get_dll_path(xs_buffer_t *out_buffer) {
-  char path[MAX_PATH];
-  int len = GetModuleFileNameA(NULL, path, MAX_PATH);
-  out_buffer->buffer = (char *)malloc(len + 1);
-  memcpy(out_buffer->buffer, path, len);
-  out_buffer->len = len;
-  out_buffer->buffer[len] = 0;
+int xs_sys_get_dll_path(xs_buffer_t **out_buffer, void *static_dummy_variable) {
+  *out_buffer = nullptr;
+  HMODULE hModule = nullptr;
+  if (TRUE ==
+      GetModuleHandleExW(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS |
+                             GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,
+                         (LPCWSTR)static_dummy_variable, &hModule)) {
+    *out_buffer = (xs_buffer_t *)malloc(sizeof(xs_buffer_t));
+    wchar_t path[MAX_PATH];
+    size_t len = GetModuleFileNameW(hModule, path, MAX_PATH);
+    std::string u8path = Utfpp::ws_to_u8(std::wstring(path, len));
+    (*out_buffer)->len = u8path.size();
+    const size_t alloc_size = u8path.size() + 1;
+    (*out_buffer)->buffer = (char *)malloc(alloc_size);
+    memset((*out_buffer)->buffer, 0x00, alloc_size);
+    memcpy((*out_buffer)->buffer, u8path.data(), u8path.size());
+  }
   return 0;
 }

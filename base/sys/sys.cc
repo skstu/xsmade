@@ -104,3 +104,10 @@ int xs_sys_get_image_type(const char *buffer, size_t buffer_size,
   }
   return 0;
 }
+void xs_sys_free_buffer(xs_buffer_t **buffer) {
+  if (buffer && (*buffer)) {
+    free((*buffer)->buffer);
+    free((*buffer));
+    *buffer = nullptr;
+  }
+}

@@ -4,6 +4,15 @@
 
 class Configure {
 public:
+  enum ProxyType {
+    HTTP = 0,
+    HTTPS,
+    SOCKS4,
+    SOCKS4A,
+    SOCKS5,
+  };
+
+public:
   class Fp { //!@ 指纹配置
   public:
     Fp();
@@ -660,6 +669,7 @@ public:
     std::vector<std::string> urls; //!@ 启动页
     std::string cache;             //!@ 前端数据路由|缓存(json object)
     std::string brwver;            //!@ 打开指定浏览器版本号
+    bool enable_lockhp = false;    //!@ 内核锁定主页
     bool enable_f12 = true;
     bool enable_pwdsavetip = true;
     inline std::string GetCache() const {
@@ -699,6 +709,10 @@ public:
         if (wokerObj.HasMember("enable_pwdsavetip") &&
             wokerObj["enable_pwdsavetip"].IsBool()) {
           enable_pwdsavetip = wokerObj["enable_pwdsavetip"].GetBool();
+        }
+        if (wokerObj.HasMember("enable_lockhp") &&
+            wokerObj["enable_lockhp"].IsBool()) {
+          enable_lockhp = wokerObj["enable_lockhp"].GetBool();
         }
         if (wokerObj.HasMember("cache") && wokerObj["cache"].IsObject()) {
           cache = Json::toString(wokerObj["cache"]);
@@ -796,7 +810,8 @@ public:
 
   public:
     bool enable = false;
-    int type = 0;
+    bool traffic_forwarding = false;
+    int type = 0; //!@ 0: http | 1: https | 2: socks4 | 3: socks4a | 4: socks5 |
     std::string addr;
     int port = 0;
     std::string name;
@@ -805,8 +820,8 @@ public:
       return enable;
     }
     inline bool valid() const {
-      return type == 0 && !addr.empty() && port != 0 && !name.empty() &&
-             !pwd.empty();
+      return (type >= 0 && type <= 5) && !addr.empty() && port != 0 &&
+             !name.empty() && !pwd.empty();
     }
     inline bool operator<<(const std::string &input) {
       bool result = false;
@@ -827,6 +842,9 @@ public:
         rapidjson::Value &proxyObj = doc["proxy"];
         if (proxyObj.HasMember("enable") && proxyObj["enable"].IsBool()) {
           enable = proxyObj["enable"].GetBool();
+        }
+        if (proxyObj.HasMember("traffic_forwarding") && proxyObj["traffic_forwarding"].IsBool()) {
+          traffic_forwarding = proxyObj["traffic_forwarding"].GetBool();
         }
         if (proxyObj.HasMember("type") && proxyObj["type"].IsInt()) {
           type = proxyObj["type"].GetInt();
@@ -931,6 +949,7 @@ public:
     bool operator<<(const std::string &input);
 
     std::string GetCookiesRequest() const;
+
   public:
     rapidjson::Document doc;
     bool enable = true;

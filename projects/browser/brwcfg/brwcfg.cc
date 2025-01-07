@@ -7,8 +7,15 @@ Brwcfg::~Brwcfg() {
   UnInit();
 }
 void Brwcfg::Init() {
+  config_ = Config::Create();
+  void(
+      putenv((char *)"GOOGLE_API_KEY=AIzaSyCkfPOPZXDKNn8hhgu3JrA62wIgC93d44k"));
+  void(putenv((char *)"GOOGLE_DEFAULT_CLIENT_ID=811574891467.apps."
+                      "googleusercontent.com"));
+  void(putenv((char *)"GOOGLE_DEFAULT_CLIENT_SECRET=kdloedMFGdGla2P1zacGjAQh"));
 }
 void Brwcfg::UnInit() {
+  Config::Destroy();
 }
 bool Brwcfg::Start() {
   return false;
@@ -18,11 +25,18 @@ void Brwcfg::Stop() {
 bool Brwcfg::Ready() const {
   return false;
 }
-//!@ [\src\chrome\app\chrome_main.cc (16)]
-//!@ [\src\chrome\app\chrome_main.cc (232-242)]
+IBrwcfg::IConfig *Brwcfg::ConfigGet() const {
+  return dynamic_cast<IBrwcfg::IConfig *>(config_);
+}
 void Brwcfg::OnMainProcessStartup(void) {
   do {
-
+    xs_buffer_t *dllpath = nullptr;
+    static int static_dummy_variable;
+    xs_sys_get_dll_path(&dllpath, &static_dummy_variable);
+    std::string u8strDllpath(dllpath->buffer, dllpath->len);
+    auto kk = u8strDllpath.c_str();
+    xs_sys_free_buffer(&dllpath);
+    // xs_sys_free(void **p)
   } while (0);
 }
 void Brwcfg::OnMainProcessShutdown(int rv) {
@@ -45,26 +59,21 @@ void Brwcfg::OnCreateWindowExAfter(void *hwnd) {
   // } while (0);
 #endif
 }
-/////////////////////////////////////////////////////////////////////
-static Brwcfg *__gspBrwcfg = nullptr;
-Brwcfg *Brwcfg::Create() {
-  if (!__gspBrwcfg)
-    __gspBrwcfg = new Brwcfg();
-  return __gspBrwcfg;
-}
-void Brwcfg::Destroy() {
-  SK_DELETE_PTR(__gspBrwcfg);
-}
-#ifdef __cplusplus
-extern "C" {
-#endif
-SHARED_API void *interface_init(void *, unsigned long) {
-  IBrwcfg *result = dynamic_cast<IBrwcfg *>(Brwcfg::Create());
+IBrwcfg::IData *Brwcfg::CreateData(const char *data, const size_t &len) const {
+  IBrwcfg::IData *result = nullptr;
+  if (data && len > 0) {
+    result = dynamic_cast<IBrwcfg::IData *>(new Data(data, len));
+  }
   return result;
 }
-SHARED_API void interface_uninit() {
-  Brwcfg::Destroy();
+IBrwcfg::IDataArray *Brwcfg::CreateDataArray() const {
+  IBrwcfg::IDataArray *result =
+      dynamic_cast<IBrwcfg::IDataArray *>(new DataArray());
+  return result;
 }
-#ifdef __cplusplus
+/////////////////////////////////////////////////////////////////////
+void Brwcfg::ConfiguringEnvironmentVariables() const {
+  do {
+
+  } while (0);
 }
-#endif
