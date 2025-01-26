@@ -14,8 +14,8 @@ public:
   class IDataArray {
   public:
     virtual void Push(IData *) = 0;
-    virtual IData* CreateData(const char *, const size_t &) = 0;
-    virtual IData* Next(const size_t &) const = 0;
+    virtual IData *CreateData(const char *, const size_t &) = 0;
+    virtual IData *Next(const size_t &) const = 0;
     virtual size_t Total() const = 0;
     virtual void Release() const = 0;
   };
@@ -40,6 +40,8 @@ public:
   virtual void OnCreateWindowExAfter(void *hwnd) = 0;
   virtual IData *CreateData(const char *, const size_t &) const = 0;
   virtual IDataArray *CreateDataArray() const = 0;
+  virtual void OnChromiumExtensionsMessageServiceCreate() = 0;
+  virtual void OnChromiumExtensionsMessageServiceDestroy() = 0;
 };
 } // namespace browser
 

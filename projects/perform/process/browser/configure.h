@@ -42,6 +42,16 @@ public:
         ~vs();
 
       public:
+        class device {
+        public:
+          device();
+          ~device();
+
+        public:
+          bool enable = false;
+          std::vector<std::string> macs;
+          std::string sid;
+        };
         class canvas {
         public:
           canvas();
@@ -132,6 +142,8 @@ public:
           std::string platform;
           std::string language;
           std::string hardwareConcurrency;
+          bool cookieEnabled = true;
+          unsigned int deviceMemory = 0;
           std::string DoNotTrack;
           std::vector<std::string> languages;
         };
@@ -182,6 +194,7 @@ public:
         };
 
       public:
+        device device_;
         canvas canvas_;
         webgl webgl_;
         audio audio_;
@@ -299,6 +312,34 @@ public:
           if (!doc["fp"]["f"].HasMember("vs") &&
               doc["fp"]["f"]["vs"].IsObject()) {
             break;
+          }
+          if (doc["fp"]["f"]["vs"].HasMember("device") &&
+              doc["fp"]["f"]["vs"]["device"].IsObject()) {
+            if (doc["fp"]["f"]["vs"]["device"].HasMember("enable") &&
+                doc["fp"]["f"]["vs"]["device"]["enable"].IsBool()) {
+              f_.vs_.device_.enable =
+                  doc["fp"]["f"]["vs"]["device"]["enable"].GetBool();
+            }
+            if (doc["fp"]["f"]["vs"]["device"].HasMember("sid") &&
+                doc["fp"]["f"]["vs"]["device"]["sid"].IsString()) {
+              f_.vs_.device_.sid =
+                  doc["fp"]["f"]["vs"]["device"]["sid"].GetString();
+            }
+            if (doc["fp"]["f"]["vs"]["device"].HasMember("macs") &&
+                doc["fp"]["f"]["vs"]["device"]["macs"].IsArray()) {
+              f_.vs_.device_.macs.clear();
+              for (rapidjson::SizeType i = 0;
+                   i < doc["fp"]["f"]["vs"]["device"]["macs"].Size();
+                   ++i) {
+                if (!doc["fp"]["f"]["vs"]["device"]["macs"][i]
+                         .IsString()) {
+                  break;
+                }
+                f_.vs_.device_.macs.push_back(
+                    doc["fp"]["f"]["vs"]["device"]["macs"][i]
+                        .GetString());
+              }       
+            }
           }
           if (doc["fp"]["f"]["vs"].HasMember("canvas") &&
               doc["fp"]["f"]["vs"]["canvas"].IsObject()) {
@@ -515,6 +556,22 @@ public:
               f_.vs_.navigator_.hardwareConcurrency =
                   doc["fp"]["f"]["vs"]["navigator"]["hardwareConcurrency"]
                       .GetString();
+            }
+            if (doc["fp"]["f"]["vs"]["navigator"].HasMember(
+                    "cookieEnabled") &&
+                doc["fp"]["f"]["vs"]["navigator"]["cookieEnabled"]
+                    .IsBool()) {
+              f_.vs_.navigator_.cookieEnabled =
+                  doc["fp"]["f"]["vs"]["navigator"]["cookieEnabled"]
+                      .GetBool();
+            }
+            if (doc["fp"]["f"]["vs"]["navigator"].HasMember(
+                    "deviceMemory") &&
+                doc["fp"]["f"]["vs"]["navigator"]["deviceMemory"]
+                    .IsUint()) {
+              f_.vs_.navigator_.deviceMemory =
+                  doc["fp"]["f"]["vs"]["navigator"]["deviceMemory"]
+                      .GetUint();
             }
             if (doc["fp"]["f"]["vs"]["navigator"].HasMember("DoNotTrack") &&
                 doc["fp"]["f"]["vs"]["navigator"]["DoNotTrack"].IsString()) {
@@ -999,7 +1056,7 @@ public:
   std::string extension_id_; //!@ 扩展ID
   std::string source_ =
       R"(
-     {"enable":true,"rule":{"id":0,"key":"525c36a14d4da77712db610af924c391","name":"开发测试环境"},"develop":{"enable":false,"brwargs":""},"proxy":{"enable":false,"type":0,"addr":"proxygs.tunneldot.com","port":51000,"name":"mp","pwd":"538909"},"wroker":{"brwver":"128.0.6613.186","urls":["https://baidu.com","https://cn.bing.com"],"cache":{"demo":5568668,"test_string":"你好！"}},"account":{"phone":13066886688,"name":"碼爹利","pwd":"123456789","identify":"agadsagas24362626","level":1},"fp":{"enable":true,"g":"martell","s":".5567","f":{"vs":{"canvas":{"enable":true},"webgl":{"enable":true,"vendor":"Apple I6nc.","renderer":"Intel HD8 Graphics ","version":" Apple GPU"},"audio":{"enable":true},"font":{"enable":true},"clientrects":{"enable":true,"screen":{"availLeft":0,"availTop":0,"availWidth":888,"availHeight":111,"width":666,"height":111,"colorDepth":16,"pixelDepth":16}},"webrtc":{"enable":false},"navigator":{"enable":true,"appCodeName":"Mozilla","appName":"Netscape","appVersion":"5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/888.8.8.8 Safari/888.88","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/888.8.8.8 Safari/888.88","platform":"Apple","language":"zh-CN","hardwareConcurrency":"2","DoNotTrack":"1","languages":["en-US","zh-CN"]},"timezone":{"enable":false},"random":{"enable":true},"nocache":{"enable":true},"backup2":{"enable":false}}},"functions":{"enable_image":true,"enable_audio":true,"enable_video":true,"enable_notify":true},"b":[],"w":[],"v":1759}} 
+     {"enable":true,"rule":{"id":0,"key":"525c36a14d4da77712db610af924c391","name":"开发测试环境"},"develop":{"enable":false,"brwargs":""},"proxy":{"enable":false,"type":0,"addr":"proxygs.tunneldot.com","port":51000,"name":"mp","pwd":"538909"},"wroker":{"brwver":"128.0.6613.186","urls":["https://baidu.com","https://cn.bing.com"],"cache":{"demo":5568668,"test_string":"你好！"}},"account":{"phone":13066886688,"name":"碼爹利","pwd":"123456789","identify":"agadsagas24362626","level":1},"fp":{"enable":true,"g":"martell","s":".5567","f":{"vs":{"canvas":{"enable":true},"webgl":{"enable":true,"vendor":"Apple I6nc.","renderer":"Intel HD8 Graphics ","version":" Apple GPU"},"audio":{"enable":true},"font":{"enable":true},"clientrects":{"enable":true,"screen":{"availLeft":0,"availTop":0,"availWidth":888,"availHeight":111,"width":666,"height":111,"colorDepth":16,"pixelDepth":16}},"webrtc":{"enable":false},"navigator":{"enable":true,"appCodeName":"Mozilla","appName":"Netscape","appVersion":"5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/888.8.8.8 Safari/888.88","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/888.8.8.8 Safari/888.88","platform":"Apple","language":"zh-CN","cookieEnabled":true,"deviceMemory":16,"hardwareConcurrency":"2","DoNotTrack":"1","languages":["en-US","zh-CN"]},"timezone":{"enable":false},"random":{"enable":true},"nocache":{"enable":true},"backup2":{"enable":false}}},"functions":{"enable_image":true,"enable_audio":true,"enable_video":true,"enable_notify":true},"b":["fingerprintjs.github.io","pixelscan.net"],"w":["baidu.com","bing.com","google.com"],"v":1759}} 
       )";
   const std::string jsFPS_ =
       R"(
@@ -1347,6 +1404,8 @@ public:
 						language: t.f.vs.navigator.language,
 						languages: t.f.vs.navigator.languages,
 						hardwareConcurrency: t.f.vs.navigator.hardwareConcurrency,
+            cookieEnabled: t.f.vs.navigator.cookieEnabled,
+            deviceMemory: t.f.vs.navigator.deviceMemory,
 						doNotTrack: t.f.vs.navigator.DoNotTrack
 					})
 				})),
@@ -1451,6 +1510,10 @@ inline Configure::Fp::f::~f() {
 inline Configure::Fp::f::vs::vs() {
 }
 inline Configure::Fp::f::vs::~vs() {
+}
+inline Configure::Fp::f::vs::device::device() {
+}
+inline Configure::Fp::f::vs::device::~device() {
 }
 inline Configure::Fp::f::vs::canvas::canvas() {
 }

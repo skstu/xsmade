@@ -56,11 +56,14 @@ static std::map<ResponseCode, std::string> ResponseCodeString = {
 
 enum class RequestType : unsigned long long {
   UNKNOWN = 0x00000,
-  SERVER_OPEN = 0x10010,         //!@ 打开(初始化)服务
-  SERVER_CLOSE = 0x10020,        //!@ 退出(关闭)服务
-  BROWSER_OPEN = 0x10101,        //!@ 打开浏览器
-  BROWSER_CLOSE = 0x10102,       //!@ 关闭浏览器
-  BROWSER_GET = 0x10103,         //!@ 获取浏览器列表
+  SYSTEM_DEVICE = 0x10001,
+  SERVER_OPEN = 0x10010,      //!@ 打开(初始化)服务
+  SERVER_CLOSE = 0x10020,     //!@ 退出(关闭)服务
+  BROWSER_OPEN = 0x10101,     //!@ 打开浏览器
+  BROWSER_CLOSE = 0x10102,    //!@ 关闭浏览器
+  BROWSER_GET = 0x10103,      //!@ 获取浏览器列表
+  BROWSER_ACTIVATE = 0x10104, //@ 激活浏览器窗口
+  BROWSER_GET_CACHE = 0x10105,//!@ 获取缓存(前端)
   BROWSER_COOKIES_GET = 0x10110, //!@ 获取cookies
   BROWSER_COOKIES_SET = 0x10111, //!@ 设置cookies
   BROWSER_COOKIES_DEL = 0x10112, //!@ 删除cookies

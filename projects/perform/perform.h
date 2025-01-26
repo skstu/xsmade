@@ -37,7 +37,6 @@
 #include "components/ffmpeg/ffmpeg.h"
 
 #include "cmdline.h"
-#include "perform.h"
 
 class Perform {
 public:

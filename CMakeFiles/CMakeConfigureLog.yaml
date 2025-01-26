@@ -1,0 +1,1450 @@
+
+---
+events:
+  -
+    kind: "message-v1"
+    backtrace:
+      - "C:/Users/k34ub/Downloads/cmake-3.28.0-windows-x86_64/share/cmake-3.28/Modules/CMakeDetermineSystem.cmake:228 (message)"
+      - "CMakeLists.txt:138 (project)"
+    message: |
+      The target system is: Windows -  - 
+      The host system is: Windows - 10.0.26100 - AMD64
+  -
+    kind: "message-v1"
+    backtrace:
+      - "C:/Users/k34ub/Downloads/cmake-3.28.0-windows-x86_64/share/cmake-3.28/Modules/CMakeDetermineCompilerId.cmake:17 (message)"
+      - "C:/Users/k34ub/Downloads/cmake-3.28.0-windows-x86_64/share/cmake-3.28/Modules/CMakeDetermineCompilerId.cmake:64 (__determine_compiler_id_test)"
+      - "C:/Users/k34ub/Downloads/cmake-3.28.0-windows-x86_64/share/cmake-3.28/Modules/CMakeDetermineCCompiler.cmake:123 (CMAKE_DETERMINE_COMPILER_ID)"
+      - "CMakeLists.txt:138 (project)"
+    message: |
+      Compiling the C compiler identification source file "CMakeCCompilerId.c" succeeded.
+      Compiler: c:/msys64//clang64//bin/clang.exe 
+      Build flags: -Wno-unused-command-line-argument
+      Id flags:  
+      
+      The output was:
+      0
+      
+      
+      Compilation of the C compiler identification source "CMakeCCompilerId.c" produced "a.exe"
+      
+      The C compiler identification is Clang, found in:
+        C:/Users/k34ub/source/skstu/xsmade/CMakeFiles/3.28.0/CompilerIdC/a.exe
+      
+  -
+    kind: "message-v1"
+    backtrace:
+      - "C:/Users/k34ub/Downloads/cmake-3.28.0-windows-x86_64/share/cmake-3.28/Modules/CMakeDetermineCompilerId.cmake:17 (message)"
+      - "C:/Users/k34ub/Downloads/cmake-3.28.0-windows-x86_64/share/cmake-3.28/Modules/CMakeDetermineCompilerId.cmake:64 (__determine_compiler_id_test)"
+      - "C:/Users/k34ub/Downloads/cmake-3.28.0-windows-x86_64/share/cmake-3.28/Modules/CMakeDetermineCXXCompiler.cmake:126 (CMAKE_DETERMINE_COMPILER_ID)"
+      - "CMakeLists.txt:138 (project)"
+    message: |
+      Compiling the CXX compiler identification source file "CMakeCXXCompilerId.cpp" succeeded.
+      Compiler: c:/msys64//clang64//bin/clang++.exe 
+      Build flags: -Wno-unused-command-line-argument
+      Id flags:  
+      
+      The output was:
+      0
+      
+      
+      Compilation of the CXX compiler identification source "CMakeCXXCompilerId.cpp" produced "a.exe"
+      
+      The CXX compiler identification is Clang, found in:
+        C:/Users/k34ub/source/skstu/xsmade/CMakeFiles/3.28.0/CompilerIdCXX/a.exe
+      
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "C:/Users/k34ub/Downloads/cmake-3.28.0-windows-x86_64/share/cmake-3.28/Modules/CMakeDetermineCompilerABI.cmake:57 (try_compile)"
+      - "C:/Users/k34ub/Downloads/cmake-3.28.0-windows-x86_64/share/cmake-3.28/Modules/CMakeTestCCompiler.cmake:26 (CMAKE_DETERMINE_COMPILER_ABI)"
+      - "CMakeLists.txt:138 (project)"
+    checks:
+      - "Detecting C compiler ABI info"
+    directories:
+      source: "C:/Users/k34ub/source/skstu/xsmade/CMakeFiles/CMakeScratch/TryCompile-to5otg"
+      binary: "C:/Users/k34ub/source/skstu/xsmade/CMakeFiles/CMakeScratch/TryCompile-to5otg"
+    cmakeVariables:
+      CMAKE_CXX_COMPILER_CLANG_SCAN_DEPS: "C:/msys64/clang64/bin/clang-scan-deps.exe"
+      CMAKE_C_FLAGS: " -Wno-unused-command-line-argument"
+      CMAKE_EXE_LINKER_FLAGS: ""
+    buildResult:
+      variable: "CMAKE_C_ABI_COMPILED"
+      cached: true
+      stdout: |
+        Change Dir: 'C:/Users/k34ub/source/skstu/xsmade/CMakeFiles/CMakeScratch/TryCompile-to5otg'
+        
+        Run Build Command(s): C:/Users/k34ub/source/skstu/devtools/bin/ninja/ninja-win/ninja.exe -v cmTC_7b33d
+        [1/2] c:\\msys64\\\\clang64\\\\bin\\clang.exe   -Wno-unused-command-line-argument    -v -MD -MT CMakeFiles/cmTC_7b33d.dir/CMakeCCompilerABI.c.obj -MF CMakeFiles\\cmTC_7b33d.dir\\CMakeCCompilerABI.c.obj.d -o CMakeFiles/cmTC_7b33d.dir/CMakeCCompilerABI.c.obj -c C:/Users/k34ub/Downloads/cmake-3.28.0-windows-x86_64/share/cmake-3.28/Modules/CMakeCCompilerABI.c
+        clang version 19.1.6
+        Target: x86_64-w64-windows-gnu
+        Thread model: posix
+        InstalledDir: C:/msys64/clang64/bin
+         (in-process)
+         "C:/msys64/clang64/bin/clang.exe" -cc1 -triple x86_64-w64-windows-gnu -emit-obj -disable-free -clear-ast-before-backend -disable-llvm-verifier -discard-value-names -main-file-name CMakeCCompilerABI.c -mrelocation-model pic -pic-level 2 -mframe-pointer=none -fmath-errno -ffp-contract=on -fno-rounding-math -mconstructor-aliases -mms-bitfields -funwind-tables=2 -fno-sized-deallocation -fno-use-init-array -target-cpu x86-64 -tune-cpu generic -debugger-tuning=gdb -fdebug-compilation-dir=C:/Users/k34ub/source/skstu/xsmade/CMakeFiles/CMakeScratch/TryCompile-to5otg -v -fcoverage-compilation-dir=C:/Users/k34ub/source/skstu/xsmade/CMakeFiles/CMakeScratch/TryCompile-to5otg -resource-dir C:/msys64/clang64/lib/clang/19 -dependency-file "CMakeFiles\\\\cmTC_7b33d.dir\\\\CMakeCCompilerABI.c.obj.d" -MT CMakeFiles/cmTC_7b33d.dir/CMakeCCompilerABI.c.obj -sys-header-deps -internal-isystem C:/msys64/clang64/lib/clang/19/include -internal-isystem C:/msys64/clang64/x86_64-w64-mingw32/include -internal-isystem C:/msys64/clang64/x86_64-w64-mingw32/usr/include -internal-isystem C:/msys64/clang64/include -Wno-unused-command-line-argument -ferror-limit 19 -fno-use-cxa-atexit -fgnuc-version=4.2.1 -fskip-odr-check-in-gmf -exception-model=seh -faddrsig -o CMakeFiles/cmTC_7b33d.dir/CMakeCCompilerABI.c.obj -x c C:/Users/k34ub/Downloads/cmake-3.28.0-windows-x86_64/share/cmake-3.28/Modules/CMakeCCompilerABI.c
+        clang -cc1 version 19.1.6 based upon LLVM 19.1.6 default target x86_64-w64-windows-gnu\x0d
+        ignoring nonexistent directory "C:/msys64/clang64/x86_64-w64-mingw32/include"\x0d
+        ignoring nonexistent directory "C:/msys64/clang64/x86_64-w64-mingw32/usr/include"\x0d
+        #include "..." search starts here:\x0d
+        #include <...> search starts here:\x0d
+         C:/msys64/clang64/lib/clang/19/include\x0d
+         C:/msys64/clang64/include\x0d
+        End of search list.\x0d
+        [2/2] C:\\WINDOWS\\system32\\cmd.exe /C "cd . && c:\\msys64\\\\clang64\\\\bin\\clang.exe -Wno-unused-command-line-argument -v CMakeFiles/cmTC_7b33d.dir/CMakeCCompilerABI.c.obj -o cmTC_7b33d.exe -Wl,--out-implib,libcmTC_7b33d.dll.a -Wl,--major-image-version,0,--minor-image-version,0   && cd ."
+        clang version 19.1.6
+        Target: x86_64-w64-windows-gnu
+        Thread model: posix
+        InstalledDir: C:/msys64/clang64/bin
+         "C:/msys64/clang64/bin/ld.lld" -m i386pep -Bdynamic -o cmTC_7b33d.exe C:/msys64/clang64/lib/crt2.o C:/msys64/clang64/lib/crtbegin.o -LC:/msys64/clang64/x86_64-w64-mingw32/lib -LC:/msys64/clang64/x86_64-w64-mingw32/mingw/lib -LC:/msys64/clang64/lib -LC:/msys64/clang64/lib/clang/19/lib/windows CMakeFiles/cmTC_7b33d.dir/CMakeCCompilerABI.c.obj --out-implib libcmTC_7b33d.dll.a --major-image-version 0 --minor-image-version 0 -lmingw32 C:/msys64/clang64/lib/clang/19/lib/windows/libclang_rt.builtins-x86_64.a -lunwind -lmoldname -lmingwex -lmsvcrt -ladvapi32 -lshell32 -luser32 -lkernel32 -lmingw32 C:/msys64/clang64/lib/clang/19/lib/windows/libclang_rt.builtins-x86_64.a -lunwind -lmoldname -lmingwex -lmsvcrt -lkernel32 C:/msys64/clang64/lib/crtend.o\x0d
+        
+      exitCode: 0
+  -
+    kind: "message-v1"
+    backtrace:
+      - "C:/Users/k34ub/Downloads/cmake-3.28.0-windows-x86_64/share/cmake-3.28/Modules/CMakeDetermineCompilerABI.cmake:127 (message)"
+      - "C:/Users/k34ub/Downloads/cmake-3.28.0-windows-x86_64/share/cmake-3.28/Modules/CMakeTestCCompiler.cmake:26 (CMAKE_DETERMINE_COMPILER_ABI)"
+      - "CMakeLists.txt:138 (project)"
+    message: |
+      Parsed C implicit include dir info: rv=done
+        found start of include info
+        found start of implicit include info
+          add: [C:/msys64/clang64/lib/clang/19/include]
+          add: [C:/msys64/clang64/include]
+        end of search list found
+        collapse include dir [C:/msys64/clang64/lib/clang/19/include] ==> [C:/msys64/clang64/lib/clang/19/include]
+        collapse include dir [C:/msys64/clang64/include] ==> [C:/msys64/clang64/include]
+        implicit include dirs: [C:/msys64/clang64/lib/clang/19/include;C:/msys64/clang64/include]
+      
+      
+  -
+    kind: "message-v1"
+    backtrace:
+      - "C:/Users/k34ub/Downloads/cmake-3.28.0-windows-x86_64/share/cmake-3.28/Modules/CMakeDetermineCompilerABI.cmake:159 (message)"
+      - "C:/Users/k34ub/Downloads/cmake-3.28.0-windows-x86_64/share/cmake-3.28/Modules/CMakeTestCCompiler.cmake:26 (CMAKE_DETERMINE_COMPILER_ABI)"
+      - "CMakeLists.txt:138 (project)"
+    message: |
+      Parsed C implicit link information:
+        link line regex: [^( *|.*[/\\])(ld\\.lld\\.exe|CMAKE_LINK_STARTFILE-NOTFOUND|([^/\\]+-)?ld|collect2)[^/\\]*( |$)]
+        ignore line: [Change Dir: 'C:/Users/k34ub/source/skstu/xsmade/CMakeFiles/CMakeScratch/TryCompile-to5otg']
+        ignore line: []
+        ignore line: [Run Build Command(s): C:/Users/k34ub/source/skstu/devtools/bin/ninja/ninja-win/ninja.exe -v cmTC_7b33d]
+        ignore line: [[1/2] c:\\msys64\\\\clang64\\\\bin\\clang.exe   -Wno-unused-command-line-argument    -v -MD -MT CMakeFiles/cmTC_7b33d.dir/CMakeCCompilerABI.c.obj -MF CMakeFiles\\cmTC_7b33d.dir\\CMakeCCompilerABI.c.obj.d -o CMakeFiles/cmTC_7b33d.dir/CMakeCCompilerABI.c.obj -c C:/Users/k34ub/Downloads/cmake-3.28.0-windows-x86_64/share/cmake-3.28/Modules/CMakeCCompilerABI.c]
+        ignore line: [clang version 19.1.6]
+        ignore line: [Target: x86_64-w64-windows-gnu]
+        ignore line: [Thread model: posix]
+        ignore line: [InstalledDir: C:/msys64/clang64/bin]
+        ignore line: [ (in-process)]
+        ignore line: [ "C:/msys64/clang64/bin/clang.exe" -cc1 -triple x86_64-w64-windows-gnu -emit-obj -disable-free -clear-ast-before-backend -disable-llvm-verifier -discard-value-names -main-file-name CMakeCCompilerABI.c -mrelocation-model pic -pic-level 2 -mframe-pointer=none -fmath-errno -ffp-contract=on -fno-rounding-math -mconstructor-aliases -mms-bitfields -funwind-tables=2 -fno-sized-deallocation -fno-use-init-array -target-cpu x86-64 -tune-cpu generic -debugger-tuning=gdb -fdebug-compilation-dir=C:/Users/k34ub/source/skstu/xsmade/CMakeFiles/CMakeScratch/TryCompile-to5otg -v -fcoverage-compilation-dir=C:/Users/k34ub/source/skstu/xsmade/CMakeFiles/CMakeScratch/TryCompile-to5otg -resource-dir C:/msys64/clang64/lib/clang/19 -dependency-file "CMakeFiles\\\\cmTC_7b33d.dir\\\\CMakeCCompilerABI.c.obj.d" -MT CMakeFiles/cmTC_7b33d.dir/CMakeCCompilerABI.c.obj -sys-header-deps -internal-isystem C:/msys64/clang64/lib/clang/19/include -internal-isystem C:/msys64/clang64/x86_64-w64-mingw32/include -internal-isystem C:/msys64/clang64/x86_64-w64-mingw32/usr/include -internal-isystem C:/msys64/clang64/include -Wno-unused-command-line-argument -ferror-limit 19 -fno-use-cxa-atexit -fgnuc-version=4.2.1 -fskip-odr-check-in-gmf -exception-model=seh -faddrsig -o CMakeFiles/cmTC_7b33d.dir/CMakeCCompilerABI.c.obj -x c C:/Users/k34ub/Downloads/cmake-3.28.0-windows-x86_64/share/cmake-3.28/Modules/CMakeCCompilerABI.c]
+        ignore line: [clang -cc1 version 19.1.6 based upon LLVM 19.1.6 default target x86_64-w64-windows-gnu\x0d]
+        ignore line: [ignoring nonexistent directory "C:/msys64/clang64/x86_64-w64-mingw32/include"\x0d]
+        ignore line: [ignoring nonexistent directory "C:/msys64/clang64/x86_64-w64-mingw32/usr/include"\x0d]
+        ignore line: [#include "..." search starts here:\x0d]
+        ignore line: [#include <...> search starts here:\x0d]
+        ignore line: [ C:/msys64/clang64/lib/clang/19/include\x0d]
+        ignore line: [ C:/msys64/clang64/include\x0d]
+        ignore line: [End of search list.\x0d]
+        ignore line: [[2/2] C:\\WINDOWS\\system32\\cmd.exe /C "cd . && c:\\msys64\\\\clang64\\\\bin\\clang.exe -Wno-unused-command-line-argument -v CMakeFiles/cmTC_7b33d.dir/CMakeCCompilerABI.c.obj -o cmTC_7b33d.exe -Wl --out-implib libcmTC_7b33d.dll.a -Wl --major-image-version 0 --minor-image-version 0   && cd ."]
+        ignore line: [clang version 19.1.6]
+        ignore line: [Target: x86_64-w64-windows-gnu]
+        ignore line: [Thread model: posix]
+        ignore line: [InstalledDir: C:/msys64/clang64/bin]
+        link line: [ "C:/msys64/clang64/bin/ld.lld" -m i386pep -Bdynamic -o cmTC_7b33d.exe C:/msys64/clang64/lib/crt2.o C:/msys64/clang64/lib/crtbegin.o -LC:/msys64/clang64/x86_64-w64-mingw32/lib -LC:/msys64/clang64/x86_64-w64-mingw32/mingw/lib -LC:/msys64/clang64/lib -LC:/msys64/clang64/lib/clang/19/lib/windows CMakeFiles/cmTC_7b33d.dir/CMakeCCompilerABI.c.obj --out-implib libcmTC_7b33d.dll.a --major-image-version 0 --minor-image-version 0 -lmingw32 C:/msys64/clang64/lib/clang/19/lib/windows/libclang_rt.builtins-x86_64.a -lunwind -lmoldname -lmingwex -lmsvcrt -ladvapi32 -lshell32 -luser32 -lkernel32 -lmingw32 C:/msys64/clang64/lib/clang/19/lib/windows/libclang_rt.builtins-x86_64.a -lunwind -lmoldname -lmingwex -lmsvcrt -lkernel32 C:/msys64/clang64/lib/crtend.o\x0d]
+          arg [C:/msys64/clang64/bin/ld.lld] ==> ignore
+          arg [-m] ==> ignore
+          arg [i386pep] ==> ignore
+          arg [-Bdynamic] ==> search dynamic
+          arg [-o] ==> ignore
+          arg [cmTC_7b33d.exe] ==> ignore
+          arg [C:/msys64/clang64/lib/crt2.o] ==> obj [C:/msys64/clang64/lib/crt2.o]
+          arg [C:/msys64/clang64/lib/crtbegin.o] ==> obj [C:/msys64/clang64/lib/crtbegin.o]
+          arg [-LC:/msys64/clang64/x86_64-w64-mingw32/lib] ==> dir [C:/msys64/clang64/x86_64-w64-mingw32/lib]
+          arg [-LC:/msys64/clang64/x86_64-w64-mingw32/mingw/lib] ==> dir [C:/msys64/clang64/x86_64-w64-mingw32/mingw/lib]
+          arg [-LC:/msys64/clang64/lib] ==> dir [C:/msys64/clang64/lib]
+          arg [-LC:/msys64/clang64/lib/clang/19/lib/windows] ==> dir [C:/msys64/clang64/lib/clang/19/lib/windows]
+          arg [CMakeFiles/cmTC_7b33d.dir/CMakeCCompilerABI.c.obj] ==> ignore
+          arg [--out-implib] ==> ignore
+          arg [libcmTC_7b33d.dll.a] ==> ignore
+          arg [--major-image-version] ==> ignore
+          arg [0] ==> ignore
+          arg [--minor-image-version] ==> ignore
+          arg [0] ==> ignore
+          arg [-lmingw32] ==> lib [mingw32]
+          arg [C:/msys64/clang64/lib/clang/19/lib/windows/libclang_rt.builtins-x86_64.a] ==> lib [C:/msys64/clang64/lib/clang/19/lib/windows/libclang_rt.builtins-x86_64.a]
+          arg [-lunwind] ==> lib [unwind]
+          arg [-lmoldname] ==> lib [moldname]
+          arg [-lmingwex] ==> lib [mingwex]
+          arg [-lmsvcrt] ==> lib [msvcrt]
+          arg [-ladvapi32] ==> lib [advapi32]
+          arg [-lshell32] ==> lib [shell32]
+          arg [-luser32] ==> lib [user32]
+          arg [-lkernel32] ==> lib [kernel32]
+          arg [-lmingw32] ==> lib [mingw32]
+          arg [C:/msys64/clang64/lib/clang/19/lib/windows/libclang_rt.builtins-x86_64.a] ==> lib [C:/msys64/clang64/lib/clang/19/lib/windows/libclang_rt.builtins-x86_64.a]
+          arg [-lunwind] ==> lib [unwind]
+          arg [-lmoldname] ==> lib [moldname]
+          arg [-lmingwex] ==> lib [mingwex]
+          arg [-lmsvcrt] ==> lib [msvcrt]
+          arg [-lkernel32] ==> lib [kernel32]
+          arg [C:/msys64/clang64/lib/crtend.o] ==> obj [C:/msys64/clang64/lib/crtend.o]
+        remove lib [C:/msys64/clang64/lib/clang/19/lib/windows/libclang_rt.builtins-x86_64.a]
+        remove lib [msvcrt]
+        remove lib [C:/msys64/clang64/lib/clang/19/lib/windows/libclang_rt.builtins-x86_64.a]
+        remove lib [msvcrt]
+        collapse library dir [C:/msys64/clang64/x86_64-w64-mingw32/lib] ==> [C:/msys64/clang64/x86_64-w64-mingw32/lib]
+        collapse library dir [C:/msys64/clang64/x86_64-w64-mingw32/mingw/lib] ==> [C:/msys64/clang64/x86_64-w64-mingw32/mingw/lib]
+        collapse library dir [C:/msys64/clang64/lib] ==> [C:/msys64/clang64/lib]
+        collapse library dir [C:/msys64/clang64/lib/clang/19/lib/windows] ==> [C:/msys64/clang64/lib/clang/19/lib/windows]
+        implicit libs: [mingw32;unwind;moldname;mingwex;advapi32;shell32;user32;kernel32;mingw32;unwind;moldname;mingwex;kernel32]
+        implicit objs: [C:/msys64/clang64/lib/crt2.o;C:/msys64/clang64/lib/crtbegin.o;C:/msys64/clang64/lib/crtend.o]
+        implicit dirs: [C:/msys64/clang64/x86_64-w64-mingw32/lib;C:/msys64/clang64/x86_64-w64-mingw32/mingw/lib;C:/msys64/clang64/lib;C:/msys64/clang64/lib/clang/19/lib/windows]
+        implicit fwks: []
+      
+      
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "C:/Users/k34ub/Downloads/cmake-3.28.0-windows-x86_64/share/cmake-3.28/Modules/CMakeDetermineCompilerABI.cmake:57 (try_compile)"
+      - "C:/Users/k34ub/Downloads/cmake-3.28.0-windows-x86_64/share/cmake-3.28/Modules/CMakeTestCXXCompiler.cmake:26 (CMAKE_DETERMINE_COMPILER_ABI)"
+      - "CMakeLists.txt:138 (project)"
+    checks:
+      - "Detecting CXX compiler ABI info"
+    directories:
+      source: "C:/Users/k34ub/source/skstu/xsmade/CMakeFiles/CMakeScratch/TryCompile-i3vxcb"
+      binary: "C:/Users/k34ub/source/skstu/xsmade/CMakeFiles/CMakeScratch/TryCompile-i3vxcb"
+    cmakeVariables:
+      CMAKE_CXX_COMPILER_CLANG_SCAN_DEPS: "C:/msys64/clang64/bin/clang-scan-deps.exe"
+      CMAKE_CXX_FLAGS: " -Wno-unused-command-line-argument"
+      CMAKE_EXE_LINKER_FLAGS: ""
+    buildResult:
+      variable: "CMAKE_CXX_ABI_COMPILED"
+      cached: true
+      stdout: |
+        Change Dir: 'C:/Users/k34ub/source/skstu/xsmade/CMakeFiles/CMakeScratch/TryCompile-i3vxcb'
+        
+        Run Build Command(s): C:/Users/k34ub/source/skstu/devtools/bin/ninja/ninja-win/ninja.exe -v cmTC_d6f1d
+        [1/2] c:\\msys64\\\\clang64\\\\bin\\clang++.exe   -Wno-unused-command-line-argument  -std=gnu++17   -v -MD -MT CMakeFiles/cmTC_d6f1d.dir/CMakeCXXCompilerABI.cpp.obj -MF CMakeFiles\\cmTC_d6f1d.dir\\CMakeCXXCompilerABI.cpp.obj.d -o CMakeFiles/cmTC_d6f1d.dir/CMakeCXXCompilerABI.cpp.obj -c C:/Users/k34ub/Downloads/cmake-3.28.0-windows-x86_64/share/cmake-3.28/Modules/CMakeCXXCompilerABI.cpp
+        clang version 19.1.6
+        Target: x86_64-w64-windows-gnu
+        Thread model: posix
+        InstalledDir: C:/msys64/clang64/bin
+         (in-process)
+         "C:/msys64/clang64/bin/clang++.exe" -cc1 -triple x86_64-w64-windows-gnu -emit-obj -disable-free -clear-ast-before-backend -disable-llvm-verifier -discard-value-names -main-file-name CMakeCXXCompilerABI.cpp -mrelocation-model pic -pic-level 2 -mframe-pointer=none -fmath-errno -ffp-contract=on -fno-rounding-math -mconstructor-aliases -mms-bitfields -funwind-tables=2 -fno-sized-deallocation -fno-use-init-array -target-cpu x86-64 -tune-cpu generic -debugger-tuning=gdb -fdebug-compilation-dir=C:/Users/k34ub/source/skstu/xsmade/CMakeFiles/CMakeScratch/TryCompile-i3vxcb -v -fcoverage-compilation-dir=C:/Users/k34ub/source/skstu/xsmade/CMakeFiles/CMakeScratch/TryCompile-i3vxcb -resource-dir C:/msys64/clang64/lib/clang/19 -dependency-file "CMakeFiles\\\\cmTC_d6f1d.dir\\\\CMakeCXXCompilerABI.cpp.obj.d" -MT CMakeFiles/cmTC_d6f1d.dir/CMakeCXXCompilerABI.cpp.obj -sys-header-deps -internal-isystem C:/msys64/clang64/x86_64-w64-mingw32/include/c++/v1 -internal-isystem C:/msys64/clang64/include/c++/v1 -internal-isystem C:/msys64/clang64/lib/clang/19/include -internal-isystem C:/msys64/clang64/x86_64-w64-mingw32/include -internal-isystem C:/msys64/clang64/x86_64-w64-mingw32/usr/include -internal-isystem C:/msys64/clang64/include -Wno-unused-command-line-argument -std=gnu++17 -fdeprecated-macro -ferror-limit 19 -fno-use-cxa-atexit -fgnuc-version=4.2.1 -fskip-odr-check-in-gmf -fcxx-exceptions -fexceptions -exception-model=seh -faddrsig -o CMakeFiles/cmTC_d6f1d.dir/CMakeCXXCompilerABI.cpp.obj -x c++ C:/Users/k34ub/Downloads/cmake-3.28.0-windows-x86_64/share/cmake-3.28/Modules/CMakeCXXCompilerABI.cpp
+        clang -cc1 version 19.1.6 based upon LLVM 19.1.6 default target x86_64-w64-windows-gnu
+        ignoring nonexistent directory "C:/msys64/clang64/x86_64-w64-mingw32/include/c++/v1"
+        ignoring nonexistent directory "C:/msys64/clang64/x86_64-w64-mingw32/include"
+        ignoring nonexistent directory "C:/msys64/clang64/x86_64-w64-mingw32/usr/include"\x0d
+        #include "..." search starts here:\x0d
+        #include <...> search starts here:\x0d
+         C:/msys64/clang64/include/c++/v1\x0d
+         C:/msys64/clang64/lib/clang/19/include\x0d
+         C:/msys64/clang64/include\x0d
+        End of search list.\x0d
+        [2/2] C:\\WINDOWS\\system32\\cmd.exe /C "cd . && c:\\msys64\\\\clang64\\\\bin\\clang++.exe -Wno-unused-command-line-argument -v CMakeFiles/cmTC_d6f1d.dir/CMakeCXXCompilerABI.cpp.obj -o cmTC_d6f1d.exe -Wl,--out-implib,libcmTC_d6f1d.dll.a -Wl,--major-image-version,0,--minor-image-version,0   && cd ."
+        clang version 19.1.6
+        Target: x86_64-w64-windows-gnu
+        Thread model: posix
+        InstalledDir: C:/msys64/clang64/bin
+         "C:/msys64/clang64/bin/ld.lld" -m i386pep -Bdynamic -o cmTC_d6f1d.exe C:/msys64/clang64/lib/crt2.o C:/msys64/clang64/lib/crtbegin.o -LC:/msys64/clang64/x86_64-w64-mingw32/lib -LC:/msys64/clang64/x86_64-w64-mingw32/mingw/lib -LC:/msys64/clang64/lib -LC:/msys64/clang64/lib/clang/19/lib/windows CMakeFiles/cmTC_d6f1d.dir/CMakeCXXCompilerABI.cpp.obj --out-implib libcmTC_d6f1d.dll.a --major-image-version 0 --minor-image-version 0 -lc++ -lmingw32 C:/msys64/clang64/lib/clang/19/lib/windows/libclang_rt.builtins-x86_64.a -lunwind -lmoldname -lmingwex -lmsvcrt -ladvapi32 -lshell32 -luser32 -lkernel32 -lmingw32 C:/msys64/clang64/lib/clang/19/lib/windows/libclang_rt.builtins-x86_64.a -lunwind -lmoldname -lmingwex -lmsvcrt -lkernel32 C:/msys64/clang64/lib/crtend.o\x0d
+        
+      exitCode: 0
+  -
+    kind: "message-v1"
+    backtrace:
+      - "C:/Users/k34ub/Downloads/cmake-3.28.0-windows-x86_64/share/cmake-3.28/Modules/CMakeDetermineCompilerABI.cmake:127 (message)"
+      - "C:/Users/k34ub/Downloads/cmake-3.28.0-windows-x86_64/share/cmake-3.28/Modules/CMakeTestCXXCompiler.cmake:26 (CMAKE_DETERMINE_COMPILER_ABI)"
+      - "CMakeLists.txt:138 (project)"
+    message: |
+      Parsed CXX implicit include dir info: rv=done
+        found start of include info
+        found start of implicit include info
+          add: [C:/msys64/clang64/include/c++/v1]
+          add: [C:/msys64/clang64/lib/clang/19/include]
+          add: [C:/msys64/clang64/include]
+        end of search list found
+        collapse include dir [C:/msys64/clang64/include/c++/v1] ==> [C:/msys64/clang64/include/c++/v1]
+        collapse include dir [C:/msys64/clang64/lib/clang/19/include] ==> [C:/msys64/clang64/lib/clang/19/include]
+        collapse include dir [C:/msys64/clang64/include] ==> [C:/msys64/clang64/include]
+        implicit include dirs: [C:/msys64/clang64/include/c++/v1;C:/msys64/clang64/lib/clang/19/include;C:/msys64/clang64/include]
+      
+      
+  -
+    kind: "message-v1"
+    backtrace:
+      - "C:/Users/k34ub/Downloads/cmake-3.28.0-windows-x86_64/share/cmake-3.28/Modules/CMakeDetermineCompilerABI.cmake:159 (message)"
+      - "C:/Users/k34ub/Downloads/cmake-3.28.0-windows-x86_64/share/cmake-3.28/Modules/CMakeTestCXXCompiler.cmake:26 (CMAKE_DETERMINE_COMPILER_ABI)"
+      - "CMakeLists.txt:138 (project)"
+    message: |
+      Parsed CXX implicit link information:
+        link line regex: [^( *|.*[/\\])(ld\\.lld\\.exe|CMAKE_LINK_STARTFILE-NOTFOUND|([^/\\]+-)?ld|collect2)[^/\\]*( |$)]
+        ignore line: [Change Dir: 'C:/Users/k34ub/source/skstu/xsmade/CMakeFiles/CMakeScratch/TryCompile-i3vxcb']
+        ignore line: []
+        ignore line: [Run Build Command(s): C:/Users/k34ub/source/skstu/devtools/bin/ninja/ninja-win/ninja.exe -v cmTC_d6f1d]
+        ignore line: [[1/2] c:\\msys64\\\\clang64\\\\bin\\clang++.exe   -Wno-unused-command-line-argument  -std=gnu++17   -v -MD -MT CMakeFiles/cmTC_d6f1d.dir/CMakeCXXCompilerABI.cpp.obj -MF CMakeFiles\\cmTC_d6f1d.dir\\CMakeCXXCompilerABI.cpp.obj.d -o CMakeFiles/cmTC_d6f1d.dir/CMakeCXXCompilerABI.cpp.obj -c C:/Users/k34ub/Downloads/cmake-3.28.0-windows-x86_64/share/cmake-3.28/Modules/CMakeCXXCompilerABI.cpp]
+        ignore line: [clang version 19.1.6]
+        ignore line: [Target: x86_64-w64-windows-gnu]
+        ignore line: [Thread model: posix]
+        ignore line: [InstalledDir: C:/msys64/clang64/bin]
+        ignore line: [ (in-process)]
+        ignore line: [ "C:/msys64/clang64/bin/clang++.exe" -cc1 -triple x86_64-w64-windows-gnu -emit-obj -disable-free -clear-ast-before-backend -disable-llvm-verifier -discard-value-names -main-file-name CMakeCXXCompilerABI.cpp -mrelocation-model pic -pic-level 2 -mframe-pointer=none -fmath-errno -ffp-contract=on -fno-rounding-math -mconstructor-aliases -mms-bitfields -funwind-tables=2 -fno-sized-deallocation -fno-use-init-array -target-cpu x86-64 -tune-cpu generic -debugger-tuning=gdb -fdebug-compilation-dir=C:/Users/k34ub/source/skstu/xsmade/CMakeFiles/CMakeScratch/TryCompile-i3vxcb -v -fcoverage-compilation-dir=C:/Users/k34ub/source/skstu/xsmade/CMakeFiles/CMakeScratch/TryCompile-i3vxcb -resource-dir C:/msys64/clang64/lib/clang/19 -dependency-file "CMakeFiles\\\\cmTC_d6f1d.dir\\\\CMakeCXXCompilerABI.cpp.obj.d" -MT CMakeFiles/cmTC_d6f1d.dir/CMakeCXXCompilerABI.cpp.obj -sys-header-deps -internal-isystem C:/msys64/clang64/x86_64-w64-mingw32/include/c++/v1 -internal-isystem C:/msys64/clang64/include/c++/v1 -internal-isystem C:/msys64/clang64/lib/clang/19/include -internal-isystem C:/msys64/clang64/x86_64-w64-mingw32/include -internal-isystem C:/msys64/clang64/x86_64-w64-mingw32/usr/include -internal-isystem C:/msys64/clang64/include -Wno-unused-command-line-argument -std=gnu++17 -fdeprecated-macro -ferror-limit 19 -fno-use-cxa-atexit -fgnuc-version=4.2.1 -fskip-odr-check-in-gmf -fcxx-exceptions -fexceptions -exception-model=seh -faddrsig -o CMakeFiles/cmTC_d6f1d.dir/CMakeCXXCompilerABI.cpp.obj -x c++ C:/Users/k34ub/Downloads/cmake-3.28.0-windows-x86_64/share/cmake-3.28/Modules/CMakeCXXCompilerABI.cpp]
+        ignore line: [clang -cc1 version 19.1.6 based upon LLVM 19.1.6 default target x86_64-w64-windows-gnu]
+        ignore line: [ignoring nonexistent directory "C:/msys64/clang64/x86_64-w64-mingw32/include/c++/v1"]
+        ignore line: [ignoring nonexistent directory "C:/msys64/clang64/x86_64-w64-mingw32/include"]
+        ignore line: [ignoring nonexistent directory "C:/msys64/clang64/x86_64-w64-mingw32/usr/include"\x0d]
+        ignore line: [#include "..." search starts here:\x0d]
+        ignore line: [#include <...> search starts here:\x0d]
+        ignore line: [ C:/msys64/clang64/include/c++/v1\x0d]
+        ignore line: [ C:/msys64/clang64/lib/clang/19/include\x0d]
+        ignore line: [ C:/msys64/clang64/include\x0d]
+        ignore line: [End of search list.\x0d]
+        ignore line: [[2/2] C:\\WINDOWS\\system32\\cmd.exe /C "cd . && c:\\msys64\\\\clang64\\\\bin\\clang++.exe -Wno-unused-command-line-argument -v CMakeFiles/cmTC_d6f1d.dir/CMakeCXXCompilerABI.cpp.obj -o cmTC_d6f1d.exe -Wl --out-implib libcmTC_d6f1d.dll.a -Wl --major-image-version 0 --minor-image-version 0   && cd ."]
+        ignore line: [clang version 19.1.6]
+        ignore line: [Target: x86_64-w64-windows-gnu]
+        ignore line: [Thread model: posix]
+        ignore line: [InstalledDir: C:/msys64/clang64/bin]
+        link line: [ "C:/msys64/clang64/bin/ld.lld" -m i386pep -Bdynamic -o cmTC_d6f1d.exe C:/msys64/clang64/lib/crt2.o C:/msys64/clang64/lib/crtbegin.o -LC:/msys64/clang64/x86_64-w64-mingw32/lib -LC:/msys64/clang64/x86_64-w64-mingw32/mingw/lib -LC:/msys64/clang64/lib -LC:/msys64/clang64/lib/clang/19/lib/windows CMakeFiles/cmTC_d6f1d.dir/CMakeCXXCompilerABI.cpp.obj --out-implib libcmTC_d6f1d.dll.a --major-image-version 0 --minor-image-version 0 -lc++ -lmingw32 C:/msys64/clang64/lib/clang/19/lib/windows/libclang_rt.builtins-x86_64.a -lunwind -lmoldname -lmingwex -lmsvcrt -ladvapi32 -lshell32 -luser32 -lkernel32 -lmingw32 C:/msys64/clang64/lib/clang/19/lib/windows/libclang_rt.builtins-x86_64.a -lunwind -lmoldname -lmingwex -lmsvcrt -lkernel32 C:/msys64/clang64/lib/crtend.o\x0d]
+          arg [C:/msys64/clang64/bin/ld.lld] ==> ignore
+          arg [-m] ==> ignore
+          arg [i386pep] ==> ignore
+          arg [-Bdynamic] ==> search dynamic
+          arg [-o] ==> ignore
+          arg [cmTC_d6f1d.exe] ==> ignore
+          arg [C:/msys64/clang64/lib/crt2.o] ==> obj [C:/msys64/clang64/lib/crt2.o]
+          arg [C:/msys64/clang64/lib/crtbegin.o] ==> obj [C:/msys64/clang64/lib/crtbegin.o]
+          arg [-LC:/msys64/clang64/x86_64-w64-mingw32/lib] ==> dir [C:/msys64/clang64/x86_64-w64-mingw32/lib]
+          arg [-LC:/msys64/clang64/x86_64-w64-mingw32/mingw/lib] ==> dir [C:/msys64/clang64/x86_64-w64-mingw32/mingw/lib]
+          arg [-LC:/msys64/clang64/lib] ==> dir [C:/msys64/clang64/lib]
+          arg [-LC:/msys64/clang64/lib/clang/19/lib/windows] ==> dir [C:/msys64/clang64/lib/clang/19/lib/windows]
+          arg [CMakeFiles/cmTC_d6f1d.dir/CMakeCXXCompilerABI.cpp.obj] ==> ignore
+          arg [--out-implib] ==> ignore
+          arg [libcmTC_d6f1d.dll.a] ==> ignore
+          arg [--major-image-version] ==> ignore
+          arg [0] ==> ignore
+          arg [--minor-image-version] ==> ignore
+          arg [0] ==> ignore
+          arg [-lc++] ==> lib [c++]
+          arg [-lmingw32] ==> lib [mingw32]
+          arg [C:/msys64/clang64/lib/clang/19/lib/windows/libclang_rt.builtins-x86_64.a] ==> lib [C:/msys64/clang64/lib/clang/19/lib/windows/libclang_rt.builtins-x86_64.a]
+          arg [-lunwind] ==> lib [unwind]
+          arg [-lmoldname] ==> lib [moldname]
+          arg [-lmingwex] ==> lib [mingwex]
+          arg [-lmsvcrt] ==> lib [msvcrt]
+          arg [-ladvapi32] ==> lib [advapi32]
+          arg [-lshell32] ==> lib [shell32]
+          arg [-luser32] ==> lib [user32]
+          arg [-lkernel32] ==> lib [kernel32]
+          arg [-lmingw32] ==> lib [mingw32]
+          arg [C:/msys64/clang64/lib/clang/19/lib/windows/libclang_rt.builtins-x86_64.a] ==> lib [C:/msys64/clang64/lib/clang/19/lib/windows/libclang_rt.builtins-x86_64.a]
+          arg [-lunwind] ==> lib [unwind]
+          arg [-lmoldname] ==> lib [moldname]
+          arg [-lmingwex] ==> lib [mingwex]
+          arg [-lmsvcrt] ==> lib [msvcrt]
+          arg [-lkernel32] ==> lib [kernel32]
+          arg [C:/msys64/clang64/lib/crtend.o] ==> obj [C:/msys64/clang64/lib/crtend.o]
+        remove lib [C:/msys64/clang64/lib/clang/19/lib/windows/libclang_rt.builtins-x86_64.a]
+        remove lib [msvcrt]
+        remove lib [C:/msys64/clang64/lib/clang/19/lib/windows/libclang_rt.builtins-x86_64.a]
+        remove lib [msvcrt]
+        collapse library dir [C:/msys64/clang64/x86_64-w64-mingw32/lib] ==> [C:/msys64/clang64/x86_64-w64-mingw32/lib]
+        collapse library dir [C:/msys64/clang64/x86_64-w64-mingw32/mingw/lib] ==> [C:/msys64/clang64/x86_64-w64-mingw32/mingw/lib]
+        collapse library dir [C:/msys64/clang64/lib] ==> [C:/msys64/clang64/lib]
+        collapse library dir [C:/msys64/clang64/lib/clang/19/lib/windows] ==> [C:/msys64/clang64/lib/clang/19/lib/windows]
+        implicit libs: [c++;mingw32;unwind;moldname;mingwex;advapi32;shell32;user32;kernel32;mingw32;unwind;moldname;mingwex;kernel32]
+        implicit objs: [C:/msys64/clang64/lib/crt2.o;C:/msys64/clang64/lib/crtbegin.o;C:/msys64/clang64/lib/crtend.o]
+        implicit dirs: [C:/msys64/clang64/x86_64-w64-mingw32/lib;C:/msys64/clang64/x86_64-w64-mingw32/mingw/lib;C:/msys64/clang64/lib;C:/msys64/clang64/lib/clang/19/lib/windows]
+        implicit fwks: []
+      
+      
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "C:/Users/k34ub/Downloads/cmake-3.28.0-windows-x86_64/share/cmake-3.28/Modules/CheckIncludeFile.cmake:90 (try_compile)"
+      - "3rdparty/zlib/CMakeLists.txt:22 (check_include_file)"
+    checks:
+      - "Looking for sys/types.h"
+    directories:
+      source: "C:/Users/k34ub/source/skstu/xsmade/CMakeFiles/CMakeScratch/TryCompile-2sxsyy"
+      binary: "C:/Users/k34ub/source/skstu/xsmade/CMakeFiles/CMakeScratch/TryCompile-2sxsyy"
+    cmakeVariables:
+      CMAKE_CXX_COMPILER_CLANG_SCAN_DEPS: "C:/msys64/clang64/bin/clang-scan-deps.exe"
+      CMAKE_C_FLAGS: " -Wno-unused-command-line-argument"
+      CMAKE_C_FLAGS_DEBUG: "-g"
+      CMAKE_EXE_LINKER_FLAGS: ""
+      CMAKE_MODULE_PATH: "C:/Users/k34ub/source/skstu/xsmade/build/cmake/deps/"
+      CMAKE_POSITION_INDEPENDENT_CODE: "ON"
+    buildResult:
+      variable: "HAVE_SYS_TYPES_H"
+      cached: true
+      stdout: |
+        Change Dir: 'C:/Users/k34ub/source/skstu/xsmade/CMakeFiles/CMakeScratch/TryCompile-2sxsyy'
+        
+        Run Build Command(s): C:/Users/k34ub/source/skstu/devtools/bin/ninja/ninja-win/ninja.exe -v cmTC_ada77
+        [1/2] c:\\msys64\\\\clang64\\\\bin\\clang.exe   -Wno-unused-command-line-argument -MD -MT CMakeFiles/cmTC_ada77.dir/CheckIncludeFile.c.obj -MF CMakeFiles\\cmTC_ada77.dir\\CheckIncludeFile.c.obj.d -o CMakeFiles/cmTC_ada77.dir/CheckIncludeFile.c.obj -c C:/Users/k34ub/source/skstu/xsmade/CMakeFiles/CMakeScratch/TryCompile-2sxsyy/CheckIncludeFile.c
+        [2/2] C:\\WINDOWS\\system32\\cmd.exe /C "cd . && c:\\msys64\\\\clang64\\\\bin\\clang.exe -Wno-unused-command-line-argument  CMakeFiles/cmTC_ada77.dir/CheckIncludeFile.c.obj -o cmTC_ada77.exe -Wl,--out-implib,libcmTC_ada77.dll.a -Wl,--major-image-version,0,--minor-image-version,0  -lkernel32 -luser32 -lgdi32 -lwinspool -lshell32 -lole32 -loleaut32 -luuid -lcomdlg32 -ladvapi32 && cd ."
+        
+      exitCode: 0
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "C:/Users/k34ub/Downloads/cmake-3.28.0-windows-x86_64/share/cmake-3.28/Modules/CheckIncludeFile.cmake:90 (try_compile)"
+      - "3rdparty/zlib/CMakeLists.txt:23 (check_include_file)"
+    checks:
+      - "Looking for stdint.h"
+    directories:
+      source: "C:/Users/k34ub/source/skstu/xsmade/CMakeFiles/CMakeScratch/TryCompile-s38fca"
+      binary: "C:/Users/k34ub/source/skstu/xsmade/CMakeFiles/CMakeScratch/TryCompile-s38fca"
+    cmakeVariables:
+      CMAKE_CXX_COMPILER_CLANG_SCAN_DEPS: "C:/msys64/clang64/bin/clang-scan-deps.exe"
+      CMAKE_C_FLAGS: " -Wno-unused-command-line-argument"
+      CMAKE_C_FLAGS_DEBUG: "-g"
+      CMAKE_EXE_LINKER_FLAGS: ""
+      CMAKE_MODULE_PATH: "C:/Users/k34ub/source/skstu/xsmade/build/cmake/deps/"
+      CMAKE_POSITION_INDEPENDENT_CODE: "ON"
+    buildResult:
+      variable: "HAVE_STDINT_H"
+      cached: true
+      stdout: |
+        Change Dir: 'C:/Users/k34ub/source/skstu/xsmade/CMakeFiles/CMakeScratch/TryCompile-s38fca'
+        
+        Run Build Command(s): C:/Users/k34ub/source/skstu/devtools/bin/ninja/ninja-win/ninja.exe -v cmTC_57223
+        [1/2] c:\\msys64\\\\clang64\\\\bin\\clang.exe   -Wno-unused-command-line-argument -MD -MT CMakeFiles/cmTC_57223.dir/CheckIncludeFile.c.obj -MF CMakeFiles\\cmTC_57223.dir\\CheckIncludeFile.c.obj.d -o CMakeFiles/cmTC_57223.dir/CheckIncludeFile.c.obj -c C:/Users/k34ub/source/skstu/xsmade/CMakeFiles/CMakeScratch/TryCompile-s38fca/CheckIncludeFile.c
+        [2/2] C:\\WINDOWS\\system32\\cmd.exe /C "cd . && c:\\msys64\\\\clang64\\\\bin\\clang.exe -Wno-unused-command-line-argument  CMakeFiles/cmTC_57223.dir/CheckIncludeFile.c.obj -o cmTC_57223.exe -Wl,--out-implib,libcmTC_57223.dll.a -Wl,--major-image-version,0,--minor-image-version,0  -lkernel32 -luser32 -lgdi32 -lwinspool -lshell32 -lole32 -loleaut32 -luuid -lcomdlg32 -ladvapi32 && cd ."
+        
+      exitCode: 0
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "C:/Users/k34ub/Downloads/cmake-3.28.0-windows-x86_64/share/cmake-3.28/Modules/CheckIncludeFile.cmake:90 (try_compile)"
+      - "3rdparty/zlib/CMakeLists.txt:24 (check_include_file)"
+    checks:
+      - "Looking for stddef.h"
+    directories:
+      source: "C:/Users/k34ub/source/skstu/xsmade/CMakeFiles/CMakeScratch/TryCompile-npu1pk"
+      binary: "C:/Users/k34ub/source/skstu/xsmade/CMakeFiles/CMakeScratch/TryCompile-npu1pk"
+    cmakeVariables:
+      CMAKE_CXX_COMPILER_CLANG_SCAN_DEPS: "C:/msys64/clang64/bin/clang-scan-deps.exe"
+      CMAKE_C_FLAGS: " -Wno-unused-command-line-argument"
+      CMAKE_C_FLAGS_DEBUG: "-g"
+      CMAKE_EXE_LINKER_FLAGS: ""
+      CMAKE_MODULE_PATH: "C:/Users/k34ub/source/skstu/xsmade/build/cmake/deps/"
+      CMAKE_POSITION_INDEPENDENT_CODE: "ON"
+    buildResult:
+      variable: "HAVE_STDDEF_H"
+      cached: true
+      stdout: |
+        Change Dir: 'C:/Users/k34ub/source/skstu/xsmade/CMakeFiles/CMakeScratch/TryCompile-npu1pk'
+        
+        Run Build Command(s): C:/Users/k34ub/source/skstu/devtools/bin/ninja/ninja-win/ninja.exe -v cmTC_d0ca4
+        [1/2] c:\\msys64\\\\clang64\\\\bin\\clang.exe   -Wno-unused-command-line-argument -MD -MT CMakeFiles/cmTC_d0ca4.dir/CheckIncludeFile.c.obj -MF CMakeFiles\\cmTC_d0ca4.dir\\CheckIncludeFile.c.obj.d -o CMakeFiles/cmTC_d0ca4.dir/CheckIncludeFile.c.obj -c C:/Users/k34ub/source/skstu/xsmade/CMakeFiles/CMakeScratch/TryCompile-npu1pk/CheckIncludeFile.c
+        [2/2] C:\\WINDOWS\\system32\\cmd.exe /C "cd . && c:\\msys64\\\\clang64\\\\bin\\clang.exe -Wno-unused-command-line-argument  CMakeFiles/cmTC_d0ca4.dir/CheckIncludeFile.c.obj -o cmTC_d0ca4.exe -Wl,--out-implib,libcmTC_d0ca4.dll.a -Wl,--major-image-version,0,--minor-image-version,0  -lkernel32 -luser32 -lgdi32 -lwinspool -lshell32 -lole32 -loleaut32 -luuid -lcomdlg32 -ladvapi32 && cd ."
+        
+      exitCode: 0
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "C:/Users/k34ub/Downloads/cmake-3.28.0-windows-x86_64/share/cmake-3.28/Modules/CheckTypeSize.cmake:146 (try_compile)"
+      - "C:/Users/k34ub/Downloads/cmake-3.28.0-windows-x86_64/share/cmake-3.28/Modules/CheckTypeSize.cmake:271 (__check_type_size_impl)"
+      - "3rdparty/zlib/CMakeLists.txt:42 (check_type_size)"
+    checks:
+      - "Check size of off64_t"
+    directories:
+      source: "C:/Users/k34ub/source/skstu/xsmade/CMakeFiles/CMakeScratch/TryCompile-mayiyf"
+      binary: "C:/Users/k34ub/source/skstu/xsmade/CMakeFiles/CMakeScratch/TryCompile-mayiyf"
+    cmakeVariables:
+      CMAKE_CXX_COMPILER_CLANG_SCAN_DEPS: "C:/msys64/clang64/bin/clang-scan-deps.exe"
+      CMAKE_C_FLAGS: " -Wno-unused-command-line-argument"
+      CMAKE_C_FLAGS_DEBUG: "-g"
+      CMAKE_EXE_LINKER_FLAGS: ""
+      CMAKE_MODULE_PATH: "C:/Users/k34ub/source/skstu/xsmade/build/cmake/deps/"
+      CMAKE_POSITION_INDEPENDENT_CODE: "ON"
+    buildResult:
+      variable: "HAVE_OFF64_T"
+      cached: true
+      stdout: |
+        Change Dir: 'C:/Users/k34ub/source/skstu/xsmade/CMakeFiles/CMakeScratch/TryCompile-mayiyf'
+        
+        Run Build Command(s): C:/Users/k34ub/source/skstu/devtools/bin/ninja/ninja-win/ninja.exe -v cmTC_f0e1c
+        [1/2] c:\\msys64\\\\clang64\\\\bin\\clang.exe -DHAVE_STDDEF_H -DHAVE_STDINT_H -DHAVE_SYS_TYPES_H -D_LARGEFILE64_SOURCE=1  -Wno-unused-command-line-argument -MD -MT CMakeFiles/cmTC_f0e1c.dir/OFF64_T.c.obj -MF CMakeFiles\\cmTC_f0e1c.dir\\OFF64_T.c.obj.d -o CMakeFiles/cmTC_f0e1c.dir/OFF64_T.c.obj -c C:/Users/k34ub/source/skstu/xsmade/CMakeFiles/CMakeScratch/TryCompile-mayiyf/OFF64_T.c
+        [2/2] C:\\WINDOWS\\system32\\cmd.exe /C "cd . && c:\\msys64\\\\clang64\\\\bin\\clang.exe -Wno-unused-command-line-argument  CMakeFiles/cmTC_f0e1c.dir/OFF64_T.c.obj -o cmTC_f0e1c.exe -Wl,--out-implib,libcmTC_f0e1c.dll.a -Wl,--major-image-version,0,--minor-image-version,0  -lkernel32 -luser32 -lgdi32 -lwinspool -lshell32 -lole32 -loleaut32 -luuid -lcomdlg32 -ladvapi32 && cd ."
+        
+      exitCode: 0
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "C:/Users/k34ub/Downloads/cmake-3.28.0-windows-x86_64/share/cmake-3.28/Modules/CheckFunctionExists.cmake:86 (try_compile)"
+      - "3rdparty/zlib/CMakeLists.txt:51 (check_function_exists)"
+    checks:
+      - "Looking for fseeko"
+    directories:
+      source: "C:/Users/k34ub/source/skstu/xsmade/CMakeFiles/CMakeScratch/TryCompile-86y7jh"
+      binary: "C:/Users/k34ub/source/skstu/xsmade/CMakeFiles/CMakeScratch/TryCompile-86y7jh"
+    cmakeVariables:
+      CMAKE_CXX_COMPILER_CLANG_SCAN_DEPS: "C:/msys64/clang64/bin/clang-scan-deps.exe"
+      CMAKE_C_FLAGS: " -Wno-unused-command-line-argument"
+      CMAKE_C_FLAGS_DEBUG: "-g"
+      CMAKE_EXE_LINKER_FLAGS: ""
+      CMAKE_MODULE_PATH: "C:/Users/k34ub/source/skstu/xsmade/build/cmake/deps/"
+      CMAKE_POSITION_INDEPENDENT_CODE: "ON"
+    buildResult:
+      variable: "HAVE_FSEEKO"
+      cached: true
+      stdout: |
+        Change Dir: 'C:/Users/k34ub/source/skstu/xsmade/CMakeFiles/CMakeScratch/TryCompile-86y7jh'
+        
+        Run Build Command(s): C:/Users/k34ub/source/skstu/devtools/bin/ninja/ninja-win/ninja.exe -v cmTC_37251
+        [1/2] c:\\msys64\\\\clang64\\\\bin\\clang.exe   -Wno-unused-command-line-argument -DCHECK_FUNCTION_EXISTS=fseeko -MD -MT CMakeFiles/cmTC_37251.dir/CheckFunctionExists.c.obj -MF CMakeFiles\\cmTC_37251.dir\\CheckFunctionExists.c.obj.d -o CMakeFiles/cmTC_37251.dir/CheckFunctionExists.c.obj -c C:/Users/k34ub/source/skstu/xsmade/CMakeFiles/CMakeScratch/TryCompile-86y7jh/CheckFunctionExists.c
+        [2/2] C:\\WINDOWS\\system32\\cmd.exe /C "cd . && c:\\msys64\\\\clang64\\\\bin\\clang.exe -Wno-unused-command-line-argument -DCHECK_FUNCTION_EXISTS=fseeko  CMakeFiles/cmTC_37251.dir/CheckFunctionExists.c.obj -o cmTC_37251.exe -Wl,--out-implib,libcmTC_37251.dll.a -Wl,--major-image-version,0,--minor-image-version,0  -lkernel32 -luser32 -lgdi32 -lwinspool -lshell32 -lole32 -loleaut32 -luuid -lcomdlg32 -ladvapi32 && cd ."
+        
+      exitCode: 0
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "C:/Users/k34ub/Downloads/cmake-3.28.0-windows-x86_64/share/cmake-3.28/Modules/CheckIncludeFile.cmake:90 (try_compile)"
+      - "3rdparty/zlib/CMakeLists.txt:59 (check_include_file)"
+    checks:
+      - "Looking for unistd.h"
+    directories:
+      source: "C:/Users/k34ub/source/skstu/xsmade/CMakeFiles/CMakeScratch/TryCompile-sa5i93"
+      binary: "C:/Users/k34ub/source/skstu/xsmade/CMakeFiles/CMakeScratch/TryCompile-sa5i93"
+    cmakeVariables:
+      CMAKE_CXX_COMPILER_CLANG_SCAN_DEPS: "C:/msys64/clang64/bin/clang-scan-deps.exe"
+      CMAKE_C_FLAGS: " -Wno-unused-command-line-argument"
+      CMAKE_C_FLAGS_DEBUG: "-g"
+      CMAKE_EXE_LINKER_FLAGS: ""
+      CMAKE_MODULE_PATH: "C:/Users/k34ub/source/skstu/xsmade/build/cmake/deps/"
+      CMAKE_POSITION_INDEPENDENT_CODE: "ON"
+    buildResult:
+      variable: "Z_HAVE_UNISTD_H"
+      cached: true
+      stdout: |
+        Change Dir: 'C:/Users/k34ub/source/skstu/xsmade/CMakeFiles/CMakeScratch/TryCompile-sa5i93'
+        
+        Run Build Command(s): C:/Users/k34ub/source/skstu/devtools/bin/ninja/ninja-win/ninja.exe -v cmTC_a79ca
+        [1/2] c:\\msys64\\\\clang64\\\\bin\\clang.exe   -Wno-unused-command-line-argument -MD -MT CMakeFiles/cmTC_a79ca.dir/CheckIncludeFile.c.obj -MF CMakeFiles\\cmTC_a79ca.dir\\CheckIncludeFile.c.obj.d -o CMakeFiles/cmTC_a79ca.dir/CheckIncludeFile.c.obj -c C:/Users/k34ub/source/skstu/xsmade/CMakeFiles/CMakeScratch/TryCompile-sa5i93/CheckIncludeFile.c
+        [2/2] C:\\WINDOWS\\system32\\cmd.exe /C "cd . && c:\\msys64\\\\clang64\\\\bin\\clang.exe -Wno-unused-command-line-argument  CMakeFiles/cmTC_a79ca.dir/CheckIncludeFile.c.obj -o cmTC_a79ca.exe -Wl,--out-implib,libcmTC_a79ca.dll.a -Wl,--major-image-version,0,--minor-image-version,0  -lkernel32 -luser32 -lgdi32 -lwinspool -lshell32 -lole32 -loleaut32 -luuid -lcomdlg32 -ladvapi32 && cd ."
+        
+      exitCode: 0
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "C:/Users/k34ub/Downloads/cmake-3.28.0-windows-x86_64/share/cmake-3.28/Modules/Internal/CheckSourceCompiles.cmake:101 (try_compile)"
+      - "C:/Users/k34ub/Downloads/cmake-3.28.0-windows-x86_64/share/cmake-3.28/Modules/Internal/CheckCompilerFlag.cmake:18 (cmake_check_source_compiles)"
+      - "C:/Users/k34ub/Downloads/cmake-3.28.0-windows-x86_64/share/cmake-3.28/Modules/CheckCCompilerFlag.cmake:51 (cmake_check_compiler_flag)"
+      - "3rdparty/libuv/CMakeLists.txt:107 (check_c_compiler_flag)"
+    checks:
+      - "Performing Test UV_LINT_W4"
+    directories:
+      source: "C:/Users/k34ub/source/skstu/xsmade/CMakeFiles/CMakeScratch/TryCompile-po302r"
+      binary: "C:/Users/k34ub/source/skstu/xsmade/CMakeFiles/CMakeScratch/TryCompile-po302r"
+    cmakeVariables:
+      CMAKE_CXX_COMPILER_CLANG_SCAN_DEPS: "C:/msys64/clang64/bin/clang-scan-deps.exe"
+      CMAKE_C_FLAGS: " -Wno-unused-command-line-argument"
+      CMAKE_C_FLAGS_DEBUG: "-g"
+      CMAKE_EXE_LINKER_FLAGS: ""
+      CMAKE_MODULE_PATH: "C:/Users/k34ub/source/skstu/xsmade/build/cmake/deps/;C:/Users/k34ub/source/skstu/xsmade/3rdparty/libuv/cmake"
+      CMAKE_POSITION_INDEPENDENT_CODE: "ON"
+    buildResult:
+      variable: "UV_LINT_W4"
+      cached: true
+      stdout: |
+        Change Dir: 'C:/Users/k34ub/source/skstu/xsmade/CMakeFiles/CMakeScratch/TryCompile-po302r'
+        
+        Run Build Command(s): C:/Users/k34ub/source/skstu/devtools/bin/ninja/ninja-win/ninja.exe -v cmTC_bd558
+        [1/2] c:\\msys64\\\\clang64\\\\bin\\clang.exe -DUV_LINT_W4  -Wno-unused-command-line-argument  -std=gnu90   /W4 -MD -MT CMakeFiles/cmTC_bd558.dir/src.c.obj -MF CMakeFiles\\cmTC_bd558.dir\\src.c.obj.d -o CMakeFiles/cmTC_bd558.dir/src.c.obj -c C:/Users/k34ub/source/skstu/xsmade/CMakeFiles/CMakeScratch/TryCompile-po302r/src.c
+        FAILED: CMakeFiles/cmTC_bd558.dir/src.c.obj 
+        c:\\msys64\\\\clang64\\\\bin\\clang.exe -DUV_LINT_W4  -Wno-unused-command-line-argument  -std=gnu90   /W4 -MD -MT CMakeFiles/cmTC_bd558.dir/src.c.obj -MF CMakeFiles\\cmTC_bd558.dir\\src.c.obj.d -o CMakeFiles/cmTC_bd558.dir/src.c.obj -c C:/Users/k34ub/source/skstu/xsmade/CMakeFiles/CMakeScratch/TryCompile-po302r/src.c
+        clang: error: no such file or directory: '/W4'\x0d
+        ninja: build stopped: subcommand failed.
+        
+      exitCode: 1
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "C:/Users/k34ub/Downloads/cmake-3.28.0-windows-x86_64/share/cmake-3.28/Modules/Internal/CheckSourceCompiles.cmake:101 (try_compile)"
+      - "C:/Users/k34ub/Downloads/cmake-3.28.0-windows-x86_64/share/cmake-3.28/Modules/Internal/CheckCompilerFlag.cmake:18 (cmake_check_source_compiles)"
+      - "C:/Users/k34ub/Downloads/cmake-3.28.0-windows-x86_64/share/cmake-3.28/Modules/CheckCCompilerFlag.cmake:51 (cmake_check_compiler_flag)"
+      - "3rdparty/libuv/CMakeLists.txt:108 (check_c_compiler_flag)"
+    checks:
+      - "Performing Test UV_LINT_NO_UNUSED_PARAMETER_MSVC"
+    directories:
+      source: "C:/Users/k34ub/source/skstu/xsmade/CMakeFiles/CMakeScratch/TryCompile-m5ukg2"
+      binary: "C:/Users/k34ub/source/skstu/xsmade/CMakeFiles/CMakeScratch/TryCompile-m5ukg2"
+    cmakeVariables:
+      CMAKE_CXX_COMPILER_CLANG_SCAN_DEPS: "C:/msys64/clang64/bin/clang-scan-deps.exe"
+      CMAKE_C_FLAGS: " -Wno-unused-command-line-argument"
+      CMAKE_C_FLAGS_DEBUG: "-g"
+      CMAKE_EXE_LINKER_FLAGS: ""
+      CMAKE_MODULE_PATH: "C:/Users/k34ub/source/skstu/xsmade/build/cmake/deps/;C:/Users/k34ub/source/skstu/xsmade/3rdparty/libuv/cmake"
+      CMAKE_POSITION_INDEPENDENT_CODE: "ON"
+    buildResult:
+      variable: "UV_LINT_NO_UNUSED_PARAMETER_MSVC"
+      cached: true
+      stdout: |
+        Change Dir: 'C:/Users/k34ub/source/skstu/xsmade/CMakeFiles/CMakeScratch/TryCompile-m5ukg2'
+        
+        Run Build Command(s): C:/Users/k34ub/source/skstu/devtools/bin/ninja/ninja-win/ninja.exe -v cmTC_e96e0
+        [1/2] c:\\msys64\\\\clang64\\\\bin\\clang.exe -DUV_LINT_NO_UNUSED_PARAMETER_MSVC  -Wno-unused-command-line-argument  -std=gnu90   /wd4100 -MD -MT CMakeFiles/cmTC_e96e0.dir/src.c.obj -MF CMakeFiles\\cmTC_e96e0.dir\\src.c.obj.d -o CMakeFiles/cmTC_e96e0.dir/src.c.obj -c C:/Users/k34ub/source/skstu/xsmade/CMakeFiles/CMakeScratch/TryCompile-m5ukg2/src.c
+        FAILED: CMakeFiles/cmTC_e96e0.dir/src.c.obj 
+        c:\\msys64\\\\clang64\\\\bin\\clang.exe -DUV_LINT_NO_UNUSED_PARAMETER_MSVC  -Wno-unused-command-line-argument  -std=gnu90   /wd4100 -MD -MT CMakeFiles/cmTC_e96e0.dir/src.c.obj -MF CMakeFiles\\cmTC_e96e0.dir\\src.c.obj.d -o CMakeFiles/cmTC_e96e0.dir/src.c.obj -c C:/Users/k34ub/source/skstu/xsmade/CMakeFiles/CMakeScratch/TryCompile-m5ukg2/src.c
+        clang: error: no such file or directory: '/wd4100'\x0d
+        ninja: build stopped: subcommand failed.
+        
+      exitCode: 1
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "C:/Users/k34ub/Downloads/cmake-3.28.0-windows-x86_64/share/cmake-3.28/Modules/Internal/CheckSourceCompiles.cmake:101 (try_compile)"
+      - "C:/Users/k34ub/Downloads/cmake-3.28.0-windows-x86_64/share/cmake-3.28/Modules/Internal/CheckCompilerFlag.cmake:18 (cmake_check_source_compiles)"
+      - "C:/Users/k34ub/Downloads/cmake-3.28.0-windows-x86_64/share/cmake-3.28/Modules/CheckCCompilerFlag.cmake:51 (cmake_check_compiler_flag)"
+      - "3rdparty/libuv/CMakeLists.txt:109 (check_c_compiler_flag)"
+    checks:
+      - "Performing Test UV_LINT_NO_CONDITIONAL_CONSTANT_MSVC"
+    directories:
+      source: "C:/Users/k34ub/source/skstu/xsmade/CMakeFiles/CMakeScratch/TryCompile-xx14m5"
+      binary: "C:/Users/k34ub/source/skstu/xsmade/CMakeFiles/CMakeScratch/TryCompile-xx14m5"
+    cmakeVariables:
+      CMAKE_CXX_COMPILER_CLANG_SCAN_DEPS: "C:/msys64/clang64/bin/clang-scan-deps.exe"
+      CMAKE_C_FLAGS: " -Wno-unused-command-line-argument"
+      CMAKE_C_FLAGS_DEBUG: "-g"
+      CMAKE_EXE_LINKER_FLAGS: ""
+      CMAKE_MODULE_PATH: "C:/Users/k34ub/source/skstu/xsmade/build/cmake/deps/;C:/Users/k34ub/source/skstu/xsmade/3rdparty/libuv/cmake"
+      CMAKE_POSITION_INDEPENDENT_CODE: "ON"
+    buildResult:
+      variable: "UV_LINT_NO_CONDITIONAL_CONSTANT_MSVC"
+      cached: true
+      stdout: |
+        Change Dir: 'C:/Users/k34ub/source/skstu/xsmade/CMakeFiles/CMakeScratch/TryCompile-xx14m5'
+        
+        Run Build Command(s): C:/Users/k34ub/source/skstu/devtools/bin/ninja/ninja-win/ninja.exe -v cmTC_c1a26
+        [1/2] c:\\msys64\\\\clang64\\\\bin\\clang.exe -DUV_LINT_NO_CONDITIONAL_CONSTANT_MSVC  -Wno-unused-command-line-argument  -std=gnu90   /wd4127 -MD -MT CMakeFiles/cmTC_c1a26.dir/src.c.obj -MF CMakeFiles\\cmTC_c1a26.dir\\src.c.obj.d -o CMakeFiles/cmTC_c1a26.dir/src.c.obj -c C:/Users/k34ub/source/skstu/xsmade/CMakeFiles/CMakeScratch/TryCompile-xx14m5/src.c
+        FAILED: CMakeFiles/cmTC_c1a26.dir/src.c.obj 
+        c:\\msys64\\\\clang64\\\\bin\\clang.exe -DUV_LINT_NO_CONDITIONAL_CONSTANT_MSVC  -Wno-unused-command-line-argument  -std=gnu90   /wd4127 -MD -MT CMakeFiles/cmTC_c1a26.dir/src.c.obj -MF CMakeFiles\\cmTC_c1a26.dir\\src.c.obj.d -o CMakeFiles/cmTC_c1a26.dir/src.c.obj -c C:/Users/k34ub/source/skstu/xsmade/CMakeFiles/CMakeScratch/TryCompile-xx14m5/src.c
+        clang: error: no such file or directory: '/wd4127'\x0d
+        ninja: build stopped: subcommand failed.
+        
+      exitCode: 1
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "C:/Users/k34ub/Downloads/cmake-3.28.0-windows-x86_64/share/cmake-3.28/Modules/Internal/CheckSourceCompiles.cmake:101 (try_compile)"
+      - "C:/Users/k34ub/Downloads/cmake-3.28.0-windows-x86_64/share/cmake-3.28/Modules/Internal/CheckCompilerFlag.cmake:18 (cmake_check_source_compiles)"
+      - "C:/Users/k34ub/Downloads/cmake-3.28.0-windows-x86_64/share/cmake-3.28/Modules/CheckCCompilerFlag.cmake:51 (cmake_check_compiler_flag)"
+      - "3rdparty/libuv/CMakeLists.txt:110 (check_c_compiler_flag)"
+    checks:
+      - "Performing Test UV_LINT_NO_NONSTANDARD_MSVC"
+    directories:
+      source: "C:/Users/k34ub/source/skstu/xsmade/CMakeFiles/CMakeScratch/TryCompile-uxr78x"
+      binary: "C:/Users/k34ub/source/skstu/xsmade/CMakeFiles/CMakeScratch/TryCompile-uxr78x"
+    cmakeVariables:
+      CMAKE_CXX_COMPILER_CLANG_SCAN_DEPS: "C:/msys64/clang64/bin/clang-scan-deps.exe"
+      CMAKE_C_FLAGS: " -Wno-unused-command-line-argument"
+      CMAKE_C_FLAGS_DEBUG: "-g"
+      CMAKE_EXE_LINKER_FLAGS: ""
+      CMAKE_MODULE_PATH: "C:/Users/k34ub/source/skstu/xsmade/build/cmake/deps/;C:/Users/k34ub/source/skstu/xsmade/3rdparty/libuv/cmake"
+      CMAKE_POSITION_INDEPENDENT_CODE: "ON"
+    buildResult:
+      variable: "UV_LINT_NO_NONSTANDARD_MSVC"
+      cached: true
+      stdout: |
+        Change Dir: 'C:/Users/k34ub/source/skstu/xsmade/CMakeFiles/CMakeScratch/TryCompile-uxr78x'
+        
+        Run Build Command(s): C:/Users/k34ub/source/skstu/devtools/bin/ninja/ninja-win/ninja.exe -v cmTC_ceea1
+        [1/2] c:\\msys64\\\\clang64\\\\bin\\clang.exe -DUV_LINT_NO_NONSTANDARD_MSVC  -Wno-unused-command-line-argument  -std=gnu90   /wd4201 -MD -MT CMakeFiles/cmTC_ceea1.dir/src.c.obj -MF CMakeFiles\\cmTC_ceea1.dir\\src.c.obj.d -o CMakeFiles/cmTC_ceea1.dir/src.c.obj -c C:/Users/k34ub/source/skstu/xsmade/CMakeFiles/CMakeScratch/TryCompile-uxr78x/src.c
+        FAILED: CMakeFiles/cmTC_ceea1.dir/src.c.obj 
+        c:\\msys64\\\\clang64\\\\bin\\clang.exe -DUV_LINT_NO_NONSTANDARD_MSVC  -Wno-unused-command-line-argument  -std=gnu90   /wd4201 -MD -MT CMakeFiles/cmTC_ceea1.dir/src.c.obj -MF CMakeFiles\\cmTC_ceea1.dir\\src.c.obj.d -o CMakeFiles/cmTC_ceea1.dir/src.c.obj -c C:/Users/k34ub/source/skstu/xsmade/CMakeFiles/CMakeScratch/TryCompile-uxr78x/src.c
+        clang: error: no such file or directory: '/wd4201'\x0d
+        ninja: build stopped: subcommand failed.
+        
+      exitCode: 1
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "C:/Users/k34ub/Downloads/cmake-3.28.0-windows-x86_64/share/cmake-3.28/Modules/Internal/CheckSourceCompiles.cmake:101 (try_compile)"
+      - "C:/Users/k34ub/Downloads/cmake-3.28.0-windows-x86_64/share/cmake-3.28/Modules/Internal/CheckCompilerFlag.cmake:18 (cmake_check_source_compiles)"
+      - "C:/Users/k34ub/Downloads/cmake-3.28.0-windows-x86_64/share/cmake-3.28/Modules/CheckCCompilerFlag.cmake:51 (cmake_check_compiler_flag)"
+      - "3rdparty/libuv/CMakeLists.txt:111 (check_c_compiler_flag)"
+    checks:
+      - "Performing Test UV_LINT_NO_NONSTANDARD_EMPTY_TU_MSVC"
+    directories:
+      source: "C:/Users/k34ub/source/skstu/xsmade/CMakeFiles/CMakeScratch/TryCompile-izuc15"
+      binary: "C:/Users/k34ub/source/skstu/xsmade/CMakeFiles/CMakeScratch/TryCompile-izuc15"
+    cmakeVariables:
+      CMAKE_CXX_COMPILER_CLANG_SCAN_DEPS: "C:/msys64/clang64/bin/clang-scan-deps.exe"
+      CMAKE_C_FLAGS: " -Wno-unused-command-line-argument"
+      CMAKE_C_FLAGS_DEBUG: "-g"
+      CMAKE_EXE_LINKER_FLAGS: ""
+      CMAKE_MODULE_PATH: "C:/Users/k34ub/source/skstu/xsmade/build/cmake/deps/;C:/Users/k34ub/source/skstu/xsmade/3rdparty/libuv/cmake"
+      CMAKE_POSITION_INDEPENDENT_CODE: "ON"
+    buildResult:
+      variable: "UV_LINT_NO_NONSTANDARD_EMPTY_TU_MSVC"
+      cached: true
+      stdout: |
+        Change Dir: 'C:/Users/k34ub/source/skstu/xsmade/CMakeFiles/CMakeScratch/TryCompile-izuc15'
+        
+        Run Build Command(s): C:/Users/k34ub/source/skstu/devtools/bin/ninja/ninja-win/ninja.exe -v cmTC_e2e94
+        [1/2] c:\\msys64\\\\clang64\\\\bin\\clang.exe -DUV_LINT_NO_NONSTANDARD_EMPTY_TU_MSVC  -Wno-unused-command-line-argument  -std=gnu90   /wd4206 -MD -MT CMakeFiles/cmTC_e2e94.dir/src.c.obj -MF CMakeFiles\\cmTC_e2e94.dir\\src.c.obj.d -o CMakeFiles/cmTC_e2e94.dir/src.c.obj -c C:/Users/k34ub/source/skstu/xsmade/CMakeFiles/CMakeScratch/TryCompile-izuc15/src.c
+        FAILED: CMakeFiles/cmTC_e2e94.dir/src.c.obj 
+        c:\\msys64\\\\clang64\\\\bin\\clang.exe -DUV_LINT_NO_NONSTANDARD_EMPTY_TU_MSVC  -Wno-unused-command-line-argument  -std=gnu90   /wd4206 -MD -MT CMakeFiles/cmTC_e2e94.dir/src.c.obj -MF CMakeFiles\\cmTC_e2e94.dir\\src.c.obj.d -o CMakeFiles/cmTC_e2e94.dir/src.c.obj -c C:/Users/k34ub/source/skstu/xsmade/CMakeFiles/CMakeScratch/TryCompile-izuc15/src.c
+        clang: error: no such file or directory: '/wd4206'\x0d
+        ninja: build stopped: subcommand failed.
+        
+      exitCode: 1
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "C:/Users/k34ub/Downloads/cmake-3.28.0-windows-x86_64/share/cmake-3.28/Modules/Internal/CheckSourceCompiles.cmake:101 (try_compile)"
+      - "C:/Users/k34ub/Downloads/cmake-3.28.0-windows-x86_64/share/cmake-3.28/Modules/Internal/CheckCompilerFlag.cmake:18 (cmake_check_source_compiles)"
+      - "C:/Users/k34ub/Downloads/cmake-3.28.0-windows-x86_64/share/cmake-3.28/Modules/CheckCCompilerFlag.cmake:51 (cmake_check_compiler_flag)"
+      - "3rdparty/libuv/CMakeLists.txt:112 (check_c_compiler_flag)"
+    checks:
+      - "Performing Test UV_LINT_NO_NONSTANDARD_FILE_SCOPE_MSVC"
+    directories:
+      source: "C:/Users/k34ub/source/skstu/xsmade/CMakeFiles/CMakeScratch/TryCompile-u0tcbb"
+      binary: "C:/Users/k34ub/source/skstu/xsmade/CMakeFiles/CMakeScratch/TryCompile-u0tcbb"
+    cmakeVariables:
+      CMAKE_CXX_COMPILER_CLANG_SCAN_DEPS: "C:/msys64/clang64/bin/clang-scan-deps.exe"
+      CMAKE_C_FLAGS: " -Wno-unused-command-line-argument"
+      CMAKE_C_FLAGS_DEBUG: "-g"
+      CMAKE_EXE_LINKER_FLAGS: ""
+      CMAKE_MODULE_PATH: "C:/Users/k34ub/source/skstu/xsmade/build/cmake/deps/;C:/Users/k34ub/source/skstu/xsmade/3rdparty/libuv/cmake"
+      CMAKE_POSITION_INDEPENDENT_CODE: "ON"
+    buildResult:
+      variable: "UV_LINT_NO_NONSTANDARD_FILE_SCOPE_MSVC"
+      cached: true
+      stdout: |
+        Change Dir: 'C:/Users/k34ub/source/skstu/xsmade/CMakeFiles/CMakeScratch/TryCompile-u0tcbb'
+        
+        Run Build Command(s): C:/Users/k34ub/source/skstu/devtools/bin/ninja/ninja-win/ninja.exe -v cmTC_8d5eb
+        [1/2] c:\\msys64\\\\clang64\\\\bin\\clang.exe -DUV_LINT_NO_NONSTANDARD_FILE_SCOPE_MSVC  -Wno-unused-command-line-argument  -std=gnu90   /wd4210 -MD -MT CMakeFiles/cmTC_8d5eb.dir/src.c.obj -MF CMakeFiles\\cmTC_8d5eb.dir\\src.c.obj.d -o CMakeFiles/cmTC_8d5eb.dir/src.c.obj -c C:/Users/k34ub/source/skstu/xsmade/CMakeFiles/CMakeScratch/TryCompile-u0tcbb/src.c
+        FAILED: CMakeFiles/cmTC_8d5eb.dir/src.c.obj 
+        c:\\msys64\\\\clang64\\\\bin\\clang.exe -DUV_LINT_NO_NONSTANDARD_FILE_SCOPE_MSVC  -Wno-unused-command-line-argument  -std=gnu90   /wd4210 -MD -MT CMakeFiles/cmTC_8d5eb.dir/src.c.obj -MF CMakeFiles\\cmTC_8d5eb.dir\\src.c.obj.d -o CMakeFiles/cmTC_8d5eb.dir/src.c.obj -c C:/Users/k34ub/source/skstu/xsmade/CMakeFiles/CMakeScratch/TryCompile-u0tcbb/src.c
+        clang: error: no such file or directory: '/wd4210'\x0d
+        ninja: build stopped: subcommand failed.
+        
+      exitCode: 1
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "C:/Users/k34ub/Downloads/cmake-3.28.0-windows-x86_64/share/cmake-3.28/Modules/Internal/CheckSourceCompiles.cmake:101 (try_compile)"
+      - "C:/Users/k34ub/Downloads/cmake-3.28.0-windows-x86_64/share/cmake-3.28/Modules/Internal/CheckCompilerFlag.cmake:18 (cmake_check_source_compiles)"
+      - "C:/Users/k34ub/Downloads/cmake-3.28.0-windows-x86_64/share/cmake-3.28/Modules/CheckCCompilerFlag.cmake:51 (cmake_check_compiler_flag)"
+      - "3rdparty/libuv/CMakeLists.txt:113 (check_c_compiler_flag)"
+    checks:
+      - "Performing Test UV_LINT_NO_NONSTANDARD_NONSTATIC_DLIMPORT_MSVC"
+    directories:
+      source: "C:/Users/k34ub/source/skstu/xsmade/CMakeFiles/CMakeScratch/TryCompile-r1a296"
+      binary: "C:/Users/k34ub/source/skstu/xsmade/CMakeFiles/CMakeScratch/TryCompile-r1a296"
+    cmakeVariables:
+      CMAKE_CXX_COMPILER_CLANG_SCAN_DEPS: "C:/msys64/clang64/bin/clang-scan-deps.exe"
+      CMAKE_C_FLAGS: " -Wno-unused-command-line-argument"
+      CMAKE_C_FLAGS_DEBUG: "-g"
+      CMAKE_EXE_LINKER_FLAGS: ""
+      CMAKE_MODULE_PATH: "C:/Users/k34ub/source/skstu/xsmade/build/cmake/deps/;C:/Users/k34ub/source/skstu/xsmade/3rdparty/libuv/cmake"
+      CMAKE_POSITION_INDEPENDENT_CODE: "ON"
+    buildResult:
+      variable: "UV_LINT_NO_NONSTANDARD_NONSTATIC_DLIMPORT_MSVC"
+      cached: true
+      stdout: |
+        Change Dir: 'C:/Users/k34ub/source/skstu/xsmade/CMakeFiles/CMakeScratch/TryCompile-r1a296'
+        
+        Run Build Command(s): C:/Users/k34ub/source/skstu/devtools/bin/ninja/ninja-win/ninja.exe -v cmTC_cb398
+        [1/2] c:\\msys64\\\\clang64\\\\bin\\clang.exe -DUV_LINT_NO_NONSTANDARD_NONSTATIC_DLIMPORT_MSVC  -Wno-unused-command-line-argument  -std=gnu90   /wd4232 -MD -MT CMakeFiles/cmTC_cb398.dir/src.c.obj -MF CMakeFiles\\cmTC_cb398.dir\\src.c.obj.d -o CMakeFiles/cmTC_cb398.dir/src.c.obj -c C:/Users/k34ub/source/skstu/xsmade/CMakeFiles/CMakeScratch/TryCompile-r1a296/src.c
+        FAILED: CMakeFiles/cmTC_cb398.dir/src.c.obj 
+        c:\\msys64\\\\clang64\\\\bin\\clang.exe -DUV_LINT_NO_NONSTANDARD_NONSTATIC_DLIMPORT_MSVC  -Wno-unused-command-line-argument  -std=gnu90   /wd4232 -MD -MT CMakeFiles/cmTC_cb398.dir/src.c.obj -MF CMakeFiles\\cmTC_cb398.dir\\src.c.obj.d -o CMakeFiles/cmTC_cb398.dir/src.c.obj -c C:/Users/k34ub/source/skstu/xsmade/CMakeFiles/CMakeScratch/TryCompile-r1a296/src.c
+        clang: error: no such file or directory: '/wd4232'\x0d
+        ninja: build stopped: subcommand failed.
+        
+      exitCode: 1
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "C:/Users/k34ub/Downloads/cmake-3.28.0-windows-x86_64/share/cmake-3.28/Modules/Internal/CheckSourceCompiles.cmake:101 (try_compile)"
+      - "C:/Users/k34ub/Downloads/cmake-3.28.0-windows-x86_64/share/cmake-3.28/Modules/Internal/CheckCompilerFlag.cmake:18 (cmake_check_source_compiles)"
+      - "C:/Users/k34ub/Downloads/cmake-3.28.0-windows-x86_64/share/cmake-3.28/Modules/CheckCCompilerFlag.cmake:51 (cmake_check_compiler_flag)"
+      - "3rdparty/libuv/CMakeLists.txt:114 (check_c_compiler_flag)"
+    checks:
+      - "Performing Test UV_LINT_NO_HIDES_LOCAL"
+    directories:
+      source: "C:/Users/k34ub/source/skstu/xsmade/CMakeFiles/CMakeScratch/TryCompile-fi61jo"
+      binary: "C:/Users/k34ub/source/skstu/xsmade/CMakeFiles/CMakeScratch/TryCompile-fi61jo"
+    cmakeVariables:
+      CMAKE_CXX_COMPILER_CLANG_SCAN_DEPS: "C:/msys64/clang64/bin/clang-scan-deps.exe"
+      CMAKE_C_FLAGS: " -Wno-unused-command-line-argument"
+      CMAKE_C_FLAGS_DEBUG: "-g"
+      CMAKE_EXE_LINKER_FLAGS: ""
+      CMAKE_MODULE_PATH: "C:/Users/k34ub/source/skstu/xsmade/build/cmake/deps/;C:/Users/k34ub/source/skstu/xsmade/3rdparty/libuv/cmake"
+      CMAKE_POSITION_INDEPENDENT_CODE: "ON"
+    buildResult:
+      variable: "UV_LINT_NO_HIDES_LOCAL"
+      cached: true
+      stdout: |
+        Change Dir: 'C:/Users/k34ub/source/skstu/xsmade/CMakeFiles/CMakeScratch/TryCompile-fi61jo'
+        
+        Run Build Command(s): C:/Users/k34ub/source/skstu/devtools/bin/ninja/ninja-win/ninja.exe -v cmTC_a9f07
+        [1/2] c:\\msys64\\\\clang64\\\\bin\\clang.exe -DUV_LINT_NO_HIDES_LOCAL  -Wno-unused-command-line-argument  -std=gnu90   /wd4456 -MD -MT CMakeFiles/cmTC_a9f07.dir/src.c.obj -MF CMakeFiles\\cmTC_a9f07.dir\\src.c.obj.d -o CMakeFiles/cmTC_a9f07.dir/src.c.obj -c C:/Users/k34ub/source/skstu/xsmade/CMakeFiles/CMakeScratch/TryCompile-fi61jo/src.c
+        FAILED: CMakeFiles/cmTC_a9f07.dir/src.c.obj 
+        c:\\msys64\\\\clang64\\\\bin\\clang.exe -DUV_LINT_NO_HIDES_LOCAL  -Wno-unused-command-line-argument  -std=gnu90   /wd4456 -MD -MT CMakeFiles/cmTC_a9f07.dir/src.c.obj -MF CMakeFiles\\cmTC_a9f07.dir\\src.c.obj.d -o CMakeFiles/cmTC_a9f07.dir/src.c.obj -c C:/Users/k34ub/source/skstu/xsmade/CMakeFiles/CMakeScratch/TryCompile-fi61jo/src.c
+        clang: error: no such file or directory: '/wd4456'\x0d
+        ninja: build stopped: subcommand failed.
+        
+      exitCode: 1
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "C:/Users/k34ub/Downloads/cmake-3.28.0-windows-x86_64/share/cmake-3.28/Modules/Internal/CheckSourceCompiles.cmake:101 (try_compile)"
+      - "C:/Users/k34ub/Downloads/cmake-3.28.0-windows-x86_64/share/cmake-3.28/Modules/Internal/CheckCompilerFlag.cmake:18 (cmake_check_source_compiles)"
+      - "C:/Users/k34ub/Downloads/cmake-3.28.0-windows-x86_64/share/cmake-3.28/Modules/CheckCCompilerFlag.cmake:51 (cmake_check_compiler_flag)"
+      - "3rdparty/libuv/CMakeLists.txt:115 (check_c_compiler_flag)"
+    checks:
+      - "Performing Test UV_LINT_NO_HIDES_PARAM"
+    directories:
+      source: "C:/Users/k34ub/source/skstu/xsmade/CMakeFiles/CMakeScratch/TryCompile-1w1cyi"
+      binary: "C:/Users/k34ub/source/skstu/xsmade/CMakeFiles/CMakeScratch/TryCompile-1w1cyi"
+    cmakeVariables:
+      CMAKE_CXX_COMPILER_CLANG_SCAN_DEPS: "C:/msys64/clang64/bin/clang-scan-deps.exe"
+      CMAKE_C_FLAGS: " -Wno-unused-command-line-argument"
+      CMAKE_C_FLAGS_DEBUG: "-g"
+      CMAKE_EXE_LINKER_FLAGS: ""
+      CMAKE_MODULE_PATH: "C:/Users/k34ub/source/skstu/xsmade/build/cmake/deps/;C:/Users/k34ub/source/skstu/xsmade/3rdparty/libuv/cmake"
+      CMAKE_POSITION_INDEPENDENT_CODE: "ON"
+    buildResult:
+      variable: "UV_LINT_NO_HIDES_PARAM"
+      cached: true
+      stdout: |
+        Change Dir: 'C:/Users/k34ub/source/skstu/xsmade/CMakeFiles/CMakeScratch/TryCompile-1w1cyi'
+        
+        Run Build Command(s): C:/Users/k34ub/source/skstu/devtools/bin/ninja/ninja-win/ninja.exe -v cmTC_9c303
+        [1/2] c:\\msys64\\\\clang64\\\\bin\\clang.exe -DUV_LINT_NO_HIDES_PARAM  -Wno-unused-command-line-argument  -std=gnu90   /wd4457 -MD -MT CMakeFiles/cmTC_9c303.dir/src.c.obj -MF CMakeFiles\\cmTC_9c303.dir\\src.c.obj.d -o CMakeFiles/cmTC_9c303.dir/src.c.obj -c C:/Users/k34ub/source/skstu/xsmade/CMakeFiles/CMakeScratch/TryCompile-1w1cyi/src.c
+        FAILED: CMakeFiles/cmTC_9c303.dir/src.c.obj 
+        c:\\msys64\\\\clang64\\\\bin\\clang.exe -DUV_LINT_NO_HIDES_PARAM  -Wno-unused-command-line-argument  -std=gnu90   /wd4457 -MD -MT CMakeFiles/cmTC_9c303.dir/src.c.obj -MF CMakeFiles\\cmTC_9c303.dir\\src.c.obj.d -o CMakeFiles/cmTC_9c303.dir/src.c.obj -c C:/Users/k34ub/source/skstu/xsmade/CMakeFiles/CMakeScratch/TryCompile-1w1cyi/src.c
+        clang: error: no such file or directory: '/wd4457'\x0d
+        ninja: build stopped: subcommand failed.
+        
+      exitCode: 1
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "C:/Users/k34ub/Downloads/cmake-3.28.0-windows-x86_64/share/cmake-3.28/Modules/Internal/CheckSourceCompiles.cmake:101 (try_compile)"
+      - "C:/Users/k34ub/Downloads/cmake-3.28.0-windows-x86_64/share/cmake-3.28/Modules/Internal/CheckCompilerFlag.cmake:18 (cmake_check_source_compiles)"
+      - "C:/Users/k34ub/Downloads/cmake-3.28.0-windows-x86_64/share/cmake-3.28/Modules/CheckCCompilerFlag.cmake:51 (cmake_check_compiler_flag)"
+      - "3rdparty/libuv/CMakeLists.txt:116 (check_c_compiler_flag)"
+    checks:
+      - "Performing Test UV_LINT_NO_HIDES_GLOBAL"
+    directories:
+      source: "C:/Users/k34ub/source/skstu/xsmade/CMakeFiles/CMakeScratch/TryCompile-b4x262"
+      binary: "C:/Users/k34ub/source/skstu/xsmade/CMakeFiles/CMakeScratch/TryCompile-b4x262"
+    cmakeVariables:
+      CMAKE_CXX_COMPILER_CLANG_SCAN_DEPS: "C:/msys64/clang64/bin/clang-scan-deps.exe"
+      CMAKE_C_FLAGS: " -Wno-unused-command-line-argument"
+      CMAKE_C_FLAGS_DEBUG: "-g"
+      CMAKE_EXE_LINKER_FLAGS: ""
+      CMAKE_MODULE_PATH: "C:/Users/k34ub/source/skstu/xsmade/build/cmake/deps/;C:/Users/k34ub/source/skstu/xsmade/3rdparty/libuv/cmake"
+      CMAKE_POSITION_INDEPENDENT_CODE: "ON"
+    buildResult:
+      variable: "UV_LINT_NO_HIDES_GLOBAL"
+      cached: true
+      stdout: |
+        Change Dir: 'C:/Users/k34ub/source/skstu/xsmade/CMakeFiles/CMakeScratch/TryCompile-b4x262'
+        
+        Run Build Command(s): C:/Users/k34ub/source/skstu/devtools/bin/ninja/ninja-win/ninja.exe -v cmTC_3d80e
+        [1/2] c:\\msys64\\\\clang64\\\\bin\\clang.exe -DUV_LINT_NO_HIDES_GLOBAL  -Wno-unused-command-line-argument  -std=gnu90   /wd4459 -MD -MT CMakeFiles/cmTC_3d80e.dir/src.c.obj -MF CMakeFiles\\cmTC_3d80e.dir\\src.c.obj.d -o CMakeFiles/cmTC_3d80e.dir/src.c.obj -c C:/Users/k34ub/source/skstu/xsmade/CMakeFiles/CMakeScratch/TryCompile-b4x262/src.c
+        FAILED: CMakeFiles/cmTC_3d80e.dir/src.c.obj 
+        c:\\msys64\\\\clang64\\\\bin\\clang.exe -DUV_LINT_NO_HIDES_GLOBAL  -Wno-unused-command-line-argument  -std=gnu90   /wd4459 -MD -MT CMakeFiles/cmTC_3d80e.dir/src.c.obj -MF CMakeFiles\\cmTC_3d80e.dir\\src.c.obj.d -o CMakeFiles/cmTC_3d80e.dir/src.c.obj -c C:/Users/k34ub/source/skstu/xsmade/CMakeFiles/CMakeScratch/TryCompile-b4x262/src.c
+        clang: error: no such file or directory: '/wd4459'\x0d
+        ninja: build stopped: subcommand failed.
+        
+      exitCode: 1
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "C:/Users/k34ub/Downloads/cmake-3.28.0-windows-x86_64/share/cmake-3.28/Modules/Internal/CheckSourceCompiles.cmake:101 (try_compile)"
+      - "C:/Users/k34ub/Downloads/cmake-3.28.0-windows-x86_64/share/cmake-3.28/Modules/Internal/CheckCompilerFlag.cmake:18 (cmake_check_source_compiles)"
+      - "C:/Users/k34ub/Downloads/cmake-3.28.0-windows-x86_64/share/cmake-3.28/Modules/CheckCCompilerFlag.cmake:51 (cmake_check_compiler_flag)"
+      - "3rdparty/libuv/CMakeLists.txt:117 (check_c_compiler_flag)"
+    checks:
+      - "Performing Test UV_LINT_NO_CONDITIONAL_ASSIGNMENT_MSVC"
+    directories:
+      source: "C:/Users/k34ub/source/skstu/xsmade/CMakeFiles/CMakeScratch/TryCompile-n9bkq2"
+      binary: "C:/Users/k34ub/source/skstu/xsmade/CMakeFiles/CMakeScratch/TryCompile-n9bkq2"
+    cmakeVariables:
+      CMAKE_CXX_COMPILER_CLANG_SCAN_DEPS: "C:/msys64/clang64/bin/clang-scan-deps.exe"
+      CMAKE_C_FLAGS: " -Wno-unused-command-line-argument"
+      CMAKE_C_FLAGS_DEBUG: "-g"
+      CMAKE_EXE_LINKER_FLAGS: ""
+      CMAKE_MODULE_PATH: "C:/Users/k34ub/source/skstu/xsmade/build/cmake/deps/;C:/Users/k34ub/source/skstu/xsmade/3rdparty/libuv/cmake"
+      CMAKE_POSITION_INDEPENDENT_CODE: "ON"
+    buildResult:
+      variable: "UV_LINT_NO_CONDITIONAL_ASSIGNMENT_MSVC"
+      cached: true
+      stdout: |
+        Change Dir: 'C:/Users/k34ub/source/skstu/xsmade/CMakeFiles/CMakeScratch/TryCompile-n9bkq2'
+        
+        Run Build Command(s): C:/Users/k34ub/source/skstu/devtools/bin/ninja/ninja-win/ninja.exe -v cmTC_2989c
+        [1/2] c:\\msys64\\\\clang64\\\\bin\\clang.exe -DUV_LINT_NO_CONDITIONAL_ASSIGNMENT_MSVC  -Wno-unused-command-line-argument  -std=gnu90   /wd4706 -MD -MT CMakeFiles/cmTC_2989c.dir/src.c.obj -MF CMakeFiles\\cmTC_2989c.dir\\src.c.obj.d -o CMakeFiles/cmTC_2989c.dir/src.c.obj -c C:/Users/k34ub/source/skstu/xsmade/CMakeFiles/CMakeScratch/TryCompile-n9bkq2/src.c
+        FAILED: CMakeFiles/cmTC_2989c.dir/src.c.obj 
+        c:\\msys64\\\\clang64\\\\bin\\clang.exe -DUV_LINT_NO_CONDITIONAL_ASSIGNMENT_MSVC  -Wno-unused-command-line-argument  -std=gnu90   /wd4706 -MD -MT CMakeFiles/cmTC_2989c.dir/src.c.obj -MF CMakeFiles\\cmTC_2989c.dir\\src.c.obj.d -o CMakeFiles/cmTC_2989c.dir/src.c.obj -c C:/Users/k34ub/source/skstu/xsmade/CMakeFiles/CMakeScratch/TryCompile-n9bkq2/src.c
+        clang: error: no such file or directory: '/wd4706'\x0d
+        ninja: build stopped: subcommand failed.
+        
+      exitCode: 1
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "C:/Users/k34ub/Downloads/cmake-3.28.0-windows-x86_64/share/cmake-3.28/Modules/Internal/CheckSourceCompiles.cmake:101 (try_compile)"
+      - "C:/Users/k34ub/Downloads/cmake-3.28.0-windows-x86_64/share/cmake-3.28/Modules/Internal/CheckCompilerFlag.cmake:18 (cmake_check_source_compiles)"
+      - "C:/Users/k34ub/Downloads/cmake-3.28.0-windows-x86_64/share/cmake-3.28/Modules/CheckCCompilerFlag.cmake:51 (cmake_check_compiler_flag)"
+      - "3rdparty/libuv/CMakeLists.txt:118 (check_c_compiler_flag)"
+    checks:
+      - "Performing Test UV_LINT_NO_UNSAFE_MSVC"
+    directories:
+      source: "C:/Users/k34ub/source/skstu/xsmade/CMakeFiles/CMakeScratch/TryCompile-7od1vu"
+      binary: "C:/Users/k34ub/source/skstu/xsmade/CMakeFiles/CMakeScratch/TryCompile-7od1vu"
+    cmakeVariables:
+      CMAKE_CXX_COMPILER_CLANG_SCAN_DEPS: "C:/msys64/clang64/bin/clang-scan-deps.exe"
+      CMAKE_C_FLAGS: " -Wno-unused-command-line-argument"
+      CMAKE_C_FLAGS_DEBUG: "-g"
+      CMAKE_EXE_LINKER_FLAGS: ""
+      CMAKE_MODULE_PATH: "C:/Users/k34ub/source/skstu/xsmade/build/cmake/deps/;C:/Users/k34ub/source/skstu/xsmade/3rdparty/libuv/cmake"
+      CMAKE_POSITION_INDEPENDENT_CODE: "ON"
+    buildResult:
+      variable: "UV_LINT_NO_UNSAFE_MSVC"
+      cached: true
+      stdout: |
+        Change Dir: 'C:/Users/k34ub/source/skstu/xsmade/CMakeFiles/CMakeScratch/TryCompile-7od1vu'
+        
+        Run Build Command(s): C:/Users/k34ub/source/skstu/devtools/bin/ninja/ninja-win/ninja.exe -v cmTC_b9dd4
+        [1/2] c:\\msys64\\\\clang64\\\\bin\\clang.exe -DUV_LINT_NO_UNSAFE_MSVC  -Wno-unused-command-line-argument  -std=gnu90   /wd4996 -MD -MT CMakeFiles/cmTC_b9dd4.dir/src.c.obj -MF CMakeFiles\\cmTC_b9dd4.dir\\src.c.obj.d -o CMakeFiles/cmTC_b9dd4.dir/src.c.obj -c C:/Users/k34ub/source/skstu/xsmade/CMakeFiles/CMakeScratch/TryCompile-7od1vu/src.c
+        FAILED: CMakeFiles/cmTC_b9dd4.dir/src.c.obj 
+        c:\\msys64\\\\clang64\\\\bin\\clang.exe -DUV_LINT_NO_UNSAFE_MSVC  -Wno-unused-command-line-argument  -std=gnu90   /wd4996 -MD -MT CMakeFiles/cmTC_b9dd4.dir/src.c.obj -MF CMakeFiles\\cmTC_b9dd4.dir\\src.c.obj.d -o CMakeFiles/cmTC_b9dd4.dir/src.c.obj -c C:/Users/k34ub/source/skstu/xsmade/CMakeFiles/CMakeScratch/TryCompile-7od1vu/src.c
+        clang: error: no such file or directory: '/wd4996'\x0d
+        ninja: build stopped: subcommand failed.
+        
+      exitCode: 1
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "C:/Users/k34ub/Downloads/cmake-3.28.0-windows-x86_64/share/cmake-3.28/Modules/Internal/CheckSourceCompiles.cmake:101 (try_compile)"
+      - "C:/Users/k34ub/Downloads/cmake-3.28.0-windows-x86_64/share/cmake-3.28/Modules/Internal/CheckCompilerFlag.cmake:18 (cmake_check_source_compiles)"
+      - "C:/Users/k34ub/Downloads/cmake-3.28.0-windows-x86_64/share/cmake-3.28/Modules/CheckCCompilerFlag.cmake:51 (cmake_check_compiler_flag)"
+      - "3rdparty/libuv/CMakeLists.txt:120 (check_c_compiler_flag)"
+    checks:
+      - "Performing Test UV_LINT_WALL"
+    directories:
+      source: "C:/Users/k34ub/source/skstu/xsmade/CMakeFiles/CMakeScratch/TryCompile-nvsdn6"
+      binary: "C:/Users/k34ub/source/skstu/xsmade/CMakeFiles/CMakeScratch/TryCompile-nvsdn6"
+    cmakeVariables:
+      CMAKE_CXX_COMPILER_CLANG_SCAN_DEPS: "C:/msys64/clang64/bin/clang-scan-deps.exe"
+      CMAKE_C_FLAGS: " -Wno-unused-command-line-argument"
+      CMAKE_C_FLAGS_DEBUG: "-g"
+      CMAKE_EXE_LINKER_FLAGS: ""
+      CMAKE_MODULE_PATH: "C:/Users/k34ub/source/skstu/xsmade/build/cmake/deps/;C:/Users/k34ub/source/skstu/xsmade/3rdparty/libuv/cmake"
+      CMAKE_POSITION_INDEPENDENT_CODE: "ON"
+    buildResult:
+      variable: "UV_LINT_WALL"
+      cached: true
+      stdout: |
+        Change Dir: 'C:/Users/k34ub/source/skstu/xsmade/CMakeFiles/CMakeScratch/TryCompile-nvsdn6'
+        
+        Run Build Command(s): C:/Users/k34ub/source/skstu/devtools/bin/ninja/ninja-win/ninja.exe -v cmTC_87739
+        [1/2] c:\\msys64\\\\clang64\\\\bin\\clang.exe -DUV_LINT_WALL  -Wno-unused-command-line-argument  -std=gnu90   -Wall -MD -MT CMakeFiles/cmTC_87739.dir/src.c.obj -MF CMakeFiles\\cmTC_87739.dir\\src.c.obj.d -o CMakeFiles/cmTC_87739.dir/src.c.obj -c C:/Users/k34ub/source/skstu/xsmade/CMakeFiles/CMakeScratch/TryCompile-nvsdn6/src.c
+        [2/2] C:\\WINDOWS\\system32\\cmd.exe /C "cd . && c:\\msys64\\\\clang64\\\\bin\\clang.exe -Wno-unused-command-line-argument  CMakeFiles/cmTC_87739.dir/src.c.obj -o cmTC_87739.exe -Wl,--out-implib,libcmTC_87739.dll.a -Wl,--major-image-version,0,--minor-image-version,0  -lkernel32 -luser32 -lgdi32 -lwinspool -lshell32 -lole32 -loleaut32 -luuid -lcomdlg32 -ladvapi32 && cd ."
+        
+      exitCode: 0
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "C:/Users/k34ub/Downloads/cmake-3.28.0-windows-x86_64/share/cmake-3.28/Modules/Internal/CheckSourceCompiles.cmake:101 (try_compile)"
+      - "C:/Users/k34ub/Downloads/cmake-3.28.0-windows-x86_64/share/cmake-3.28/Modules/Internal/CheckCompilerFlag.cmake:18 (cmake_check_source_compiles)"
+      - "C:/Users/k34ub/Downloads/cmake-3.28.0-windows-x86_64/share/cmake-3.28/Modules/CheckCCompilerFlag.cmake:51 (cmake_check_compiler_flag)"
+      - "3rdparty/libuv/CMakeLists.txt:123 (check_c_compiler_flag)"
+    checks:
+      - "Performing Test UV_LINT_NO_UNUSED_PARAMETER"
+    directories:
+      source: "C:/Users/k34ub/source/skstu/xsmade/CMakeFiles/CMakeScratch/TryCompile-0x7xud"
+      binary: "C:/Users/k34ub/source/skstu/xsmade/CMakeFiles/CMakeScratch/TryCompile-0x7xud"
+    cmakeVariables:
+      CMAKE_CXX_COMPILER_CLANG_SCAN_DEPS: "C:/msys64/clang64/bin/clang-scan-deps.exe"
+      CMAKE_C_FLAGS: " -Wno-unused-command-line-argument"
+      CMAKE_C_FLAGS_DEBUG: "-g"
+      CMAKE_EXE_LINKER_FLAGS: ""
+      CMAKE_MODULE_PATH: "C:/Users/k34ub/source/skstu/xsmade/build/cmake/deps/;C:/Users/k34ub/source/skstu/xsmade/3rdparty/libuv/cmake"
+      CMAKE_POSITION_INDEPENDENT_CODE: "ON"
+    buildResult:
+      variable: "UV_LINT_NO_UNUSED_PARAMETER"
+      cached: true
+      stdout: |
+        Change Dir: 'C:/Users/k34ub/source/skstu/xsmade/CMakeFiles/CMakeScratch/TryCompile-0x7xud'
+        
+        Run Build Command(s): C:/Users/k34ub/source/skstu/devtools/bin/ninja/ninja-win/ninja.exe -v cmTC_1e12b
+        [1/2] c:\\msys64\\\\clang64\\\\bin\\clang.exe -DUV_LINT_NO_UNUSED_PARAMETER  -Wno-unused-command-line-argument  -std=gnu90   -Wno-unused-parameter -MD -MT CMakeFiles/cmTC_1e12b.dir/src.c.obj -MF CMakeFiles\\cmTC_1e12b.dir\\src.c.obj.d -o CMakeFiles/cmTC_1e12b.dir/src.c.obj -c C:/Users/k34ub/source/skstu/xsmade/CMakeFiles/CMakeScratch/TryCompile-0x7xud/src.c
+        [2/2] C:\\WINDOWS\\system32\\cmd.exe /C "cd . && c:\\msys64\\\\clang64\\\\bin\\clang.exe -Wno-unused-command-line-argument  CMakeFiles/cmTC_1e12b.dir/src.c.obj -o cmTC_1e12b.exe -Wl,--out-implib,libcmTC_1e12b.dll.a -Wl,--major-image-version,0,--minor-image-version,0  -lkernel32 -luser32 -lgdi32 -lwinspool -lshell32 -lole32 -loleaut32 -luuid -lcomdlg32 -ladvapi32 && cd ."
+        
+      exitCode: 0
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "C:/Users/k34ub/Downloads/cmake-3.28.0-windows-x86_64/share/cmake-3.28/Modules/Internal/CheckSourceCompiles.cmake:101 (try_compile)"
+      - "C:/Users/k34ub/Downloads/cmake-3.28.0-windows-x86_64/share/cmake-3.28/Modules/Internal/CheckCompilerFlag.cmake:18 (cmake_check_source_compiles)"
+      - "C:/Users/k34ub/Downloads/cmake-3.28.0-windows-x86_64/share/cmake-3.28/Modules/CheckCCompilerFlag.cmake:51 (cmake_check_compiler_flag)"
+      - "3rdparty/libuv/CMakeLists.txt:124 (check_c_compiler_flag)"
+    checks:
+      - "Performing Test UV_LINT_STRICT_PROTOTYPES"
+    directories:
+      source: "C:/Users/k34ub/source/skstu/xsmade/CMakeFiles/CMakeScratch/TryCompile-25it1k"
+      binary: "C:/Users/k34ub/source/skstu/xsmade/CMakeFiles/CMakeScratch/TryCompile-25it1k"
+    cmakeVariables:
+      CMAKE_CXX_COMPILER_CLANG_SCAN_DEPS: "C:/msys64/clang64/bin/clang-scan-deps.exe"
+      CMAKE_C_FLAGS: " -Wno-unused-command-line-argument"
+      CMAKE_C_FLAGS_DEBUG: "-g"
+      CMAKE_EXE_LINKER_FLAGS: ""
+      CMAKE_MODULE_PATH: "C:/Users/k34ub/source/skstu/xsmade/build/cmake/deps/;C:/Users/k34ub/source/skstu/xsmade/3rdparty/libuv/cmake"
+      CMAKE_POSITION_INDEPENDENT_CODE: "ON"
+    buildResult:
+      variable: "UV_LINT_STRICT_PROTOTYPES"
+      cached: true
+      stdout: |
+        Change Dir: 'C:/Users/k34ub/source/skstu/xsmade/CMakeFiles/CMakeScratch/TryCompile-25it1k'
+        
+        Run Build Command(s): C:/Users/k34ub/source/skstu/devtools/bin/ninja/ninja-win/ninja.exe -v cmTC_98909
+        [1/2] c:\\msys64\\\\clang64\\\\bin\\clang.exe -DUV_LINT_STRICT_PROTOTYPES  -Wno-unused-command-line-argument  -std=gnu90   -Wstrict-prototypes -MD -MT CMakeFiles/cmTC_98909.dir/src.c.obj -MF CMakeFiles\\cmTC_98909.dir\\src.c.obj.d -o CMakeFiles/cmTC_98909.dir/src.c.obj -c C:/Users/k34ub/source/skstu/xsmade/CMakeFiles/CMakeScratch/TryCompile-25it1k/src.c
+        [2/2] C:\\WINDOWS\\system32\\cmd.exe /C "cd . && c:\\msys64\\\\clang64\\\\bin\\clang.exe -Wno-unused-command-line-argument  CMakeFiles/cmTC_98909.dir/src.c.obj -o cmTC_98909.exe -Wl,--out-implib,libcmTC_98909.dll.a -Wl,--major-image-version,0,--minor-image-version,0  -lkernel32 -luser32 -lgdi32 -lwinspool -lshell32 -lole32 -loleaut32 -luuid -lcomdlg32 -ladvapi32 && cd ."
+        
+      exitCode: 0
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "C:/Users/k34ub/Downloads/cmake-3.28.0-windows-x86_64/share/cmake-3.28/Modules/Internal/CheckSourceCompiles.cmake:101 (try_compile)"
+      - "C:/Users/k34ub/Downloads/cmake-3.28.0-windows-x86_64/share/cmake-3.28/Modules/Internal/CheckCompilerFlag.cmake:18 (cmake_check_source_compiles)"
+      - "C:/Users/k34ub/Downloads/cmake-3.28.0-windows-x86_64/share/cmake-3.28/Modules/CheckCCompilerFlag.cmake:51 (cmake_check_compiler_flag)"
+      - "3rdparty/libuv/CMakeLists.txt:125 (check_c_compiler_flag)"
+    checks:
+      - "Performing Test UV_LINT_EXTRA"
+    directories:
+      source: "C:/Users/k34ub/source/skstu/xsmade/CMakeFiles/CMakeScratch/TryCompile-6y3o53"
+      binary: "C:/Users/k34ub/source/skstu/xsmade/CMakeFiles/CMakeScratch/TryCompile-6y3o53"
+    cmakeVariables:
+      CMAKE_CXX_COMPILER_CLANG_SCAN_DEPS: "C:/msys64/clang64/bin/clang-scan-deps.exe"
+      CMAKE_C_FLAGS: " -Wno-unused-command-line-argument"
+      CMAKE_C_FLAGS_DEBUG: "-g"
+      CMAKE_EXE_LINKER_FLAGS: ""
+      CMAKE_MODULE_PATH: "C:/Users/k34ub/source/skstu/xsmade/build/cmake/deps/;C:/Users/k34ub/source/skstu/xsmade/3rdparty/libuv/cmake"
+      CMAKE_POSITION_INDEPENDENT_CODE: "ON"
+    buildResult:
+      variable: "UV_LINT_EXTRA"
+      cached: true
+      stdout: |
+        Change Dir: 'C:/Users/k34ub/source/skstu/xsmade/CMakeFiles/CMakeScratch/TryCompile-6y3o53'
+        
+        Run Build Command(s): C:/Users/k34ub/source/skstu/devtools/bin/ninja/ninja-win/ninja.exe -v cmTC_50661
+        [1/2] c:\\msys64\\\\clang64\\\\bin\\clang.exe -DUV_LINT_EXTRA  -Wno-unused-command-line-argument  -std=gnu90   -Wextra -MD -MT CMakeFiles/cmTC_50661.dir/src.c.obj -MF CMakeFiles\\cmTC_50661.dir\\src.c.obj.d -o CMakeFiles/cmTC_50661.dir/src.c.obj -c C:/Users/k34ub/source/skstu/xsmade/CMakeFiles/CMakeScratch/TryCompile-6y3o53/src.c
+        [2/2] C:\\WINDOWS\\system32\\cmd.exe /C "cd . && c:\\msys64\\\\clang64\\\\bin\\clang.exe -Wno-unused-command-line-argument  CMakeFiles/cmTC_50661.dir/src.c.obj -o cmTC_50661.exe -Wl,--out-implib,libcmTC_50661.dll.a -Wl,--major-image-version,0,--minor-image-version,0  -lkernel32 -luser32 -lgdi32 -lwinspool -lshell32 -lole32 -loleaut32 -luuid -lcomdlg32 -ladvapi32 && cd ."
+        
+      exitCode: 0
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "C:/Users/k34ub/Downloads/cmake-3.28.0-windows-x86_64/share/cmake-3.28/Modules/Internal/CheckSourceCompiles.cmake:101 (try_compile)"
+      - "C:/Users/k34ub/Downloads/cmake-3.28.0-windows-x86_64/share/cmake-3.28/Modules/Internal/CheckCompilerFlag.cmake:18 (cmake_check_source_compiles)"
+      - "C:/Users/k34ub/Downloads/cmake-3.28.0-windows-x86_64/share/cmake-3.28/Modules/CheckCCompilerFlag.cmake:51 (cmake_check_compiler_flag)"
+      - "3rdparty/libuv/CMakeLists.txt:127 (check_c_compiler_flag)"
+    checks:
+      - "Performing Test UV_LINT_UTF8_MSVC"
+    directories:
+      source: "C:/Users/k34ub/source/skstu/xsmade/CMakeFiles/CMakeScratch/TryCompile-c7dkd3"
+      binary: "C:/Users/k34ub/source/skstu/xsmade/CMakeFiles/CMakeScratch/TryCompile-c7dkd3"
+    cmakeVariables:
+      CMAKE_CXX_COMPILER_CLANG_SCAN_DEPS: "C:/msys64/clang64/bin/clang-scan-deps.exe"
+      CMAKE_C_FLAGS: " -Wno-unused-command-line-argument"
+      CMAKE_C_FLAGS_DEBUG: "-g"
+      CMAKE_EXE_LINKER_FLAGS: ""
+      CMAKE_MODULE_PATH: "C:/Users/k34ub/source/skstu/xsmade/build/cmake/deps/;C:/Users/k34ub/source/skstu/xsmade/3rdparty/libuv/cmake"
+      CMAKE_POSITION_INDEPENDENT_CODE: "ON"
+    buildResult:
+      variable: "UV_LINT_UTF8_MSVC"
+      cached: true
+      stdout: |
+        Change Dir: 'C:/Users/k34ub/source/skstu/xsmade/CMakeFiles/CMakeScratch/TryCompile-c7dkd3'
+        
+        Run Build Command(s): C:/Users/k34ub/source/skstu/devtools/bin/ninja/ninja-win/ninja.exe -v cmTC_d83b9
+        [1/2] c:\\msys64\\\\clang64\\\\bin\\clang.exe -DUV_LINT_UTF8_MSVC  -Wno-unused-command-line-argument  -std=gnu90   /utf-8 -MD -MT CMakeFiles/cmTC_d83b9.dir/src.c.obj -MF CMakeFiles\\cmTC_d83b9.dir\\src.c.obj.d -o CMakeFiles/cmTC_d83b9.dir/src.c.obj -c C:/Users/k34ub/source/skstu/xsmade/CMakeFiles/CMakeScratch/TryCompile-c7dkd3/src.c
+        FAILED: CMakeFiles/cmTC_d83b9.dir/src.c.obj 
+        c:\\msys64\\\\clang64\\\\bin\\clang.exe -DUV_LINT_UTF8_MSVC  -Wno-unused-command-line-argument  -std=gnu90   /utf-8 -MD -MT CMakeFiles/cmTC_d83b9.dir/src.c.obj -MF CMakeFiles\\cmTC_d83b9.dir\\src.c.obj.d -o CMakeFiles/cmTC_d83b9.dir/src.c.obj -c C:/Users/k34ub/source/skstu/xsmade/CMakeFiles/CMakeScratch/TryCompile-c7dkd3/src.c
+        clang: error: no such file or directory: '/utf-8'\x0d
+        ninja: build stopped: subcommand failed.
+        
+      exitCode: 1
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "C:/Users/k34ub/Downloads/cmake-3.28.0-windows-x86_64/share/cmake-3.28/Modules/Internal/CheckSourceCompiles.cmake:101 (try_compile)"
+      - "C:/Users/k34ub/Downloads/cmake-3.28.0-windows-x86_64/share/cmake-3.28/Modules/Internal/CheckCompilerFlag.cmake:18 (cmake_check_source_compiles)"
+      - "C:/Users/k34ub/Downloads/cmake-3.28.0-windows-x86_64/share/cmake-3.28/Modules/CheckCCompilerFlag.cmake:51 (cmake_check_compiler_flag)"
+      - "3rdparty/libuv/CMakeLists.txt:166 (check_c_compiler_flag)"
+    checks:
+      - "Performing Test UV_F_STRICT_ALIASING"
+    directories:
+      source: "C:/Users/k34ub/source/skstu/xsmade/CMakeFiles/CMakeScratch/TryCompile-l8dcnj"
+      binary: "C:/Users/k34ub/source/skstu/xsmade/CMakeFiles/CMakeScratch/TryCompile-l8dcnj"
+    cmakeVariables:
+      CMAKE_CXX_COMPILER_CLANG_SCAN_DEPS: "C:/msys64/clang64/bin/clang-scan-deps.exe"
+      CMAKE_C_FLAGS: " -Wno-unused-command-line-argument"
+      CMAKE_C_FLAGS_DEBUG: "-g"
+      CMAKE_EXE_LINKER_FLAGS: ""
+      CMAKE_MODULE_PATH: "C:/Users/k34ub/source/skstu/xsmade/build/cmake/deps/;C:/Users/k34ub/source/skstu/xsmade/3rdparty/libuv/cmake"
+      CMAKE_POSITION_INDEPENDENT_CODE: "ON"
+    buildResult:
+      variable: "UV_F_STRICT_ALIASING"
+      cached: true
+      stdout: |
+        Change Dir: 'C:/Users/k34ub/source/skstu/xsmade/CMakeFiles/CMakeScratch/TryCompile-l8dcnj'
+        
+        Run Build Command(s): C:/Users/k34ub/source/skstu/devtools/bin/ninja/ninja-win/ninja.exe -v cmTC_833c7
+        [1/2] c:\\msys64\\\\clang64\\\\bin\\clang.exe -DUV_F_STRICT_ALIASING  -Wno-unused-command-line-argument  -std=gnu90   -fno-strict-aliasing -MD -MT CMakeFiles/cmTC_833c7.dir/src.c.obj -MF CMakeFiles\\cmTC_833c7.dir\\src.c.obj.d -o CMakeFiles/cmTC_833c7.dir/src.c.obj -c C:/Users/k34ub/source/skstu/xsmade/CMakeFiles/CMakeScratch/TryCompile-l8dcnj/src.c
+        [2/2] C:\\WINDOWS\\system32\\cmd.exe /C "cd . && c:\\msys64\\\\clang64\\\\bin\\clang.exe -Wno-unused-command-line-argument  CMakeFiles/cmTC_833c7.dir/src.c.obj -o cmTC_833c7.exe -Wl,--out-implib,libcmTC_833c7.dll.a -Wl,--major-image-version,0,--minor-image-version,0  -lkernel32 -luser32 -lgdi32 -lwinspool -lshell32 -lole32 -loleaut32 -luuid -lcomdlg32 -ladvapi32 && cd ."
+        
+      exitCode: 0
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "3rdparty/curl/CMake/Macros.cmake:48 (try_compile)"
+      - "3rdparty/curl/CMakeLists.txt:203 (curl_internal_test)"
+    directories:
+      source: "C:/Users/k34ub/source/skstu/xsmade/CURL/CMakeFiles/CMakeTmp"
+      binary: "C:/Users/k34ub/source/skstu/xsmade/CURL/CMakeFiles/CMakeTmp"
+    cmakeVariables:
+      CMAKE_CXX_COMPILER_CLANG_SCAN_DEPS: "C:/msys64/clang64/bin/clang-scan-deps.exe"
+      CMAKE_C_FLAGS: " -Wno-unused-command-line-argument"
+      CMAKE_C_FLAGS_DEBUG: "-g"
+      CMAKE_EXE_LINKER_FLAGS: ""
+      CMAKE_MODULE_PATH: "C:/Users/k34ub/source/skstu/xsmade/3rdparty/curl/CMake;C:/Users/k34ub/source/skstu/xsmade/build/cmake/deps/"
+      CMAKE_POSITION_INDEPENDENT_CODE: "ON"
+    buildResult:
+      variable: "HAVE_WIN32_WINNT"
+      cached: true
+      stdout: |
+        Change Dir: 'C:/Users/k34ub/source/skstu/xsmade/CURL/CMakeFiles/CMakeTmp'
+        
+        Run Build Command(s): C:/Users/k34ub/source/skstu/devtools/bin/ninja/ninja-win/ninja.exe -v cmTC_0e74e
+        [1/2] c:\\msys64\\\\clang64\\\\bin\\clang.exe   -Wno-unused-command-line-argument -DHAVE_WIN32_WINNT  -DWIN32_LEAN_AND_MEAN -MD -MT CMakeFiles/cmTC_0e74e.dir/CurlTests.c.obj -MF CMakeFiles\\cmTC_0e74e.dir\\CurlTests.c.obj.d -o CMakeFiles/cmTC_0e74e.dir/CurlTests.c.obj -c C:/Users/k34ub/source/skstu/xsmade/3rdparty/curl/CMake/CurlTests.c
+        C:/Users/k34ub/source/skstu/xsmade/3rdparty/curl/CMake/CurlTests.c:407:9: warning: _WIN32_WINNT=0x603 [-W#pragma-messages]\x0d
+          407 | #pragma message("_WIN32_WINNT=" expand(_WIN32_WINNT))\x0d
+              |         ^\x0d
+        1 warning generated.\x0d
+        [2/2] C:\\WINDOWS\\system32\\cmd.exe /C "cd . && c:\\msys64\\\\clang64\\\\bin\\clang.exe -Wno-unused-command-line-argument -DHAVE_WIN32_WINNT  -DWIN32_LEAN_AND_MEAN  CMakeFiles/cmTC_0e74e.dir/CurlTests.c.obj -o cmTC_0e74e.exe -Wl,--out-implib,libcmTC_0e74e.dll.a -Wl,--major-image-version,0,--minor-image-version,0  -lkernel32 -luser32 -lgdi32 -lwinspool -lshell32 -lole32 -loleaut32 -luuid -lcomdlg32 -ladvapi32 && cd ."
+        
+      exitCode: 0
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "C:/Users/k34ub/Downloads/cmake-3.28.0-windows-x86_64/share/cmake-3.28/Modules/CheckSymbolExists.cmake:140 (try_compile)"
+      - "C:/Users/k34ub/Downloads/cmake-3.28.0-windows-x86_64/share/cmake-3.28/Modules/CheckSymbolExists.cmake:66 (__CHECK_SYMBOL_EXISTS_IMPL)"
+      - "3rdparty/curl/CMakeLists.txt:651 (check_symbol_exists)"
+    checks:
+      - "Looking for OPENSSL_IS_BORINGSSL"
+    directories:
+      source: "C:/Users/k34ub/source/skstu/xsmade/CMakeFiles/CMakeScratch/TryCompile-142c1j"
+      binary: "C:/Users/k34ub/source/skstu/xsmade/CMakeFiles/CMakeScratch/TryCompile-142c1j"
+    cmakeVariables:
+      CMAKE_CXX_COMPILER_CLANG_SCAN_DEPS: "C:/msys64/clang64/bin/clang-scan-deps.exe"
+      CMAKE_C_FLAGS: " -Wno-unused-command-line-argument -Werror-implicit-function-declaration -Wextra -Wall -pedantic -Wbad-function-cast -Wconversion -Winline -Wmissing-declarations -Wmissing-prototypes -Wnested-externs -Wno-long-long -Wno-multichar -Wpointer-arith -Wshadow -Wsign-compare -Wundef -Wunused -Wwrite-strings -Waddress -Wattributes -Wcast-align -Wdeclaration-after-statement -Wdiv-by-zero -Wempty-body -Wendif-labels -Wfloat-equal -Wformat-security -Wignored-qualifiers -Wmissing-field-initializers -Wmissing-noreturn -Wno-format-nonliteral -Wno-system-headers -Wold-style-definition -Wredundant-decls -Wsign-conversion -Wno-error=sign-conversion -Wstrict-prototypes -Wtype-limits -Wunreachable-code -Wunused-parameter -Wvla -Wshift-sign-overflow -Wshorten-64-to-32 -Wformat=2 -Wlanguage-extension-token -Wdouble-promotion -Wenum-conversion -Wpragmas -Wunused-const-variable -Wheader-guard -Wsometimes-uninitialized -Wcomma -Wmissing-variable-declarations -Wassign-enum -Wextra-semi-stmt -Wimplicit-fallthrough"
+      CMAKE_C_FLAGS_DEBUG: "-g"
+      CMAKE_EXE_LINKER_FLAGS: ""
+      CMAKE_MODULE_PATH: "C:/Users/k34ub/source/skstu/xsmade/3rdparty/curl/CMake;C:/Users/k34ub/source/skstu/xsmade/build/cmake/deps/"
+      CMAKE_POSITION_INDEPENDENT_CODE: "ON"
+    buildResult:
+      variable: "HAVE_BORINGSSL"
+      cached: true
+      stdout: |
+        Change Dir: 'C:/Users/k34ub/source/skstu/xsmade/CMakeFiles/CMakeScratch/TryCompile-142c1j'
+        
+        Run Build Command(s): C:/Users/k34ub/source/skstu/devtools/bin/ninja/ninja-win/ninja.exe -v cmTC_2c10e
+        [1/2] c:\\msys64\\\\clang64\\\\bin\\clang.exe -DWIN32_LEAN_AND_MEAN  -Wno-unused-command-line-argument -Werror-implicit-function-declaration -Wextra -Wall -pedantic -Wbad-function-cast -Wconversion -Winline -Wmissing-declarations -Wmissing-prototypes -Wnested-externs -Wno-long-long -Wno-multichar -Wpointer-arith -Wshadow -Wsign-compare -Wundef -Wunused -Wwrite-strings -Waddress -Wattributes -Wcast-align -Wdeclaration-after-statement -Wdiv-by-zero -Wempty-body -Wendif-labels -Wfloat-equal -Wformat-security -Wignored-qualifiers -Wmissing-field-initializers -Wmissing-noreturn -Wno-format-nonliteral -Wno-system-headers -Wold-style-definition -Wredundant-decls -Wsign-conversion -Wno-error=sign-conversion -Wstrict-prototypes -Wtype-limits -Wunreachable-code -Wunused-parameter -Wvla -Wshift-sign-overflow -Wshorten-64-to-32 -Wformat=2 -Wlanguage-extension-token -Wdouble-promotion -Wenum-conversion -Wpragmas -Wunused-const-variable -Wheader-guard -Wsometimes-uninitialized -Wcomma -Wmissing-variable-declarations -Wassign-enum -Wextra-semi-stmt -Wimplicit-fallthrough -MD -MT CMakeFiles/cmTC_2c10e.dir/CheckSymbolExists.c.obj -MF CMakeFiles\\cmTC_2c10e.dir\\CheckSymbolExists.c.obj.d -o CMakeFiles/cmTC_2c10e.dir/CheckSymbolExists.c.obj -c C:/Users/k34ub/source/skstu/xsmade/CMakeFiles/CMakeScratch/TryCompile-142c1j/CheckSymbolExists.c
+        FAILED: CMakeFiles/cmTC_2c10e.dir/CheckSymbolExists.c.obj 
+        c:\\msys64\\\\clang64\\\\bin\\clang.exe -DWIN32_LEAN_AND_MEAN  -Wno-unused-command-line-argument -Werror-implicit-function-declaration -Wextra -Wall -pedantic -Wbad-function-cast -Wconversion -Winline -Wmissing-declarations -Wmissing-prototypes -Wnested-externs -Wno-long-long -Wno-multichar -Wpointer-arith -Wshadow -Wsign-compare -Wundef -Wunused -Wwrite-strings -Waddress -Wattributes -Wcast-align -Wdeclaration-after-statement -Wdiv-by-zero -Wempty-body -Wendif-labels -Wfloat-equal -Wformat-security -Wignored-qualifiers -Wmissing-field-initializers -Wmissing-noreturn -Wno-format-nonliteral -Wno-system-headers -Wold-style-definition -Wredundant-decls -Wsign-conversion -Wno-error=sign-conversion -Wstrict-prototypes -Wtype-limits -Wunreachable-code -Wunused-parameter -Wvla -Wshift-sign-overflow -Wshorten-64-to-32 -Wformat=2 -Wlanguage-extension-token -Wdouble-promotion -Wenum-conversion -Wpragmas -Wunused-const-variable -Wheader-guard -Wsometimes-uninitialized -Wcomma -Wmissing-variable-declarations -Wassign-enum -Wextra-semi-stmt -Wimplicit-fallthrough -MD -MT CMakeFiles/cmTC_2c10e.dir/CheckSymbolExists.c.obj -MF CMakeFiles\\cmTC_2c10e.dir\\CheckSymbolExists.c.obj.d -o CMakeFiles/cmTC_2c10e.dir/CheckSymbolExists.c.obj -c C:/Users/k34ub/source/skstu/xsmade/CMakeFiles/CMakeScratch/TryCompile-142c1j/CheckSymbolExists.c
+        C:/Users/k34ub/source/skstu/xsmade/CMakeFiles/CMakeScratch/TryCompile-142c1j/CheckSymbolExists.c:2:10: fatal error: 'openssl/base.h' file not found
+            2 | #include <openssl/base.h>\x0d
+              |          ^~~~~~~~~~~~~~~~\x0d
+        1 error generated.\x0d
+        ninja: build stopped: subcommand failed.
+        
+      exitCode: 1
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "C:/Users/k34ub/Downloads/cmake-3.28.0-windows-x86_64/share/cmake-3.28/Modules/CheckSymbolExists.cmake:140 (try_compile)"
+      - "C:/Users/k34ub/Downloads/cmake-3.28.0-windows-x86_64/share/cmake-3.28/Modules/CheckSymbolExists.cmake:66 (__CHECK_SYMBOL_EXISTS_IMPL)"
+      - "3rdparty/curl/CMakeLists.txt:654 (check_symbol_exists)"
+    checks:
+      - "Looking for OPENSSL_IS_AWSLC"
+    directories:
+      source: "C:/Users/k34ub/source/skstu/xsmade/CMakeFiles/CMakeScratch/TryCompile-103fx4"
+      binary: "C:/Users/k34ub/source/skstu/xsmade/CMakeFiles/CMakeScratch/TryCompile-103fx4"
+    cmakeVariables:
+      CMAKE_CXX_COMPILER_CLANG_SCAN_DEPS: "C:/msys64/clang64/bin/clang-scan-deps.exe"
+      CMAKE_C_FLAGS: " -Wno-unused-command-line-argument -Werror-implicit-function-declaration -Wextra -Wall -pedantic -Wbad-function-cast -Wconversion -Winline -Wmissing-declarations -Wmissing-prototypes -Wnested-externs -Wno-long-long -Wno-multichar -Wpointer-arith -Wshadow -Wsign-compare -Wundef -Wunused -Wwrite-strings -Waddress -Wattributes -Wcast-align -Wdeclaration-after-statement -Wdiv-by-zero -Wempty-body -Wendif-labels -Wfloat-equal -Wformat-security -Wignored-qualifiers -Wmissing-field-initializers -Wmissing-noreturn -Wno-format-nonliteral -Wno-system-headers -Wold-style-definition -Wredundant-decls -Wsign-conversion -Wno-error=sign-conversion -Wstrict-prototypes -Wtype-limits -Wunreachable-code -Wunused-parameter -Wvla -Wshift-sign-overflow -Wshorten-64-to-32 -Wformat=2 -Wlanguage-extension-token -Wdouble-promotion -Wenum-conversion -Wpragmas -Wunused-const-variable -Wheader-guard -Wsometimes-uninitialized -Wcomma -Wmissing-variable-declarations -Wassign-enum -Wextra-semi-stmt -Wimplicit-fallthrough"
+      CMAKE_C_FLAGS_DEBUG: "-g"
+      CMAKE_EXE_LINKER_FLAGS: ""
+      CMAKE_MODULE_PATH: "C:/Users/k34ub/source/skstu/xsmade/3rdparty/curl/CMake;C:/Users/k34ub/source/skstu/xsmade/build/cmake/deps/"
+      CMAKE_POSITION_INDEPENDENT_CODE: "ON"
+    buildResult:
+      variable: "HAVE_AWSLC"
+      cached: true
+      stdout: |
+        Change Dir: 'C:/Users/k34ub/source/skstu/xsmade/CMakeFiles/CMakeScratch/TryCompile-103fx4'
+        
+        Run Build Command(s): C:/Users/k34ub/source/skstu/devtools/bin/ninja/ninja-win/ninja.exe -v cmTC_847ac
+        [1/2] c:\\msys64\\\\clang64\\\\bin\\clang.exe -DWIN32_LEAN_AND_MEAN  -Wno-unused-command-line-argument -Werror-implicit-function-declaration -Wextra -Wall -pedantic -Wbad-function-cast -Wconversion -Winline -Wmissing-declarations -Wmissing-prototypes -Wnested-externs -Wno-long-long -Wno-multichar -Wpointer-arith -Wshadow -Wsign-compare -Wundef -Wunused -Wwrite-strings -Waddress -Wattributes -Wcast-align -Wdeclaration-after-statement -Wdiv-by-zero -Wempty-body -Wendif-labels -Wfloat-equal -Wformat-security -Wignored-qualifiers -Wmissing-field-initializers -Wmissing-noreturn -Wno-format-nonliteral -Wno-system-headers -Wold-style-definition -Wredundant-decls -Wsign-conversion -Wno-error=sign-conversion -Wstrict-prototypes -Wtype-limits -Wunreachable-code -Wunused-parameter -Wvla -Wshift-sign-overflow -Wshorten-64-to-32 -Wformat=2 -Wlanguage-extension-token -Wdouble-promotion -Wenum-conversion -Wpragmas -Wunused-const-variable -Wheader-guard -Wsometimes-uninitialized -Wcomma -Wmissing-variable-declarations -Wassign-enum -Wextra-semi-stmt -Wimplicit-fallthrough -MD -MT CMakeFiles/cmTC_847ac.dir/CheckSymbolExists.c.obj -MF CMakeFiles\\cmTC_847ac.dir\\CheckSymbolExists.c.obj.d -o CMakeFiles/cmTC_847ac.dir/CheckSymbolExists.c.obj -c C:/Users/k34ub/source/skstu/xsmade/CMakeFiles/CMakeScratch/TryCompile-103fx4/CheckSymbolExists.c
+        FAILED: CMakeFiles/cmTC_847ac.dir/CheckSymbolExists.c.obj 
+        c:\\msys64\\\\clang64\\\\bin\\clang.exe -DWIN32_LEAN_AND_MEAN  -Wno-unused-command-line-argument -Werror-implicit-function-declaration -Wextra -Wall -pedantic -Wbad-function-cast -Wconversion -Winline -Wmissing-declarations -Wmissing-prototypes -Wnested-externs -Wno-long-long -Wno-multichar -Wpointer-arith -Wshadow -Wsign-compare -Wundef -Wunused -Wwrite-strings -Waddress -Wattributes -Wcast-align -Wdeclaration-after-statement -Wdiv-by-zero -Wempty-body -Wendif-labels -Wfloat-equal -Wformat-security -Wignored-qualifiers -Wmissing-field-initializers -Wmissing-noreturn -Wno-format-nonliteral -Wno-system-headers -Wold-style-definition -Wredundant-decls -Wsign-conversion -Wno-error=sign-conversion -Wstrict-prototypes -Wtype-limits -Wunreachable-code -Wunused-parameter -Wvla -Wshift-sign-overflow -Wshorten-64-to-32 -Wformat=2 -Wlanguage-extension-token -Wdouble-promotion -Wenum-conversion -Wpragmas -Wunused-const-variable -Wheader-guard -Wsometimes-uninitialized -Wcomma -Wmissing-variable-declarations -Wassign-enum -Wextra-semi-stmt -Wimplicit-fallthrough -MD -MT CMakeFiles/cmTC_847ac.dir/CheckSymbolExists.c.obj -MF CMakeFiles\\cmTC_847ac.dir\\CheckSymbolExists.c.obj.d -o CMakeFiles/cmTC_847ac.dir/CheckSymbolExists.c.obj -c C:/Users/k34ub/source/skstu/xsmade/CMakeFiles/CMakeScratch/TryCompile-103fx4/CheckSymbolExists.c
+        C:/Users/k34ub/source/skstu/xsmade/CMakeFiles/CMakeScratch/TryCompile-103fx4/CheckSymbolExists.c:2:10: fatal error: 'openssl/base.h' file not found
+            2 | #include <openssl/base.h>\x0d
+              |          ^~~~~~~~~~~~~~~~\x0d
+        1 error generated.\x0d
+        ninja: build stopped: subcommand failed.
+        
+      exitCode: 1
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "C:/Users/k34ub/Downloads/cmake-3.28.0-windows-x86_64/share/cmake-3.28/Modules/CheckSymbolExists.cmake:140 (try_compile)"
+      - "C:/Users/k34ub/Downloads/cmake-3.28.0-windows-x86_64/share/cmake-3.28/Modules/CheckSymbolExists.cmake:66 (__CHECK_SYMBOL_EXISTS_IMPL)"
+      - "3rdparty/curl/CMakeLists.txt:839 (check_symbol_exists)"
+      - "3rdparty/curl/CMakeLists.txt:866 (openssl_check_symbol_exists)"
+    checks:
+      - "Looking for SSL_set0_wbio"
+    directories:
+      source: "C:/Users/k34ub/source/skstu/xsmade/CMakeFiles/CMakeScratch/TryCompile-ngpepy"
+      binary: "C:/Users/k34ub/source/skstu/xsmade/CMakeFiles/CMakeScratch/TryCompile-ngpepy"
+    cmakeVariables:
+      CMAKE_CXX_COMPILER_CLANG_SCAN_DEPS: "C:/msys64/clang64/bin/clang-scan-deps.exe"
+      CMAKE_C_FLAGS: " -Wno-unused-command-line-argument -Werror-implicit-function-declaration -Wextra -Wall -pedantic -Wbad-function-cast -Wconversion -Winline -Wmissing-declarations -Wmissing-prototypes -Wnested-externs -Wno-long-long -Wno-multichar -Wpointer-arith -Wshadow -Wsign-compare -Wundef -Wunused -Wwrite-strings -Waddress -Wattributes -Wcast-align -Wdeclaration-after-statement -Wdiv-by-zero -Wempty-body -Wendif-labels -Wfloat-equal -Wformat-security -Wignored-qualifiers -Wmissing-field-initializers -Wmissing-noreturn -Wno-format-nonliteral -Wno-system-headers -Wold-style-definition -Wredundant-decls -Wsign-conversion -Wno-error=sign-conversion -Wstrict-prototypes -Wtype-limits -Wunreachable-code -Wunused-parameter -Wvla -Wshift-sign-overflow -Wshorten-64-to-32 -Wformat=2 -Wlanguage-extension-token -Wdouble-promotion -Wenum-conversion -Wpragmas -Wunused-const-variable -Wheader-guard -Wsometimes-uninitialized -Wcomma -Wmissing-variable-declarations -Wassign-enum -Wextra-semi-stmt -Wimplicit-fallthrough"
+      CMAKE_C_FLAGS_DEBUG: "-g"
+      CMAKE_EXE_LINKER_FLAGS: ""
+      CMAKE_MODULE_PATH: "C:/Users/k34ub/source/skstu/xsmade/3rdparty/curl/CMake;C:/Users/k34ub/source/skstu/xsmade/build/cmake/deps/"
+      CMAKE_POSITION_INDEPENDENT_CODE: "ON"
+    buildResult:
+      variable: "HAVE_SSL_SET0_WBIO"
+      cached: true
+      stdout: |
+        Change Dir: 'C:/Users/k34ub/source/skstu/xsmade/CMakeFiles/CMakeScratch/TryCompile-ngpepy'
+        
+        Run Build Command(s): C:/Users/k34ub/source/skstu/devtools/bin/ninja/ninja-win/ninja.exe -v cmTC_bb60c
+        [1/2] c:\\msys64\\\\clang64\\\\bin\\clang.exe -DWIN32_LEAN_AND_MEAN  -Wno-unused-command-line-argument -Werror-implicit-function-declaration -Wextra -Wall -pedantic -Wbad-function-cast -Wconversion -Winline -Wmissing-declarations -Wmissing-prototypes -Wnested-externs -Wno-long-long -Wno-multichar -Wpointer-arith -Wshadow -Wsign-compare -Wundef -Wunused -Wwrite-strings -Waddress -Wattributes -Wcast-align -Wdeclaration-after-statement -Wdiv-by-zero -Wempty-body -Wendif-labels -Wfloat-equal -Wformat-security -Wignored-qualifiers -Wmissing-field-initializers -Wmissing-noreturn -Wno-format-nonliteral -Wno-system-headers -Wold-style-definition -Wredundant-decls -Wsign-conversion -Wno-error=sign-conversion -Wstrict-prototypes -Wtype-limits -Wunreachable-code -Wunused-parameter -Wvla -Wshift-sign-overflow -Wshorten-64-to-32 -Wformat=2 -Wlanguage-extension-token -Wdouble-promotion -Wenum-conversion -Wpragmas -Wunused-const-variable -Wheader-guard -Wsometimes-uninitialized -Wcomma -Wmissing-variable-declarations -Wassign-enum -Wextra-semi-stmt -Wimplicit-fallthrough -MD -MT CMakeFiles/cmTC_bb60c.dir/CheckSymbolExists.c.obj -MF CMakeFiles\\cmTC_bb60c.dir\\CheckSymbolExists.c.obj.d -o CMakeFiles/cmTC_bb60c.dir/CheckSymbolExists.c.obj -c C:/Users/k34ub/source/skstu/xsmade/CMakeFiles/CMakeScratch/TryCompile-ngpepy/CheckSymbolExists.c
+        [2/2] C:\\WINDOWS\\system32\\cmd.exe /C "cd . && c:\\msys64\\\\clang64\\\\bin\\clang.exe -Wno-unused-command-line-argument -Werror-implicit-function-declaration -Wextra -Wall -pedantic -Wbad-function-cast -Wconversion -Winline -Wmissing-declarations -Wmissing-prototypes -Wnested-externs -Wno-long-long -Wno-multichar -Wpointer-arith -Wshadow -Wsign-compare -Wundef -Wunused -Wwrite-strings -Waddress -Wattributes -Wcast-align -Wdeclaration-after-statement -Wdiv-by-zero -Wempty-body -Wendif-labels -Wfloat-equal -Wformat-security -Wignored-qualifiers -Wmissing-field-initializers -Wmissing-noreturn -Wno-format-nonliteral -Wno-system-headers -Wold-style-definition -Wredundant-decls -Wsign-conversion -Wno-error=sign-conversion -Wstrict-prototypes -Wtype-limits -Wunreachable-code -Wunused-parameter -Wvla -Wshift-sign-overflow -Wshorten-64-to-32 -Wformat=2 -Wlanguage-extension-token -Wdouble-promotion -Wenum-conversion -Wpragmas -Wunused-const-variable -Wheader-guard -Wsometimes-uninitialized -Wcomma -Wmissing-variable-declarations -Wassign-enum -Wextra-semi-stmt -Wimplicit-fallthrough  CMakeFiles/cmTC_bb60c.dir/CheckSymbolExists.c.obj -o cmTC_bb60c.exe -Wl,--out-implib,libcmTC_bb60c.dll.a -Wl,--major-image-version,0,--minor-image-version,0  C:/msys64/clang64/lib/libssl.dll.a  C:/msys64/clang64/lib/libcrypto.dll.a  c:/msys64//clang64//lib/libz.a  -lws2_32  -lbcrypt  -lkernel32 -luser32 -lgdi32 -lwinspool -lshell32 -lole32 -loleaut32 -luuid -lcomdlg32 -ladvapi32 && cd ."
+        
+      exitCode: 0
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "C:/Users/k34ub/Downloads/cmake-3.28.0-windows-x86_64/share/cmake-3.28/Modules/CheckSymbolExists.cmake:140 (try_compile)"
+      - "C:/Users/k34ub/Downloads/cmake-3.28.0-windows-x86_64/share/cmake-3.28/Modules/CheckSymbolExists.cmake:66 (__CHECK_SYMBOL_EXISTS_IMPL)"
+      - "3rdparty/curl/CMakeLists.txt:839 (check_symbol_exists)"
+      - "3rdparty/curl/CMakeLists.txt:869 (openssl_check_symbol_exists)"
+    checks:
+      - "Looking for SSL_CTX_set_srp_username"
+    directories:
+      source: "C:/Users/k34ub/source/skstu/xsmade/CMakeFiles/CMakeScratch/TryCompile-u8sxn2"
+      binary: "C:/Users/k34ub/source/skstu/xsmade/CMakeFiles/CMakeScratch/TryCompile-u8sxn2"
+    cmakeVariables:
+      CMAKE_CXX_COMPILER_CLANG_SCAN_DEPS: "C:/msys64/clang64/bin/clang-scan-deps.exe"
+      CMAKE_C_FLAGS: " -Wno-unused-command-line-argument -Werror-implicit-function-declaration -Wextra -Wall -pedantic -Wbad-function-cast -Wconversion -Winline -Wmissing-declarations -Wmissing-prototypes -Wnested-externs -Wno-long-long -Wno-multichar -Wpointer-arith -Wshadow -Wsign-compare -Wundef -Wunused -Wwrite-strings -Waddress -Wattributes -Wcast-align -Wdeclaration-after-statement -Wdiv-by-zero -Wempty-body -Wendif-labels -Wfloat-equal -Wformat-security -Wignored-qualifiers -Wmissing-field-initializers -Wmissing-noreturn -Wno-format-nonliteral -Wno-system-headers -Wold-style-definition -Wredundant-decls -Wsign-conversion -Wno-error=sign-conversion -Wstrict-prototypes -Wtype-limits -Wunreachable-code -Wunused-parameter -Wvla -Wshift-sign-overflow -Wshorten-64-to-32 -Wformat=2 -Wlanguage-extension-token -Wdouble-promotion -Wenum-conversion -Wpragmas -Wunused-const-variable -Wheader-guard -Wsometimes-uninitialized -Wcomma -Wmissing-variable-declarations -Wassign-enum -Wextra-semi-stmt -Wimplicit-fallthrough"
+      CMAKE_C_FLAGS_DEBUG: "-g"
+      CMAKE_EXE_LINKER_FLAGS: ""
+      CMAKE_MODULE_PATH: "C:/Users/k34ub/source/skstu/xsmade/3rdparty/curl/CMake;C:/Users/k34ub/source/skstu/xsmade/build/cmake/deps/"
+      CMAKE_POSITION_INDEPENDENT_CODE: "ON"
+    buildResult:
+      variable: "HAVE_OPENSSL_SRP"
+      cached: true
+      stdout: |
+        Change Dir: 'C:/Users/k34ub/source/skstu/xsmade/CMakeFiles/CMakeScratch/TryCompile-u8sxn2'
+        
+        Run Build Command(s): C:/Users/k34ub/source/skstu/devtools/bin/ninja/ninja-win/ninja.exe -v cmTC_8ddfa
+        [1/2] c:\\msys64\\\\clang64\\\\bin\\clang.exe -DWIN32_LEAN_AND_MEAN  -Wno-unused-command-line-argument -Werror-implicit-function-declaration -Wextra -Wall -pedantic -Wbad-function-cast -Wconversion -Winline -Wmissing-declarations -Wmissing-prototypes -Wnested-externs -Wno-long-long -Wno-multichar -Wpointer-arith -Wshadow -Wsign-compare -Wundef -Wunused -Wwrite-strings -Waddress -Wattributes -Wcast-align -Wdeclaration-after-statement -Wdiv-by-zero -Wempty-body -Wendif-labels -Wfloat-equal -Wformat-security -Wignored-qualifiers -Wmissing-field-initializers -Wmissing-noreturn -Wno-format-nonliteral -Wno-system-headers -Wold-style-definition -Wredundant-decls -Wsign-conversion -Wno-error=sign-conversion -Wstrict-prototypes -Wtype-limits -Wunreachable-code -Wunused-parameter -Wvla -Wshift-sign-overflow -Wshorten-64-to-32 -Wformat=2 -Wlanguage-extension-token -Wdouble-promotion -Wenum-conversion -Wpragmas -Wunused-const-variable -Wheader-guard -Wsometimes-uninitialized -Wcomma -Wmissing-variable-declarations -Wassign-enum -Wextra-semi-stmt -Wimplicit-fallthrough -MD -MT CMakeFiles/cmTC_8ddfa.dir/CheckSymbolExists.c.obj -MF CMakeFiles\\cmTC_8ddfa.dir\\CheckSymbolExists.c.obj.d -o CMakeFiles/cmTC_8ddfa.dir/CheckSymbolExists.c.obj -c C:/Users/k34ub/source/skstu/xsmade/CMakeFiles/CMakeScratch/TryCompile-u8sxn2/CheckSymbolExists.c
+        C:/Users/k34ub/source/skstu/xsmade/CMakeFiles/CMakeScratch/TryCompile-u8sxn2/CheckSymbolExists.c:8:19: warning: 'SSL_CTX_set_srp_username' is deprecated [-Wdeprecated-declarations]
+            8 |   return ((int*)(&SSL_CTX_set_srp_username))[argc];
+              |                   ^
+        C:/msys64/clang64/include/openssl/ssl.h:1907:1: note: 'SSL_CTX_set_srp_username' has been explicitly marked deprecated here
+         1907 | OSSL_DEPRECATEDIN_3_0 int SSL_CTX_set_srp_username(SSL_CTX *ctx, char *name);
+              | ^
+        C:/msys64/clang64/include/openssl/macros.h:206:49: note: expanded from macro 'OSSL_DEPRECATEDIN_3_0'\x0d
+          206 | #   define OSSL_DEPRECATEDIN_3_0                OSSL_DEPRECATED(3.0)\x0d
+              |                                                 ^\x0d
+        C:/msys64/clang64/include/openssl/macros.h:62:52: note: expanded from macro 'OSSL_DEPRECATED'\x0d
+           62 | #     define OSSL_DEPRECATED(since) __attribute__((deprecated))\x0d
+              |                                                    ^\x0d
+        1 warning generated.\x0d
+        [2/2] C:\\WINDOWS\\system32\\cmd.exe /C "cd . && c:\\msys64\\\\clang64\\\\bin\\clang.exe -Wno-unused-command-line-argument -Werror-implicit-function-declaration -Wextra -Wall -pedantic -Wbad-function-cast -Wconversion -Winline -Wmissing-declarations -Wmissing-prototypes -Wnested-externs -Wno-long-long -Wno-multichar -Wpointer-arith -Wshadow -Wsign-compare -Wundef -Wunused -Wwrite-strings -Waddress -Wattributes -Wcast-align -Wdeclaration-after-statement -Wdiv-by-zero -Wempty-body -Wendif-labels -Wfloat-equal -Wformat-security -Wignored-qualifiers -Wmissing-field-initializers -Wmissing-noreturn -Wno-format-nonliteral -Wno-system-headers -Wold-style-definition -Wredundant-decls -Wsign-conversion -Wno-error=sign-conversion -Wstrict-prototypes -Wtype-limits -Wunreachable-code -Wunused-parameter -Wvla -Wshift-sign-overflow -Wshorten-64-to-32 -Wformat=2 -Wlanguage-extension-token -Wdouble-promotion -Wenum-conversion -Wpragmas -Wunused-const-variable -Wheader-guard -Wsometimes-uninitialized -Wcomma -Wmissing-variable-declarations -Wassign-enum -Wextra-semi-stmt -Wimplicit-fallthrough  CMakeFiles/cmTC_8ddfa.dir/CheckSymbolExists.c.obj -o cmTC_8ddfa.exe -Wl,--out-implib,libcmTC_8ddfa.dll.a -Wl,--major-image-version,0,--minor-image-version,0  C:/msys64/clang64/lib/libssl.dll.a  C:/msys64/clang64/lib/libcrypto.dll.a  c:/msys64//clang64//lib/libz.a  -lws2_32  -lbcrypt  -lkernel32 -luser32 -lgdi32 -lwinspool -lshell32 -lole32 -loleaut32 -luuid -lcomdlg32 -ladvapi32 && cd ."
+        
+      exitCode: 0
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "C:/Users/k34ub/Downloads/cmake-3.28.0-windows-x86_64/share/cmake-3.28/Modules/CheckIncludeFile.cmake:90 (try_compile)"
+      - "3rdparty/curl/CMakeLists.txt:1499 (check_include_file)"
+    checks:
+      - "Looking for stdatomic.h"
+    directories:
+      source: "C:/Users/k34ub/source/skstu/xsmade/CMakeFiles/CMakeScratch/TryCompile-90oibu"
+      binary: "C:/Users/k34ub/source/skstu/xsmade/CMakeFiles/CMakeScratch/TryCompile-90oibu"
+    cmakeVariables:
+      CMAKE_CXX_COMPILER_CLANG_SCAN_DEPS: "C:/msys64/clang64/bin/clang-scan-deps.exe"
+      CMAKE_C_FLAGS: " -Wno-unused-command-line-argument -Werror-implicit-function-declaration -Wextra -Wall -pedantic -Wbad-function-cast -Wconversion -Winline -Wmissing-declarations -Wmissing-prototypes -Wnested-externs -Wno-long-long -Wno-multichar -Wpointer-arith -Wshadow -Wsign-compare -Wundef -Wunused -Wwrite-strings -Waddress -Wattributes -Wcast-align -Wdeclaration-after-statement -Wdiv-by-zero -Wempty-body -Wendif-labels -Wfloat-equal -Wformat-security -Wignored-qualifiers -Wmissing-field-initializers -Wmissing-noreturn -Wno-format-nonliteral -Wno-system-headers -Wold-style-definition -Wredundant-decls -Wsign-conversion -Wno-error=sign-conversion -Wstrict-prototypes -Wtype-limits -Wunreachable-code -Wunused-parameter -Wvla -Wshift-sign-overflow -Wshorten-64-to-32 -Wformat=2 -Wlanguage-extension-token -Wdouble-promotion -Wenum-conversion -Wpragmas -Wunused-const-variable -Wheader-guard -Wsometimes-uninitialized -Wcomma -Wmissing-variable-declarations -Wassign-enum -Wextra-semi-stmt -Wimplicit-fallthrough"
+      CMAKE_C_FLAGS_DEBUG: "-g"
+      CMAKE_EXE_LINKER_FLAGS: ""
+      CMAKE_MODULE_PATH: "C:/Users/k34ub/source/skstu/xsmade/3rdparty/curl/CMake;C:/Users/k34ub/source/skstu/xsmade/build/cmake/deps/"
+      CMAKE_POSITION_INDEPENDENT_CODE: "ON"
+    buildResult:
+      variable: "HAVE_STDATOMIC_H"
+      cached: true
+      stdout: |
+        Change Dir: 'C:/Users/k34ub/source/skstu/xsmade/CMakeFiles/CMakeScratch/TryCompile-90oibu'
+        
+        Run Build Command(s): C:/Users/k34ub/source/skstu/devtools/bin/ninja/ninja-win/ninja.exe -v cmTC_82f3a
+        [1/2] c:\\msys64\\\\clang64\\\\bin\\clang.exe -DWIN32_LEAN_AND_MEAN  -Wno-unused-command-line-argument -Werror-implicit-function-declaration -Wextra -Wall -pedantic -Wbad-function-cast -Wconversion -Winline -Wmissing-declarations -Wmissing-prototypes -Wnested-externs -Wno-long-long -Wno-multichar -Wpointer-arith -Wshadow -Wsign-compare -Wundef -Wunused -Wwrite-strings -Waddress -Wattributes -Wcast-align -Wdeclaration-after-statement -Wdiv-by-zero -Wempty-body -Wendif-labels -Wfloat-equal -Wformat-security -Wignored-qualifiers -Wmissing-field-initializers -Wmissing-noreturn -Wno-format-nonliteral -Wno-system-headers -Wold-style-definition -Wredundant-decls -Wsign-conversion -Wno-error=sign-conversion -Wstrict-prototypes -Wtype-limits -Wunreachable-code -Wunused-parameter -Wvla -Wshift-sign-overflow -Wshorten-64-to-32 -Wformat=2 -Wlanguage-extension-token -Wdouble-promotion -Wenum-conversion -Wpragmas -Wunused-const-variable -Wheader-guard -Wsometimes-uninitialized -Wcomma -Wmissing-variable-declarations -Wassign-enum -Wextra-semi-stmt -Wimplicit-fallthrough -MD -MT CMakeFiles/cmTC_82f3a.dir/CheckIncludeFile.c.obj -MF CMakeFiles\\cmTC_82f3a.dir\\CheckIncludeFile.c.obj.d -o CMakeFiles/cmTC_82f3a.dir/CheckIncludeFile.c.obj -c C:/Users/k34ub/source/skstu/xsmade/CMakeFiles/CMakeScratch/TryCompile-90oibu/CheckIncludeFile.c
+        [2/2] C:\\WINDOWS\\system32\\cmd.exe /C "cd . && c:\\msys64\\\\clang64\\\\bin\\clang.exe -Wno-unused-command-line-argument -Werror-implicit-function-declaration -Wextra -Wall -pedantic -Wbad-function-cast -Wconversion -Winline -Wmissing-declarations -Wmissing-prototypes -Wnested-externs -Wno-long-long -Wno-multichar -Wpointer-arith -Wshadow -Wsign-compare -Wundef -Wunused -Wwrite-strings -Waddress -Wattributes -Wcast-align -Wdeclaration-after-statement -Wdiv-by-zero -Wempty-body -Wendif-labels -Wfloat-equal -Wformat-security -Wignored-qualifiers -Wmissing-field-initializers -Wmissing-noreturn -Wno-format-nonliteral -Wno-system-headers -Wold-style-definition -Wredundant-decls -Wsign-conversion -Wno-error=sign-conversion -Wstrict-prototypes -Wtype-limits -Wunreachable-code -Wunused-parameter -Wvla -Wshift-sign-overflow -Wshorten-64-to-32 -Wformat=2 -Wlanguage-extension-token -Wdouble-promotion -Wenum-conversion -Wpragmas -Wunused-const-variable -Wheader-guard -Wsometimes-uninitialized -Wcomma -Wmissing-variable-declarations -Wassign-enum -Wextra-semi-stmt -Wimplicit-fallthrough  CMakeFiles/cmTC_82f3a.dir/CheckIncludeFile.c.obj -o cmTC_82f3a.exe -Wl,--out-implib,libcmTC_82f3a.dll.a -Wl,--major-image-version,0,--minor-image-version,0  -lkernel32 -luser32 -lgdi32 -lwinspool -lshell32 -lole32 -loleaut32 -luuid -lcomdlg32 -ladvapi32 && cd ."
+        
+      exitCode: 0
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "C:/Users/k34ub/Downloads/cmake-3.28.0-windows-x86_64/share/cmake-3.28/Modules/CheckTypeSize.cmake:146 (try_compile)"
+      - "C:/Users/k34ub/Downloads/cmake-3.28.0-windows-x86_64/share/cmake-3.28/Modules/CheckTypeSize.cmake:271 (__check_type_size_impl)"
+      - "3rdparty/curl/CMakeLists.txt:1528 (check_type_size)"
+    checks:
+      - "Check size of size_t"
+    directories:
+      source: "C:/Users/k34ub/source/skstu/xsmade/CMakeFiles/CMakeScratch/TryCompile-f79l9z"
+      binary: "C:/Users/k34ub/source/skstu/xsmade/CMakeFiles/CMakeScratch/TryCompile-f79l9z"
+    cmakeVariables:
+      CMAKE_CXX_COMPILER_CLANG_SCAN_DEPS: "C:/msys64/clang64/bin/clang-scan-deps.exe"
+      CMAKE_C_FLAGS: " -Wno-unused-command-line-argument -Werror-implicit-function-declaration -Wextra -Wall -pedantic -Wbad-function-cast -Wconversion -Winline -Wmissing-declarations -Wmissing-prototypes -Wnested-externs -Wno-long-long -Wno-multichar -Wpointer-arith -Wshadow -Wsign-compare -Wundef -Wunused -Wwrite-strings -Waddress -Wattributes -Wcast-align -Wdeclaration-after-statement -Wdiv-by-zero -Wempty-body -Wendif-labels -Wfloat-equal -Wformat-security -Wignored-qualifiers -Wmissing-field-initializers -Wmissing-noreturn -Wno-format-nonliteral -Wno-system-headers -Wold-style-definition -Wredundant-decls -Wsign-conversion -Wno-error=sign-conversion -Wstrict-prototypes -Wtype-limits -Wunreachable-code -Wunused-parameter -Wvla -Wshift-sign-overflow -Wshorten-64-to-32 -Wformat=2 -Wlanguage-extension-token -Wdouble-promotion -Wenum-conversion -Wpragmas -Wunused-const-variable -Wheader-guard -Wsometimes-uninitialized -Wcomma -Wmissing-variable-declarations -Wassign-enum -Wextra-semi-stmt -Wimplicit-fallthrough"
+      CMAKE_C_FLAGS_DEBUG: "-g"
+      CMAKE_EXE_LINKER_FLAGS: ""
+      CMAKE_MODULE_PATH: "C:/Users/k34ub/source/skstu/xsmade/3rdparty/curl/CMake;C:/Users/k34ub/source/skstu/xsmade/build/cmake/deps/"
+      CMAKE_POSITION_INDEPENDENT_CODE: "ON"
+    buildResult:
+      variable: "HAVE_SIZEOF_SIZE_T"
+      cached: true
+      stdout: |
+        Change Dir: 'C:/Users/k34ub/source/skstu/xsmade/CMakeFiles/CMakeScratch/TryCompile-f79l9z'
+        
+        Run Build Command(s): C:/Users/k34ub/source/skstu/devtools/bin/ninja/ninja-win/ninja.exe -v cmTC_a1d0c
+        [1/2] c:\\msys64\\\\clang64\\\\bin\\clang.exe -DWIN32_LEAN_AND_MEAN  -Wno-unused-command-line-argument -Werror-implicit-function-declaration -Wextra -Wall -pedantic -Wbad-function-cast -Wconversion -Winline -Wmissing-declarations -Wmissing-prototypes -Wnested-externs -Wno-long-long -Wno-multichar -Wpointer-arith -Wshadow -Wsign-compare -Wundef -Wunused -Wwrite-strings -Waddress -Wattributes -Wcast-align -Wdeclaration-after-statement -Wdiv-by-zero -Wempty-body -Wendif-labels -Wfloat-equal -Wformat-security -Wignored-qualifiers -Wmissing-field-initializers -Wmissing-noreturn -Wno-format-nonliteral -Wno-system-headers -Wold-style-definition -Wredundant-decls -Wsign-conversion -Wno-error=sign-conversion -Wstrict-prototypes -Wtype-limits -Wunreachable-code -Wunused-parameter -Wvla -Wshift-sign-overflow -Wshorten-64-to-32 -Wformat=2 -Wlanguage-extension-token -Wdouble-promotion -Wenum-conversion -Wpragmas -Wunused-const-variable -Wheader-guard -Wsometimes-uninitialized -Wcomma -Wmissing-variable-declarations -Wassign-enum -Wextra-semi-stmt -Wimplicit-fallthrough -MD -MT CMakeFiles/cmTC_a1d0c.dir/SIZEOF_SIZE_T.c.obj -MF CMakeFiles\\cmTC_a1d0c.dir\\SIZEOF_SIZE_T.c.obj.d -o CMakeFiles/cmTC_a1d0c.dir/SIZEOF_SIZE_T.c.obj -c C:/Users/k34ub/source/skstu/xsmade/CMakeFiles/CMakeScratch/TryCompile-f79l9z/SIZEOF_SIZE_T.c
+        [2/2] C:\\WINDOWS\\system32\\cmd.exe /C "cd . && c:\\msys64\\\\clang64\\\\bin\\clang.exe -Wno-unused-command-line-argument -Werror-implicit-function-declaration -Wextra -Wall -pedantic -Wbad-function-cast -Wconversion -Winline -Wmissing-declarations -Wmissing-prototypes -Wnested-externs -Wno-long-long -Wno-multichar -Wpointer-arith -Wshadow -Wsign-compare -Wundef -Wunused -Wwrite-strings -Waddress -Wattributes -Wcast-align -Wdeclaration-after-statement -Wdiv-by-zero -Wempty-body -Wendif-labels -Wfloat-equal -Wformat-security -Wignored-qualifiers -Wmissing-field-initializers -Wmissing-noreturn -Wno-format-nonliteral -Wno-system-headers -Wold-style-definition -Wredundant-decls -Wsign-conversion -Wno-error=sign-conversion -Wstrict-prototypes -Wtype-limits -Wunreachable-code -Wunused-parameter -Wvla -Wshift-sign-overflow -Wshorten-64-to-32 -Wformat=2 -Wlanguage-extension-token -Wdouble-promotion -Wenum-conversion -Wpragmas -Wunused-const-variable -Wheader-guard -Wsometimes-uninitialized -Wcomma -Wmissing-variable-declarations -Wassign-enum -Wextra-semi-stmt -Wimplicit-fallthrough  CMakeFiles/cmTC_a1d0c.dir/SIZEOF_SIZE_T.c.obj -o cmTC_a1d0c.exe -Wl,--out-implib,libcmTC_a1d0c.dll.a -Wl,--major-image-version,0,--minor-image-version,0  -lkernel32 -luser32 -lgdi32 -lwinspool -lshell32 -lole32 -loleaut32 -luuid -lcomdlg32 -ladvapi32 && cd ."
+        
+      exitCode: 0
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "C:/Users/k34ub/Downloads/cmake-3.28.0-windows-x86_64/share/cmake-3.28/Modules/CheckTypeSize.cmake:146 (try_compile)"
+      - "C:/Users/k34ub/Downloads/cmake-3.28.0-windows-x86_64/share/cmake-3.28/Modules/CheckTypeSize.cmake:271 (__check_type_size_impl)"
+      - "3rdparty/curl/CMakeLists.txt:1529 (check_type_size)"
+    checks:
+      - "Check size of ssize_t"
+    directories:
+      source: "C:/Users/k34ub/source/skstu/xsmade/CMakeFiles/CMakeScratch/TryCompile-mi6d71"
+      binary: "C:/Users/k34ub/source/skstu/xsmade/CMakeFiles/CMakeScratch/TryCompile-mi6d71"
+    cmakeVariables:
+      CMAKE_CXX_COMPILER_CLANG_SCAN_DEPS: "C:/msys64/clang64/bin/clang-scan-deps.exe"
+      CMAKE_C_FLAGS: " -Wno-unused-command-line-argument -Werror-implicit-function-declaration -Wextra -Wall -pedantic -Wbad-function-cast -Wconversion -Winline -Wmissing-declarations -Wmissing-prototypes -Wnested-externs -Wno-long-long -Wno-multichar -Wpointer-arith -Wshadow -Wsign-compare -Wundef -Wunused -Wwrite-strings -Waddress -Wattributes -Wcast-align -Wdeclaration-after-statement -Wdiv-by-zero -Wempty-body -Wendif-labels -Wfloat-equal -Wformat-security -Wignored-qualifiers -Wmissing-field-initializers -Wmissing-noreturn -Wno-format-nonliteral -Wno-system-headers -Wold-style-definition -Wredundant-decls -Wsign-conversion -Wno-error=sign-conversion -Wstrict-prototypes -Wtype-limits -Wunreachable-code -Wunused-parameter -Wvla -Wshift-sign-overflow -Wshorten-64-to-32 -Wformat=2 -Wlanguage-extension-token -Wdouble-promotion -Wenum-conversion -Wpragmas -Wunused-const-variable -Wheader-guard -Wsometimes-uninitialized -Wcomma -Wmissing-variable-declarations -Wassign-enum -Wextra-semi-stmt -Wimplicit-fallthrough"
+      CMAKE_C_FLAGS_DEBUG: "-g"
+      CMAKE_EXE_LINKER_FLAGS: ""
+      CMAKE_MODULE_PATH: "C:/Users/k34ub/source/skstu/xsmade/3rdparty/curl/CMake;C:/Users/k34ub/source/skstu/xsmade/build/cmake/deps/"
+      CMAKE_POSITION_INDEPENDENT_CODE: "ON"
+    buildResult:
+      variable: "HAVE_SIZEOF_SSIZE_T"
+      cached: true
+      stdout: |
+        Change Dir: 'C:/Users/k34ub/source/skstu/xsmade/CMakeFiles/CMakeScratch/TryCompile-mi6d71'
+        
+        Run Build Command(s): C:/Users/k34ub/source/skstu/devtools/bin/ninja/ninja-win/ninja.exe -v cmTC_78a79
+        [1/2] c:\\msys64\\\\clang64\\\\bin\\clang.exe -DWIN32_LEAN_AND_MEAN  -Wno-unused-command-line-argument -Werror-implicit-function-declaration -Wextra -Wall -pedantic -Wbad-function-cast -Wconversion -Winline -Wmissing-declarations -Wmissing-prototypes -Wnested-externs -Wno-long-long -Wno-multichar -Wpointer-arith -Wshadow -Wsign-compare -Wundef -Wunused -Wwrite-strings -Waddress -Wattributes -Wcast-align -Wdeclaration-after-statement -Wdiv-by-zero -Wempty-body -Wendif-labels -Wfloat-equal -Wformat-security -Wignored-qualifiers -Wmissing-field-initializers -Wmissing-noreturn -Wno-format-nonliteral -Wno-system-headers -Wold-style-definition -Wredundant-decls -Wsign-conversion -Wno-error=sign-conversion -Wstrict-prototypes -Wtype-limits -Wunreachable-code -Wunused-parameter -Wvla -Wshift-sign-overflow -Wshorten-64-to-32 -Wformat=2 -Wlanguage-extension-token -Wdouble-promotion -Wenum-conversion -Wpragmas -Wunused-const-variable -Wheader-guard -Wsometimes-uninitialized -Wcomma -Wmissing-variable-declarations -Wassign-enum -Wextra-semi-stmt -Wimplicit-fallthrough -MD -MT CMakeFiles/cmTC_78a79.dir/SIZEOF_SSIZE_T.c.obj -MF CMakeFiles\\cmTC_78a79.dir\\SIZEOF_SSIZE_T.c.obj.d -o CMakeFiles/cmTC_78a79.dir/SIZEOF_SSIZE_T.c.obj -c C:/Users/k34ub/source/skstu/xsmade/CMakeFiles/CMakeScratch/TryCompile-mi6d71/SIZEOF_SSIZE_T.c
+        [2/2] C:\\WINDOWS\\system32\\cmd.exe /C "cd . && c:\\msys64\\\\clang64\\\\bin\\clang.exe -Wno-unused-command-line-argument -Werror-implicit-function-declaration -Wextra -Wall -pedantic -Wbad-function-cast -Wconversion -Winline -Wmissing-declarations -Wmissing-prototypes -Wnested-externs -Wno-long-long -Wno-multichar -Wpointer-arith -Wshadow -Wsign-compare -Wundef -Wunused -Wwrite-strings -Waddress -Wattributes -Wcast-align -Wdeclaration-after-statement -Wdiv-by-zero -Wempty-body -Wendif-labels -Wfloat-equal -Wformat-security -Wignored-qualifiers -Wmissing-field-initializers -Wmissing-noreturn -Wno-format-nonliteral -Wno-system-headers -Wold-style-definition -Wredundant-decls -Wsign-conversion -Wno-error=sign-conversion -Wstrict-prototypes -Wtype-limits -Wunreachable-code -Wunused-parameter -Wvla -Wshift-sign-overflow -Wshorten-64-to-32 -Wformat=2 -Wlanguage-extension-token -Wdouble-promotion -Wenum-conversion -Wpragmas -Wunused-const-variable -Wheader-guard -Wsometimes-uninitialized -Wcomma -Wmissing-variable-declarations -Wassign-enum -Wextra-semi-stmt -Wimplicit-fallthrough  CMakeFiles/cmTC_78a79.dir/SIZEOF_SSIZE_T.c.obj -o cmTC_78a79.exe -Wl,--out-implib,libcmTC_78a79.dll.a -Wl,--major-image-version,0,--minor-image-version,0  -lkernel32 -luser32 -lgdi32 -lwinspool -lshell32 -lole32 -loleaut32 -luuid -lcomdlg32 -ladvapi32 && cd ."
+        
+      exitCode: 0
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "C:/Users/k34ub/Downloads/cmake-3.28.0-windows-x86_64/share/cmake-3.28/Modules/CheckTypeSize.cmake:146 (try_compile)"
+      - "C:/Users/k34ub/Downloads/cmake-3.28.0-windows-x86_64/share/cmake-3.28/Modules/CheckTypeSize.cmake:271 (__check_type_size_impl)"
+      - "3rdparty/curl/CMakeLists.txt:1530 (check_type_size)"
+    checks:
+      - "Check size of long long"
+    directories:
+      source: "C:/Users/k34ub/source/skstu/xsmade/CMakeFiles/CMakeScratch/TryCompile-35h4eg"
+      binary: "C:/Users/k34ub/source/skstu/xsmade/CMakeFiles/CMakeScratch/TryCompile-35h4eg"
+    cmakeVariables:
+      CMAKE_CXX_COMPILER_CLANG_SCAN_DEPS: "C:/msys64/clang64/bin/clang-scan-deps.exe"
+      CMAKE_C_FLAGS: " -Wno-unused-command-line-argument -Werror-implicit-function-declaration -Wextra -Wall -pedantic -Wbad-function-cast -Wconversion -Winline -Wmissing-declarations -Wmissing-prototypes -Wnested-externs -Wno-long-long -Wno-multichar -Wpointer-arith -Wshadow -Wsign-compare -Wundef -Wunused -Wwrite-strings -Waddress -Wattributes -Wcast-align -Wdeclaration-after-statement -Wdiv-by-zero -Wempty-body -Wendif-labels -Wfloat-equal -Wformat-security -Wignored-qualifiers -Wmissing-field-initializers -Wmissing-noreturn -Wno-format-nonliteral -Wno-system-headers -Wold-style-definition -Wredundant-decls -Wsign-conversion -Wno-error=sign-conversion -Wstrict-prototypes -Wtype-limits -Wunreachable-code -Wunused-parameter -Wvla -Wshift-sign-overflow -Wshorten-64-to-32 -Wformat=2 -Wlanguage-extension-token -Wdouble-promotion -Wenum-conversion -Wpragmas -Wunused-const-variable -Wheader-guard -Wsometimes-uninitialized -Wcomma -Wmissing-variable-declarations -Wassign-enum -Wextra-semi-stmt -Wimplicit-fallthrough"
+      CMAKE_C_FLAGS_DEBUG: "-g"
+      CMAKE_EXE_LINKER_FLAGS: ""
+      CMAKE_MODULE_PATH: "C:/Users/k34ub/source/skstu/xsmade/3rdparty/curl/CMake;C:/Users/k34ub/source/skstu/xsmade/build/cmake/deps/"
+      CMAKE_POSITION_INDEPENDENT_CODE: "ON"
+    buildResult:
+      variable: "HAVE_SIZEOF_LONG_LONG"
+      cached: true
+      stdout: |
+        Change Dir: 'C:/Users/k34ub/source/skstu/xsmade/CMakeFiles/CMakeScratch/TryCompile-35h4eg'
+        
+        Run Build Command(s): C:/Users/k34ub/source/skstu/devtools/bin/ninja/ninja-win/ninja.exe -v cmTC_9dc43
+        [1/2] c:\\msys64\\\\clang64\\\\bin\\clang.exe -DWIN32_LEAN_AND_MEAN  -Wno-unused-command-line-argument -Werror-implicit-function-declaration -Wextra -Wall -pedantic -Wbad-function-cast -Wconversion -Winline -Wmissing-declarations -Wmissing-prototypes -Wnested-externs -Wno-long-long -Wno-multichar -Wpointer-arith -Wshadow -Wsign-compare -Wundef -Wunused -Wwrite-strings -Waddress -Wattributes -Wcast-align -Wdeclaration-after-statement -Wdiv-by-zero -Wempty-body -Wendif-labels -Wfloat-equal -Wformat-security -Wignored-qualifiers -Wmissing-field-initializers -Wmissing-noreturn -Wno-format-nonliteral -Wno-system-headers -Wold-style-definition -Wredundant-decls -Wsign-conversion -Wno-error=sign-conversion -Wstrict-prototypes -Wtype-limits -Wunreachable-code -Wunused-parameter -Wvla -Wshift-sign-overflow -Wshorten-64-to-32 -Wformat=2 -Wlanguage-extension-token -Wdouble-promotion -Wenum-conversion -Wpragmas -Wunused-const-variable -Wheader-guard -Wsometimes-uninitialized -Wcomma -Wmissing-variable-declarations -Wassign-enum -Wextra-semi-stmt -Wimplicit-fallthrough -MD -MT CMakeFiles/cmTC_9dc43.dir/SIZEOF_LONG_LONG.c.obj -MF CMakeFiles\\cmTC_9dc43.dir\\SIZEOF_LONG_LONG.c.obj.d -o CMakeFiles/cmTC_9dc43.dir/SIZEOF_LONG_LONG.c.obj -c C:/Users/k34ub/source/skstu/xsmade/CMakeFiles/CMakeScratch/TryCompile-35h4eg/SIZEOF_LONG_LONG.c
+        [2/2] C:\\WINDOWS\\system32\\cmd.exe /C "cd . && c:\\msys64\\\\clang64\\\\bin\\clang.exe -Wno-unused-command-line-argument -Werror-implicit-function-declaration -Wextra -Wall -pedantic -Wbad-function-cast -Wconversion -Winline -Wmissing-declarations -Wmissing-prototypes -Wnested-externs -Wno-long-long -Wno-multichar -Wpointer-arith -Wshadow -Wsign-compare -Wundef -Wunused -Wwrite-strings -Waddress -Wattributes -Wcast-align -Wdeclaration-after-statement -Wdiv-by-zero -Wempty-body -Wendif-labels -Wfloat-equal -Wformat-security -Wignored-qualifiers -Wmissing-field-initializers -Wmissing-noreturn -Wno-format-nonliteral -Wno-system-headers -Wold-style-definition -Wredundant-decls -Wsign-conversion -Wno-error=sign-conversion -Wstrict-prototypes -Wtype-limits -Wunreachable-code -Wunused-parameter -Wvla -Wshift-sign-overflow -Wshorten-64-to-32 -Wformat=2 -Wlanguage-extension-token -Wdouble-promotion -Wenum-conversion -Wpragmas -Wunused-const-variable -Wheader-guard -Wsometimes-uninitialized -Wcomma -Wmissing-variable-declarations -Wassign-enum -Wextra-semi-stmt -Wimplicit-fallthrough  CMakeFiles/cmTC_9dc43.dir/SIZEOF_LONG_LONG.c.obj -o cmTC_9dc43.exe -Wl,--out-implib,libcmTC_9dc43.dll.a -Wl,--major-image-version,0,--minor-image-version,0  -lkernel32 -luser32 -lgdi32 -lwinspool -lshell32 -lole32 -loleaut32 -luuid -lcomdlg32 -ladvapi32 && cd ."
+        
+      exitCode: 0
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "C:/Users/k34ub/Downloads/cmake-3.28.0-windows-x86_64/share/cmake-3.28/Modules/CheckTypeSize.cmake:146 (try_compile)"
+      - "C:/Users/k34ub/Downloads/cmake-3.28.0-windows-x86_64/share/cmake-3.28/Modules/CheckTypeSize.cmake:271 (__check_type_size_impl)"
+      - "3rdparty/curl/CMakeLists.txt:1531 (check_type_size)"
+    checks:
+      - "Check size of long"
+    directories:
+      source: "C:/Users/k34ub/source/skstu/xsmade/CMakeFiles/CMakeScratch/TryCompile-yh60uo"
+      binary: "C:/Users/k34ub/source/skstu/xsmade/CMakeFiles/CMakeScratch/TryCompile-yh60uo"
+    cmakeVariables:
+      CMAKE_CXX_COMPILER_CLANG_SCAN_DEPS: "C:/msys64/clang64/bin/clang-scan-deps.exe"
+      CMAKE_C_FLAGS: " -Wno-unused-command-line-argument -Werror-implicit-function-declaration -Wextra -Wall -pedantic -Wbad-function-cast -Wconversion -Winline -Wmissing-declarations -Wmissing-prototypes -Wnested-externs -Wno-long-long -Wno-multichar -Wpointer-arith -Wshadow -Wsign-compare -Wundef -Wunused -Wwrite-strings -Waddress -Wattributes -Wcast-align -Wdeclaration-after-statement -Wdiv-by-zero -Wempty-body -Wendif-labels -Wfloat-equal -Wformat-security -Wignored-qualifiers -Wmissing-field-initializers -Wmissing-noreturn -Wno-format-nonliteral -Wno-system-headers -Wold-style-definition -Wredundant-decls -Wsign-conversion -Wno-error=sign-conversion -Wstrict-prototypes -Wtype-limits -Wunreachable-code -Wunused-parameter -Wvla -Wshift-sign-overflow -Wshorten-64-to-32 -Wformat=2 -Wlanguage-extension-token -Wdouble-promotion -Wenum-conversion -Wpragmas -Wunused-const-variable -Wheader-guard -Wsometimes-uninitialized -Wcomma -Wmissing-variable-declarations -Wassign-enum -Wextra-semi-stmt -Wimplicit-fallthrough"
+      CMAKE_C_FLAGS_DEBUG: "-g"
+      CMAKE_EXE_LINKER_FLAGS: ""
+      CMAKE_MODULE_PATH: "C:/Users/k34ub/source/skstu/xsmade/3rdparty/curl/CMake;C:/Users/k34ub/source/skstu/xsmade/build/cmake/deps/"
+      CMAKE_POSITION_INDEPENDENT_CODE: "ON"
+    buildResult:
+      variable: "HAVE_SIZEOF_LONG"
+      cached: true
+      stdout: |
+        Change Dir: 'C:/Users/k34ub/source/skstu/xsmade/CMakeFiles/CMakeScratch/TryCompile-yh60uo'
+        
+        Run Build Command(s): C:/Users/k34ub/source/skstu/devtools/bin/ninja/ninja-win/ninja.exe -v cmTC_a01bd
+        [1/2] c:\\msys64\\\\clang64\\\\bin\\clang.exe -DWIN32_LEAN_AND_MEAN  -Wno-unused-command-line-argument -Werror-implicit-function-declaration -Wextra -Wall -pedantic -Wbad-function-cast -Wconversion -Winline -Wmissing-declarations -Wmissing-prototypes -Wnested-externs -Wno-long-long -Wno-multichar -Wpointer-arith -Wshadow -Wsign-compare -Wundef -Wunused -Wwrite-strings -Waddress -Wattributes -Wcast-align -Wdeclaration-after-statement -Wdiv-by-zero -Wempty-body -Wendif-labels -Wfloat-equal -Wformat-security -Wignored-qualifiers -Wmissing-field-initializers -Wmissing-noreturn -Wno-format-nonliteral -Wno-system-headers -Wold-style-definition -Wredundant-decls -Wsign-conversion -Wno-error=sign-conversion -Wstrict-prototypes -Wtype-limits -Wunreachable-code -Wunused-parameter -Wvla -Wshift-sign-overflow -Wshorten-64-to-32 -Wformat=2 -Wlanguage-extension-token -Wdouble-promotion -Wenum-conversion -Wpragmas -Wunused-const-variable -Wheader-guard -Wsometimes-uninitialized -Wcomma -Wmissing-variable-declarations -Wassign-enum -Wextra-semi-stmt -Wimplicit-fallthrough -MD -MT CMakeFiles/cmTC_a01bd.dir/SIZEOF_LONG.c.obj -MF CMakeFiles\\cmTC_a01bd.dir\\SIZEOF_LONG.c.obj.d -o CMakeFiles/cmTC_a01bd.dir/SIZEOF_LONG.c.obj -c C:/Users/k34ub/source/skstu/xsmade/CMakeFiles/CMakeScratch/TryCompile-yh60uo/SIZEOF_LONG.c
+        [2/2] C:\\WINDOWS\\system32\\cmd.exe /C "cd . && c:\\msys64\\\\clang64\\\\bin\\clang.exe -Wno-unused-command-line-argument -Werror-implicit-function-declaration -Wextra -Wall -pedantic -Wbad-function-cast -Wconversion -Winline -Wmissing-declarations -Wmissing-prototypes -Wnested-externs -Wno-long-long -Wno-multichar -Wpointer-arith -Wshadow -Wsign-compare -Wundef -Wunused -Wwrite-strings -Waddress -Wattributes -Wcast-align -Wdeclaration-after-statement -Wdiv-by-zero -Wempty-body -Wendif-labels -Wfloat-equal -Wformat-security -Wignored-qualifiers -Wmissing-field-initializers -Wmissing-noreturn -Wno-format-nonliteral -Wno-system-headers -Wold-style-definition -Wredundant-decls -Wsign-conversion -Wno-error=sign-conversion -Wstrict-prototypes -Wtype-limits -Wunreachable-code -Wunused-parameter -Wvla -Wshift-sign-overflow -Wshorten-64-to-32 -Wformat=2 -Wlanguage-extension-token -Wdouble-promotion -Wenum-conversion -Wpragmas -Wunused-const-variable -Wheader-guard -Wsometimes-uninitialized -Wcomma -Wmissing-variable-declarations -Wassign-enum -Wextra-semi-stmt -Wimplicit-fallthrough  CMakeFiles/cmTC_a01bd.dir/SIZEOF_LONG.c.obj -o cmTC_a01bd.exe -Wl,--out-implib,libcmTC_a01bd.dll.a -Wl,--major-image-version,0,--minor-image-version,0  -lkernel32 -luser32 -lgdi32 -lwinspool -lshell32 -lole32 -loleaut32 -luuid -lcomdlg32 -ladvapi32 && cd ."
+        
+      exitCode: 0
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "C:/Users/k34ub/Downloads/cmake-3.28.0-windows-x86_64/share/cmake-3.28/Modules/CheckTypeSize.cmake:146 (try_compile)"
+      - "C:/Users/k34ub/Downloads/cmake-3.28.0-windows-x86_64/share/cmake-3.28/Modules/CheckTypeSize.cmake:271 (__check_type_size_impl)"
+      - "3rdparty/curl/CMakeLists.txt:1532 (check_type_size)"
+    checks:
+      - "Check size of int"
+    directories:
+      source: "C:/Users/k34ub/source/skstu/xsmade/CMakeFiles/CMakeScratch/TryCompile-g31uxv"
+      binary: "C:/Users/k34ub/source/skstu/xsmade/CMakeFiles/CMakeScratch/TryCompile-g31uxv"
+    cmakeVariables:
+      CMAKE_CXX_COMPILER_CLANG_SCAN_DEPS: "C:/msys64/clang64/bin/clang-scan-deps.exe"
+      CMAKE_C_FLAGS: " -Wno-unused-command-line-argument -Werror-implicit-function-declaration -Wextra -Wall -pedantic -Wbad-function-cast -Wconversion -Winline -Wmissing-declarations -Wmissing-prototypes -Wnested-externs -Wno-long-long -Wno-multichar -Wpointer-arith -Wshadow -Wsign-compare -Wundef -Wunused -Wwrite-strings -Waddress -Wattributes -Wcast-align -Wdeclaration-after-statement -Wdiv-by-zero -Wempty-body -Wendif-labels -Wfloat-equal -Wformat-security -Wignored-qualifiers -Wmissing-field-initializers -Wmissing-noreturn -Wno-format-nonliteral -Wno-system-headers -Wold-style-definition -Wredundant-decls -Wsign-conversion -Wno-error=sign-conversion -Wstrict-prototypes -Wtype-limits -Wunreachable-code -Wunused-parameter -Wvla -Wshift-sign-overflow -Wshorten-64-to-32 -Wformat=2 -Wlanguage-extension-token -Wdouble-promotion -Wenum-conversion -Wpragmas -Wunused-const-variable -Wheader-guard -Wsometimes-uninitialized -Wcomma -Wmissing-variable-declarations -Wassign-enum -Wextra-semi-stmt -Wimplicit-fallthrough"
+      CMAKE_C_FLAGS_DEBUG: "-g"
+      CMAKE_EXE_LINKER_FLAGS: ""
+      CMAKE_MODULE_PATH: "C:/Users/k34ub/source/skstu/xsmade/3rdparty/curl/CMake;C:/Users/k34ub/source/skstu/xsmade/build/cmake/deps/"
+      CMAKE_POSITION_INDEPENDENT_CODE: "ON"
+    buildResult:
+      variable: "HAVE_SIZEOF_INT"
+      cached: true
+      stdout: |
+        Change Dir: 'C:/Users/k34ub/source/skstu/xsmade/CMakeFiles/CMakeScratch/TryCompile-g31uxv'
+        
+        Run Build Command(s): C:/Users/k34ub/source/skstu/devtools/bin/ninja/ninja-win/ninja.exe -v cmTC_a4acf
+        [1/2] c:\\msys64\\\\clang64\\\\bin\\clang.exe -DWIN32_LEAN_AND_MEAN  -Wno-unused-command-line-argument -Werror-implicit-function-declaration -Wextra -Wall -pedantic -Wbad-function-cast -Wconversion -Winline -Wmissing-declarations -Wmissing-prototypes -Wnested-externs -Wno-long-long -Wno-multichar -Wpointer-arith -Wshadow -Wsign-compare -Wundef -Wunused -Wwrite-strings -Waddress -Wattributes -Wcast-align -Wdeclaration-after-statement -Wdiv-by-zero -Wempty-body -Wendif-labels -Wfloat-equal -Wformat-security -Wignored-qualifiers -Wmissing-field-initializers -Wmissing-noreturn -Wno-format-nonliteral -Wno-system-headers -Wold-style-definition -Wredundant-decls -Wsign-conversion -Wno-error=sign-conversion -Wstrict-prototypes -Wtype-limits -Wunreachable-code -Wunused-parameter -Wvla -Wshift-sign-overflow -Wshorten-64-to-32 -Wformat=2 -Wlanguage-extension-token -Wdouble-promotion -Wenum-conversion -Wpragmas -Wunused-const-variable -Wheader-guard -Wsometimes-uninitialized -Wcomma -Wmissing-variable-declarations -Wassign-enum -Wextra-semi-stmt -Wimplicit-fallthrough -MD -MT CMakeFiles/cmTC_a4acf.dir/SIZEOF_INT.c.obj -MF CMakeFiles\\cmTC_a4acf.dir\\SIZEOF_INT.c.obj.d -o CMakeFiles/cmTC_a4acf.dir/SIZEOF_INT.c.obj -c C:/Users/k34ub/source/skstu/xsmade/CMakeFiles/CMakeScratch/TryCompile-g31uxv/SIZEOF_INT.c
+        [2/2] C:\\WINDOWS\\system32\\cmd.exe /C "cd . && c:\\msys64\\\\clang64\\\\bin\\clang.exe -Wno-unused-command-line-argument -Werror-implicit-function-declaration -Wextra -Wall -pedantic -Wbad-function-cast -Wconversion -Winline -Wmissing-declarations -Wmissing-prototypes -Wnested-externs -Wno-long-long -Wno-multichar -Wpointer-arith -Wshadow -Wsign-compare -Wundef -Wunused -Wwrite-strings -Waddress -Wattributes -Wcast-align -Wdeclaration-after-statement -Wdiv-by-zero -Wempty-body -Wendif-labels -Wfloat-equal -Wformat-security -Wignored-qualifiers -Wmissing-field-initializers -Wmissing-noreturn -Wno-format-nonliteral -Wno-system-headers -Wold-style-definition -Wredundant-decls -Wsign-conversion -Wno-error=sign-conversion -Wstrict-prototypes -Wtype-limits -Wunreachable-code -Wunused-parameter -Wvla -Wshift-sign-overflow -Wshorten-64-to-32 -Wformat=2 -Wlanguage-extension-token -Wdouble-promotion -Wenum-conversion -Wpragmas -Wunused-const-variable -Wheader-guard -Wsometimes-uninitialized -Wcomma -Wmissing-variable-declarations -Wassign-enum -Wextra-semi-stmt -Wimplicit-fallthrough  CMakeFiles/cmTC_a4acf.dir/SIZEOF_INT.c.obj -o cmTC_a4acf.exe -Wl,--out-implib,libcmTC_a4acf.dll.a -Wl,--major-image-version,0,--minor-image-version,0  -lkernel32 -luser32 -lgdi32 -lwinspool -lshell32 -lole32 -loleaut32 -luuid -lcomdlg32 -ladvapi32 && cd ."
+        
+      exitCode: 0

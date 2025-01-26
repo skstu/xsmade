@@ -67,7 +67,10 @@ XS_EXTERN int xs_sys_get_image_type(const char *buffer, size_t buffer_size,
                                     xs_image_type_t *output_image_type);
 XS_EXTERN int xs_sys_get_dll_path(xs_buffer_t **out_buffer,
                                   void *static_dummy_variable);
-
+XS_EXTERN int xs_sys_shared_memory_create(const char *name, size_t size,
+                                          void **base);
+XS_EXTERN int xs_sys_shared_memory_destroy(const char *name);
+XS_EXTERN int xs_sys_shared_memory_open(const char *name, void **base);
 #ifdef __cplusplus
 }
 #endif

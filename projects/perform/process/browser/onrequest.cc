@@ -1,5 +1,42 @@
 #include <perform.h>
 
+typedef struct EnumWindowRouteData {
+  HWND hwnd;
+  DWORD pid;
+  EnumWindowRouteData() {
+    memset(this, 0x00, sizeof(*this));
+  }
+  void operator=(const EnumWindowRouteData &obj) {
+    memcpy(this, &obj, sizeof(*this));
+  }
+} *PENUMWINDOWROUTEDATA;
+
+BOOL CALLBACK EnumWindowsProc(HWND hwnd, LPARAM lParam) {
+  DWORD processId;
+  GetWindowThreadProcessId(hwnd, &processId);
+  PENUMWINDOWROUTEDATA pRouteData =
+      reinterpret_cast<PENUMWINDOWROUTEDATA>(lParam);
+  if (processId == pRouteData->pid) {
+    int n = MAX_PATH;
+    wchar_t cls[MAX_PATH] = {0};
+    GetClassNameW((HWND)hwnd, cls, n);
+    std::wstring wcsCls(cls, n);
+    if (wcsCls.find(L"Chrome_WidgetWin_") != std::wstring::npos) {
+      if (wcsCls.find(L"Chrome_WidgetWin_0") == std::wstring::npos) {
+        pRouteData->hwnd = hwnd;
+        if (IsIconic(pRouteData->hwnd)) {
+          ShowWindow(pRouteData->hwnd, SW_RESTORE);
+        } else {
+          ShowWindow(pRouteData->hwnd, SW_SHOW);
+        }
+        SetWindowPos(hwnd, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOSIZE | SWP_NOMOVE);
+        return FALSE;
+      }
+    }
+  }
+  return TRUE;
+}
+
 void IBrowserInterfaceServer::OnRequest(const RequestType &reqType,
                                         const std::string &body,
                                         std::string &res) {
@@ -29,6 +66,64 @@ void IBrowserInterfaceServer::OnRequest(const RequestType &reqType,
         onlines, resDoc.GetAllocator());
     repObj.SetResponseCode(ResponseCode::Ok);
     repObj.SetResult(resDoc);
+  } break;
+  case RequestType::SYSTEM_DEVICE: {
+    rapidjson::Value deviceObj(rapidjson::Type::kObjectType);
+    deviceObj.AddMember(
+        rapidjson::Value().SetString("ip", resDoc.GetAllocator()).Move(),
+        rapidjson::Value()
+            .SetString(config_->GetIPAddr(true).c_str(), resDoc.GetAllocator())
+            .Move(),
+        resDoc.GetAllocator());
+    deviceObj.AddMember(
+        rapidjson::Value().SetString("ip_local", resDoc.GetAllocator()).Move(),
+        rapidjson::Value()
+            .SetString(config_->GetLocalIPAddr(true).c_str(),
+                       resDoc.GetAllocator())
+            .Move(),
+        resDoc.GetAllocator());
+    std::wstring sid, computer, user;
+    config_->GetWindowsAccountInfo(sid, computer, user);
+    deviceObj.AddMember(
+        rapidjson::Value().SetString("sid", resDoc.GetAllocator()).Move(),
+        rapidjson::Value()
+            .SetString(Utfpp::ws_to_u8(sid).c_str(), resDoc.GetAllocator())
+            .Move(),
+        resDoc.GetAllocator());
+    deviceObj.AddMember(
+        rapidjson::Value()
+            .SetString("computer_name", resDoc.GetAllocator())
+            .Move(),
+        rapidjson::Value()
+            .SetString(Utfpp::ws_to_u8(computer).c_str(), resDoc.GetAllocator())
+            .Move(),
+        resDoc.GetAllocator());
+    deviceObj.AddMember(
+        rapidjson::Value().SetString("user_name", resDoc.GetAllocator()).Move(),
+        rapidjson::Value()
+            .SetString(Utfpp::ws_to_u8(user).c_str(), resDoc.GetAllocator())
+            .Move(),
+        resDoc.GetAllocator());
+
+    std::set<std::string> macs;
+    config_->GetLocalMachineAllNetWorkCardMAC(macs);
+
+    rapidjson::Value macsObjs(rapidjson::Type::kArrayType);
+    for (const auto &mac : macs) {
+      macsObjs.PushBack(rapidjson::Value()
+                            .SetString(mac.c_str(), resDoc.GetAllocator())
+                            .Move(),
+                        resDoc.GetAllocator());
+    }
+
+    deviceObj.AddMember(
+        rapidjson::Value().SetString("macs", resDoc.GetAllocator()).Move(),
+        macsObjs, resDoc.GetAllocator());
+    resDoc.AddMember(
+        rapidjson::Value().SetString("device", resDoc.GetAllocator()).Move(),
+        deviceObj, resDoc.GetAllocator());
+
+    repObj.SetResponseCode(ResponseCode::Ok);
   } break;
   case RequestType::SERVER_CLOSE: {
     std::exit(3762);
@@ -60,6 +155,32 @@ void IBrowserInterfaceServer::OnRequest(const RequestType &reqType,
       brws_.push(brw->GetKey(), brw);
 
       rapidjson::Value brwObj(rapidjson::Type::kObjectType);
+
+      rapidjson::Value deviceObj(rapidjson::Type::kObjectType);
+      deviceObj.AddMember(
+          rapidjson::Value().SetString("ip", resDoc.GetAllocator()).Move(),
+          rapidjson::Value()
+              .SetString(config_->GetIPAddr().c_str(), resDoc.GetAllocator())
+              .Move(),
+          resDoc.GetAllocator());
+
+      auto macs = config_->GetMACs();
+      rapidjson::Value macsObjs(rapidjson::Type::kArrayType);
+      for (const auto &mac : macs) {
+        macsObjs.PushBack(rapidjson::Value()
+                              .SetString(mac.c_str(), resDoc.GetAllocator())
+                              .Move(),
+                          resDoc.GetAllocator());
+      }
+
+      deviceObj.AddMember(
+          rapidjson::Value().SetString("macs", resDoc.GetAllocator()).Move(),
+          macsObjs, resDoc.GetAllocator());
+
+      brwObj.AddMember(
+          rapidjson::Value().SetString("device", resDoc.GetAllocator()).Move(),
+          deviceObj, resDoc.GetAllocator());
+
       brwObj.AddMember(
           rapidjson::Value().SetString("pid", resDoc.GetAllocator()).Move(),
           rapidjson::Value().SetInt64(brw->GetPid()).Move(),
@@ -70,6 +191,7 @@ void IBrowserInterfaceServer::OnRequest(const RequestType &reqType,
               .SetString(brw->GetKey().c_str(), resDoc.GetAllocator())
               .Move(),
           resDoc.GetAllocator());
+
       resDoc.AddMember(
           rapidjson::Value().SetString("brw", resDoc.GetAllocator()), brwObj,
           resDoc.GetAllocator());
@@ -124,6 +246,87 @@ void IBrowserInterfaceServer::OnRequest(const RequestType &reqType,
       client_notifys_.push(std::make_tuple<std::string, std::string>(
           "/close",
           BrowserConfig::CreateBrwCloseNotifyPak(Utfpp::u8_to_u16(key))));
+    } else {
+      repObj.SetResponseCode(ResponseCode::BrwNotfound);
+    }
+  } break;
+  case RequestType::BROWSER_GET_CACHE: {
+    
+  } break;
+  case RequestType::BROWSER_ACTIVATE: {
+    std::string key;
+    do {
+      rapidjson::Document doc;
+      if (doc.Parse(body.data(), body.size()).HasParseError())
+        break;
+      if (!doc.HasMember("rule") || !doc["rule"].IsObject())
+        break;
+      if (!doc["rule"].HasMember("key") || !doc["rule"]["key"].IsString())
+        break;
+      key = doc["rule"]["key"].GetString();
+    } while (0);
+
+    if (key.empty()) {
+      repObj.SetResponseCode(ResponseCode::BrwKeyError);
+      break;
+    }
+    rapidjson::Value brwObj(rapidjson::Type::kObjectType);
+    auto found =
+        brws_.search(key, [&](const std::string &key, const auto &brw) {
+          brwObj.AddMember(
+              rapidjson::Value().SetString("pid", resDoc.GetAllocator()).Move(),
+              rapidjson::Value().SetInt64(brw->GetPid()).Move(),
+              resDoc.GetAllocator());
+          brwObj.AddMember(
+              rapidjson::Value().SetString("key", resDoc.GetAllocator()).Move(),
+              rapidjson::Value()
+                  .SetString(brw->GetKey().c_str(), resDoc.GetAllocator())
+                  .Move(),
+              resDoc.GetAllocator());
+          EnumWindowRouteData routeData;
+          routeData.pid = brw->GetPid();
+          EnumWindows(EnumWindowsProc, (LPARAM)&routeData);
+          if (routeData.hwnd) {
+            SetWindowPos(routeData.hwnd, HWND_NOTOPMOST, 0, 0, 0, 0,
+                         SWP_NOSIZE | SWP_NOMOVE | SWP_SHOWWINDOW);
+            SendMessageW(routeData.hwnd, WM_WINDOWPOSCHANGED, 0, 0);
+
+            RECT rtWindow;
+            GetWindowRect(routeData.hwnd, &rtWindow);
+            int cleintX = (rtWindow.right - rtWindow.left) / 2;
+            int clientY = (rtWindow.bottom - rtWindow.top) / 2;
+
+#if 0
+
+#else
+            PostMessageW(routeData.hwnd, WM_LBUTTONDOWN, MK_LBUTTON,
+                         MAKELPARAM(cleintX, clientY));
+            PostMessageW(routeData.hwnd, WM_LBUTTONUP, 0,
+                         MAKELPARAM(cleintX, clientY));
+            POINT originalPos;
+            GetCursorPos(&originalPos);
+            SetCursorPos(cleintX, clientY);
+            INPUT input = {0};
+            input.type = INPUT_MOUSE;
+            input.mi.dwFlags = MOUSEEVENTF_LEFTDOWN;
+            SendInput(1, &input, sizeof(INPUT));
+            input.mi.dwFlags = MOUSEEVENTF_LEFTUP;
+            SendInput(1, &input, sizeof(INPUT));
+            SetCursorPos(originalPos.x, originalPos.y);
+
+            SendMessageW(routeData.hwnd, WM_LBUTTONDOWN, MK_LBUTTON,
+                         MAKELPARAM(cleintX, clientY));
+            SendMessageW(routeData.hwnd, WM_LBUTTONUP, 0,
+                         MAKELPARAM(cleintX, clientY));
+#endif
+          }
+          repObj.SetResponseCode(ResponseCode::Ok);
+        });
+    if (found) {
+      resDoc.AddMember(
+          rapidjson::Value().SetString("brw", resDoc.GetAllocator()), brwObj,
+          resDoc.GetAllocator());
+      repObj.SetResponseCode(ResponseCode::Ok);
     } else {
       repObj.SetResponseCode(ResponseCode::BrwNotfound);
     }

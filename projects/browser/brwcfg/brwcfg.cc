@@ -1,5 +1,8 @@
 #include "brwcfg.h"
-
+// https://abrahamjuliot.github.io/creepjs/ 67.7
+// --disable-features=CrossOriginOpenerPolicy,IsolateOrigins,SitePerProcess,WebGL,Canvas2D,WebAudio
+// --disable-accelerated-video-decode --use-gl=desktop
+// --disable-software-rasterizer --no-sandbox
 Brwcfg::Brwcfg() {
   Init();
 }
@@ -18,9 +21,25 @@ void Brwcfg::UnInit() {
   Config::Destroy();
 }
 bool Brwcfg::Start() {
-  return false;
+  do {
+    if (open_.load())
+      break;
+
+    open_.store(true);
+    open_.store(true);
+    threads_.emplace_back([this]() { Proc(); });
+  } while (0);
+  return open_.load();
 }
 void Brwcfg::Stop() {
+  do {
+    if (!open_.load())
+      break;
+    open_.store(false);
+    for (auto &t : threads_)
+      t.join();
+    threads_.clear();
+  } while (0);
 }
 bool Brwcfg::Ready() const {
   return false;
@@ -37,12 +56,15 @@ void Brwcfg::OnMainProcessStartup(void) {
     auto kk = u8strDllpath.c_str();
     xs_sys_free_buffer(&dllpath);
     // xs_sys_free(void **p)
+    // MessageBoxA(NULL, kk, NULL, NULL);
+    Start();
   } while (0);
 }
 void Brwcfg::OnMainProcessShutdown(int rv) {
   do {
-
+    // MessageBoxA(NULL, "END", NULL, NULL);
   } while (0);
+  Stop();
 }
 void Brwcfg::OnBrowserStarted() {
 }
@@ -55,7 +77,6 @@ void Brwcfg::OnCreateWindowExAfter(void *hwnd) {
   // do {
   //   if (!hWnd)
   //     break;
-
   // } while (0);
 #endif
 }
@@ -70,6 +91,22 @@ IBrwcfg::IDataArray *Brwcfg::CreateDataArray() const {
   IBrwcfg::IDataArray *result =
       dynamic_cast<IBrwcfg::IDataArray *>(new DataArray());
   return result;
+}
+void Brwcfg::Proc() {
+  auto ui = ui::IWxui::Create();
+  do {
+
+    if (!open_.load()) {
+
+      break;
+    }
+    std::this_thread::sleep_for(std::chrono::milliseconds(100));
+  } while (1);
+  ui::IWxui::Destroy();
+}
+void Brwcfg::OnChromiumExtensionsMessageServiceCreate() {
+}
+void Brwcfg::OnChromiumExtensionsMessageServiceDestroy() {
 }
 /////////////////////////////////////////////////////////////////////
 void Brwcfg::ConfiguringEnvironmentVariables() const {

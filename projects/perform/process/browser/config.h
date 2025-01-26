@@ -46,6 +46,7 @@ private:
   void SettingsInit();
 
 public:
+  bool IsDevMode() const;
   void RouteConfigureInit(const unsigned int &) const;
   unsigned int RouteConfigureGetClientPort();
   const Paths &PathGet() const;
@@ -63,12 +64,25 @@ public:
 
   unsigned int GetClientPortCache() const;
 
+  bool GetWindowsAccountInfo(std::wstring &sid, std::wstring &computer_name,
+                             std::wstring &user_name,
+                             const bool &full_sid = false) const;
+  std::string GetLocalMachineAllNetWorkCardMAC(std::set<std::string> &macs,
+                                               const char &space = 0,
+                                               const bool &lower = false) const;
+  std::string GetIPAddr(const bool &rereq = false);
+  std::string GetLocalIPAddr(const bool &rereq = false);
+  const std::set<std::string> &GetMACs() const;
+
 public:
   static std::string CreateBrwCloseNotifyPak(const std::u16string &brwId);
   static std::string CreateBrwCookiesNotifyPak(const std::u16string &brwId,
                                                const std::string &cookies);
 
 private:
+  std::string ipaddr_;
+  std::string ipaddr_local_;
+  std::set<std::string> macs_;
   std::atomic_uint client_port_cache_ = 0;
   Paths paths_;
   std::u16string current_process_path_;

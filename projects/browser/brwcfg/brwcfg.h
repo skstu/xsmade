@@ -1,6 +1,7 @@
 #if !defined(__E68008C8_057E_4381_9570_8EEE30A32462__)
 #define __E68008C8_057E_4381_9570_8EEE30A32462__
 #include <xs.h>
+#include <base/sys/sys.h>
 #include <system.hpp>
 #include <rapidjson.h>
 #include <tinyxml2.h>
@@ -12,6 +13,7 @@ using namespace browser;
 #include "array.h"
 #include "config.h"
 #include "client.h"
+#include <ui/ui.h>
 
 class Brwcfg final : public IBrwcfg {
 public:
@@ -25,9 +27,10 @@ private:
   void UnInit();
   bool Start();
   void Stop();
+  void Proc();
 
 protected:
-  IConfig* ConfigGet() const override final;
+  IConfig *ConfigGet() const override final;
   bool Ready() const override final;
   void OnMainProcessStartup(void) override final;
   void OnMainProcessShutdown(int rv) override final;
@@ -36,13 +39,19 @@ protected:
                               unsigned long *exstyle) override final;
   void OnCreateWindowExAfter(void *hwnd) override final;
 
-  IData* CreateData(const char*,const size_t&) const override final;
-  IDataArray* CreateDataArray() const override final;
+  IData *CreateData(const char *, const size_t &) const override final;
+  IDataArray *CreateDataArray() const override final;
+
+  void OnChromiumExtensionsMessageServiceCreate() override final;
+  void OnChromiumExtensionsMessageServiceDestroy() override final;
+
 private:
   void ConfiguringEnvironmentVariables() const;
 
 private:
-  Config* config_ = nullptr;
+  std::atomic_bool open_ = false;
+  stl::tfThreads threads_;
+  Config *config_ = nullptr;
 };
 
 #include "interface.h"

@@ -46,6 +46,7 @@ void Browser::Init() {
           "--disable-features=ChromeSignin,AccountConsistency");
       brw_startup_args_.emplace_back("--disable-background-mode");
       brw_startup_args_.emplace_back("--no-default-browser-check");
+      brw_startup_args_.emplace_back("--disable-popup-blocking");
       if (brwcfg_->worker_.enable_lockhp) {
         brw_startup_args_.emplace_back("--xs-lockhp");
       }
@@ -80,7 +81,8 @@ void Browser::Init() {
 #if defined(__OSMAC__)
                       "/chrome.app/Contents/MacOS/chromium"
 #elif defined(__OSWIN__)
-                      "/chrome.exe"
+                      // "/chrome.exe"
+                      "/fanbrowser.exe"
 #endif
                       ));
     } while (0);

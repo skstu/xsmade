@@ -1,5 +1,7 @@
 #include <perform.h>
 
+static std::string browser_configure_cache;
+
 IBrowserInterfaceServer::IBrowserInterfaceServer() {
   Init();
 }
@@ -22,7 +24,7 @@ bool IBrowserInterfaceServer::Start() {
   do {
     if (open_.load() || !server_)
       break;
-    if (config_->GetSettings().developer.enable) {
+    if (config_->IsDevMode()) {
       port_ = 65535;
     } else {
       port_ = xs_sys_get_free_port();
@@ -152,6 +154,7 @@ void IBrowserInterfaceServer::Listen() {
                 });
   server_->Post("/browser/open", [this](const httplib::Request &req,
                                         httplib::Response &res) {
+    browser_configure_cache = req.body;
     std::string repRes;
     OnRequest(RequestType::BROWSER_OPEN, req.body, repRes);
     LOG_INFO("REQ({}) BODY({}) RES({})", "/browser/open", req.body, repRes);
@@ -166,6 +169,14 @@ void IBrowserInterfaceServer::Listen() {
     res.set_content(repRes.empty() ? "{}" : repRes,
                     "application/json; charset=utf-8");
   });
+  server_->Post("/browser/activate", [this](const httplib::Request &req,
+                                            httplib::Response &res) {
+    std::string repRes;
+    OnRequest(RequestType::BROWSER_ACTIVATE, req.body, repRes);
+    LOG_INFO("REQ({}) BODY({})", "/browser/activate", req.body, repRes);
+    res.set_content(repRes.empty() ? "{}" : repRes,
+                    "application/json; charset=utf-8");
+  });
   server_->Post("/browser/get", [this](const httplib::Request &req,
                                        httplib::Response &res) {
     std::string repRes;
@@ -174,6 +185,19 @@ void IBrowserInterfaceServer::Listen() {
     res.set_content(repRes.empty() ? "{}" : repRes,
                     "application/json; charset=utf-8");
   });
+
+  server_->Post("/browser/get_cache",
+                [this](const httplib::Request &req, httplib::Response &res) {
+                  std::string repRes;
+                  OnRequest(RequestType::BROWSER_GET_CACHE, req.body, repRes);
+                  LOG_INFO("REQ({}) BODY({}) RES({})", "/browser/get_cache",
+                           req.body, repRes);
+                  
+                  repRes = browser_configure_cache;
+                  res.set_content(repRes.empty() ? "{}" : repRes,
+                                  "application/json; charset=utf-8");
+                });
+
   server_->Post("/browser/get_cookies",
                 [this](const httplib::Request &req, httplib::Response &res) {
                   std::string repRes;
@@ -201,6 +225,14 @@ void IBrowserInterfaceServer::Listen() {
                   res.set_content(repRes.empty() ? "{}" : repRes,
                                   "application/json; charset=utf-8");
                 });
+  server_->Post("/system/device", [this](const httplib::Request &req,
+                                         httplib::Response &res) {
+    std::string repRes;
+    OnRequest(RequestType::SYSTEM_DEVICE, req.body, repRes);
+    LOG_INFO("REQ({}) BODY({}) RES({})", "/system/device", req.body, repRes);
+    res.set_content(repRes.empty() ? "{}" : repRes,
+                    "application/json; charset=utf-8");
+  });
   server_->Post("/ffx/start_screen_recording",
                 [this](const httplib::Request &req, httplib::Response &res) {
                   std::string repRes;
