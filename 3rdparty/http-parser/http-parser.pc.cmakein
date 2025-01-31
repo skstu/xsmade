@@ -4,8 +4,8 @@ libdir=@INSTALL_LIB_DIR@
 sharedlibdir=@INSTALL_LIB_DIR@
 includedir=@INSTALL_INC_DIR@
 
-Name: minizip
-Description: minizip compression library
+Name: http-parser
+Description: http-parser compression library
 Version: @VERSION@
 
 Requires:

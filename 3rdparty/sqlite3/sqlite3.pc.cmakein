@@ -4,8 +4,8 @@ libdir=@INSTALL_LIB_DIR@
 sharedlibdir=@INSTALL_LIB_DIR@
 includedir=@INSTALL_INC_DIR@
 
-Name: minizip
-Description: minizip compression library
+Name: sqlite3
+Description: sqlite3 compression library
 Version: @VERSION@
 
 Requires:

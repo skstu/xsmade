@@ -9,10 +9,10 @@ macro(GFN_FIND_WXWIDGETS OUT_WX_INCLUDES OUT_WX_LIBS)
     set(wxVERSION 3.3)
 
     set(${OUT_WX_INCLUDES}
-        "${xs3RDPARTY_DIR}/wxWidgets/include/"
-        "${xsOUTPUT_DIR}/wxWidgets/lib/wx/include/msw-unicode-static-${wxVERSION}/"
+        "${xsBUILD_INSTALLED_DIR}/wxWidgets/${CMAKE_BUILD_TYPE}/include/"
+        "${xsBUILD_INSTALLED_DIR}/wxWidgets/${CMAKE_BUILD_TYPE}/lib/wx/include/msw-unicode-static-${wxVERSION}/"
     )
-    set(wxLIBS_DIR ${xsOUTPUT_DIR}/wxWidgets/lib)
+    set(wxLIBS_DIR ${xsBUILD_INSTALLED_DIR}/wxWidgets/${CMAKE_BUILD_TYPE}/lib)
     set(${OUT_WX_LIBS}
         "${wxLIBS_DIR}/libwx_baseu_net-${wxVERSION}-Windows.a"
         "${wxLIBS_DIR}/libwx_baseu_xml-${wxVERSION}-Windows.a"

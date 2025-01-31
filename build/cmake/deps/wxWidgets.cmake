@@ -1,4 +1,5 @@
 set(WXWIDGETS_PROJECT_NAME "wxWidgets")
+
 set(wxBUILD_SHARED
     OFF
     CACHE BOOL "Build ${WXWIDGETS_PROJECT_NAME} as shared library" FORCE)
@@ -25,7 +26,7 @@ elseif(xsSYSTYPE_LINUX)
       CACHE STRING "Choose ${WXWIDGETS_PROJECT_NAME} toolkit" FORCE)
 endif()
 set(wxBUILD_SAMPLES
-    #"ALL"
+    # "ALL"
     "OFF"
     CACHE STRING "Choose ${WXWIDGETS_PROJECT_NAME} toolkit" FORCE)
 
