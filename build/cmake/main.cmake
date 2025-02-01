@@ -6,8 +6,8 @@
 
 option(xsUSE_3RDPARTY "Enable configure 3rdparty" OFF)
 option(xsUSE_TESTS "Enable configure tests" OFF)
-option(xsUSE_BASE "Enable configure base" OFF)
-option(xsUSE_PROJECTS "Enable configure base" OFF)
+option(xsUSE_BASE "Enable configure base" ON)
+option(xsUSE_PROJECTS "Enable configure base" ON)
 option(xsUSE_COMPONENTS "Enable configure components" OFF)
 
 if(xsUSE_3RDPARTY)

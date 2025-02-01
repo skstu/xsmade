@@ -145,7 +145,19 @@ public:
 protected:
   tfCommandLines source_;
 };
+class Args {
+public:
+  Args(const std::string &args);
+  Args(const int &argc, char **argv);
+  ~Args();
 
+private:
+  bool Parse();
+public:
+  const std::string& GetSource() const;
+private:
+  std::string cmdline_;
+};
 class Common {
 public:
   static std::vector<std::string> StringSpilt(const std::string &input,
