@@ -11,6 +11,8 @@ extern "C" {
 typedef unsigned long xs_process_id_t;
 #elif defined(__OSAPPLE__)
 typedef pid_t xs_process_id_t;
+#elif defined(__OSLINUX__)
+typedef pid_t xs_process_id_t;
 #endif
 
 typedef struct {

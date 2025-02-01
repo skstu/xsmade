@@ -1,0 +1,12 @@
+/home/martell/Desktop/Projects/xsmade/build_linux/CMakeFiles/edit_cache.dir
+/home/martell/Desktop/Projects/xsmade/build_linux/CMakeFiles/rebuild_cache.dir
+/home/martell/Desktop/Projects/xsmade/build_linux/projects/CMakeFiles/edit_cache.dir
+/home/martell/Desktop/Projects/xsmade/build_linux/projects/CMakeFiles/rebuild_cache.dir
+/home/martell/Desktop/Projects/xsmade/build_linux/projects/brw_configure/CMakeFiles/brw_configure.dir
+/home/martell/Desktop/Projects/xsmade/build_linux/projects/brw_configure/CMakeFiles/edit_cache.dir
+/home/martell/Desktop/Projects/xsmade/build_linux/projects/brw_configure/CMakeFiles/rebuild_cache.dir
+/home/martell/Desktop/Projects/xsmade/build_linux/tests/CMakeFiles/edit_cache.dir
+/home/martell/Desktop/Projects/xsmade/build_linux/tests/CMakeFiles/rebuild_cache.dir
+/home/martell/Desktop/Projects/xsmade/build_linux/tests/test_main/CMakeFiles/test_main.dir
+/home/martell/Desktop/Projects/xsmade/build_linux/tests/test_main/CMakeFiles/edit_cache.dir
+/home/martell/Desktop/Projects/xsmade/build_linux/tests/test_main/CMakeFiles/rebuild_cache.dir

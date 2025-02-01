@@ -6,10 +6,12 @@ project(sys)
 set(common_srcs_ "${CMAKE_CURRENT_SOURCE_DIR}/sys.h"
                  "${CMAKE_CURRENT_SOURCE_DIR}/sys.cc")
 
-if(WIN32)
+if(xsSYSTYPE_WINDOWS)
   set(srcs_dir "win")
-elseif(APPLE)
+elseif(xsSYSTYPE_APPLE)
   set(srcs_dir "apple")
+elseif(xsSYSTYPE_LINUX)
+  set(srcs_dir "linux")
 endif()
 set(srcs_
     "${CMAKE_CURRENT_SOURCE_DIR}/${srcs_dir}/net.cc"
@@ -25,7 +27,7 @@ target_include_directories(
   PRIVATE ${xsINCLUDE_DIR} ${CMAKE_CURRENT_SOURCE_DIR}
           ${xs3RDPARTY_DIR}/utfcpp/source/ ${xs3RDPARTY_DIR}/tinyxml2/)
 
-#xs_set_target_output_dir(${PROJECT_NAME})
+# xs_set_target_output_dir(${PROJECT_NAME})
 
 set(INSTALL_BIN_DIR
     "${xsBASE_INSTALL_PREFIX}/bin"

@@ -1,7 +1,7 @@
 project(zipcc)
 
 gfn_project_source_get(${CMAKE_CURRENT_SOURCE_DIR} OUT_HEADER_S OUT_SOURCE_S)
-if(WIN32)
+if(xsSYSTYPE_WINDOWS)
   set(SOURCES
       ${OUT_HEADER_S}
       ${OUT_SOURCE_S}
@@ -9,7 +9,14 @@ if(WIN32)
       ${xs3RDPARTY_DIR}/zlib/contrib/minizip/unzip.c
       ${xs3RDPARTY_DIR}/zlib/contrib/minizip/ioapi.c
       ${xs3RDPARTY_DIR}/zlib/contrib/minizip/iowin32.c)
-elseif(APPLE)
+elseif(xsSYSTYPE_APPLE)
+  set(SOURCES
+      ${OUT_HEADER_S}
+      ${OUT_SOURCE_S}
+      ${xs3RDPARTY_DIR}/zlib/contrib/minizip/zip.c
+      ${xs3RDPARTY_DIR}/zlib/contrib/minizip/unzip.c
+      ${xs3RDPARTY_DIR}/zlib/contrib/minizip/ioapi.c)
+elseif(xsSYSTYPE_LINUX)
   set(SOURCES
       ${OUT_HEADER_S}
       ${OUT_SOURCE_S}
