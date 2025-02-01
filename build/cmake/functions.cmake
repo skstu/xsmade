@@ -19,9 +19,9 @@ function(xs_set_common_target_properties target_name)
 
   set_target_properties(
     ${target_name}
-    PROPERTIES LIBRARY_OUTPUT_DIRECTORY "${xsOUTPUT_DIR}${GEN_EXPR_DIR}"
-               ARCHIVE_OUTPUT_DIRECTORY "${xsOUTPUT_DIR}${GEN_EXPR_DIR}"
-               RUNTIME_OUTPUT_DIRECTORY "${xsOUTPUT_DIR}${GEN_EXPR_DIR}")
+    PROPERTIES LIBRARY_OUTPUT_DIRECTORY "${xsOUTPUT_DIR}/bin"
+               ARCHIVE_OUTPUT_DIRECTORY "${xsOUTPUT_DIR}/libs"
+               RUNTIME_OUTPUT_DIRECTORY "${xsOUTPUT_DIR}/bin")
 
   if(xsBUILD_PIC)
     set_target_properties(${target_name} PROPERTIES POSITION_INDEPENDENT_CODE
@@ -31,23 +31,20 @@ function(xs_set_common_target_properties target_name)
   target_compile_definitions(${target_name} PRIVATE wxUSE_GUI=1 wxUSE_BASE=0)
 endfunction()
 
-function(xs_set_target_output_dir PROJECT_NAME__)
-  get_target_property(TARGET_TYPE ${PROJECT_NAME__} TYPE)
+function(xs_set_target_output_dir target_name)
+  get_target_property(TARGET_TYPE ${target_name} TYPE)
 
   if(TARGET_TYPE STREQUAL "STATIC_LIBRARY")
-    set_target_properties(
-      ${PROJECT_NAME__} PROPERTIES ARCHIVE_OUTPUT_DIRECTORY
-                                   "${xsOUTPUT_DIR}/libs${GEN_EXPR_DIR}")
+    set_target_properties(${target_name} PROPERTIES ARCHIVE_OUTPUT_DIRECTORY
+                                                    "${xsOUTPUT_DIR}/libs/")
   elseif(TARGET_TYPE STREQUAL "SHARED_LIBRARY" OR TARGET_TYPE STREQUAL
                                                   "MODULE_LIBRARY")
-    set_target_properties(
-      ${PROJECT_NAME__} PROPERTIES LIBRARY_OUTPUT_DIRECTORY
-                                   "${xsOUTPUT_DIR}/bin${GEN_EXPR_DIR}")
+    set_target_properties(${target_name} PROPERTIES LIBRARY_OUTPUT_DIRECTORY
+                                                    "${xsOUTPUT_DIR}/bin/")
   elseif(TARGET_TYPE STREQUAL "EXECUTABLE")
-    set_target_properties(
-      ${PROJECT_NAME__} PROPERTIES RUNTIME_OUTPUT_DIRECTORY
-                                   "${xsOUTPUT_DIR}/bin${GEN_EXPR_DIR}")
+    set_target_properties(${target_name} PROPERTIES RUNTIME_OUTPUT_DIRECTORY
+                                                    "${xsOUTPUT_DIR}/bin/")
   else()
-    message(WARNING "Unknown target type for ${PROJECT_NAME__}")
+    message(WARNING "Unknown target type for ${target_name}")
   endif()
 endfunction()

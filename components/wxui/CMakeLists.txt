@@ -1,46 +1,56 @@
-project(curlcc)
+project(wxui)
+
+gfn_find_wxwidgets(wxINCLUDES wxLIBS wxMSWRC)
 
 gfn_project_source_get(${CMAKE_CURRENT_SOURCE_DIR} OUT_HEADER_S OUT_SOURCE_S)
 set(SOURCES ${OUT_HEADER_S} ${OUT_SOURCE_S})
 
-add_definitions(-DCURL_STATICLIB)
-add_definitions(-DNGHTTP2_STATICLIB)
 add_definitions(-DSHARED_IMPLEMENTATION)
 add_library(${PROJECT_NAME} SHARED ${SOURCES})
 
-add_dependencies(${PROJECT_NAME} sys stl)
+target_compile_options(${PROJECT_NAME} PRIVATE -Wno-deprecated-declarations)
+# add_dependencies(${PROJECT_NAME} sys stl zipcc) -Wdeprecated-declarations
 
-set_target_properties(${PROJECT_NAME} PROPERTIES POSITION_INDEPENDENT_CODE TRUE)
-
+# xs_set_target_output_dir(${PROJECT_NAME})
 target_include_directories(
   ${PROJECT_NAME}
   PRIVATE ${CMAKE_CURRENT_SOURCE_DIR} ${xsINCLUDE_DIR}
-          ${xs3RDPARTY_DIR}/utfcpp/source/ ${xs3RDPARTY_DIR}/curl/include/)
-target_link_directories(${PROJECT_NAME} PRIVATE ${xsLIBS_DIR})
+          ${xs3RDPARTY_DIR}/utfcpp/source/ ${xsOPENSSL_INCLUDE} ${wxINCLUDES}
+          ${xsLIBS_INCLUDE_DIR})
+target_link_directories(${PROJECT_NAME} PRIVATE ${xsLIBS_DIR} ${xsLIBS_LIB_DIR})
 if(WIN32)
   target_link_libraries(
     ${PROJECT_NAME}
+    ${MSYS2_CLANG64_DIR}/lib/libc++.a
     wldap32.lib
     winmm.lib
-    Bcrypt.lib
     Crypt32.lib
     Normaliz.lib
     ws2_32.lib
-    ${MSYS2_CLANG64_DIR}/lib/libc++.a
+    IPHLPAPI.lib
+    Userenv.lib
+    Dbghelp.lib
+    Rpcrt4.lib
+    Comctl32.lib
+    gdiplus.lib
+    UxTheme.lib
+    version.lib
+    Shlwapi.lib
+    Msimg32.lib
+    uuid.lib
+    Oleacc.lib
     libfmt.a
     libsys.a
     libstl.a
     libpthread.a
     ${xsOPENSSL_LIBRARY}
-    ${MSYS2_CLANG64_DIR}/lib/libz.a
-    ${MSYS2_CLANG64_DIR}/lib/libiconv.a
-    ${xsOUTPUT_DIR}/CURL/lib/libcurl.a
-    ${xsOUTPUT_DIR}/zlib/libzlibstatic.a
-    ${MSYS2_CLANG64_DIR}/lib/libpsl.a
-    ${MSYS2_CLANG64_DIR}/lib/libidn2.a
-    ${MSYS2_CLANG64_DIR}/lib/libssh2.a
-    ${MSYS2_CLANG64_DIR}/lib/libunistring.a  
-    ${MSYS2_CLANG64_DIR}/lib/libnghttp2.a)
+    ${wxLIBS})
+
+  set_target_properties(${PROJECT_NAME} PROPERTIES LINK_FLAGS "-mwindows"
+                                                   WIN32_EXECUTABLE YES)
+  set_target_properties(${PROJECT_NAME} PROPERTIES POSITION_INDEPENDENT_CODE
+                                                   TRUE)
+  target_compile_definitions(${PROJECT_NAME} PRIVATE wxUSE_GUI=1 wxUSE_BASE=0)
 
   add_custom_command(
     TARGET ${PROJECT_NAME}
@@ -78,7 +88,6 @@ elseif(APPLE)
     ${wxLIBS})
 endif()
 # xs_set_common_target_properties(${PROJECT_NAME})
-xs_set_target_output_dir(${PROJECT_NAME})
 
 set(EXTNAME "dll")
 if(WIN32)
@@ -93,4 +102,4 @@ add_custom_command(
   TARGET ${PROJECT_NAME}
   POST_BUILD
   COMMAND ${CMAKE_COMMAND} -E copy_if_different $<TARGET_FILE:${PROJECT_NAME}>
-          ${xsBIN_DIR}/plugins/${PROJECT_NAME}.${EXTNAME})
+          ${xsBIN_DIR}/${PROJECT_NAME}.${EXTNAME})

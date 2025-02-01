@@ -1,35 +1,45 @@
-project(uvpp)
+project(curlcc)
 
 gfn_project_source_get(${CMAKE_CURRENT_SOURCE_DIR} OUT_HEADER_S OUT_SOURCE_S)
-
 set(SOURCES ${OUT_HEADER_S} ${OUT_SOURCE_S})
 
+add_definitions(-DCURL_STATICLIB)
+add_definitions(-DNGHTTP2_STATICLIB)
 add_definitions(-DSHARED_IMPLEMENTATION)
 add_library(${PROJECT_NAME} SHARED ${SOURCES})
-
-set_target_properties(${PROJECT_NAME} PROPERTIES POSITION_INDEPENDENT_CODE
-TRUE)
 
 target_include_directories(
   ${PROJECT_NAME}
   PRIVATE ${CMAKE_CURRENT_SOURCE_DIR} ${xsINCLUDE_DIR}
-          ${xs3RDPARTY_DIR}/utfcpp/source/ ${xs3RDPARTY_DIR}/libuv/include/)
-target_link_directories(${PROJECT_NAME} PRIVATE ${xsLIBS_DIR})
+          ${xsBUILD_INSTALLED_INCLUDE_DIR}/utf8cpp
+          ${xsBUILD_INSTALLED_INCLUDE_DIR})
+target_link_directories(${PROJECT_NAME} PRIVATE ${xsLIBS_DIR} ${xsLIBS_LIB_DIR}
+                        ${xsBUILD_INSTALLED_LIB_DIR})
+
 if(WIN32)
   target_link_libraries(
     ${PROJECT_NAME}
-    ${MSYS2_CLANG64_DIR}/lib/libc++.a
-    Dbghelp.lib
-    Userenv.lib
+    wldap32.lib
+    winmm.lib
+    Bcrypt.lib
+    Crypt32.lib
+    Normaliz.lib
     ws2_32.lib
-    IPHLPAPI.lib
+    ${MSYS2_CLANG64_DIR}/lib/libc++.a
     libfmt.a
     libsys.a
     libstl.a
-    libzipcc.a
     libpthread.a
-    ${xsOUTPUT_DIR}/uv_a/libuv.a
-    ${xsOUTPUT_DIR}/zlib/libzlibstatic.a)
+    ${xsOPENSSL_LIBRARY}
+    ${MSYS2_CLANG64_DIR}/lib/libz.a
+    ${MSYS2_CLANG64_DIR}/lib/libiconv.a
+    ${MSYS2_CLANG64_DIR}/lib/libpsl.a
+    ${MSYS2_CLANG64_DIR}/lib/libidn2.a
+    ${MSYS2_CLANG64_DIR}/lib/libssh2.a
+    ${MSYS2_CLANG64_DIR}/lib/libunistring.a
+    ${MSYS2_CLANG64_DIR}/lib/libnghttp2.a
+    libcurl.a
+    libzlibstatic.a)
 
   add_custom_command(
     TARGET ${PROJECT_NAME}
@@ -82,4 +92,4 @@ add_custom_command(
   TARGET ${PROJECT_NAME}
   POST_BUILD
   COMMAND ${CMAKE_COMMAND} -E copy_if_different $<TARGET_FILE:${PROJECT_NAME}>
-          ${xsBIN_DIR}/plugins/${PROJECT_NAME}.${EXTNAME})
+          ${xsBIN_DIR}/${PROJECT_NAME}.${EXTNAME})

@@ -4,12 +4,12 @@
 # skstu development team Licence:     skstu licence
 # ##############################################################################
 
-add_subdirectory(browser/brwcfg)
-add_subdirectory(perform)
+# add_subdirectory(browser/brwcfg)
+#add_subdirectory(perform)
 # add_subdirectory(ffxctrl) add_subdirectory(ffxui) add_subdirectory(ffx)
 # add_subdirectory(services)
-add_subdirectory(MediaStreamRTC/MediaStreamComm)
-add_subdirectory(MediaStreamRTC/MediaStreamClient)
-add_subdirectory(MediaStreamRTC/MediaStreamServer)
-add_subdirectory(engine/jsonnet)
-add_subdirectory(installer)
+# add_subdirectory(MediaStreamRTC/MediaStreamComm)
+# add_subdirectory(MediaStreamRTC/MediaStreamClient)
+# add_subdirectory(MediaStreamRTC/MediaStreamServer)
+# add_subdirectory(engine/jsonnet)
+# add_subdirectory(installer)

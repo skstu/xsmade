@@ -1,21 +1,19 @@
 project(test_wxui)
-
+gfn_find_wxwidgets(wxINCLUDES wxLIBS wxMSWRC)
 gfn_project_source_get(${CMAKE_CURRENT_SOURCE_DIR} OUT_HEADER_S OUT_SOURCE_S)
-set(SOURCES
-    ${OUT_HEADER_S}
-    ${OUT_SOURCE_S}
-    ${xsBUILD_INSTALLED_DIR}/wxWidgets/${CMAKE_BUILD_TYPE}/include/wx-3.3/wx/msw/wx.rc
-)
-
+set(SOURCES ${OUT_HEADER_S} ${OUT_SOURCE_S} ${wxMSWRC})
 add_executable(${PROJECT_NAME} ${SOURCES})
+# add_dependencies(${PROJECT_NAME} stl sys)
 
 if(WIN32)
   target_include_directories(
     ${PROJECT_NAME} PRIVATE ${xsROOT_DIR} ${xsINCLUDE_DIR}
-                            ${xs3RDPARTY_DIR}/utfcpp/source/)
+                            ${xs3RDPARTY_DIR}/utfcpp/source ${wxINCLUDES})
 
-  target_link_directories(${PROJECT_NAME} PRIVATE ${xsLIBS_DIR})
+  target_link_directories(${PROJECT_NAME} PRIVATE
+                          ${xsLIBS_DIR}/${CMAKE_BUILD_TYPE}/lib/)
 
+  gfn_message_info("${xsLIBS_DIR}/${CMAKE_BUILD_TYPE}/lib/")
   target_link_libraries(
     ${PROJECT_NAME}
     wldap32.lib
@@ -42,7 +40,7 @@ if(WIN32)
     ${MSYS2_CLANG64_DIR}/lib/libfmt.a
     ${MSYS2_CLANG64_DIR}/lib/libuv.a)
 
-  #add_dependencies(${PROJECT_NAME} sys stl)
+  # add_dependencies(${PROJECT_NAME} sys stl)
 elseif(APPLE)
   target_include_directories(
     ${PROJECT_NAME}

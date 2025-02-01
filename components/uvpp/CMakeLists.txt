@@ -1,55 +1,34 @@
-project(wxui)
+project(uvpp)
 
 gfn_project_source_get(${CMAKE_CURRENT_SOURCE_DIR} OUT_HEADER_S OUT_SOURCE_S)
+
 set(SOURCES ${OUT_HEADER_S} ${OUT_SOURCE_S})
 
 add_definitions(-DSHARED_IMPLEMENTATION)
 add_library(${PROJECT_NAME} SHARED ${SOURCES})
 
-add_dependencies(${PROJECT_NAME} sys stl zipcc)
-
-gfn_find_wxwidgets(wxINCLUDES wxLIBS)
-
 target_include_directories(
   ${PROJECT_NAME}
   PRIVATE ${CMAKE_CURRENT_SOURCE_DIR} ${xsINCLUDE_DIR}
-          ${xs3RDPARTY_DIR}/utfcpp/source/ ${xsOPENSSL_INCLUDE} ${wxINCLUDES})
-target_link_directories(${PROJECT_NAME} PRIVATE ${xsLIBS_DIR})
+          ${xsBUILD_INSTALLED_INCLUDE_DIR}/utf8cpp
+          ${xsBUILD_INSTALLED_INCLUDE_DIR})
+target_link_directories(${PROJECT_NAME} PRIVATE ${xsLIBS_DIR} ${xsLIBS_LIB_DIR}
+                        ${xsBUILD_INSTALLED_LIB_DIR})
 if(WIN32)
   target_link_libraries(
     ${PROJECT_NAME}
     ${MSYS2_CLANG64_DIR}/lib/libc++.a
-    wldap32.lib
-    winmm.lib
-    Crypt32.lib
-    Normaliz.lib
+    Dbghelp.lib
+    Userenv.lib
     ws2_32.lib
     IPHLPAPI.lib
-    Userenv.lib
-    Dbghelp.lib
-    Rpcrt4.lib
-    Comctl32.lib
-    gdiplus.lib
-    UxTheme.lib
-    version.lib
-    Shlwapi.lib
-    Msimg32.lib
-    uuid.lib
-    Oleacc.lib
     libfmt.a
     libsys.a
     libstl.a
     libzipcc.a
     libpthread.a
-    ${xsOUTPUT_DIR}/zlib/libzlibstatic.a
-    ${xsOPENSSL_LIBRARY}
-    ${wxLIBS})
-
-  set_target_properties(${PROJECT_NAME} PROPERTIES LINK_FLAGS "-mwindows"
-                                                   WIN32_EXECUTABLE YES)
-  set_target_properties(${PROJECT_NAME} PROPERTIES POSITION_INDEPENDENT_CODE
-                                                   TRUE)
-  target_compile_definitions(${PROJECT_NAME} PRIVATE wxUSE_GUI=1 wxUSE_BASE=0)
+    libuv.a
+    libzlibstatic.a)
 
   add_custom_command(
     TARGET ${PROJECT_NAME}
@@ -59,8 +38,10 @@ if(WIN32)
       C:/Users/k34ub/AppData/Roaming/MarsProjects/plugins/${PROJECT_NAME}.dll)
 elseif(APPLE)
   target_include_directories(
-    ${PROJECT_NAME} PRIVATE ${xsINCLUDE_DIR} ${xs3RDPARTY_DIR}/utfcpp/source/
-                            ${xsOPENSSL_INCLUDE} ${wxINCLUDES} /opt/homebrew/Cellar/fmt/11.0.2/include/)
+    ${PROJECT_NAME}
+    PRIVATE ${xsINCLUDE_DIR} ${xs3RDPARTY_DIR}/utfcpp/source/
+            ${xsOPENSSL_INCLUDE} ${wxINCLUDES}
+            /opt/homebrew/Cellar/fmt/11.0.2/include/)
   target_link_directories(${PROJECT_NAME} PRIVATE ${xsLIBS_DIR})
   target_link_libraries(
     ${PROJECT_NAME}
@@ -100,4 +81,4 @@ add_custom_command(
   TARGET ${PROJECT_NAME}
   POST_BUILD
   COMMAND ${CMAKE_COMMAND} -E copy_if_different $<TARGET_FILE:${PROJECT_NAME}>
-          ${xsBIN_DIR}/plugins/${PROJECT_NAME}.${EXTNAME})
+          ${xsBIN_DIR}/${PROJECT_NAME}.${EXTNAME})

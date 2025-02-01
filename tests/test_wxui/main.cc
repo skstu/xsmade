@@ -1,12 +1,12 @@
 #include <xs.h>
 #include <system.hpp>
 #include <fmt/format.h>
-#include <base/wxui/export.h>
+#include <components/wxui/export.h>
 
 int main(int argc, char **argv) {
 #if defined(__OSWIN__)
   wxui::IWxui *pWxui = wxui::IWxui::Create(
-      (System::GetCurrentProcessPath() + "/plugins/wxui.dll").c_str());
+      (System::GetCurrentProcessPath() + "/wxui.dll").c_str());
 #if DEBUG
   pWxui->ConfigGet()->SetResourceDir(
       R"(C:\Users\k34ub\AppData\Local\MarsProjects\resources\ffxui)");

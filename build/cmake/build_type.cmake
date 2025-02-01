@@ -20,6 +20,10 @@ if(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
                                                "RelWithDebInfo" "MinSizeRel")
 endif()
 
+option(xs_BUILD_PIC "Enable configure position independent code" ON)
+if(xs_BUILD_PIC)
+  set_property(GLOBAL PROPERTY POSITION_INDEPENDENT_CODE ON)
+endif()
 # if(CMAKE_CONFIGURATION_TYPES) gfn_message_info( "Multi-config generator
 # detected. Available build types: ${CMAKE_CONFIGURATION_TYPES}" ) else()
 # gfn_message_info( "Single-config generator detected. Build type:

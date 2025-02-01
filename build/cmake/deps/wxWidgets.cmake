@@ -31,6 +31,12 @@ set(wxBUILD_SAMPLES
     CACHE STRING "Choose ${WXWIDGETS_PROJECT_NAME} toolkit" FORCE)
 
 add_subdirectory(${xs3RDPARTY_DIR}/wxwidgets/ ${WXWIDGETS_PROJECT_NAME})
+
+target_add_options(
+  ${WXWIDGETS_PROJECT_NAME} PRIVATE -Wno-deprecated-declarations
+  -Wno-unused-command-line-argument)
+# add_compile_options(-Wno-deprecated-declarations
+# -Wno-unused-command-line-argument)
 #[[
 target_compile_options(${WXWIDGETS_PROJECT_NAME}
                        PRIVATE -Wno-deprecated-declarations)

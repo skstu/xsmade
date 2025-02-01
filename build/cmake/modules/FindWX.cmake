@@ -3,16 +3,19 @@
 # Martell Created:     2024-11-08 Copyright:   (c) 2024 skstu development team
 # Licence:     skstu licence
 # ##############################################################################
-
-macro(GFN_FIND_WXWIDGETS OUT_WX_INCLUDES OUT_WX_LIBS)
+# C:\Users\k34ub\source\skstu\xsmade\build\installed\Debug\include\wx-3.3\wx\msw
+macro(GFN_FIND_WXWIDGETS OUT_WX_INCLUDES OUT_WX_LIBS OUT_WX_MSW_RC)
   if(WIN32)
     set(wxVERSION 3.3)
-
-    set(${OUT_WX_INCLUDES}
-        "${xsBUILD_INSTALLED_DIR}/wxWidgets/${CMAKE_BUILD_TYPE}/include/"
-        "${xsBUILD_INSTALLED_DIR}/wxWidgets/${CMAKE_BUILD_TYPE}/lib/wx/include/msw-unicode-static-${wxVERSION}/"
+    set(${OUT_WX_MSW_RC}
+        "${xsBUILD_INSTALLED_DIR}/${CMAKE_BUILD_TYPE}/include/wx-${wxVERSION}/wx/msw/wx.rc"
     )
-    set(wxLIBS_DIR ${xsBUILD_INSTALLED_DIR}/wxWidgets/${CMAKE_BUILD_TYPE}/lib)
+    set(${OUT_WX_INCLUDES}
+        "${xsBUILD_INSTALLED_DIR}/${CMAKE_BUILD_TYPE}/include/"
+        "${xsBUILD_INSTALLED_DIR}/${CMAKE_BUILD_TYPE}/include/wx-${wxVERSION}/"
+        "${xsBUILD_INSTALLED_DIR}/${CMAKE_BUILD_TYPE}/lib/wx/include/msw-unicode-static-${wxVERSION}/"
+    )
+    set(wxLIBS_DIR ${xsBUILD_INSTALLED_DIR}/${CMAKE_BUILD_TYPE}/lib)
     set(${OUT_WX_LIBS}
         "${wxLIBS_DIR}/libwx_baseu_net-${wxVERSION}-Windows.a"
         "${wxLIBS_DIR}/libwx_baseu_xml-${wxVERSION}-Windows.a"

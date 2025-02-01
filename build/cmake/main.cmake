@@ -4,19 +4,27 @@
 # Licence:     skstu licence
 # ##############################################################################
 
-option(xsUSE_3RDPARTY "Enable configure 3rdparty" ON)
+option(xsUSE_3RDPARTY "Enable configure 3rdparty" OFF)
 option(xsUSE_TESTS "Enable configure tests" OFF)
 option(xsUSE_BASE "Enable configure base" OFF)
+option(xsUSE_PROJECTS "Enable configure base" OFF)
+option(xsUSE_COMPONENTS "Enable configure components" OFF)
+
 if(xsUSE_3RDPARTY)
   include(build/cmake/modules/3rdparty.cmake)
 endif()
 if(xsUSE_BASE)
   include(build/cmake/modules/base.cmake)
 endif()
+if(xsUSE_COMPONENTS)
+  include(build/cmake/modules/components.cmake)
+endif()
 if(xsUSE_TESTS)
   add_subdirectory(${xsSOURCE_DIR}/tests)
 endif()
-
+if(xsUSE_PROJECTS)
+  add_subdirectory(${xsSOURCE_DIR}/projects)
+endif()
 # list(APPEND CMAKE_MODULE_PATH ${xsBUILD_DIR}/cmake/deps/) if(xsUSE_ZLIB)
 # include(zlib) if(xsUSE_MINIZIP) include(minizip) endif() endif()
 # if(xsUSE_HTTPPARSER) include(http_parser) endif() if(xsUSE_SQLITE3)
