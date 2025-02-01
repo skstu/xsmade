@@ -12,8 +12,8 @@
 #include <utfpp.hpp>
 #include <zipcc.h>
 #include <log.hpp>
-#include <base/wxui/export.h>
-#include <base/uvpp/export.h>
+#include <components/wxui/export.h>
+#include <components/uvpp/export.h>
 #include "local.h"
 
 //!@ browser
@@ -43,7 +43,8 @@ public:
   static Perform *Create();
   static void Destroy();
   static Perform *Get();
-  static IConfig* ConfigGet();
+  static IConfig *ConfigGet();
+
 private:
   Perform();
   ~Perform();
@@ -53,7 +54,7 @@ public:
   void Run();
 
 private:
-  IPerform* current_ = nullptr;
+  IPerform *current_ = nullptr;
   std::atomic_bool open_ = false;
 };
 /// /*_ Memade®（新生™） _**/

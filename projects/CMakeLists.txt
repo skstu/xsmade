@@ -5,7 +5,7 @@
 # ##############################################################################
 
 # add_subdirectory(browser/brwcfg)
-#add_subdirectory(perform)
+add_subdirectory(perform)
 # add_subdirectory(ffxctrl) add_subdirectory(ffxui) add_subdirectory(ffx)
 # add_subdirectory(services)
 # add_subdirectory(MediaStreamRTC/MediaStreamComm)

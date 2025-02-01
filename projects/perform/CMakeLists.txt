@@ -10,15 +10,16 @@ target_include_directories(
   PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}
           ${xsROOT_DIR}
           ${xsINCLUDE_DIR}
-          ${xs3RDPARTY_DIR}/utfcpp/source/
-          ${xs3RDPARTY_DIR}/http-parser/
-          ${xs3RDPARTY_DIR}/cpp-httplib/
+          ${xsBUILD_INSTALLED_INCLUDE_DIR}/utf8cpp
+          ${xsBUILD_INSTALLED_INCLUDE_DIR}/http-parser
+          ${xs3RDPARTY_DIR}/cpp-httplib
           ${xsOPENSSL_INCLUDE}
           ${MSYS2_CLANG64_DIR}/include
           ${xs3RDPARTY_DIR}/tinyxml2/
           ${xs3RDPARTY_DIR}/wxWidgets/include/)
 
-target_link_directories(${PROJECT_NAME} PRIVATE ${xsLIBS_DIR})
+target_link_directories(${PROJECT_NAME} PRIVATE ${xsLIBS_DIR} ${xsLIBS_LIB_DIR}
+                        ${xsBUILD_INSTALLED_LIB_DIR})
 
 if(WIN32)
   target_link_libraries(
@@ -46,9 +47,9 @@ if(WIN32)
             libstl.a
             libzipcc.a
             libpthread.a
-            ${xsOUTPUT_DIR}/http_parser/libhttp_parser.a
-            ${xsOUTPUT_DIR}/zlib/libzlibstatic.a
-            ${xsOUTPUT_DIR}/tinyxml2/libtinyxml2.a
+            libhttp_parser.a
+            libzlibstatic.a
+            libtinyxml2.a
             ${xsOPENSSL_LIBRARY})
 
   set_target_properties(${PROJECT_NAME} PROPERTIES LINK_FLAGS "-mwindows"
