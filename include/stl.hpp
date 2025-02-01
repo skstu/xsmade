@@ -147,16 +147,21 @@ protected:
 };
 class Args {
 public:
+  Args();
   Args(const std::string &args);
   Args(const int &argc, char **argv);
   ~Args();
+  void operator=(const std::string &cmdline);
 
 private:
-  bool Parse();
+  bool Parse(const std::string &cmdline);
+
 public:
-  const std::string& GetSource() const;
+  bool Empty() const;
+  static std::u16string PackageCommandLine(const int &argc, char **argv);
+
 private:
-  std::string cmdline_;
+  std::map<std::u16string, std::u16string> source_;
 };
 class Common {
 public:

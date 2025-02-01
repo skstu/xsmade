@@ -6,11 +6,13 @@
 #include <Windows.h>
 int APIENTRY WinMain(HINSTANCE hInst, HINSTANCE hInstPrev, PSTR cmdline,
                      int cmdshow) {
+  std::wstring args = GetCommandLineW();
   stl::Args args(std::string(cmdline ? cmdline : ""));
 #else
 int main(int argc, char **argv) {
   stl::Args args(argc, argv);
 #endif
 
+  
   return 0;
 }
