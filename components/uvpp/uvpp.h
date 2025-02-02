@@ -15,17 +15,6 @@ protected:
   IService *CreateSevice() const override final;
   IBuffer *CreateBuffer(const char *, size_t) const override final;
 };
-
-#ifdef __cplusplus
-extern "C" {
-#endif
-
-SHARED_API void *interface_init(void *, unsigned long);
-SHARED_API void interface_uninit();
-
-#ifdef __cplusplus
-}
-#endif
 /// /*_ Memade®（新生™） _**/
 /// /*_ Tue, 03 Dec 2024 02:22:24 GMT _**/
 /// /*_____ https://www.skstu.com/ _____ **/

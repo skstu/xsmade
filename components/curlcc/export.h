@@ -1,10 +1,10 @@
 #if !defined(__03406DC9_3BF3_47A3_927C_502ACED2AF60__)
 #define __03406DC9_3BF3_47A3_927C_502ACED2AF60__
 
-#include "interface.hpp"
+#include "component.h"
 
 namespace curl {
-class ICurl : public Interface<ICurl> {
+class ICurl : public IComponent {
 public:
   virtual bool Start() = 0;
   virtual void Stop() = 0;

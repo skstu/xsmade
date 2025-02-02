@@ -44,6 +44,11 @@ Uvpp *Uvpp::Create() {
 void Uvpp::Destroy() {
   SK_DELETE_PTR(__gpUvpp);
 }
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 SHARED_API void *interface_init(void *data, unsigned long len) {
   auto config = Config::Create();
   auto uvpp = Uvpp::Create();
@@ -56,3 +61,7 @@ SHARED_API void interface_uninit() {
   Config::Destroy();
   Uvpp::Destroy();
 }
+
+#ifdef __cplusplus
+}
+#endif

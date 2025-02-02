@@ -4,10 +4,10 @@
 #include <stl.hpp>
 #include <utf8.h>
 
-class Utfpp {
+class Conv {
 public:
-  Utfpp() = default;
-  ~Utfpp() = default;
+  Conv() = default;
+  ~Conv() = default;
 
 public:
   static std::u16string ws_to_u16(const std::wstring &input) {

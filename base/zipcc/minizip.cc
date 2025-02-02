@@ -24,7 +24,7 @@ bool Zipcc::zipUnCompress(const std::u16string &inputZipFile,
       if (UNZ_OK != unzGetCurrentFileInfo(zip_file, &file_info, filename_in_zip,
                                           MAX_PATH, nullptr, 0, nullptr, 0))
         break;
-      std::u16string strfilename_in_zip = Utfpp::u8_to_u16(filename_in_zip);
+      std::u16string strfilename_in_zip = Conv::u8_to_u16(filename_in_zip);
       if (!(*std::prev(strfilename_in_zip.end()) == u'\\' ||
             *std::prev(strfilename_in_zip.end()) == u'/')) {
         if (UNZ_OK == unzOpenCurrentFile(zip_file)) {
@@ -73,7 +73,7 @@ bool Zipcc::zipUnCompress(const std::u16string &inputZipFile,
                                 nullptr, 0, nullptr, 0) != UNZ_OK)
         break;
       const std::u16string filename_in_zip_full =
-          outputUnzipPath + u"/" + Utfpp::u8_to_u16(filename_in_zip);
+          outputUnzipPath + u"/" + Conv::u8_to_u16(filename_in_zip);
 
       if (*std::prev(filename_in_zip_full.end()) == u'\\' ||
           *std::prev(filename_in_zip_full.end()) == u'/') {
@@ -134,7 +134,7 @@ bool Zipcc::zipUnCompress(const std::u16string &inputZipFile,
                                 nullptr, 0, nullptr, 0) != UNZ_OK)
         break;
       const std::u16string filename_in_zip_full =
-          outputUnzipPath + u"\\" + Utfpp::u8_to_u16(filename_in_zip);
+          outputUnzipPath + u"\\" + Conv::u8_to_u16(filename_in_zip);
 
       if (*std::prev(filename_in_zip_full.end()) == u'\\' ||
           *std::prev(filename_in_zip_full.end()) == u'/') {

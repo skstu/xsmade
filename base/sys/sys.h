@@ -2,7 +2,7 @@
 #define __2CC5C4ED_79BA_4EA1_B4F2_ABD980B03F15__
 
 #include <xs.h>
-#include <utfpp.hpp>
+#include <conv.hpp>
 #if defined(__OSWIN__)
 #ifndef WIN32_LEAN_AND_MEAN
 #define WIN32_LEAN_AND_MEAN
@@ -35,7 +35,7 @@
 #include <semaphore.h>
 #include <fcntl.h>
 #include <libproc.h>
-//#include <Cocoa/Cocoa.h>
+// #include <Cocoa/Cocoa.h>
 #include <CoreFoundation/CoreFoundation.h>
 #include <ApplicationServices/ApplicationServices.h>
 #include <ImageIO/ImageIO.h>

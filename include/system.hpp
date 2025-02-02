@@ -2,7 +2,7 @@
 #define __DBFEB73C_C2B1_42BD_A043_47FB3B92BE75__
 
 #include <xs.h>
-#include <utfpp.hpp>
+#include <conv.hpp>
 
 class System {
 public:
@@ -34,7 +34,7 @@ public:
       u8result.append(_path, _path_len);
       xs_sys_free((void **)&_path);
       u8result = stl::Path::PathnameToPath(u8result);
-      result = Utfpp::u8_to_u16(u8result);
+      result = Conv::u8_to_u16(u8result);
     } while (0);
     return result;
   }

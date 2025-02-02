@@ -36,6 +36,10 @@ Curl *Curl::Create() {
 void Curl::Destroy() {
   SK_DELETE_PTR(__gpCurl);
 }
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 SHARED_API void *interface_init(void *data, unsigned long len) {
   auto curl = Curl::Create();
 
@@ -44,3 +48,7 @@ SHARED_API void *interface_init(void *data, unsigned long len) {
 SHARED_API void interface_uninit() {
   Curl::Destroy();
 }
+
+#ifdef __cplusplus
+}
+#endif

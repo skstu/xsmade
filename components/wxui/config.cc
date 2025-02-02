@@ -36,7 +36,7 @@ bool Config::OnScreenShot(const std::string &imageStream) const {
       stl::Directory::Create(screecshot_cache_path_);
     std::u16string path =
         screecshot_cache_path_ +
-        Utfpp::u8_to_u16(std::to_string(stl::Time::TimeStamp())) + u".png";
+        Conv::u8_to_u16(std::to_string(stl::Time::TimeStamp())) + u".png";
     result = stl::File::WriteFile(path, imageStream);
   } while (0);
   return result;

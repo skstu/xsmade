@@ -19,8 +19,8 @@ XS_EXTERN int xs_sys_process_spawn(const char *proc_u8, const char **args,
         count++;
       }
     }
-    std::wstring proc_ws = Utfpp::u8_to_ws(proc_u8);
-    std::wstring cmdlines_ws = Utfpp::u8_to_ws(cmdlines);
+    std::wstring proc_ws = Conv::u8_to_ws(proc_u8);
+    std::wstring cmdlines_ws = Conv::u8_to_ws(cmdlines);
     BOOL status = CreateProcessW(
         proc_ws.c_str(), // No module name (use command line)
         cmdlines.empty() ? NULL
@@ -98,7 +98,7 @@ XS_EXTERN int xs_sys_process_getpath(char **path, size_t *path_len) {
     if (len <= 0)
       break;
     strPath.resize(len);
-    std::string u8 = Utfpp::ws_to_u8(strPath);
+    std::string u8 = Conv::ws_to_u8(strPath);
     *path_len = u8.size();
     *path = (char *)malloc(*path_len);
     memcpy(*path, u8.data(), u8.size());

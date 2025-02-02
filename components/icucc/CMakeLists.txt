@@ -1,34 +1,36 @@
-project(uvpp)
+project(icucc)
 
 gfn_project_source_get(${CMAKE_CURRENT_SOURCE_DIR} OUT_HEADER_S OUT_SOURCE_S)
-
 set(SOURCES ${OUT_HEADER_S} ${OUT_SOURCE_S})
 
 add_definitions(-DSHARED_IMPLEMENTATION)
 add_library(${PROJECT_NAME} SHARED ${SOURCES})
 
 target_include_directories(
-  ${PROJECT_NAME}
-  PRIVATE ${CMAKE_CURRENT_SOURCE_DIR} ${xsINCLUDE_DIR}
-          ${xsBUILD_INSTALLED_INCLUDE_DIR}/utf8cpp
-          ${xsBUILD_INSTALLED_INCLUDE_DIR})
+  ${PROJECT_NAME} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR} ${xsINCLUDE_DIR}
+                          ${xsBUILD_INSTALLED_INCLUDE_DIR})
 target_link_directories(${PROJECT_NAME} PRIVATE ${xsLIBS_DIR} ${xsLIBS_LIB_DIR}
                         ${xsBUILD_INSTALLED_LIB_DIR})
+
 if(xsSYSTYPE_WINDOWS)
   target_link_libraries(
     ${PROJECT_NAME}
-    ${MSYS2_CLANG64_DIR}/lib/libc++.a
-    Dbghelp.lib
-    Userenv.lib
+    wldap32.lib
+    winmm.lib
+    Bcrypt.lib
+    Crypt32.lib
+    Normaliz.lib
     ws2_32.lib
-    IPHLPAPI.lib
+    ${MSYS2_CLANG64_DIR}/lib/libc++.a
     libfmt.a
     libsys.a
     libstl.a
-    libzipcc.a
     libpthread.a
-    libuv.a
-    libzlibstatic.a)
+    ${MSYS2_CLANG64_DIR}/lib/libicuuc.a
+    ${MSYS2_CLANG64_DIR}/lib/libicuin.a
+    ${MSYS2_CLANG64_DIR}/lib/libicuio.a
+    ${MSYS2_CLANG64_DIR}/lib/libicudt.a
+    ${MSYS2_CLANG64_DIR}/lib/libicutu.a)
 
   add_custom_command(
     TARGET ${PROJECT_NAME}

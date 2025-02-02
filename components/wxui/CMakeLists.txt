@@ -89,17 +89,10 @@ elseif(APPLE)
 endif()
 # xs_set_common_target_properties(${PROJECT_NAME})
 
-set(EXTNAME "dll")
-if(WIN32)
-  set(EXTNAME "dll")
-elseif(APPLE)
-  set(EXTNAME "dylib")
-else()
-  set(EXTNAME "so")
-endif()
-
 add_custom_command(
   TARGET ${PROJECT_NAME}
   POST_BUILD
+  COMMAND echo "Output file: $<TARGET_FILE:${PROJECT_NAME}>"
   COMMAND ${CMAKE_COMMAND} -E copy_if_different $<TARGET_FILE:${PROJECT_NAME}>
-          ${xsBIN_DIR}/${PROJECT_NAME}.${EXTNAME})
+          ${xsOUTPUT_COMPONENTS_DIR}/$<TARGET_FILE_NAME:${PROJECT_NAME}>
+  COMMENT "Printing output file path and copying file")

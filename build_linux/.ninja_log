@@ -1,5 +1,0 @@
-# ninja log v5
-1	1293	1730819105940027903	tests/test_main/CMakeFiles/test_main.dir/main.cc.o	de7e6f939ebfe61f
-30	130	1730816067550043720	projects/brw_configure/libbrw_configure.so	31c7a90e9b33ecae
-0	30	1730816067450037519	projects/brw_configure/CMakeFiles/brw_configure.dir/configure.cc.o	8c1144880a2d6389
-1293	1420	1730819106076014370	tests/test_main/test_main	78a69beb0a414ad1

@@ -27,16 +27,7 @@ private:
   std::atomic_bool ready_ = false;
 };
 
-#ifdef __cplusplus
-extern "C" {
-#endif
 
-SHARED_API void *interface_init(void *, unsigned long);
-SHARED_API void interface_uninit();
-
-#ifdef __cplusplus
-}
-#endif
 /// /*_ Memade®（新生™） _**/
 /// /*_ Sat, 07 Dec 2024 02:23:49 GMT _**/
 /// /*_____ https://www.skstu.com/ _____ **/

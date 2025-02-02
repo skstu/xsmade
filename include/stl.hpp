@@ -145,24 +145,6 @@ public:
 protected:
   tfCommandLines source_;
 };
-class Args {
-public:
-  Args();
-  Args(const std::string &args);
-  Args(const int &argc, char **argv);
-  ~Args();
-  void operator=(const std::string &cmdline);
-
-private:
-  bool Parse(const std::string &cmdline);
-
-public:
-  bool Empty() const;
-  static std::u16string PackageCommandLine(const int &argc, char **argv);
-
-private:
-  std::map<std::u16string, std::u16string> source_;
-};
 class Common {
 public:
   static std::vector<std::string> StringSpilt(const std::string &input,

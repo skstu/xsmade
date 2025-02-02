@@ -24,9 +24,9 @@ XS_EXTERN int xs_sys_get_appdata_path(char **path, size_t *path_len) {
     ws = pszPath;
     if (ws.empty())
       break;
-    std::u16string u16 = Utfpp::ws_to_u16(ws);
+    std::u16string u16 = Conv::ws_to_u16(ws);
     u16.append(u"\\");
-    std::string u8 = Utfpp::u16_to_u8(u16);
+    std::string u8 = Conv::u16_to_u8(u16);
     *path = (char *)malloc(u8.size());
     *path_len = u8.size();
     memcpy(*path, u8.data(), u8.size());
@@ -200,7 +200,7 @@ int xs_sys_get_dll_path(xs_buffer_t **out_buffer, void *static_dummy_variable) {
     *out_buffer = (xs_buffer_t *)malloc(sizeof(xs_buffer_t));
     wchar_t path[MAX_PATH];
     size_t len = GetModuleFileNameW(hModule, path, MAX_PATH);
-    std::string u8path = Utfpp::ws_to_u8(std::wstring(path, len));
+    std::string u8path = Conv::ws_to_u8(std::wstring(path, len));
     (*out_buffer)->len = u8path.size();
     const size_t alloc_size = u8path.size() + 1;
     (*out_buffer)->buffer = (char *)malloc(alloc_size);

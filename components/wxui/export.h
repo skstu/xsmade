@@ -1,7 +1,7 @@
 #if !defined(__4132C3D7_60F3_49F7_BE5C_4B2B46C61895__)
 #define __4132C3D7_60F3_49F7_BE5C_4B2B46C61895__
 
-#include "interface.hpp"
+#include "component.h"
 
 namespace wxui {
 using tfThemeIdentify = unsigned long;
@@ -44,9 +44,9 @@ public:
   virtual void SetResourceDir(const char *) = 0;
   virtual void RegisterRecordingStartCb(tfRecordingStartCb, void *) = 0;
   virtual void RegisterRecordingStopCb(tfRecordingStopCb, void *) = 0;
-  virtual void RegisterSystemExitCb(tfSystemExitCb,void*) = 0;
+  virtual void RegisterSystemExitCb(tfSystemExitCb, void *) = 0;
 };
-class IWxui : public Interface<IWxui> {
+class IWxui : public IComponent {
 public:
 public:
   virtual bool Start() = 0;

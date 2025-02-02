@@ -1,7 +1,7 @@
 ﻿#if !defined(__EDFDD880_A47B_4806_8F76_D2771575F3D7__)
 #define __EDFDD880_A47B_4806_8F76_D2771575F3D7__
 
-#include "interface.hpp"
+#include "component.h"
 
 namespace uvpp {
 
@@ -278,11 +278,19 @@ public:
   RegisterClientSessionWriteHookCb(const tfOnHookClientSessionWriteCb &) = 0;
 };
 
-class IUvpp : public Interface<IUvpp> {
+class IUvpp : public IComponent {
 public:
   virtual IConfig *ConfigGet() const = 0;
   virtual IService *CreateSevice() const = 0;
   virtual IBuffer *CreateBuffer(const char *, size_t) const = 0;
+  virtual bool Start() {
+    return false;
+  }
+  virtual void Stop() {
+  }
+  virtual bool Ready() const {
+    return false;
+  }
 };
 } // namespace uvpp
 
