@@ -9,7 +9,9 @@ option(xsUSE_3RDPARTY_CURL "Enable configure 3rdparty - curl" OFF)
 option(xsUSE_3RDPARTY_HTTP_PARSER "Enable configure 3rdparty - http-parser" OFF)
 option(xsUSE_3RDPARTY_UTF8CPP "Enable configure 3rdparty - utf8cpp" OFF)
 option(xsUSE_3RDPARTY_SPDLOG "Enable configure 3rdparty - spdlog" OFF)
-option(xsUSE_3RDPARTY_JSONNET "Enable configure 3rdparty - jsonnet" ON)
+option(xsUSE_3RDPARTY_JSONNET "Enable configure 3rdparty - jsonnet" OFF)
+option(xsUSE_3RDPARTY_NSISPLUGINAPI
+       "Enable configure 3rdparty - nsis-pluginapi" OFF)
 
 if(xsUSE_3RDPARTY)
   set(CMAKE_DEBUG_POSTFIX
@@ -53,4 +55,7 @@ if(xsUSE_3RDPARTY AND xsUSE_3RDPARTY_SPDLOG)
 endif()
 if(xsUSE_3RDPARTY AND xsUSE_3RDPARTY_JSONNET)
   include(build/cmake/deps/jsonnet.cmake)
+endif()
+if(xsUSE_3RDPARTY AND xsUSE_3RDPARTY_NSISPLUGINAPI)
+  include(build/cmake/deps/nsis-pluginapi.cmake)
 endif()

@@ -3,7 +3,7 @@
 # components Author:      Martell Created:     2024-11-04 Copyright:   (c) 2024
 # skstu development team Licence:     skstu licence
 # ##############################################################################
-
+add_subdirectory(nswxskin)
 add_subdirectory(launch)
 # add_subdirectory(browser/brwcfg) add_subdirectory(perform)
 # add_subdirectory(ffxctrl) add_subdirectory(ffxui) add_subdirectory(ffx)

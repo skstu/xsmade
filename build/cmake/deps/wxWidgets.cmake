@@ -12,7 +12,7 @@ if(xsSYSTYPE_WINDOWS)
         OFF
         CACHE BOOL "Choose ${WXWIDGETS_PROJECT_NAME} toolkit" FORCE)
         ]]
-  add_compile_options(-Wno-deprecated-declarations)
+  # add_compile_options(-Wno-deprecated-declarations)
 elseif(xsSYSTYPE_APPLE)
   set(wxBUILD_TOOLKIT
       "osx_cocoa"
