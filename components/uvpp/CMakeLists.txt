@@ -71,7 +71,7 @@ endif()
 add_custom_command(
   TARGET ${PROJECT_NAME}
   POST_BUILD
-  COMMAND echo "Output file: $<TARGET_FILE:${PROJECT_NAME}>"
+  COMMAND echo "Output file: ${xsOUTPUT_COMPONENTS_DIR}/$<TARGET_FILE_NAME:${PROJECT_NAME}>"
   COMMAND ${CMAKE_COMMAND} -E copy_if_different $<TARGET_FILE:${PROJECT_NAME}>
           ${xsOUTPUT_COMPONENTS_DIR}/$<TARGET_FILE_NAME:${PROJECT_NAME}>
   COMMENT "Printing output file path and copying file")

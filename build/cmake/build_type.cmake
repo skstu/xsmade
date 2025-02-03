@@ -20,6 +20,11 @@ if(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
                                                "RelWithDebInfo" "MinSizeRel")
 endif()
 
+set(CMAKE_CXX_FLAGS_DEBUG "-g -O0 -DDEBUG -D_DEBUG")
+set(CMAKE_CXX_FLAGS_RELEASE "-O3 -DNDEBUG")
+set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "-O2 -g") # Release with Debug Info
+set(CMAKE_CXX_FLAGS_MINSIZEREL "-Os -DNDEBUG") # MinSizeRel
+
 option(xsBUILD_PIC "Enable configure position independent code" ON)
 if(xsBUILD_PIC)
   set_property(GLOBAL PROPERTY POSITION_INDEPENDENT_CODE ON)

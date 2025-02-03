@@ -1,13 +1,14 @@
-#if !defined(__FB50D306_393A_45BE_8303_C3336CF0F3E0__)
-#define __FB50D306_393A_45BE_8303_C3336CF0F3E0__
+#if !defined(__DCD492A4_72B6_4975_9D1F_482ECC885D95__)
+#define __DCD492A4_72B6_4975_9D1F_482ECC885D95__
 
-#define xsMAJOR_VERSION      1
-#define xsMINOR_VERSION      0
-#define xsRELEASE_NUMBER     0
-#define xsSUBRELEASE_NUMBER  0
-#define xsVERSION_STRING   "xsProject 1.0.0.0"
+#define XS_VER_MAJOR 1
+#define XS_VER_MINOR 0
+#define XS_VER_PATCH 1
+
+#define XS_TO_VERSION(major, minor, patch) (major * 10000 + minor * 100 + patch)
+#define XS_VERSION                         XS_TO_VERSION(XS_VER_MAJOR, XS_VER_MINOR, XS_VER_PATCH)
 
 /// /*_ Memade®（新生™） _**/
-/// /*_ Sun, 03 Nov 2024 14:48:12 GMT _**/
+/// /*_ Sun, 02 Feb 2025 03:57:36 GMT _**/
 /// /*_____ https://www.skstu.com/ _____ **/
-#endif///__FB50D306_393A_45BE_8303_C3336CF0F3E0__
+#endif ///__DCD492A4_72B6_4975_9D1F_482ECC885D95__

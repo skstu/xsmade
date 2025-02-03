@@ -10,6 +10,7 @@ target_include_directories(
   PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}
           ${xsROOT_DIR}
           ${xsINCLUDE_DIR}
+          ${xsBUILD_INSTALLED_INCLUDE_DIR}
           ${xsBUILD_INSTALLED_INCLUDE_DIR}/utf8cpp
           ${xsBUILD_INSTALLED_INCLUDE_DIR}/http-parser
           ${xs3RDPARTY_DIR}/cpp-httplib
@@ -21,7 +22,7 @@ target_include_directories(
 target_link_directories(${PROJECT_NAME} PRIVATE ${xsLIBS_DIR} ${xsLIBS_LIB_DIR}
                         ${xsBUILD_INSTALLED_LIB_DIR})
 
-if(WIN32)
+if(xsSYSTYPE_WINDOWS)
   target_link_libraries(
     ${PROJECT_NAME}
     PRIVATE ${MSYS2_CLANG64_DIR}/lib/libc++.a
@@ -50,11 +51,12 @@ if(WIN32)
             libhttp_parser.a
             libzlibstatic.a
             libtinyxml2.a
+            libspdlog.a
             ${xsOPENSSL_LIBRARY})
 
   set_target_properties(${PROJECT_NAME} PROPERTIES LINK_FLAGS "-mwindows"
                                                    WIN32_EXECUTABLE YES)
-elseif(APPLE)
+elseif(xsSYSTYPE_APPLE)
   target_include_directories(
     ${PROJECT_NAME}
     PRIVATE ${xsINCLUDE_DIR}
