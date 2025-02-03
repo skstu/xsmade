@@ -6,3 +6,4 @@ MakeInstaller/.vscode
 MakeInstaller/output
 MakeInstaller/source/*.7z
 MakeInstaller/FilesToInstall
+NSIS/Plugins/amd64-unicode/libnswxskin.dll
