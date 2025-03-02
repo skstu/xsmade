@@ -1,0 +1,22 @@
+#if !defined(__B1F33AEC_2D80_4000_82D0_167E1693415E__)
+#define __B1F33AEC_2D80_4000_82D0_167E1693415E__
+
+class Frame : public FrameBase {
+public:
+  Frame(wxWindow *parent, wxWindowID id = wxID_ANY,
+            const wxString &title = wxEmptyString,
+            const wxPoint &pos = wxDefaultPosition,
+            const wxSize &size = wxDefaultSize,
+            long style = wxDEFAULT_FRAME_STYLE,
+            const wxString &name = wxASCII_STR(wxFrameNameStr));
+  virtual ~Frame();
+
+private:
+  void OnSize(wxSizeEvent &);
+  void OnClose(wxCloseEvent &);
+  DECLARE_EVENT_TABLE()
+};
+/// /*_ Memade®（新生™） _**/
+/// /*_ Thu, 28 Nov 2024 00:48:21 GMT _**/
+/// /*_____ https://www.skstu.com/ _____ **/
+#endif ///__B1F33AEC_2D80_4000_82D0_167E1693415E__

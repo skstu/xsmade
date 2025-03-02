@@ -1,0 +1,164 @@
+#include <wxui.h>
+
+BEGIN_EVENT_TABLE(Frame, wxFrame)
+EVT_MOTION(Frame::OnMouseMove)
+EVT_PAINT(Frame::OnPaint)
+EVT_LEFT_DOWN(Frame::OnMouseLeftDown)
+EVT_LEFT_UP(Frame::OnMouseLeftUp)
+EVT_ERASE_BACKGROUND(Frame::OnErase)
+#ifdef __WXGTK__
+EVT_WINDOW_CREATE(Frame::OnWindowCreate)
+#endif
+END_EVENT_TABLE()
+
+Frame::Frame(wxWindow *parent, wxWindowID id, const wxString &title,
+             const wxPoint &pos, const wxSize &size, long style,
+             const wxString &name)
+    : wxFrame(parent, id, title, pos, size,
+              wxNO_BORDER | wxFRAME_SHAPED /*| wxFRAME_NO_TASKBAR*/, name) {
+  wxImage *image = Global::Get()->GetResImage(u"test.png");
+  m_bmp = wxBitmap(*image);
+  int width = image->GetWidth();
+  int height = image->GetHeight();
+  SetSize(wxSize(width, height));
+  SetShape(*image);
+  // SetBackgroundColour(wxColour(255, 0, 0, wxALPHA_OPAQUE));
+  // SetBackgroundColour(wxColour(0, 0, 0, 0));
+  Layout();
+  Refresh();
+}
+Frame::~Frame() {
+}
+bool Frame::SetShape(const wxImage &img) {
+  wxImage m = img;
+  if (m.HasAlpha())
+    m.ConvertAlphaToMask();
+  return wxNonOwnedWindow::SetShape(wxRegion(m));
+}
+void Frame::OnMouseMove(wxMouseEvent &event) {
+  wxPoint pt = event.GetPosition();
+  if (event.Dragging() && event.LeftIsDown()) {
+    wxPoint pos = ClientToScreen(pt); // pos为点击位置
+    Move(wxPoint(pos.x - m_delta.x, pos.y - m_delta.y));
+  }
+}
+void Frame::OnMouseLeftDown(wxMouseEvent &event) {
+  CaptureMouse();
+  wxPoint pt = ClientToScreen(event.GetPosition());
+  wxPoint origin = GetPosition();
+  int dx = pt.x - origin.x;
+  int dy = pt.y - origin.y;
+  m_delta = wxPoint(dx, dy);
+}
+void Frame::OnMouseLeftUp(wxMouseEvent &event) {
+  if (HasCapture()) {
+    ReleaseMouse();
+  }
+}
+void Frame::OnErase(wxEraseEvent &wxEvent) {
+  wxEvent.Skip();
+}
+void Frame::OnPaint(wxPaintEvent &event) {
+  do {
+    int width{0}, height{0};
+    GetSize(&width, &height);
+    if (width <= 0 || height <= 0)
+      break;
+
+    wxBufferedPaintDC BufferDC(this);
+    BufferDC.SetBrush(*wxTRANSPARENT_BRUSH);
+    BufferDC.Clear();
+    wxGraphicsContext *gc = wxGraphicsContext::Create(BufferDC);
+    if (gc) {
+      gc->SetAntialiasMode(wxANTIALIAS_DEFAULT);
+      gc->DrawBitmap(m_bmp, 0, 0, m_bmp.GetWidth(), m_bmp.GetHeight());
+      delete gc;
+    }
+  } while (0);
+}
+
+#if 0
+void Frame::OnPaint(wxPaintEvent &event) {
+  do {
+    int width{0}, height{0};
+    GetSize(&width, &height);
+    if (width <= 0 || height <= 0)
+      break;
+    wxBufferedPaintDC BufferDC(this);
+    BufferDC.SetBrush(*wxTRANSPARENT_BRUSH);
+    BufferDC.Clear();
+
+    BufferDC.DrawBitmap(m_bmp, 0, 0, true);
+    // SetBackgroundColour(wxColour(255, 0, 0, wxALPHA_OPAQUE));
+  } while (0);
+}
+#if 0
+   BufferDC.SetBrush(*wxTRANSPARENT_BRUSH);
+   BufferDC.Clear();
+   auto current_theme = m_Themes.find(m_CurrentTheme);
+   if (current_theme == m_Themes.end())
+    break;
+
+   //BufferDC.DrawBitmap(wxBitmap(current_theme->second->ImgBgk().Scale(width, height)), 0, 0, true);
+#endif
+#if 0
+  // 加载图片
+  wxImage *image = Global::Get()->GetResImage(u"first.png");
+  int width = 800;
+  int height = 600;
+  if (image) {
+    m_bmp = wxBitmap(*image);
+    width = image->GetWidth();
+    height = image->GetHeight();
+  }
+
+  // 创建一个空白的位图，并确保它支持 alpha 通道
+  m_bmp.Create(width, height, 32); // 创建具有透明度的位图
+
+  // 使用 wxMemoryDC 来绘制位图
+  wxMemoryDC dc;
+  dc.SelectObject(m_bmp);
+
+  // 创建 wxGraphicsContext
+  wxGraphicsContext *gc = wxGraphicsContext::Create(dc);
+  if (gc) {
+    // 启用抗锯齿
+    gc->SetAntialiasMode(wxANTIALIAS_DEFAULT);
+
+    // 清除背景，确保背景透明
+    gc->SetBrush(wxBrush(wxColor(255, 255, 255, 0))); // 设置为完全透明
+    gc->SetPen(*wxTRANSPARENT_PEN);                   // 确保没有边框
+    gc->DrawRectangle(0, 0, width, height);           // 清除背景
+
+    // 绘制圆角矩形背景
+    int x = 0;       // 左上角的 x 坐标
+    int y = 0;       // 左上角的 y 坐标
+    int radius = 20; // 圆角的半径
+
+    // 如果要用图片填充背景，使用 DrawBitmap
+    if (image) {
+      gc->DrawBitmap(wxBitmap(*image), 0, 0, width, height); // 绘制背景图片
+    }
+
+    // 绘制红色的圆角边框
+    gc->SetPen(wxPen(wxColor(255, 0, 0), 3));   // 红色边框，线宽 3px
+    gc->SetBrush(wxBrush(wxColor(0, 0, 0, 0))); // 透明填充（只绘制边框）
+    gc->DrawRoundedRectangle(x, y, width, height, radius);
+
+    // 删除 wxGraphicsContext
+    delete gc;
+  }
+
+  // 释放位图
+  dc.SelectObject(wxNullBitmap);
+
+  // 设置窗口的大小
+  SetSize(wxSize(m_bmp.GetWidth(), m_bmp.GetHeight()));
+
+  // 设置窗口形状
+  SetWindowShape();
+
+  // 设置窗口的透明度
+  SetTransparent(255); // 0-255 之间的值，255 表示完全不透明
+#endif
+#endif

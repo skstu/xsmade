@@ -1,0 +1,14 @@
+prefix={/c/Users/k34ub/source/skstu/xsmade/build/scripts/ffmpeg-projects/win/../../../../build/installed}
+exec_prefix=${prefix}
+libdir={/c/Users/k34ub/source/skstu/xsmade/build/scripts/ffmpeg-projects/win/../../../../build/installed}/lib
+includedir={/c/Users/k34ub/source/skstu/xsmade/build/scripts/ffmpeg-projects/win/../../../../build/installed}/include
+
+Name: libpostproc
+Description: FFmpeg postprocessing library
+Version: 58.4.100
+Requires: libavutil >= 59.47.101
+Requires.private: 
+Conflicts:
+Libs: -L${libdir}  -lpostproc -lm
+Libs.private: 
+Cflags: -I${includedir}

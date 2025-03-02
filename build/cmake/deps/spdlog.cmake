@@ -1,0 +1,18 @@
+set(SPDLOG_PROJECT_NAME "spdlog")
+set(SPDLOG_BUILD_PIC
+    ON
+    CACHE BOOL "" FORCE)
+
+set(SPDLOG_BUILD_SHARED
+    OFF
+    CACHE BOOL "" FORCE)
+
+set(SPDLOG_BUILD_TESTS
+    OFF
+    CACHE BOOL "" FORCE)
+
+set(SPDLOG_INSTALL
+    ON
+    CACHE BOOL "" FORCE)
+
+add_subdirectory(${xs3RDPARTY_DIR}/spdlog/ ${SPDLOG_PROJECT_NAME})

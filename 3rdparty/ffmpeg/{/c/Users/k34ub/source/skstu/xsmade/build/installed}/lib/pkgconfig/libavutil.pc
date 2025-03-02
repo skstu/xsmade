@@ -1,0 +1,14 @@
+prefix={/c/Users/k34ub/source/skstu/xsmade/build/scripts/ffmpeg-projects/win/../../../../build/installed}
+exec_prefix=${prefix}
+libdir={/c/Users/k34ub/source/skstu/xsmade/build/scripts/ffmpeg-projects/win/../../../../build/installed}/lib
+includedir={/c/Users/k34ub/source/skstu/xsmade/build/scripts/ffmpeg-projects/win/../../../../build/installed}/include
+
+Name: libavutil
+Description: FFmpeg utility library
+Version: 59.47.101
+Requires: 
+Requires.private: 
+Conflicts:
+Libs: -L${libdir}  -lavutil -lm -LC:/msys64/clang64/bin/../lib -lssl -lcrypto -luser32 -lbcrypt -pthread
+Libs.private: 
+Cflags: -I${includedir}

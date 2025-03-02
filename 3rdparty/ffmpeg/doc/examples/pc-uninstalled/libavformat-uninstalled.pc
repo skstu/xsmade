@@ -1,0 +1,12 @@
+prefix=
+exec_prefix=
+libdir=${pcfiledir}/../../../libavformat
+includedir=.
+
+Name: libavformat
+Description: FFmpeg container format library
+Version: 61.9.100
+Requires:  libavcodec >= 61.25.102,  libswresample >= 5.4.100,  libavutil >= 59.47.101
+Conflicts:
+Libs: -L${libdir} -Wl,-rpath,${libdir} -lavformat -lm -LC:/msys64/clang64/bin/../lib -lxml2 -lbz2 -LC:/msys64/clang64/bin/../lib -lbluray -LC:/msys64/clang64/bin/../lib -lz -LC:/msys64/clang64/bin/../lib -lssl -lcrypto -LC:/msys64/clang64/bin/../lib -lrtmp -lz -lgmp -lgnutls -lhogweed -lnettle -LC:/msys64/clang64/bin/../lib -lsrt -lws2_32
+Cflags: -I${includedir}

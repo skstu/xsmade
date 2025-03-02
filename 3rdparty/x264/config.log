@@ -1,0 +1,276 @@
+checking for -Werror=unknown-warning-option... yes
+checking for -Werror=unknown-attributes... yes
+checking for -Werror=attributes... yes
+checking for -Werror=ignored-attributes... yes
+checking for -Werror=implicit-function-declaration... yes
+checking for -lshell32... yes
+checking for -S... yes
+checking for -Wl,--high-entropy-va... yes
+checking whether windres works... yes
+checking whether !WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP) is true... no
+--------------------------------------------------
+conftest.c:3:2: error: 
+    3 | #error  
+      |  ^
+1 error generated.
+--------------------------------------------------
+Failed program was:
+--------------------------------------------------
+#include <winapifamily.h>
+#if !(!WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP)) 
+#error  
+#endif 
+--------------------------------------------------
+x264 configure script
+Command line options: "--prefix=/c/Users/k34ub/source/skstu/xsmade/build/scripts/ffmpeg-projects/win/../../../../build/installed" "--enable-static"
+
+checking whether gcc works... yes
+checking whether gcc supports for( int i = 0; i < 9; i++ ); with -std=gnu99... yes
+checking whether gcc supports __attribute__((force_align_arg_pointer))... yes
+checking for -mpreferred-stack-boundary=6... no
+Failed commandline was:
+--------------------------------------------------
+gcc conftest.c -m64  -Wall -I. -I$(SRCPATH) -D_POSIX_C_SOURCE=200112L -std=gnu99 -D_GNU_SOURCE   -Werror=unknown-warning-option -Werror=unknown-attributes -Werror=attributes -Werror=ignored-attributes -Werror=implicit-function-declaration -mpreferred-stack-boundary=6  -lshell32 -Wl,--image-base,0x140000000 -m64   -Wl,--high-entropy-va -Wl,--dynamicbase,--nxcompat,--tsaware -o conftest
+gcc: error: unknown argument: '-mpreferred-stack-boundary=6'
+--------------------------------------------------
+Failed program was:
+--------------------------------------------------
+int main (void) {  return 0; }
+--------------------------------------------------
+checking for -mstack-alignment=64... yes
+checking whether nasm supports vmovdqa32 [eax]{k1}{z}, zmm0... yes
+checking whether gcc supports __asm__("pabsw %xmm0, %xmm0");... yes
+checking for volatile float x = 2; return log2f(x); in math.h... yes
+checking for strtok_r(0, 0, 0); in string.h... yes
+checking for clock_gettime(CLOCK_MONOTONIC, 0); in time.h... no
+Failed commandline was:
+--------------------------------------------------
+gcc conftest.c -m64  -Wall -I. -I$(SRCPATH) -D_POSIX_C_SOURCE=200112L -std=gnu99 -D_GNU_SOURCE -mstack-alignment=64   -Werror=unknown-warning-option -Werror=unknown-attributes -Werror=attributes -Werror=ignored-attributes -Werror=implicit-function-declaration   -lshell32 -Wl,--image-base,0x140000000 -m64   -Wl,--high-entropy-va -Wl,--dynamicbase,--nxcompat,--tsaware -o conftest
+ld.lld: error: undefined symbol: clock_gettime
+>>> referenced by C:/msys64/tmp/conftest-7fcd4f.o:(main)
+gcc: error: linker command failed with exit code 1 (use -v to see invocation)
+--------------------------------------------------
+Failed program was:
+--------------------------------------------------
+#include <time.h>
+int main (void) { clock_gettime(CLOCK_MONOTONIC, 0); return 0; }
+--------------------------------------------------
+checking for clock_gettime(CLOCK_MONOTONIC, 0); in time.h... no
+Failed commandline was:
+--------------------------------------------------
+gcc conftest.c -m64  -Wall -I. -I$(SRCPATH) -D_POSIX_C_SOURCE=200112L -std=gnu99 -D_GNU_SOURCE -mstack-alignment=64   -Werror=unknown-warning-option -Werror=unknown-attributes -Werror=attributes -Werror=ignored-attributes -Werror=implicit-function-declaration -lrt  -lshell32 -Wl,--image-base,0x140000000 -m64   -Wl,--high-entropy-va -Wl,--dynamicbase,--nxcompat,--tsaware -o conftest
+lld: error: unable to find library -lrt
+gcc: error: linker command failed with exit code 1 (use -v to see invocation)
+--------------------------------------------------
+Failed program was:
+--------------------------------------------------
+#include <time.h>
+int main (void) { clock_gettime(CLOCK_MONOTONIC, 0); return 0; }
+--------------------------------------------------
+checking for getauxval(AT_HWCAP); in sys/auxv.h... no
+Failed commandline was:
+--------------------------------------------------
+gcc conftest.c -m64  -Wall -I. -I$(SRCPATH) -D_POSIX_C_SOURCE=200112L -std=gnu99 -D_GNU_SOURCE -mstack-alignment=64   -Werror=unknown-warning-option -Werror=unknown-attributes -Werror=attributes -Werror=ignored-attributes -Werror=implicit-function-declaration   -lshell32 -Wl,--image-base,0x140000000 -m64   -Wl,--high-entropy-va -Wl,--dynamicbase,--nxcompat,--tsaware -o conftest
+conftest.c:1:10: fatal error: 'sys/auxv.h' file not found
+    1 | #include <sys/auxv.h>
+      |          ^~~~~~~~~~~~
+1 error generated.
+--------------------------------------------------
+Failed program was:
+--------------------------------------------------
+#include <sys/auxv.h>
+int main (void) { getauxval(AT_HWCAP); return 0; }
+--------------------------------------------------
+checking for unsigned long auxv = 0; elf_aux_info(AT_HWCAP, &auxv, sizeof(auxv)); in sys/auxv.h... no
+Failed commandline was:
+--------------------------------------------------
+gcc conftest.c -m64  -Wall -I. -I$(SRCPATH) -D_POSIX_C_SOURCE=200112L -std=gnu99 -D_GNU_SOURCE -mstack-alignment=64   -Werror=unknown-warning-option -Werror=unknown-attributes -Werror=attributes -Werror=ignored-attributes -Werror=implicit-function-declaration   -lshell32 -Wl,--image-base,0x140000000 -m64   -Wl,--high-entropy-va -Wl,--dynamicbase,--nxcompat,--tsaware -o conftest
+conftest.c:1:10: fatal error: 'sys/auxv.h' file not found
+    1 | #include <sys/auxv.h>
+      |          ^~~~~~~~~~~~
+1 error generated.
+--------------------------------------------------
+Failed program was:
+--------------------------------------------------
+#include <sys/auxv.h>
+int main (void) { unsigned long auxv = 0; elf_aux_info(AT_HWCAP, &auxv, sizeof(auxv)); return 0; }
+--------------------------------------------------
+checking for sysconf(0); in unistd.h... no
+Failed commandline was:
+--------------------------------------------------
+gcc conftest.c -m64  -Wall -I. -I$(SRCPATH) -D_POSIX_C_SOURCE=200112L -std=gnu99 -D_GNU_SOURCE -mstack-alignment=64   -Werror=unknown-warning-option -Werror=unknown-attributes -Werror=attributes -Werror=ignored-attributes -Werror=implicit-function-declaration   -lshell32 -Wl,--image-base,0x140000000 -m64   -Wl,--high-entropy-va -Wl,--dynamicbase,--nxcompat,--tsaware -o conftest
+conftest.c:2:19: error: call to undeclared function 'sysconf'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
+    2 | int main (void) { sysconf(0); return 0; }
+      |                   ^
+1 error generated.
+--------------------------------------------------
+Failed program was:
+--------------------------------------------------
+#include <unistd.h>
+int main (void) { sysconf(0); return 0; }
+--------------------------------------------------
+checking for packages: libswscale libavutil... no
+Failed commandline was:
+--------------------------------------------------
+pkg-config --exists libswscale libavutil
+--------------------------------------------------
+checking for sws_init_context(0,0,0); in libswscale/swscale.h... no
+Failed commandline was:
+--------------------------------------------------
+gcc conftest.c -m64  -Wall -I. -I$(SRCPATH) -D_POSIX_C_SOURCE=200112L -std=gnu99 -D_GNU_SOURCE -mstack-alignment=64   -Werror=unknown-warning-option -Werror=unknown-attributes -Werror=attributes -Werror=ignored-attributes -Werror=implicit-function-declaration  -lswscale -lavutil  -lshell32 -Wl,--image-base,0x140000000 -m64   -Wl,--high-entropy-va -Wl,--dynamicbase,--nxcompat,--tsaware -o conftest
+conftest.c:1:10: fatal error: 'libswscale/swscale.h' file not found
+    1 | #include <libswscale/swscale.h>
+      |          ^~~~~~~~~~~~~~~~~~~~~~
+1 error generated.
+--------------------------------------------------
+Failed program was:
+--------------------------------------------------
+#include <libswscale/swscale.h>
+int main (void) { sws_init_context(0,0,0); return 0; }
+--------------------------------------------------
+checking for packages: libavformat libavcodec libavutil... no
+Failed commandline was:
+--------------------------------------------------
+pkg-config --exists libavformat libavcodec libavutil
+--------------------------------------------------
+checking for -lavformat... no
+Failed commandline was:
+--------------------------------------------------
+gcc conftest.c -m64  -Wall -I. -I$(SRCPATH) -D_POSIX_C_SOURCE=200112L -std=gnu99 -D_GNU_SOURCE -mstack-alignment=64   -Werror=unknown-warning-option -Werror=unknown-attributes -Werror=attributes -Werror=ignored-attributes -Werror=implicit-function-declaration -lavformat  -lshell32 -Wl,--image-base,0x140000000 -m64   -Wl,--high-entropy-va -Wl,--dynamicbase,--nxcompat,--tsaware -o conftest
+lld: error: unable to find library -lavformat
+gcc: error: linker command failed with exit code 1 (use -v to see invocation)
+--------------------------------------------------
+Failed program was:
+--------------------------------------------------
+int main (void) {  return 0; }
+--------------------------------------------------
+checking for av_demuxer_iterate(0); in libavformat/avformat.h... no
+Failed commandline was:
+--------------------------------------------------
+gcc conftest.c -m64  -Wall -I. -I$(SRCPATH) -D_POSIX_C_SOURCE=200112L -std=gnu99 -D_GNU_SOURCE -mstack-alignment=64   -Werror=unknown-warning-option -Werror=unknown-attributes -Werror=attributes -Werror=ignored-attributes -Werror=implicit-function-declaration    -lshell32 -Wl,--image-base,0x140000000 -m64   -Wl,--high-entropy-va -Wl,--dynamicbase,--nxcompat,--tsaware -o conftest
+conftest.c:1:10: fatal error: 'libavformat/avformat.h' file not found
+    1 | #include <libavformat/avformat.h>
+      |          ^~~~~~~~~~~~~~~~~~~~~~~~
+1 error generated.
+--------------------------------------------------
+Failed program was:
+--------------------------------------------------
+#include <libavformat/avformat.h>
+int main (void) { av_demuxer_iterate(0); return 0; }
+--------------------------------------------------
+checking for packages: ffms2... no
+Failed commandline was:
+--------------------------------------------------
+pkg-config --exists ffms2
+--------------------------------------------------
+checking for FFMS_DestroyVideoSource(0); in ffms.h... no
+Failed commandline was:
+--------------------------------------------------
+gcc conftest.c -m64  -Wall -I. -I$(SRCPATH) -D_POSIX_C_SOURCE=200112L -std=gnu99 -D_GNU_SOURCE -mstack-alignment=64   -Werror=unknown-warning-option -Werror=unknown-attributes -Werror=attributes -Werror=ignored-attributes -Werror=implicit-function-declaration  -lffms2  -lshell32 -Wl,--image-base,0x140000000 -m64   -Wl,--high-entropy-va -Wl,--dynamicbase,--nxcompat,--tsaware -o conftest
+conftest.c:1:10: fatal error: 'ffms.h' file not found
+    1 | #include <ffms.h>
+      |          ^~~~~~~~
+1 error generated.
+--------------------------------------------------
+Failed program was:
+--------------------------------------------------
+#include <ffms.h>
+int main (void) { FFMS_DestroyVideoSource(0); return 0; }
+--------------------------------------------------
+checking for FFMS_DestroyVideoSource(0); in ffms.h... no
+Failed commandline was:
+--------------------------------------------------
+gcc conftest.c -m64  -Wall -I. -I$(SRCPATH) -D_POSIX_C_SOURCE=200112L -std=gnu99 -D_GNU_SOURCE -mstack-alignment=64   -Werror=unknown-warning-option -Werror=unknown-attributes -Werror=attributes -Werror=ignored-attributes -Werror=implicit-function-declaration  -lffms2 -lstdc++   -lshell32 -Wl,--image-base,0x140000000 -m64   -Wl,--high-entropy-va -Wl,--dynamicbase,--nxcompat,--tsaware -o conftest
+conftest.c:1:10: fatal error: 'ffms.h' file not found
+    1 | #include <ffms.h>
+      |          ^~~~~~~~
+1 error generated.
+--------------------------------------------------
+Failed program was:
+--------------------------------------------------
+#include <ffms.h>
+int main (void) { FFMS_DestroyVideoSource(0); return 0; }
+--------------------------------------------------
+checking for packages: liblsmash... no
+Failed commandline was:
+--------------------------------------------------
+pkg-config --exists liblsmash
+--------------------------------------------------
+checking for lsmash_destroy_root(0); in lsmash.h... no
+Failed commandline was:
+--------------------------------------------------
+gcc conftest.c -m64  -Wall -I. -I$(SRCPATH) -D_POSIX_C_SOURCE=200112L -std=gnu99 -D_GNU_SOURCE -mstack-alignment=64   -Werror=unknown-warning-option -Werror=unknown-attributes -Werror=attributes -Werror=ignored-attributes -Werror=implicit-function-declaration  -llsmash  -lshell32 -Wl,--image-base,0x140000000 -m64   -Wl,--high-entropy-va -Wl,--dynamicbase,--nxcompat,--tsaware -o conftest
+conftest.c:1:10: fatal error: 'lsmash.h' file not found
+    1 | #include <lsmash.h>
+      |          ^~~~~~~~~~
+1 error generated.
+--------------------------------------------------
+Failed program was:
+--------------------------------------------------
+#include <lsmash.h>
+int main (void) { lsmash_destroy_root(0); return 0; }
+--------------------------------------------------
+checking for packages: gpac... no
+Failed commandline was:
+--------------------------------------------------
+pkg-config --exists gpac
+--------------------------------------------------
+checking for -lz... yes
+checking for -ldl... yes
+checking for -lws2_32... yes
+checking for -lwinmm... yes
+checking for gf_isom_close(0); in gpac/isomedia.h... no
+Failed commandline was:
+--------------------------------------------------
+gcc conftest.c -m64  -Wall -I. -I$(SRCPATH) -D_POSIX_C_SOURCE=200112L -std=gnu99 -D_GNU_SOURCE -mstack-alignment=64   -Werror=unknown-warning-option -Werror=unknown-attributes -Werror=attributes -Werror=ignored-attributes -Werror=implicit-function-declaration  -lgpac_static -lz -ldl -lws2_32 -lwinmm  -lshell32 -Wl,--image-base,0x140000000 -m64   -Wl,--high-entropy-va -Wl,--dynamicbase,--nxcompat,--tsaware -o conftest
+conftest.c:1:10: fatal error: 'gpac/isomedia.h' file not found
+    1 | #include <gpac/isomedia.h>
+      |          ^~~~~~~~~~~~~~~~~
+1 error generated.
+--------------------------------------------------
+Failed program was:
+--------------------------------------------------
+#include <gpac/isomedia.h>
+int main (void) { gf_isom_close(0); return 0; }
+--------------------------------------------------
+checking for uint32_t test_vec __attribute__ ((vector_size (16))) = {0,1,2,3}; in stdint.h... yes
+checking for -fno-tree-vectorize... yes
+checking for fseeko(stdin,0,0); in stdio.h... yes
+checking for -Wshadow... yes
+checking for -Wmaybe-uninitialized... no
+Failed commandline was:
+--------------------------------------------------
+gcc conftest.c -Wshadow -O3 -ffast-math -m64  -Wall -I. -I$(SRCPATH) -D_POSIX_C_SOURCE=200112L -std=gnu99 -D_GNU_SOURCE -mstack-alignment=64 -fomit-frame-pointer -fno-tree-vectorize   -Werror=unknown-warning-option -Werror=unknown-attributes -Werror=attributes -Werror=ignored-attributes -Werror=implicit-function-declaration -Wmaybe-uninitialized  -lshell32 -Wl,--image-base,0x140000000 -m64   -Wl,--high-entropy-va -Wl,--dynamicbase,--nxcompat,--tsaware -o conftest
+error: unknown warning option '-Wmaybe-uninitialized'; did you mean '-Wuninitialized'? [-Werror,-Wunknown-warning-option]
+--------------------------------------------------
+Failed program was:
+--------------------------------------------------
+int main (void) {  return 0; }
+--------------------------------------------------
+checking for -fvisibility=hidden... yes
+
+platform:       X86_64
+byte order:     little-endian
+system:         WINDOWS
+cli:            yes
+libx264:        internal
+shared:         no
+static:         yes
+bashcompletion: no
+asm:            yes
+interlaced:     yes
+avs:            yes
+lavf:           no
+ffms:           no
+mp4:            no
+gpl:            yes
+thread:         win32
+opencl:         yes
+filters:        crop select_every
+lto:            no
+debug:          no
+gprof:          no
+strip:          no
+PIC:            no
+bit depth:      all
+chroma format:  all

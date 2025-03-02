@@ -1,0 +1,104 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Windows Build With CMake Ninja",
+      "type": "cppdbg",
+      "request": "launch",
+      "program": "C:/Users/k34ub/AppData/Roaming/MarsPanda/3rd/chromium/130.0.6723.191/fanbrowser.exe",
+      "args": [],
+      // "program": "${workspaceFolder}/out/bin/test_curlcc.exe",
+      // "args": [],
+      // "program": "${workspaceFolder}/out/bin/MediaStreamServer.exe",
+      // "args": [],
+      // "program": "${workspaceFolder}/out/bin/MediaStreamClient.exe",
+      // "args": [],
+      //"program": "${workspaceFolder}/out/bin/test_ffx.exe",
+      //"program": "${workspaceFolder}/out/bin/test_uvpp_server.exe",
+      //"program": "${workspaceFolder}/out/bin/test_uvpp_client.exe",
+      // "program": "${workspaceFolder}/bin/test_wxui.exe",
+      // "args": [],
+      // "program": "${workspaceFolder}/bin/test_icucc.exe",
+      // "args": [],
+      // "program": "${workspaceFolder}/bin/test_nsis.exe",
+      // "args": [],
+      // "program": "${workspaceFolder}/out/bin/test_brwcfg.exe",
+      // "args": [],
+      // "program": "${workspaceFolder}/bin/perform.exe",
+      // "args": [
+      //   " ",
+      //   "--type=service",
+      //   //"--type=download",
+      //   //"--type=streampp",
+      //   " ",
+      // ],
+      // "program": "${workspaceFolder}/bin/launch.exe",
+      // "args": [
+      //   " ",
+      //   "--type=service",
+      //   //"--type=download",
+      //   //"--type=streampp",
+      //   " ",
+      // ],
+      // "program": "${workspaceFolder}/out/bin/test_engine.exe",
+      // "args": [],
+      "stopAtEntry": false,
+      "cwd": "${workspaceFolder}",
+      "environment": [],
+      "externalConsole": false,
+      "MIMode": "gdb", // 在 Windows 上使用 GDB
+      "miDebuggerPath": "C:/msys64/mingw64/bin/gdb.exe",
+      "setupCommands": [
+        {
+          "description": "Enable pretty-printing for gdb",
+          "text": "-enable-pretty-printing",
+          "ignoreFailures": true
+        }
+      ],
+      "preLaunchTask": "Windows Build Debug On CMake"
+    },
+    {
+      "name": "Linux Build With CMake Ninja",
+      "type": "cppdbg",
+      "request": "launch",
+      "program": "${workspaceFolder}/out/tests/test_main/test_main",
+      "args": [
+        " ",
+        "--type=service",
+        " ",
+      ],
+      "stopAtEntry": false,
+      "cwd": "${workspaceFolder}",
+      "environment": [],
+      "externalConsole": false,
+      "MIMode": "gdb", // 在 Windows 上使用 GDB
+      "miDebuggerPath": "/usr/bin/gdb",
+      "setupCommands": [
+        {
+          "description": "Enable pretty-printing for gdb",
+          "text": "-enable-pretty-printing",
+          "ignoreFailures": true
+        }
+      ],
+      "preLaunchTask": "Linux Build Debug On CMake"
+    },
+    {
+      "name": "MacOS Build With CMake Ninja",
+      "type": "cppdbg",
+      "request": "launch",
+      "program": "${workspaceFolder}/out/bin/perform",
+      "args": [
+        " ",
+        "--type=service",
+        " ",
+      ],
+      "stopAtEntry": false,
+      "cwd": "${workspaceFolder}",
+      "environment": [],
+      "externalConsole": false,
+      "MIMode": "lldb",
+      "miDebuggerPath": "/Users/huoxingxiongmao/.vscode/extensions/ms-vscode.cpptools-1.22.11-darwin-arm64/debugAdapters/lldb-mi/bin/lldb-mi",
+      "preLaunchTask": "MacOS Build Debug On CMake"
+    }
+  ]
+}

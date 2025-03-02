@@ -1,0 +1,31 @@
+{
+    "configurations": [
+        {
+            "name": "Windows",
+            "includePath": [
+                "${workspaceFolder}/**",
+                "${workspaceFolder}/include",
+                "${workspaceFolder}/3rdparty",
+                "${workspaceFolder}/3rdparty/wxWidgets/include/wx/msw",
+                "C:/msys64/clang64/include",
+                "C:/msys64/usr/include"
+            ],
+            "defines": [],
+            "compilerPath": "C:/msys64/clang64/bin/clang++.exe",
+            "intelliSenseMode": "windows-clang-x64",
+            "cppStandard": "c++17"
+        },
+        {
+            "name": "Linux",
+            "includePath": [
+                "${workspaceFolder}/**",
+                "/usr/include"
+            ],
+            "defines": [],
+            "compilerPath": "/usr/bin/clang++",
+            "intelliSenseMode": "clang-x64",
+            "cppStandard": "c++17"
+        }
+    ],
+    "version": 4
+}

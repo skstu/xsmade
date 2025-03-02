@@ -1,0 +1,7 @@
+add_library(ryml STATIC rapidyaml.cpp ryml_all.hpp)
+
+install(
+  TARGETS ryml
+  RUNTIME DESTINATION "${CMAKE_INSTALL_PREFIX}/bin"
+  ARCHIVE DESTINATION "${CMAKE_INSTALL_PREFIX}/lib"
+  LIBRARY DESTINATION "${CMAKE_INSTALL_PREFIX}/lib")
