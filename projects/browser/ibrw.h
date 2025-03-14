@@ -56,6 +56,8 @@ public:
   virtual void *MallocS(const size_t &) const = 0;
   virtual IBuffer *CreateBuffer(const char *, const size_t &) const = 0;
   virtual void OnAppendArgs(IArgsArray **) const = 0;
+  virtual bool OnExtensionMessage(const char *extid, const IBuffer *req,
+                                  IBuffer **res) const = 0;
   virtual void OnExtensionsInstall(const IBuffer *,
                                    IExtensionArray **) const = 0;
   virtual void OnGetUserDataDirectory(IBuffer **) const = 0;
@@ -68,7 +70,10 @@ public:
                                       unsigned long *exstyle) const = 0;
   virtual void OnCreateWindowExAfter(void *hwnd) const = 0;
   virtual void OnChildProcessAppendArgs(IArgsArray **) const = 0;
-  virtual const char* IConfigureGet() const = 0;
+  virtual const char *IConfigureGet() const = 0;
+  virtual bool EnableNonClientHitTest(void) const = 0;
+  virtual bool EnableBrowserCaptionButtonContainer(void) const = 0;
+  virtual void OnGpuScreenshotImageStream(const IBuffer *) const = 0;
 };
 } // namespace brw
 

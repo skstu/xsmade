@@ -35,7 +35,7 @@ public:
 protected:
   bool Ready() const;
   Frame *GetFrame() const;
-
+  HWND GetHWND() const;
 private:
   void MainProc();
   stl::tfThreads threads_;

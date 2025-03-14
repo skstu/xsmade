@@ -14,12 +14,8 @@ void Config::Init() {
     if (!dllpath)
       break;
     std::string u8Dllpath(dllpath->buffer, dllpath->len);
-    configure_pathname_ = Conv::u8_to_u16(u8Dllpath);
-    root_ = stl::Path::Parent(stl::Path::PathnameToPath(configure_pathname_));
-
-    const std::u16string format = u".json";
-    configure_pathname_.replace(configure_pathname_.find(u".dll"),
-                                format.size(), format);
+    root_ = stl::Path::Parent(stl::Path::PathnameToPath(Conv::u8_to_u16(u8Dllpath)));
+    configure_pathname_ = root_ + u"/configures/libbrwcfg.json";
     chromium_cache_root_ = root_ + u"/cache";
 
   } while (0);

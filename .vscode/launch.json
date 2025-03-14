@@ -5,8 +5,11 @@
       "name": "Windows Build With CMake Ninja",
       "type": "cppdbg",
       "request": "launch",
-      "program": "C:/Users/k34ub/AppData/Roaming/MarsPanda/3rd/chromium/130.0.6723.191/fanbrowser.exe",
-      "args": [],
+      "program": "${workspaceFolder}/bin/browser/chromium/130.0.6723.191/FanBrowser.exe",
+      "args": [
+      ],
+      // "program": "${workspaceFolder}/bin/main.exe",
+      // "args": [],
       // "program": "${workspaceFolder}/out/bin/test_curlcc.exe",
       // "args": [],
       // "program": "${workspaceFolder}/out/bin/MediaStreamServer.exe",

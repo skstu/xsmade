@@ -4,7 +4,7 @@
 # skstu development team Licence:     skstu licence
 # ##############################################################################
 
-add_subdirectory(test_nsis)
+# add_subdirectory(test_nsis)
 # add_subdirectory(test_icucc) add_subdirectory(test_curlcc)
 # add_subdirectory(test_wxui) add_subdirectory(test_engine)
 # add_subdirectory(test_main) add_subdirectory(test_ffx)

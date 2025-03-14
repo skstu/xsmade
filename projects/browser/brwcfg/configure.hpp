@@ -12,6 +12,16 @@ public:
   public:
     unsigned long long id = 0;
   };
+  class HomePage final {
+  public:
+    inline HomePage();
+    inline ~HomePage();
+
+  public:
+    bool enable = false;
+    std::string url;
+    bool open_new_tab = false;
+  };
   class Proxy final {
   public:
     enum class SocksType : unsigned char {
@@ -58,7 +68,82 @@ public:
     public:
       inline void operator<<(const std::string &);
     };
+    class Navigator final {
+    public:
+      class Plugins final {
+      public:
+        class Plugin final {
+        public:
+          class MimeType final {
+          public:
+            inline MimeType();
+            inline ~MimeType();
+            inline bool operator<(const MimeType &) const;
+            inline bool operator==(const MimeType &) const;
+            inline void operator=(const MimeType &);
 
+          public:
+            std::string key; //!@ type
+            std::string type;
+            std::string suffixes;
+          };
+
+        public:
+          inline Plugin();
+          inline ~Plugin();
+          inline bool operator<(const Plugin &) const;
+          inline bool operator==(const Plugin &) const;
+          inline void operator=(const Plugin &);
+          inline Plugin(const Plugin &);
+
+        public:
+          bool enable = false;
+          std::string key; //!@ name
+          std::string name;
+          std::string description;
+          std::set<MimeType> mimeTypes;
+        };
+
+      public:
+        inline Plugins();
+        inline ~Plugins();
+        std::set<Plugin> plugins;
+        bool enable = false;
+        bool pdfViewerEnabled = true;
+        bool javaEnabled = false;
+      };
+
+    public:
+      inline Navigator();
+      inline ~Navigator();
+      inline void operator<<(const rapidjson::Value &);
+
+    public:
+      Plugins plugins;
+    };
+    class Timezone final {
+    public:
+      class Source final {
+      public:
+        inline Source(const unsigned int &, const std::string &);
+        inline ~Source();
+
+      public:
+        const unsigned int id;
+        const std::string name;
+        short offset = 0;
+        std::string description;
+      };
+
+    public:
+      inline Timezone();
+      inline ~Timezone();
+
+    public:
+      bool enable = false;
+      Hash hash;
+      std::map<unsigned int, Source> sources;
+    };
     class Canvas final {
     public:
       inline Canvas();
@@ -69,6 +154,93 @@ public:
       Hash hash;
     };
     class Webgl final {
+    public:
+      class ContextAttributes final {
+      public:
+        inline ContextAttributes();
+        inline ~ContextAttributes();
+        inline void operator=(const ContextAttributes &);
+
+      public:
+        bool alpha = true;
+        bool antialias = true;
+        bool depth = true;
+        bool desynchronized = false;
+        bool failIfMajorPerformanceCaveat = false;
+        bool powerPreference = false;
+        bool premultipliedAlpha = true;
+        bool preserveDrawingBuffer = false;
+        bool stencil = false;
+        bool xrCompatible = false;
+      };
+      class ShaderPrecisionFormat final {
+      public:
+        enum class SharedType : unsigned int {
+          Unknown = 0,
+          FRAGMENT_SHADER = 0x8B30,
+          VERTEX_SHADER = 0x8B31,
+        };
+        enum class FormatType : unsigned int {
+          Unknown = 0,
+          LOW_FLOAT = 0x8DF0,
+          MEDIUM_FLOAT = 0x8DF1,
+          HIGH_FLOAT = 0x8DF2,
+          LOW_INT = 0x8DF3,
+          MEDIUM_INT = 0x8DF4,
+          HIGH_INT = 0x8DF5,
+        };
+
+        class Format final {
+        public:
+          inline Format();
+          inline ~Format();
+          inline void operator=(const Format &);
+
+        public:
+          int rangeMin = 0;
+          int rangeMax = 0;
+          int precision = 0;
+        };
+        class FRAGMENT_SHADER final {
+        public:
+          inline FRAGMENT_SHADER();
+          inline ~FRAGMENT_SHADER();
+          void operator=(const FRAGMENT_SHADER &);
+
+        public:
+          Format LOW_FLOAT;
+          Format MEDIUM_FLOAT;
+          Format HIGH_FLOAT;
+          Format LOW_INT;
+          Format MEDIUM_INT;
+          Format HIGH_INT;
+        };
+
+        class VERTEX_SHADER final {
+        public:
+          inline VERTEX_SHADER();
+          inline ~VERTEX_SHADER();
+          void operator=(const VERTEX_SHADER &);
+
+        public:
+          Format LOW_FLOAT;
+          Format MEDIUM_FLOAT;
+          Format HIGH_FLOAT;
+          Format LOW_INT;
+          Format MEDIUM_INT;
+          Format HIGH_INT;
+        };
+
+      public:
+        inline ShaderPrecisionFormat();
+        inline ~ShaderPrecisionFormat();
+        void operator=(const ShaderPrecisionFormat &);
+
+      public:
+        FRAGMENT_SHADER gl_fragment_shader;
+        VERTEX_SHADER gl_vertex_shader;
+      };
+
     public:
       inline Webgl();
       inline ~Webgl();
@@ -81,6 +253,9 @@ public:
       std::string driver_version;
       std::string version;
       std::map<unsigned int, std::string> parameters;
+      std::set<std::string> enabledExtensions;
+      ContextAttributes contextAttributes;
+      ShaderPrecisionFormat shaderPrecisionFormat;
     };
     class Audio final {
     public:
@@ -93,13 +268,28 @@ public:
     };
     class Font final {
     public:
+      class Keyword final {
+      public:
+        inline Keyword();
+        inline ~Keyword();
+        inline Keyword(const std::string &kv);
+        inline Keyword(const std::string &k, const std::string &v);
+        inline bool operator<(const Keyword &) const;
+        inline bool operator==(const Keyword &) const;
+
+      public:
+        std::string key;
+        std::string value;
+      };
+
+    public:
       inline Font();
       inline ~Font();
 
     public:
       bool enable = false;
       Hash hash;
-      std::vector<std::string> keywords;
+      std::set<Keyword> keywords;
     };
     class Screen final {
     public:
@@ -115,6 +305,7 @@ public:
       int availTop = 0;
       int availHeight = 0;
       int availWidth = 0;
+      double devicePixelRatio = 1.0;
       bool enable = false;
     };
 
@@ -136,6 +327,8 @@ public:
     Webgl webgl;
     Audio audio;
     Screen screen;
+    Timezone timezone;
+    Navigator navigator;
   };
 
   class Jss final {
@@ -161,6 +354,9 @@ public:
   rapidjson::Document doc;
   Policy policy;
   Proxy proxy;
+  std::set<std::string> startup_urls;
+  HomePage homepage;
+  std::string search_engine;
 };
 
 inline IConfigure::~IConfigure() {
@@ -168,6 +364,10 @@ inline IConfigure::~IConfigure() {
 inline IConfigure::Policy::Policy() {
 }
 inline IConfigure::Policy::~Policy() {
+}
+inline IConfigure::HomePage::HomePage() {
+}
+inline IConfigure::HomePage::~HomePage() {
 }
 inline IConfigure::Proxy::Proxy() {
 }
@@ -177,9 +377,72 @@ inline IConfigure::Fps::Fps() {
 }
 inline IConfigure::Fps::~Fps() {
 }
+inline IConfigure::Fps::Navigator::Navigator() {
+}
+inline IConfigure::Fps::Navigator::~Navigator() {
+}
+inline IConfigure::Fps::Navigator::Plugins::Plugins() {
+}
+inline IConfigure::Fps::Navigator::Plugins::~Plugins() {
+}
+inline IConfigure::Fps::Navigator::Plugins::Plugin::Plugin() {
+}
+inline IConfigure::Fps::Navigator::Plugins::Plugin::~Plugin() {
+}
+inline IConfigure::Fps::Navigator::Plugins::Plugin::Plugin(
+    const Plugin &other) {
+  key = other.key;
+  name = other.name;
+  description = other.description;
+  mimeTypes = other.mimeTypes;
+}
+inline bool IConfigure::Fps::Navigator::Plugins::Plugin::operator<(
+    const Plugin &rhs) const {
+  return key.compare(rhs.key) < 0;
+}
+inline bool IConfigure::Fps::Navigator::Plugins::Plugin::operator==(
+    const Plugin &rhs) const {
+  return key.compare(rhs.key) == 0;
+}
+inline void
+IConfigure::Fps::Navigator::Plugins::Plugin::operator=(const Plugin &rhs) {
+  key = rhs.key;
+  name = rhs.name;
+  description = rhs.description;
+  mimeTypes = rhs.mimeTypes;
+}
+inline IConfigure::Fps::Navigator::Plugins::Plugin::MimeType::MimeType() {
+}
+inline IConfigure::Fps::Navigator::Plugins::Plugin::MimeType::~MimeType() {
+}
+inline bool IConfigure::Fps::Navigator::Plugins::Plugin::MimeType::operator<(
+    const MimeType &rhs) const {
+  return key.compare(rhs.key) < 0;
+}
+inline bool IConfigure::Fps::Navigator::Plugins::Plugin::MimeType::operator==(
+    const MimeType &rhs) const {
+  return key.compare(rhs.key) == 0;
+}
+
+inline void IConfigure::Fps::Navigator::Plugins::Plugin::MimeType::operator=(
+    const MimeType &rhs) {
+  key = rhs.key;
+  type = rhs.type;
+  suffixes = rhs.suffixes;
+}
 inline IConfigure::Fps::Screen::Screen() {
 }
 inline IConfigure::Fps::Screen::~Screen() {
+}
+inline IConfigure::Fps::Timezone::Timezone() {
+}
+inline IConfigure::Fps::Timezone::~Timezone() {
+}
+inline IConfigure::Fps::Timezone::Source::Source(const unsigned int &id_,
+                                                 const std::string &name_)
+    : id(id_), name(name_) {
+}
+inline IConfigure::Fps::Timezone::Source::~Source() {
 }
 inline IConfigure::Fps::Audio::Audio() {
 }
@@ -193,9 +456,100 @@ inline IConfigure::Fps::Webgl::Webgl() {
 }
 inline IConfigure::Fps::Webgl::~Webgl() {
 }
+inline IConfigure::Fps::Webgl::ContextAttributes::ContextAttributes() {
+}
+inline IConfigure::Fps::Webgl::ContextAttributes::~ContextAttributes() {
+}
+inline void IConfigure::Fps::Webgl::ContextAttributes::operator=(
+    const ContextAttributes &rhs) {
+  alpha = rhs.alpha;
+  antialias = rhs.antialias;
+  depth = rhs.depth;
+  desynchronized = rhs.desynchronized;
+  failIfMajorPerformanceCaveat = rhs.failIfMajorPerformanceCaveat;
+  powerPreference = rhs.powerPreference;
+  premultipliedAlpha = rhs.premultipliedAlpha;
+  preserveDrawingBuffer = rhs.preserveDrawingBuffer;
+  stencil = rhs.stencil;
+  xrCompatible = rhs.xrCompatible;
+}
+inline IConfigure::Fps::Webgl::ShaderPrecisionFormat::ShaderPrecisionFormat() {
+}
+inline IConfigure::Fps::Webgl::ShaderPrecisionFormat::~ShaderPrecisionFormat() {
+}
+inline void IConfigure::Fps::Webgl::ShaderPrecisionFormat::operator=(
+    const ShaderPrecisionFormat &rhs) {
+  gl_fragment_shader = rhs.gl_fragment_shader;
+  gl_vertex_shader = rhs.gl_vertex_shader;
+}
+inline IConfigure::Fps::Webgl::ShaderPrecisionFormat::FRAGMENT_SHADER::
+    FRAGMENT_SHADER() {
+}
+inline IConfigure::Fps::Webgl::ShaderPrecisionFormat::FRAGMENT_SHADER::
+    ~FRAGMENT_SHADER() {
+}
+inline void
+IConfigure::Fps::Webgl::ShaderPrecisionFormat::FRAGMENT_SHADER::operator=(
+    const FRAGMENT_SHADER &rhs) {
+  LOW_FLOAT = rhs.LOW_FLOAT;
+  MEDIUM_FLOAT = rhs.MEDIUM_FLOAT;
+  HIGH_FLOAT = rhs.HIGH_FLOAT;
+  LOW_INT = rhs.LOW_INT;
+  MEDIUM_INT = rhs.MEDIUM_INT;
+  HIGH_INT = rhs.HIGH_INT;
+}
+
+inline IConfigure::Fps::Webgl::ShaderPrecisionFormat::VERTEX_SHADER::
+    VERTEX_SHADER() {
+}
+inline IConfigure::Fps::Webgl::ShaderPrecisionFormat::VERTEX_SHADER::
+    ~VERTEX_SHADER() {
+}
+inline void
+IConfigure::Fps::Webgl::ShaderPrecisionFormat::VERTEX_SHADER::operator=(
+    const VERTEX_SHADER &rhs) {
+  LOW_FLOAT = rhs.LOW_FLOAT;
+  MEDIUM_FLOAT = rhs.MEDIUM_FLOAT;
+  HIGH_FLOAT = rhs.HIGH_FLOAT;
+  LOW_INT = rhs.LOW_INT;
+  MEDIUM_INT = rhs.MEDIUM_INT;
+  HIGH_INT = rhs.HIGH_INT;
+}
+inline IConfigure::Fps::Webgl::ShaderPrecisionFormat::Format::Format() {
+}
+inline IConfigure::Fps::Webgl::ShaderPrecisionFormat::Format::~Format() {
+}
+inline void IConfigure::Fps::Webgl::ShaderPrecisionFormat::Format::operator=(
+    const Format &rhs) {
+  rangeMin = rhs.rangeMin;
+  rangeMax = rhs.rangeMax;
+  precision = rhs.precision;
+}
 inline IConfigure::Fps::Font::Font() {
 }
 inline IConfigure::Fps::Font::~Font() {
+}
+inline IConfigure::Fps::Font::Keyword::Keyword() {
+}
+inline IConfigure::Fps::Font::Keyword::~Keyword() {
+}
+inline IConfigure::Fps::Font::Keyword::Keyword(const std::string &k,
+                                               const std::string &v) {
+  key = k;
+  value = v;
+}
+inline IConfigure::Fps::Font::Keyword::Keyword(const std::string &kv) {
+  key = kv;
+  value = kv;
+  std::transform(key.begin(), key.end(), key.begin(), ::tolower);
+}
+inline bool
+IConfigure::Fps::Font::Keyword::operator<(const Keyword &rhs) const {
+  return key.compare(rhs.key) < 0;
+}
+inline bool
+IConfigure::Fps::Font::Keyword::operator==(const Keyword &rhs) const {
+  return key.compare(rhs.key) == 0;
 }
 inline IConfigure::Fps::Hash::Hash() {
 }
@@ -204,6 +558,78 @@ inline IConfigure::Fps::Hash::~Hash() {
 inline IConfigure::Jss::Jss() {
 }
 inline IConfigure::Jss::~Jss() {
+}
+inline void
+IConfigure::Fps::Navigator::operator<<(const rapidjson::Value &navigatorObj) {
+  do {
+    if (!navigatorObj.IsObject())
+      break;
+    if (navigatorObj.ObjectEmpty())
+      break;
+    if (!navigatorObj.HasMember("plugins"))
+      break;
+    if (!navigatorObj["plugins"].IsObject())
+      break;
+    auto &pluginsObj = navigatorObj["plugins"];
+    if (pluginsObj.HasMember("enable") && pluginsObj["enable"].IsBool()) {
+      plugins.enable = pluginsObj["enable"].GetBool();
+    }
+    if (pluginsObj.HasMember("pdfViewerEnabled") &&
+        pluginsObj["pdfViewerEnabled"].IsBool()) {
+      plugins.pdfViewerEnabled = pluginsObj["pdfViewerEnabled"].GetBool();
+    }
+    if (pluginsObj.HasMember("javaEnabled") &&
+        pluginsObj["javaEnabled"].IsBool()) {
+      plugins.javaEnabled = pluginsObj["javaEnabled"].GetBool();
+    }
+    if (pluginsObj.HasMember("pluginArray") &&
+        pluginsObj["pluginArray"].IsArray()) {
+      for (auto itPluginArray = pluginsObj["pluginArray"].Begin();
+           itPluginArray != pluginsObj["pluginArray"].End(); ++itPluginArray) {
+        if (!itPluginArray->IsObject())
+          break;
+        auto &pluginObj = *itPluginArray;
+        Plugins::Plugin plugin;
+        if (pluginObj.HasMember("name") && pluginObj["name"].IsString()) {
+          plugin.name = pluginObj["name"].GetString();
+          plugin.key = plugin.name;
+          std::transform(plugin.key.begin(), plugin.key.end(),
+                         plugin.key.begin(), ::tolower);
+        }
+        if (pluginObj.HasMember("description") &&
+            pluginObj["description"].IsString()) {
+          plugin.description = pluginObj["description"].GetString();
+        }
+        if (pluginObj.HasMember("mimeTypes") &&
+            pluginObj["mimeTypes"].IsArray()) {
+          for (auto itMimeTypes = pluginObj["mimeTypes"].Begin();
+               itMimeTypes != pluginObj["mimeTypes"].End(); ++itMimeTypes) {
+            if (!itMimeTypes->IsObject())
+              break;
+            auto &mimeTypeObj = *itMimeTypes;
+            Plugins::Plugin::MimeType mimeType;
+            if (mimeTypeObj.HasMember("type") &&
+                mimeTypeObj["type"].IsString()) {
+              mimeType.type = mimeTypeObj["type"].GetString();
+              mimeType.key = mimeType.type;
+              std::transform(mimeType.key.begin(), mimeType.key.end(),
+                             mimeType.key.begin(), ::tolower);
+            }
+            if (mimeTypeObj.HasMember("suffixes") &&
+                mimeTypeObj["suffixes"].IsString()) {
+              mimeType.suffixes = mimeTypeObj["suffixes"].GetString();
+            }
+            if (mimeType.key.empty())
+              continue;
+            plugin.mimeTypes.emplace(mimeType);
+          }
+        }
+        if (plugin.key.empty())
+          continue;
+        plugins.plugins.emplace(plugin);
+      }
+    }
+  } while (0);
 }
 inline void IConfigure::Fps::Hash::operator<<(const std::string &input) {
   do {
@@ -216,12 +642,45 @@ inline void IConfigure::Fps::Hash::operator<<(const std::string &input) {
       break;
     if (docHash.HasMember("random") && docHash["random"].IsBool())
       random = docHash["random"].GetBool();
-    if (docHash.HasMember("base") && docHash["base"].IsDouble())
-      base = docHash["base"].GetDouble();
-    if (docHash.HasMember("from") && docHash["from"].IsDouble())
-      from = docHash["from"].GetDouble();
-    if (docHash.HasMember("to") && docHash["to"].IsDouble())
-      to = docHash["to"].GetDouble();
+    if (docHash.HasMember("base") && docHash["base"].IsNumber()) {
+      if (docHash["base"].IsInt()) {
+        base = docHash["base"].GetInt() * 1.0;
+      } else if (docHash["base"].IsUint()) {
+        base = docHash["base"].GetUint() * 1.0;
+      } else if (docHash["base"].IsInt64()) {
+        base = docHash["base"].GetInt64() * 1.0;
+      } else if (docHash["base"].IsUint64()) {
+        base = docHash["base"].GetUint64() * 1.0;
+      } else if (docHash["base"].IsDouble()) {
+        base = docHash["base"].GetDouble();
+      }
+    }
+    if (docHash.HasMember("from") && docHash["from"].IsNumber()) {
+      if (docHash["from"].IsInt()) {
+        from = docHash["from"].GetInt() * 1.0;
+      } else if (docHash["from"].IsUint()) {
+        from = docHash["from"].GetUint() * 1.0;
+      } else if (docHash["from"].IsInt64()) {
+        from = docHash["from"].GetInt64() * 1.0;
+      } else if (docHash["from"].IsUint64()) {
+        from = docHash["from"].GetUint64() * 1.0;
+      } else if (docHash["from"].IsDouble()) {
+        from = docHash["from"].GetDouble();
+      }
+    }
+    if (docHash.HasMember("to") && docHash["to"].IsNumber()) {
+      if (docHash["to"].IsInt()) {
+        to = docHash["to"].GetInt() * 1.0;
+      } else if (docHash["to"].IsUint()) {
+        to = docHash["to"].GetUint() * 1.0;
+      } else if (docHash["to"].IsInt64()) {
+        to = docHash["to"].GetInt64() * 1.0;
+      } else if (docHash["to"].IsUint64()) {
+        to = docHash["to"].GetUint64() * 1.0;
+      } else if (docHash["to"].IsDouble()) {
+        to = docHash["to"].GetDouble();
+      }
+    }
   } while (0);
 }
 inline IConfigure::IConfigure(const std::string &input) {
@@ -242,6 +701,48 @@ inline IConfigure::IConfigure(const std::string &input) {
         break;
       enable = doc["enable"].GetBool();
     } while (0);
+
+    do { //!@ .startup_urls
+      if (!doc.HasMember("startup_urls"))
+        break;
+      if (!doc["startup_urls"].IsArray())
+        break;
+      for (auto it = doc["startup_urls"].Begin();
+           it != doc["startup_urls"].End(); ++it) {
+        if (!it->IsString())
+          break;
+        if (it->GetStringLength() <= 0)
+          continue;
+        startup_urls.emplace(it->GetString());
+      }
+    } while (0);
+    do { //!@ .homepage
+      if (!doc.HasMember("homepage"))
+        break;
+      if (!doc["homepage"].IsObject())
+        break;
+      auto &homepageObj = doc["homepage"];
+      if (homepageObj.HasMember("enable") && homepageObj["enable"].IsBool()) {
+        homepage.enable = homepageObj["enable"].GetBool();
+      }
+      if (homepageObj.HasMember("url") && homepageObj["url"].IsString()) {
+        homepage.url = homepageObj["url"].GetString();
+      }
+      if (homepageObj.HasMember("open_new_tab") &&
+          homepageObj["open_new_tab"].IsBool()) {
+        homepage.open_new_tab = homepageObj["open_new_tab"].GetBool();
+      }
+    } while (0);
+    do { //!@ .search_engine
+      if (!doc.HasMember("search_engine"))
+        break;
+      if (!doc["search_engine"].IsString())
+        break;
+      if (doc["search_engine"].GetStringLength() <= 0)
+        break;
+      search_engine = doc["search_engine"].GetString();
+    } while (0);
+
     do { //!@ .policy
       if (!doc.HasMember("policy"))
         break;
@@ -436,6 +937,14 @@ inline IConfigure::IConfigure(const std::string &input) {
           break;
         fps.deviceMemory = fpsObj["deviceMemory"].GetUint64();
       } while (0);
+      do { //!@ .fps.navigator
+        if (!fpsObj.HasMember("navigator"))
+          break;
+        if (!fpsObj["navigator"].IsObject())
+          break;
+        fps.navigator << fpsObj["navigator"];
+
+      } while (0);
       do { //!@ .fps.font
         if (!fpsObj.HasMember("font"))
           break;
@@ -452,12 +961,57 @@ inline IConfigure::IConfigure(const std::string &input) {
               break;
             if (it->GetStringLength() <= 0)
               continue;
-            fps.font.keywords.emplace_back(it->GetString());
+            Fps::Font::Keyword keyword;
+            keyword.value = it->GetString();
+            keyword.key = keyword.value;
+            std::transform(keyword.key.begin(), keyword.key.end(),
+                           keyword.key.begin(), ::tolower);
+            fps.font.keywords.emplace(keyword);
           }
         }
         if (fpsObj["font"].HasMember("hash") &&
             fpsObj["font"]["hash"].IsObject()) {
           fps.font.hash << Json::toString(fpsObj["font"]["hash"]);
+        }
+      } while (0);
+      do { //!@ .fps.timezone
+        if (!fpsObj.HasMember("timezone"))
+          break;
+        if (!fpsObj["timezone"].IsObject())
+          break;
+        if (fpsObj["timezone"].HasMember("enable") &&
+            fpsObj["timezone"]["enable"].IsBool())
+          fps.timezone.enable = fpsObj["timezone"]["enable"].GetBool();
+        if (fpsObj["timezone"].HasMember("hash") &&
+            fpsObj["timezone"]["hash"].IsObject()) {
+          fps.timezone.hash << Json::toString(fpsObj["timezone"]["hash"]);
+        }
+        if (fpsObj["timezone"].HasMember("source") &&
+            fpsObj["timezone"]["source"].IsObject()) {
+          for (auto it = fpsObj["timezone"]["source"].MemberBegin();
+               it != fpsObj["timezone"]["source"].MemberEnd(); ++it) {
+            do {
+              auto &keyObj = it->name;
+              auto &valObj = it->value;
+              if (!keyObj.IsString())
+                continue;
+              if (!valObj.IsObject())
+                continue;
+              if (!valObj.HasMember("id") || !valObj["id"].IsUint())
+                break;
+              Fps::Timezone::Source source(valObj["id"].GetUint(),
+                                           keyObj.GetString());
+              if (!valObj.HasMember("offset") || !valObj["offset"].IsInt())
+                break;
+              source.offset = static_cast<decltype(source.offset)>(
+                  valObj["offset"].GetInt());
+              if (!valObj.HasMember("description") &&
+                  !valObj["description"].IsString())
+                break;
+              source.description = valObj["description"].GetString();
+              fps.timezone.sources.emplace(source.id, source);
+            } while (0);
+          }
         }
       } while (0);
       do { //!@ .fps.canvas
@@ -514,6 +1068,233 @@ inline IConfigure::IConfigure(const std::string &input) {
         if (fpsObj["webgl"].HasMember("version") &&
             fpsObj["webgl"]["version"].IsString()) {
           fps.webgl.version = fpsObj["webgl"]["version"].GetString();
+        }
+        if (fpsObj["webgl"].HasMember("shaderPrecisionFormat") &&
+            fpsObj["webgl"]["shaderPrecisionFormat"].IsObject()) {
+          for (auto it = fpsObj["webgl"]["shaderPrecisionFormat"].MemberBegin();
+               it != fpsObj["webgl"]["shaderPrecisionFormat"].MemberEnd();
+               ++it) {
+            if (!it->name.IsString())
+              break;
+            if (!it->value.IsObject())
+              break;
+            if (it->name.GetStringLength() <= 0)
+              continue;
+            std::string name = it->name.GetString();
+            Fps::Webgl::ShaderPrecisionFormat::SharedType type =
+                Fps::Webgl::ShaderPrecisionFormat::SharedType(
+                    strtoul(name.c_str(), nullptr, 16));
+            switch (type) {
+            case Fps::Webgl::ShaderPrecisionFormat::SharedType::FRAGMENT_SHADER:
+            case Fps::Webgl::ShaderPrecisionFormat::SharedType::VERTEX_SHADER:
+              for (auto it2 = it->value.MemberBegin();
+                   it2 != it->value.MemberEnd(); ++it2) {
+                if (!it2->name.IsString())
+                  continue;
+                if (!it2->value.IsObject())
+                  continue;
+                if (it2->name.GetStringLength() <= 0)
+                  continue;
+                if (!it2->value.HasMember("rangeMin") ||
+                    !it2->value["rangeMin"].IsInt())
+                  continue;
+                if (!it2->value.HasMember("rangeMax") ||
+                    !it2->value["rangeMax"].IsInt())
+                  continue;
+                if (!it2->value.HasMember("precision") ||
+                    !it2->value["precision"].IsInt())
+                  continue;
+
+                std::string name2 = it2->name.GetString();
+                Fps::Webgl::ShaderPrecisionFormat::FormatType format_type =
+                    Fps::Webgl::ShaderPrecisionFormat::FormatType(
+                        strtoul(name2.c_str(), nullptr, 16));
+                switch (format_type) {
+                case Fps::Webgl::ShaderPrecisionFormat::FormatType::LOW_FLOAT:
+                  if (type == Fps::Webgl::ShaderPrecisionFormat::SharedType::
+                                  FRAGMENT_SHADER) {
+                    fps.webgl.shaderPrecisionFormat.gl_fragment_shader.LOW_FLOAT
+                        .rangeMin = it2->value["rangeMin"].GetInt();
+                    fps.webgl.shaderPrecisionFormat.gl_fragment_shader.LOW_FLOAT
+                        .rangeMax = it2->value["rangeMax"].GetInt();
+                    fps.webgl.shaderPrecisionFormat.gl_fragment_shader.LOW_FLOAT
+                        .precision = it2->value["precision"].GetInt();
+                  } else {
+                    fps.webgl.shaderPrecisionFormat.gl_vertex_shader.LOW_FLOAT
+                        .rangeMin = it2->value["rangeMin"].GetInt();
+                    fps.webgl.shaderPrecisionFormat.gl_vertex_shader.LOW_FLOAT
+                        .rangeMax = it2->value["rangeMax"].GetInt();
+                    fps.webgl.shaderPrecisionFormat.gl_vertex_shader.LOW_FLOAT
+                        .precision = it2->value["precision"].GetInt();
+                  }
+                  break;
+                case Fps::Webgl::ShaderPrecisionFormat::FormatType::
+                    MEDIUM_FLOAT:
+                  if (type == Fps::Webgl::ShaderPrecisionFormat::SharedType::
+                                  FRAGMENT_SHADER) {
+                    fps.webgl.shaderPrecisionFormat.gl_fragment_shader
+                        .MEDIUM_FLOAT.rangeMin =
+                        it2->value["rangeMin"].GetInt();
+                    fps.webgl.shaderPrecisionFormat.gl_fragment_shader
+                        .MEDIUM_FLOAT.rangeMax =
+                        it2->value["rangeMax"].GetInt();
+                    fps.webgl.shaderPrecisionFormat.gl_fragment_shader
+                        .MEDIUM_FLOAT.precision =
+                        it2->value["precision"].GetInt();
+                  } else {
+                    fps.webgl.shaderPrecisionFormat.gl_vertex_shader
+                        .MEDIUM_FLOAT.rangeMin =
+                        it2->value["rangeMin"].GetInt();
+                    fps.webgl.shaderPrecisionFormat.gl_vertex_shader
+                        .MEDIUM_FLOAT.rangeMax =
+                        it2->value["rangeMax"].GetInt();
+                    fps.webgl.shaderPrecisionFormat.gl_vertex_shader
+                        .MEDIUM_FLOAT.precision =
+                        it2->value["precision"].GetInt();
+                  }
+                  break;
+                case Fps::Webgl::ShaderPrecisionFormat::FormatType::HIGH_FLOAT:
+                  if (type == Fps::Webgl::ShaderPrecisionFormat::SharedType::
+                                  FRAGMENT_SHADER) {
+                    fps.webgl.shaderPrecisionFormat.gl_fragment_shader
+                        .HIGH_FLOAT.rangeMin = it2->value["rangeMin"].GetInt();
+                    fps.webgl.shaderPrecisionFormat.gl_fragment_shader
+                        .HIGH_FLOAT.rangeMax = it2->value["rangeMax"].GetInt();
+                    fps.webgl.shaderPrecisionFormat.gl_fragment_shader
+                        .HIGH_FLOAT.precision =
+                        it2->value["precision"].GetInt();
+                  } else {
+                    fps.webgl.shaderPrecisionFormat.gl_vertex_shader.HIGH_FLOAT
+                        .rangeMin = it2->value["rangeMin"].GetInt();
+                    fps.webgl.shaderPrecisionFormat.gl_vertex_shader.HIGH_FLOAT
+                        .rangeMax = it2->value["rangeMax"].GetInt();
+                    fps.webgl.shaderPrecisionFormat.gl_vertex_shader.HIGH_FLOAT
+                        .precision = it2->value["precision"].GetInt();
+                  }
+                  break;
+                case Fps::Webgl::ShaderPrecisionFormat::FormatType::LOW_INT:
+                  if (type == Fps::Webgl::ShaderPrecisionFormat::SharedType::
+                                  FRAGMENT_SHADER) {
+                    fps.webgl.shaderPrecisionFormat.gl_fragment_shader.LOW_INT
+                        .rangeMin = it2->value["rangeMin"].GetInt();
+                    fps.webgl.shaderPrecisionFormat.gl_fragment_shader.LOW_INT
+                        .rangeMax = it2->value["rangeMax"].GetInt();
+                    fps.webgl.shaderPrecisionFormat.gl_fragment_shader.LOW_INT
+                        .precision = it2->value["precision"].GetInt();
+
+                  } else {
+                    fps.webgl.shaderPrecisionFormat.gl_vertex_shader.LOW_INT
+                        .rangeMin = it2->value["rangeMin"].GetInt();
+                    fps.webgl.shaderPrecisionFormat.gl_vertex_shader.LOW_INT
+                        .rangeMax = it2->value["rangeMax"].GetInt();
+                    fps.webgl.shaderPrecisionFormat.gl_vertex_shader.LOW_INT
+                        .precision = it2->value["precision"].GetInt();
+                  }
+                  break;
+                case Fps::Webgl::ShaderPrecisionFormat::FormatType::MEDIUM_INT:
+                  if (type == Fps::Webgl::ShaderPrecisionFormat::SharedType::
+                                  FRAGMENT_SHADER) {
+                    fps.webgl.shaderPrecisionFormat.gl_fragment_shader
+                        .MEDIUM_INT.rangeMin = it2->value["rangeMin"].GetInt();
+                    fps.webgl.shaderPrecisionFormat.gl_fragment_shader
+                        .MEDIUM_INT.rangeMax = it2->value["rangeMax"].GetInt();
+                    fps.webgl.shaderPrecisionFormat.gl_fragment_shader
+                        .MEDIUM_INT.precision =
+                        it2->value["precision"].GetInt();
+                  } else {
+                    fps.webgl.shaderPrecisionFormat.gl_vertex_shader.MEDIUM_INT
+                        .rangeMin = it2->value["rangeMin"].GetInt();
+                    fps.webgl.shaderPrecisionFormat.gl_vertex_shader.MEDIUM_INT
+                        .rangeMax = it2->value["rangeMax"].GetInt();
+                    fps.webgl.shaderPrecisionFormat.gl_vertex_shader.MEDIUM_INT
+                        .precision = it2->value["precision"].GetInt();
+                  }
+                  break;
+                case Fps::Webgl::ShaderPrecisionFormat::FormatType::HIGH_INT:
+                  if (type == Fps::Webgl::ShaderPrecisionFormat::SharedType::
+                                  FRAGMENT_SHADER) {
+                    fps.webgl.shaderPrecisionFormat.gl_fragment_shader.HIGH_INT
+                        .rangeMin = it2->value["rangeMin"].GetInt();
+                    fps.webgl.shaderPrecisionFormat.gl_fragment_shader.HIGH_INT
+                        .rangeMax = it2->value["rangeMax"].GetInt();
+                    fps.webgl.shaderPrecisionFormat.gl_fragment_shader.HIGH_INT
+                        .precision = it2->value["precision"].GetInt();
+
+                  } else {
+                    fps.webgl.shaderPrecisionFormat.gl_vertex_shader.HIGH_INT
+                        .rangeMin = it2->value["rangeMin"].GetInt();
+                    fps.webgl.shaderPrecisionFormat.gl_vertex_shader.HIGH_INT
+                        .rangeMax = it2->value["rangeMax"].GetInt();
+                    fps.webgl.shaderPrecisionFormat.gl_vertex_shader.HIGH_INT
+                        .precision = it2->value["precision"].GetInt();
+                  }
+                  break;
+                default:
+                  break;
+                }
+              }
+              break;
+            default:
+              break;
+            }
+          }
+        }
+
+        if (fpsObj["webgl"].HasMember("contextAttributes") &&
+            fpsObj["webgl"]["contextAttributes"].IsObject()) {
+          for (auto it = fpsObj["webgl"]["contextAttributes"].MemberBegin();
+               it != fpsObj["webgl"]["contextAttributes"].MemberEnd(); ++it) {
+            do {
+              if (!it->name.IsString())
+                break;
+              if (!it->value.IsBool())
+                break;
+              if (it->name.GetStringLength() <= 0)
+                break;
+              std::string name = it->name.GetString();
+              if (name.compare("desynchronized") == 0) {
+                fps.webgl.contextAttributes.desynchronized =
+                    it->value.GetBool();
+              } else if (name.compare("failIfMajorPerformanceCaveat") == 0) {
+                fps.webgl.contextAttributes.failIfMajorPerformanceCaveat =
+                    it->value.GetBool();
+              } else if (name.compare("powerPreference") == 0) {
+                fps.webgl.contextAttributes.powerPreference =
+                    it->value.GetBool();
+              } else if (name.compare("premultipliedAlpha") == 0) {
+                fps.webgl.contextAttributes.premultipliedAlpha =
+                    it->value.GetBool();
+              } else if (name.compare("preserveDrawingBuffer") == 0) {
+                fps.webgl.contextAttributes.preserveDrawingBuffer =
+                    it->value.GetBool();
+              } else if (name.compare("stencil") == 0) {
+                fps.webgl.contextAttributes.stencil = it->value.GetBool();
+              } else if (name.compare("alpha") == 0) {
+                fps.webgl.contextAttributes.alpha = it->value.GetBool();
+              } else if (name.compare("antialias") == 0) {
+                fps.webgl.contextAttributes.antialias = it->value.GetBool();
+              } else if (name.compare("depth") == 0) {
+                fps.webgl.contextAttributes.depth = it->value.GetBool();
+              } else if (name.compare("xrCompatible") == 0) {
+                fps.webgl.contextAttributes.xrCompatible = it->value.GetBool();
+              } else {
+              }
+            } while (0);
+          }
+        }
+        if (fpsObj["webgl"].HasMember("enabledExtensions") &&
+            fpsObj["webgl"]["enabledExtensions"].IsArray()) {
+          for (auto it = fpsObj["webgl"]["enabledExtensions"].Begin();
+               it != fpsObj["webgl"]["enabledExtensions"].End(); ++it) {
+            if (!it->IsString())
+              break;
+            if (it->GetStringLength() <= 0)
+              continue;
+            std::string value = it->GetString();
+            std::transform(value.begin(), value.end(), value.begin(),
+                           ::tolower);
+            fps.webgl.enabledExtensions.emplace(value);
+          }
         }
         if (fpsObj["webgl"].HasMember("parameters") &&
             fpsObj["webgl"]["parameters"].IsObject()) {
@@ -575,6 +1356,11 @@ inline IConfigure::IConfigure(const std::string &input) {
         if (fpsObj["screen"].HasMember("availWidth") &&
             fpsObj["screen"]["availWidth"].IsInt()) {
           fps.screen.availWidth = fpsObj["screen"]["availWidth"].GetInt();
+        }
+        if (fpsObj["screen"].HasMember("devicePixelRatio") &&
+            fpsObj["screen"]["devicePixelRatio"].IsDouble()) {
+          fps.screen.devicePixelRatio =
+              fpsObj["screen"]["devicePixelRatio"].GetDouble();
         }
       } while (0);
     } while (0);

@@ -1,16 +1,25 @@
 #if !defined(__8E0DC06F_77B6_46CB_9E6B_4F98C10F337A__)
 #define __8E0DC06F_77B6_46CB_9E6B_4F98C10F337A__
+#define ENABLE_WXUI        0
+#define ENABLE_PUSH_STREAM 1
 #include <xs.h>
 #include <conv.hpp>
 #include <fmt/format.h>
 #include <ibrw.h>
 using namespace brw;
 #include <rapidjson.h>
+#include "wxdeps.h"
 #include "configure.hpp"
 #include "config.h"
+#include "vmem.h"
 #include "buffer.h"
 #include "extension.h"
 #include "args.h"
+#if ENABLE_PUSH_STREAM
+#endif
+// #if ENABLE_WXUI
+#include <ui/wxui.h>
+// #endif
 class Brwcfg final : public IBrw {
 public:
   static Brwcfg *Create();
@@ -42,14 +51,24 @@ protected:
                               unsigned long *exstyle) const override final;
   void OnCreateWindowExAfter(void *hwnd) const override final;
   void OnChildProcessAppendArgs(IArgsArray **) const override final;
-  const char* IConfigureGet() const override final;
+  const char *IConfigureGet() const override final;
+  bool EnableNonClientHitTest(void) const override final;
+  bool EnableBrowserCaptionButtonContainer(void) const override final;
+  bool OnExtensionMessage(const char *extid, const IBuffer *req,
+                          IBuffer **res) const override final;
+  void OnGpuScreenshotImageStream(const IBuffer *) const override final;
 
 private:
   void RegisterGoogleApiKey() const;
+
 private:
+  VMem* vmem_ = nullptr;
   std::atomic_bool open_ = false;
-  Config* config_ = nullptr;
-  IConfigure* configure_ = nullptr;
+  Config *config_ = nullptr;
+  IConfigure *configure_ = nullptr;
+#if ENABLE_WXUI
+  Wxui *wxui_ = nullptr;
+#endif
 };
 
 /// /*_ Memade®（新生™） _**/

@@ -1,4 +1,4 @@
-#include "wxui.h"
+#include "brwcfg.h"
 
 Wxui::Wxui() {
   Init();
@@ -8,11 +8,16 @@ Wxui::~Wxui() {
   UnInit();
 }
 void Wxui::Init() {
+  ready_signal_ = new stl::Signal();
 }
 void Wxui::UnInit() {
+  ready_signal_->Release();
 }
 bool Wxui::Ready() const {
   return open_.load();
+}
+stl::Signal *Wxui::GetReadySignal() const {
+  return ready_signal_;
 }
 bool Wxui::Start() {
   do {
@@ -20,6 +25,7 @@ bool Wxui::Start() {
       break;
     open_.store(true);
     threads_.emplace_back([this]() { MainProc(); });
+    ready_signal_->wait_for_event(std::chrono::milliseconds(0));
   } while (0);
   return open_.load();
 }
@@ -46,6 +52,8 @@ void Wxui::MainProc() {
     wxSystemOptions::SetOption("msw.window-dpi-aware", 1);
 #endif
 
+    // App *app = wxDynamicCast(wxApp::GetInstance(), App);
+    // app->SetParent(parent_);
 #if defined(__OSMAC__)
     int argc = 1;
     char *argv[] = {const_cast<char *>("myapp")};
@@ -56,19 +64,12 @@ void Wxui::MainProc() {
     // Config::Get()->OnSystemExit();
   } while (0);
 }
-Frame *Wxui::GetFrame() const {
+IFrame *Wxui::GetFrame() const {
+  IFrame *result = nullptr;
   App *app = wxDynamicCast(wxApp::GetInstance(), App);
-  return app->FrameGet();
-}
-HWND Wxui::GetHWND() const {
-  HWND hwnd = nullptr;
-  do {
-    Frame *frame = GetFrame();
-    if (!frame)
-      break;
-    hwnd = frame->GetHWND();
-  } while (0);
-  return hwnd;
+  if (app)
+    result = wxDynamicCast(app->FrameGet(), IFrame);
+  return result;
 }
 /////////////////////////////////////////////////////////////////////
 static Wxui *__gpsWxui = nullptr;

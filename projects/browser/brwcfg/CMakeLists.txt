@@ -1,5 +1,8 @@
 project(brwcfg)
 
+include(${xsROOT_DIR}/build/cmake/modules/FindWX.cmake)
+gfn_find_wxwidgets(wxINCLUDES wxLIBS wxMSWRC)
+
 gfn_project_source_get(${CMAKE_CURRENT_SOURCE_DIR} OUT_HEADER_S OUT_SOURCE_S)
 set(SOURCES ${OUT_HEADER_S} ${OUT_SOURCE_S})
 
@@ -18,7 +21,7 @@ target_include_directories(
           ${xsOPENSSL_INCLUDE}
           ${wxINCLUDES})
 target_link_directories(${PROJECT_NAME} PRIVATE ${xsLIBS_DIR} ${xsLIBS_LIB_DIR}
-                        ${xsBUILD_INSTALLED_LIB_DIR})
+                        ${xsBUILD_INSTALLED_LIB_DIR} ${wxINCLUDES})
 
 if(WIN32)
   target_link_libraries(
@@ -47,6 +50,7 @@ if(WIN32)
     libzipcc.a
     libpthread.a
     libzlibstatic.a
+    ${wxLIBS}
     ${xsOPENSSL_LIBRARY})
 elseif(APPLE)
   target_include_directories(
@@ -79,12 +83,13 @@ elseif(APPLE)
 endif()
 # xs_set_common_target_properties(${PROJECT_NAME})
 # xs_set_target_output_dir(${PROJECT_NAME})
-set(brwComponentsDir "C:/Users/k34ub/AppData/Roaming/MarsPanda/3rd/components")
+
 add_custom_command(
   TARGET ${PROJECT_NAME}
   POST_BUILD
-  COMMAND echo
-          "Output file: ${brwComponentsDir}/$<TARGET_FILE_NAME:${PROJECT_NAME}>"
+  COMMAND
+    echo
+    "Output file: ${xsOUTPUT_COMPONENTS_DIR}/$<TARGET_FILE_NAME:${PROJECT_NAME}>"
   COMMAND ${CMAKE_COMMAND} -E copy_if_different $<TARGET_FILE:${PROJECT_NAME}>
-          ${brwComponentsDir}/$<TARGET_FILE_NAME:${PROJECT_NAME}>
+          ${xsOUTPUT_COMPONENTS_DIR}/$<TARGET_FILE_NAME:${PROJECT_NAME}>
   COMMENT "Printing output file path and copying file")

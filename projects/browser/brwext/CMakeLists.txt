@@ -77,14 +77,13 @@ elseif(APPLE)
     ${xsOPENSSL_LIBRARY}
     ${wxLIBS})
 endif()
-# xs_set_common_target_properties(${PROJECT_NAME})
-# xs_set_target_output_dir(${PROJECT_NAME})
-set(brwComponentsDir "C:/Users/k34ub/AppData/Roaming/MarsPanda/3rd/components")
+
 add_custom_command(
   TARGET ${PROJECT_NAME}
   POST_BUILD
-  COMMAND echo
-          "Output file: ${brwComponentsDir}/$<TARGET_FILE_NAME:${PROJECT_NAME}>"
+  COMMAND
+    echo
+    "Output file: ${xsOUTPUT_PLUGINS_DIR}/$<TARGET_FILE_NAME:${PROJECT_NAME}>"
   COMMAND ${CMAKE_COMMAND} -E copy_if_different $<TARGET_FILE:${PROJECT_NAME}>
-          ${brwComponentsDir}/$<TARGET_FILE_NAME:${PROJECT_NAME}>
+          ${xsOUTPUT_PLUGINS_DIR}/$<TARGET_FILE_NAME:${PROJECT_NAME}>
   COMMENT "Printing output file path and copying file")
