@@ -1,6 +1,6 @@
 #if !defined(__1E7A229B_290A_4E1D_A9CC_6B0B3C5BE0B7__)
 #define __1E7A229B_290A_4E1D_A9CC_6B0B3C5BE0B7__
-
+#if ENABLE_WXUI
 class IBackground : public IFrame {
 public:
   IBackground(wxWindow *parent, wxWindowID id = wxID_ANY,
@@ -58,7 +58,7 @@ protected:
   virtual void OnEraseBackground(wxEraseEvent &event);
   wxDECLARE_EVENT_TABLE();
 };
-
+#endif
 /// /*_ Memade®（新生™） _**/
 /// /*_ Sun, 02 Mar 2025 12:40:46 GMT _**/
 /// /*_____ https://www.skstu.com/ _____ **/

@@ -33,3 +33,6 @@ endif()
 # detected. Available build types: ${CMAKE_CONFIGURATION_TYPES}" ) else()
 # gfn_message_info( "Single-config generator detected. Build type:
 # ${CMAKE_BUILD_TYPE}") endif()
+
+add_compile_options(-Wno-nontrivial-memcall)
+add_compile_options(-Wno-deprecated-literal-operator)

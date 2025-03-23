@@ -24,6 +24,7 @@ static const AVCodecParser * const parser_list[] = {
     &ff_evc_parser,
     &ff_flac_parser,
     &ff_ftr_parser,
+    &ff_ffv1_parser,
     &ff_g723_1_parser,
     &ff_g729_parser,
     &ff_gif_parser,

@@ -27,6 +27,8 @@ private:
   void UnInit();
 
 public:
+  void SetIdentify(const unsigned long long &) override final;
+  unsigned long long GetIdentify() const override final;
   void Address(const char *, const size_t &) override final;
   const char *Address() const override final;
   unsigned long Version() const override final;
@@ -45,6 +47,7 @@ public:
       const override final;
 
 private:
+  std::atomic_ullong m_Identify = 0;
   unsigned long service_type_ = 0;
   std::string m_Address;
   std::atomic_ullong m_SessionTimeoutMS;
@@ -99,8 +102,8 @@ public:
   void OnServerExit(void) const;
   void OnServerError(const ISession *, const SystemErrorno &,
                      const IBuffer *) const;
-  void OnServerHello(const ISession *, const IBuffer *, IBuffer *) const;
-  void OnServerSessionReady(const ISession *) const;
+  void OnServerHello(ISession *, const IBuffer *, IBuffer *) const;
+  void OnServerSessionReady(ISession *) const;
   void OnServerSessionCreate(const ISession *) const;
   void OnServerSessionDestroy(const ISession *) const;
   void OnServerSessionTimeout(const ISession *, const std::time_t &) const;
@@ -108,8 +111,7 @@ public:
   void OnClientWelcome(const IBuffer *, IBuffer *) const;
   void OnHookServerWelcomeSend(const ISession *, IBuffer *) const;
   void OnHookServerSessionWrite(const ISession *, IBuffer *) const;
-  void OnServerMessage(const ISession *, const CommandType &,
-                       const IBuffer *) const;
+  void OnServerMessage(ISession *, const CommandType &, const IBuffer *) const;
   void OnServertfKeepAlive(const ISession *, const IBuffer *, IBuffer *) const;
   void OnServerMessageReceiveReply(const ISession *, const CommandType &,
                                    const IBuffer *, CommandType &,
@@ -120,11 +122,11 @@ public:
   void OnClientMessageCb(const ISession *, const CommandType &,
                          const IBuffer *) const;
   void OnClientMessageReceiveReplyCb(const ISession *, const CommandType &,
-                                     const IBuffer *, CommandType &,
+                                     const IBuffer *, CommandType *,
                                      IBuffer *) const;
   void OnClientExit() const;
   void OnClientDisconnection(const ISession *) const;
-  void OnClientConnection(const ISession *) const;
+  void OnClientConnection(const ISession *, CommandType *, IBuffer *) const;
   void OnClientSessionWriteHookCb(const ISession *, IBuffer *) const;
 
 private:

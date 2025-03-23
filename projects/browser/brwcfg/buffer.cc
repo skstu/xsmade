@@ -40,28 +40,29 @@ void BufferArray::Push(const std::u16string &u16) {
   source_.emplace_back(new Buffer(u8));
 }
 void BufferArray::Push(const char *u8, const size_t &len) {
-  Buffer* buf = new Buffer(u8, len);
+  Buffer *buf = new Buffer(u8, len);
   source_.emplace_back(buf);
 }
-void BufferArray::Push(IBrw::IBuffer *data) {
+void BufferArray::Push(IBrwcfg::IBuffer *data) {
   std::lock_guard<std::mutex> lock{*mtx_};
   auto in_data = dynamic_cast<Buffer *>(data);
   if (in_data) {
     source_.emplace_back(in_data);
   }
 }
-IBrw::IBuffer *BufferArray::CreateBuffer(const char *data, const size_t &len) {
-  IBrw::IBuffer *result = nullptr;
+IBrwcfg::IBuffer *BufferArray::CreateBuffer(const char *data,
+                                            const size_t &len) {
+  IBrwcfg::IBuffer *result = nullptr;
   std::lock_guard<std::mutex> lock{*mtx_};
   if (data && len > 0) {
     auto new_data = new Buffer(data, len);
     source_.emplace_back(new_data);
-    result = dynamic_cast<IBrw::IBuffer *>(new_data);
+    result = dynamic_cast<IBrwcfg::IBuffer *>(new_data);
   }
   return result;
 }
-IBrw::IBuffer *BufferArray::Next(const size_t &idx) const {
-  IBrw::IBuffer *result = nullptr;
+IBrwcfg::IBuffer *BufferArray::Next(const size_t &idx) const {
+  IBrwcfg::IBuffer *result = nullptr;
   std::lock_guard<std::mutex> lock{*mtx_};
   do {
     if (source_.empty())
@@ -72,7 +73,7 @@ IBrw::IBuffer *BufferArray::Next(const size_t &idx) const {
     std::advance(it, idx);
     if (it == source_.end())
       break;
-    result = dynamic_cast<IBrw::IBuffer *>(*it);
+    result = dynamic_cast<IBrwcfg::IBuffer *>(*it);
   } while (0);
   return result;
 }

@@ -1,5 +1,5 @@
 #include <brwcfg.h>
-
+#if ENABLE_WXUI
 wxBEGIN_EVENT_TABLE(IBackground, wxFrame) EVT_SIZE(IBackground::OnSize)
     EVT_CLOSE(IBackground::OnClose) EVT_PAINT(IBackground::OnPaint)
         EVT_ERASE_BACKGROUND(IBackground::OnEraseBackground)
@@ -221,3 +221,4 @@ void IBackground::OnMouseLeftUp(wxMouseEvent &event) {
   }
   is_dragging_.store(false);
 }
+#endif

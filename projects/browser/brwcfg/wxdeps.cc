@@ -1,5 +1,5 @@
 #include "brwcfg.h"
-
+#if ENABLE_WXUI
 bool wxComm::GetImgStream(const wxImage *img, std::string &imgStream) {
   bool result = false;
   do {
@@ -116,4 +116,5 @@ void wxComm::TransparentBitmapButton::OnPaint(wxPaintEvent &event) {
   wxBitmap bitmap = bundle.GetBitmap(0); // 获取第一张图片
   dc.DrawBitmap(bitmap, 0, 0);
 }
+#endif
 #endif

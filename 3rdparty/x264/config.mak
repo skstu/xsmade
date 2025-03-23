@@ -1,5 +1,5 @@
 SRCPATH=.
-prefix=/c/Users/k34ub/source/skstu/xsmade/build/scripts/ffmpeg-projects/win/../../../../build/installed
+prefix=/c/Users/k34ub/source/skstu/xsmade/build/scripts/ffmpeg-projects/win/../../../../build/installed/ffmpeg
 exec_prefix=${prefix}
 bindir=${exec_prefix}/bin
 libdir=${exec_prefix}/lib
@@ -7,7 +7,7 @@ includedir=${prefix}/include
 SYS_ARCH=X86_64
 SYS=WINDOWS
 CC=gcc
-CFLAGS=-Wshadow -O3 -ffast-math -m64  -Wall -I. -I$(SRCPATH) -D_POSIX_C_SOURCE=200112L -std=gnu99 -D_GNU_SOURCE -mstack-alignment=64 -fomit-frame-pointer -fno-tree-vectorize -fvisibility=hidden
+CFLAGS=-Wno-maybe-uninitialized -Wshadow -O3 -ffast-math -m64  -Wall -I. -I$(SRCPATH) -D_POSIX_C_SOURCE=200112L -std=gnu99 -D_GNU_SOURCE -fomit-frame-pointer -fno-tree-vectorize -fvisibility=hidden
 CFLAGSSO=
 CFLAGSCLI=
 COMPILER=GNU
@@ -19,12 +19,12 @@ LDFLAGS=-m64   -Wl,--high-entropy-va -Wl,--dynamicbase,--nxcompat,--tsaware
 LDFLAGSCLI= -lshell32 -Wl,--image-base,0x140000000
 LIBX264=libx264.a
 CLI_LIBX264=$(LIBX264)
-AR=ar rc 
-RANLIB=ranlib
+AR=gcc-ar rc 
+RANLIB=gcc-ranlib
 STRIP=strip
 INSTALL=install
 AS=nasm
-ASFLAGS= -I. -I$(SRCPATH) -DARCH_X86_64=1 -I$(SRCPATH)/common/x86/ -f win64 -DSTACK_ALIGNMENT=64
+ASFLAGS= -I. -I$(SRCPATH) -DARCH_X86_64=1 -I$(SRCPATH)/common/x86/ -f win64 -DSTACK_ALIGNMENT=16
 RC=windres
 RCFLAGS=--target=pe-x86-64  -I. -o 
 EXE=.exe

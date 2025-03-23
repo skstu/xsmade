@@ -1,5 +1,5 @@
 #include "brwcfg.h"
-
+#if ENABLE_VMEM
 VMem::VMem() {
   Init();
 }
@@ -71,3 +71,4 @@ const std::wstring &VMem::GetSharedProcessMutexName() const {
   std::lock_guard<std::mutex> lck(*mtx_);
   return shared_process_mutex_name_;
 }
+#endif

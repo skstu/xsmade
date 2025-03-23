@@ -1,5 +1,62 @@
 #include "brwcfg.h"
 
+IChromium::IChromium(const ChromiumProcessType &type,
+                     const std::string &server_addr)
+    : type_(type), server_addr_(server_addr) {
+  Init();
+}
+IChromium::~IChromium() {
+  UnInit();
+}
+void IChromium::Init() {
+  do {
+    policy_id_ = Config::GetOrCreate()->GetConfigure().policy.id;
+    uvpp_ = dynamic_cast<IUvpp *>(IUvpp::Create(
+        Conv::u16_to_u8(Config::GetOrCreate()->GetPath().libuvpp_path)
+            .c_str()));
+    uvpp_config_ = uvpp_->ConfigGet();
+    uvpp_config_->SetIdentify(policy_id_);
+    uvpp_config_->SetServiceType(
+        static_cast<unsigned long>(uvpp::ServerType::INITIATOR) |
+        static_cast<unsigned long>(uvpp::AddressType::IPC) |
+        static_cast<unsigned long>(uvpp::SessionType::IPC));
+    uvpp_config_->Address(server_addr_.data(), server_addr_.size());
+    uvpp_client_ = uvpp_->CreateSevice();
+    ready_.store(true);
+  } while (0);
+}
+void IChromium::UnInit() {
+}
+const ChromiumProcessType &IChromium::GetType() const {
+  return type_;
+}
+void IChromium::Process() {
+}
+bool IChromium::Start() {
+  do {
+    if (!ready_.load())
+      break;
+    if (open_.load())
+      break;
+    if (!uvpp_client_->Start())
+      break;
+    open_.store(true);
+    threads_.emplace_back([this]() { Process(); });
+  } while (0);
+  return open_.load();
+}
+void IChromium::Stop() {
+  do {
+    if (!open_.load())
+      break;
+    open_.store(false);
+    for (auto &t : threads_)
+      t.join();
+    threads_.clear();
+    uvpp_client_->Stop();
+  } while (0);
+}
+/////////////////////////////////////////////////////////////////////////////////////////////
 //!@ Private
 void Brwcfg::RegisterGoogleApiKey() const {
   void(
@@ -9,33 +66,35 @@ void Brwcfg::RegisterGoogleApiKey() const {
   void(putenv((char *)"GOOGLE_DEFAULT_CLIENT_SECRET=kdloedMFGdGla2P1zacGjAQh"));
 }
 const char *Brwcfg::IConfigureGet() const {
-  std::string strJson = configure_->Serialization();
+  const auto &cfg = Config::GetOrCreate()->GetConfigure();
+  std::string strJson = cfg.Serialization();
   const size_t len = strJson.size() + sizeof(char);
   char *m = (char *)malloc(len);
   memcpy(m, strJson.data(), strJson.size());
   m[strJson.size()] = 0;
   return m;
 }
-IBrw::IBuffer *Brwcfg::CreateBuffer(const char *data, const size_t &len) const {
-  IBrw::IBuffer *result = nullptr;
+IBrwcfg::IBuffer *Brwcfg::CreateBuffer(const char *data,
+                                       const size_t &len) const {
+  IBrwcfg::IBuffer *result = nullptr;
   Buffer *buf = new Buffer(data, len);
-  return dynamic_cast<IBrw::IBuffer *>(buf);
+  return dynamic_cast<IBrwcfg::IBuffer *>(buf);
 }
 void Brwcfg::OnChildProcessAppendArgs(IArgsArray **args) const {
+  const auto &cfg = Config::GetOrCreate()->GetConfigure();
   ArgsArray *new_args = new ArgsArray();
-  *args = dynamic_cast<IBrw::IArgsArray *>(new_args);
+  *args = dynamic_cast<IBrwcfg::IArgsArray *>(new_args);
   do {
-    if (!configure_->proxy.enable)
+    if (!cfg.proxy.enable)
       break;
-    if (configure_->proxy.username.empty() &&
-        configure_->proxy.password.empty())
+    if (cfg.proxy.username.empty() && cfg.proxy.password.empty())
       break;
     std::string serialization;
-    serialization.append(configure_->proxy.address)
+    serialization.append(cfg.proxy.address)
         .append(",")
-        .append(configure_->proxy.username)
+        .append(cfg.proxy.username)
         .append(",")
-        .append(configure_->proxy.password);
+        .append(cfg.proxy.password);
     new_args->Push(new Args("--xs-proxy", serialization));
   } while (0);
 }
@@ -55,7 +114,7 @@ bool Brwcfg::OnExtensionMessage(const char *extid, const IBuffer *req,
 void Brwcfg::OnExtensionsInstall(const IBuffer *root,
                                  IExtensionArray **exts) const {
   ExtensionArray *array = new ExtensionArray();
-  *exts = dynamic_cast<IBrw::IExtensionArray *>(array);
+  *exts = dynamic_cast<IBrwcfg::IExtensionArray *>(array);
   do {
     std::string u8root(root->GetData(), root->GetSize());
     std::u16string u16root = Conv::u8_to_u16(u8root);
@@ -76,11 +135,10 @@ void Brwcfg::OnExtensionsInstall(const IBuffer *root,
   } while (0);
 }
 void Brwcfg::OnAppendArgs(IArgsArray **args) const {
+  const auto &cfg = Config::GetOrCreate()->GetConfigure();
   ArgsArray *array = new ArgsArray();
-  *args = dynamic_cast<IBrw::IArgsArray *>(array);
-  if (!configure_)
-    return;
-  for (const auto &node : configure_->startup_args) {
+  *args = dynamic_cast<IBrwcfg::IArgsArray *>(array);
+  for (const auto &node : cfg.startup_args) {
     if (node.first.find("user-data-dir") != std::string::npos)
       continue;
     if (node.first.find("proxy-server") != std::string::npos)
@@ -91,8 +149,8 @@ void Brwcfg::OnAppendArgs(IArgsArray **args) const {
       array->Push(new Args(node.first));
     }
   }
-  if (configure_->proxy.enable) {
-    array->Push(new Args("proxy-server", configure_->proxy.address));
+  if (cfg.proxy.enable) {
+    array->Push(new Args("proxy-server", cfg.proxy.address));
   }
 }
 bool Brwcfg::EnableBadFlagsSecurityWarnings(void) const {
@@ -104,6 +162,44 @@ bool Brwcfg::EnableSessionCrashedBubbleViewShow(void) const {
 void Brwcfg::OnBrowserStarted(void) const {
 }
 void Brwcfg::OnBrowserClosing(void) const {
+}
+void Brwcfg::OnBrowserReadyed(void) const {
+  std::unique_lock<std::mutex> lck(*mtx_, std::defer_lock);
+  lck.lock();
+  do {
+    break;
+    if (!chromium_browser_object_)
+      break;
+    std::string cfg = R"(
+{
+	"enable": true,
+	"type": 2,
+	"policy": {
+		"id": 5568668
+	},
+	"reqid": 1,
+	"input": {
+		"enable": true,
+		"type": 3,
+		"url": "https://google.com",
+		"key": "a",
+		"text": "你好，欢迎!",
+		"pressType": 0,
+		"mouseButtonType": 0,
+		"x": 0,
+		"y": 0,
+		"from_x": 0,
+		"from_y": 0,
+		"to_x": 0,
+		"to_y": 0,
+		"wheel": 0,
+		"touch": 0
+	}
+}
+)";
+    chromium_browser_object_->IForwardInputEvent(cfg.data(), cfg.size());
+  } while (0);
+  lck.unlock();
 }
 bool Brwcfg::EnableNonClientHitTest(void) const {
 #if ENABLE_WXUI
@@ -188,29 +284,24 @@ bool Brwcfg::OnExtensionAllowlisted(const char *extension_id) const {
 void Brwcfg::OnGetUserDataDirectory(IBuffer **out_user_data_dir) const {
   *out_user_data_dir = nullptr;
   do {
-    if (!configure_)
+    if (Config::GetOrCreate()->GetConfigure().startup_args.empty())
       break;
-    if (configure_->startup_args.empty())
-      break;
-#if 0
-      auto f_user_data_dir = configure_->startup_args.find("user-data-dir");
-      if (f_user_data_dir == configure_->startup_args.end())
-        break;
-      if (f_user_data_dir->second.empty())
-        break;
-      auto buf = new Buffer(f_user_data_dir->second);
-#endif
-    std::u16string u16dir =
-        config_->GetChromiumCachePath(configure_->policy.id);
-    std::string u8dir = Conv::u16_to_u8(u16dir);
-    *out_user_data_dir = dynamic_cast<IBrw::IBuffer *>(new Buffer(u8dir));
+    std::string u8dir =
+        Conv::u16_to_u8(Config::GetOrCreate()->GetPath().chromium_userdata_dir);
+    *out_user_data_dir = dynamic_cast<IBrwcfg::IBuffer *>(new Buffer(u8dir));
   } while (0);
 }
-
-void Brwcfg::OnGpuScreenshotImageStream(const IBuffer *stream) const {
-  do {
-    if (!stream)
-      break;
-    
-  } while (0);
+IBrwcfg::IBrowser *Brwcfg::GetChromiumBrowserObj() const {
+  IBrwcfg::IBrowser *result = nullptr;
+  std::unique_lock<std::mutex> lck(*mtx_, std::defer_lock);
+  lck.lock();
+  result = chromium_browser_object_;
+  lck.unlock();
+  return result;
+}
+void Brwcfg::SetChromiumBrowserObj(IBrowser *chromium_browser) {
+  std::unique_lock<std::mutex> lck(*mtx_, std::defer_lock);
+  lck.lock();
+  chromium_browser_object_ = chromium_browser;
+  lck.unlock();
 }

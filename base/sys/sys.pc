@@ -1,0 +1,13 @@
+prefix=C:/Program Files (x86)/xsmade
+exec_prefix=C:/Program Files (x86)/xsmade
+libdir=C:/Users/k34ub/source/skstu/xsmade/libs/Debug/lib
+sharedlibdir=C:/Users/k34ub/source/skstu/xsmade/libs/Debug/lib
+includedir=C:/Users/k34ub/source/skstu/xsmade/libs/Debug/include
+
+Name: sys
+Description: sys compression library
+Version: 
+
+Requires:
+Libs: -L${libdir} -L${sharedlibdir} -lz
+Cflags: -I${includedir}

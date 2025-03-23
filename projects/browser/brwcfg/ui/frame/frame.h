@@ -1,6 +1,6 @@
 #if !defined(__E18386CA_FD47_47AA_B602_9B13E608B92C__)
 #define __E18386CA_FD47_47AA_B602_9B13E608B92C__
-
+#if ENABLE_WXUI
 class IFrame : public wxFrame {
 public:
   IFrame(wxWindow *parent, wxWindowID id = wxID_ANY,
@@ -15,6 +15,7 @@ private:
   void OnClose(wxCloseEvent &);
   DECLARE_EVENT_TABLE()
 };
+#endif
 #if 0
 class Frame : public wxFrame {
 public:

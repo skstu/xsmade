@@ -1,5 +1,5 @@
 #include "brwcfg.h"
-
+#if ENABLE_WXUI
 Wxui::Wxui() {
   Init();
 }
@@ -84,3 +84,4 @@ void Wxui::Destroy() {
     __gpsWxui = nullptr;
   }
 }
+#endif

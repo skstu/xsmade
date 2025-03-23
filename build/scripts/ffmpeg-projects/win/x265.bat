@@ -3,7 +3,7 @@
 set CURRENT=%~dp0
 set ROOT_DIR=%CURRENT%/../../../..
 set SRC_DIR=%ROOT_DIR%/3rdparty/x265/source
-set INSTALL_DIR=%CURRENT%/../installed
+set INSTALL_DIR=%ROOT_DIR%/build/installed/ffmpeg
 
 cd %SRC_DIR%
 

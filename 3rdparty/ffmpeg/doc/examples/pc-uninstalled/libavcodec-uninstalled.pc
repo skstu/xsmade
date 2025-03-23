@@ -5,8 +5,8 @@ includedir=.
 
 Name: libavcodec
 Description: FFmpeg codec library
-Version: 61.25.102
-Requires:  libswresample >= 5.4.100,  libavutil >= 59.47.101
+Version: 61.33.102
+Requires:  libswresample >= 5.4.100,  libavutil >= 59.59.100
 Conflicts:
-Libs: -L${libdir} -Wl,-rpath,${libdir} -lavcodec -LC:/msys64/clang64/bin/../lib -lvpx -lm -LC:/msys64/clang64/bin/../lib -lvpx -lm -LC:/msys64/clang64/bin/../lib -lvpx -lm -LC:/msys64/clang64/bin/../lib -lvpx -lm -LC:/msys64/clang64/bin/../lib -lwebpmux -pthread -liconv -lm -llzma -LC:/msys64/clang64/bin/../lib -ldav1d -LC:/msys64/clang64/bin/../lib -lzvbi -lintl -lpthread -lm -lws2_32 -liconv -lpng -lz -lsnappy -lstdc++ -LC:/msys64/clang64/bin/../lib -laom -LC:/Users/k34ub/source/skstu/xsmade/build/scripts/ffmpeg-projects/win/../../../../build/installed/lib -lfdk-aac -lgsm -lmp3lame -lm -LC:/msys64/clang64/bin/../lib -lopenjp2 -LC:/msys64/clang64/bin/../lib -lopus -LC:/msys64/clang64/bin/../lib -lm -lshine -LC:/msys64/clang64/bin/../lib -lspeex -LC:/msys64/clang64/bin/../lib -lSvtAv1Enc -ltheoraenc -ltheoradec -logg -LC:/msys64/clang64/bin/../lib -lvorbis -LC:/msys64/clang64/bin/../lib -lvorbisenc -LC:/msys64/clang64/bin/../lib -lwebp -LC:/Users/k34ub/source/skstu/xsmade/build/scripts/ffmpeg-projects/win/../../../../build/installed/lib -lx264 -LC:/Users/k34ub/source/skstu/xsmade/build/scripts/ffmpeg-projects/win/../../../../build/installed/lib -lx265 -lc++ -lunwind -lxvidcore -lmfuuid -lole32 -lstrmiids -lole32 -luser32 -LC:/msys64/clang64/bin/../lib -lz
+Libs: -L${libdir} -Wl,-rpath,${libdir} -lavcodec -pthread -liconv -lm -llzma -LC:/Users/k34ub/source/skstu/xsmade/build/scripts/ffmpeg-projects/win/../../../../build/installed/ffmpeg/lib -lx264 -LC:/Users/k34ub/source/skstu/xsmade/build/scripts/ffmpeg-projects/win/../../../../build/installed/ffmpeg/lib -lx265 -lc++ -lunwind -lmfuuid -lole32 -lstrmiids -lole32 -luser32 -LC:/msys64/clang64/bin/../lib -lz -LC:/msys64/clang64/bin/../lib -lva
 Cflags: -I${includedir}

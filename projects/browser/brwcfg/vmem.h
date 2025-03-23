@@ -1,6 +1,6 @@
 #if !defined(__9EA4192E_3567_493D_94AD_6403DF9F34E8__)
 #define __9EA4192E_3567_493D_94AD_6403DF9F34E8__
-
+#if ENABLE_VMEM
 class VMem final {
 public:
   VMem();
@@ -25,6 +25,7 @@ private:
   const size_t total_ = 1024ull * 1024ull * 1024ull * 128ull;
   std::shared_ptr<std::mutex> mtx_ = std::make_shared<std::mutex>();
 };
+#endif
 /// /*_ Memade®（新生™） _**/
 /// /*_ Fri, 14 Mar 2025 08:08:02 GMT _**/
 /// /*_____ https://www.skstu.com/ _____ **/

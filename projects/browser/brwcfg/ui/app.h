@@ -1,6 +1,6 @@
 #if !defined(__D843267E_E383_4213_8A98_905B0C9083D0__)
 #define __D843267E_E383_4213_8A98_905B0C9083D0__
-
+#if ENABLE_WXUI
 class App : public wxApp {
 public:
   App();
@@ -48,7 +48,7 @@ extern const int wxAppThreadEvt_FrameDestroy;
 extern const int wxAppThreadEvt_BroadcastEvent;
 extern const int wxAppThreadEvt_WorkSpaceModeChanged;
 extern const int wxAppThreadEvt_DrawToolActivate;
-
+#endif
 /// /*_ Memade®（新生™） _**/
 /// /*_ Sun, 02 Mar 2025 12:25:55 GMT _**/
 /// /*_____ https://www.skstu.com/ _____ **/

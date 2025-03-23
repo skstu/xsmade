@@ -103,6 +103,14 @@ unsigned long long Session::ActivationTime(const unsigned long long &time_ms) {
   }
   return result;
 }
+const IBuffer *Session::GetHelloBuffer() const {
+  std::lock_guard<std::mutex> lock{*m_Mutex};
+  return hello_buffer_;
+}
+void Session::SetHelloBuffer(IBuffer *buffer) {
+  std::lock_guard<std::mutex> lock{*m_Mutex};
+  hello_buffer_ = buffer;
+}
 const sockaddr &Session::SockAddr() const {
   std::lock_guard<std::mutex> lock{*m_Mutex};
   return m_SockAddr;
@@ -132,6 +140,14 @@ bool Session::Read(const char *buf, const size_t &len) {
   } while (0);
   return result;
 }
+unsigned long long Session::GetIdentify() const {
+  std::lock_guard<std::mutex> lock{*m_Mutex};
+  return identify_;
+}
+void Session::SetIdentify(const unsigned long long &identify) {
+  std::lock_guard<std::mutex> lock{*m_Mutex};
+  identify_ = identify;
+}
 bool Session::Write(const unsigned long &cmd, const IBuffer *pBuffer) {
   bool result = false;
   do {
@@ -146,11 +162,13 @@ bool Session::Write(const unsigned long &cmd, const IBuffer *pBuffer) {
 bool Session::Write(const unsigned long &cmd, const char *original_data,
                     const size_t &original_data_size) {
   std::lock_guard<std::mutex> lock{*m_Mutex};
+  HEAD head;
+  head.command_code = cmd;
+  head.server_identify = identify_;
   return *m_pWriteStream << Protocol::MakeStream(
-             HEAD(CommandType(cmd)),
-             original_data && original_data_size > 0
-                 ? std::string(original_data, original_data_size)
-                 : "");
+             head, original_data && original_data_size > 0
+                       ? std::string(original_data, original_data_size)
+                       : "");
 }
 write_req_t *
 Session::Write(const std::function<void(std::string &)> &on_hook_cb) {

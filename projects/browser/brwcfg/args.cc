@@ -21,11 +21,11 @@ Args::~Args() {
 void Args::Release() const {
   delete this;
 }
-IBrw::IBuffer *Args::GetKey() const {
-  return dynamic_cast<IBrw::IBuffer *>(key_);
+IBrwcfg::IBuffer *Args::GetKey() const {
+  return dynamic_cast<IBrwcfg::IBuffer *>(key_);
 }
-IBrw::IBuffer *Args::GetValue() const {
-  return dynamic_cast<IBrw::IBuffer *>(value_);
+IBrwcfg::IBuffer *Args::GetValue() const {
+  return dynamic_cast<IBrwcfg::IBuffer *>(value_);
 }
 bool Args::IsPath() const {
   return ispath_;
@@ -44,8 +44,8 @@ size_t ArgsArray::Total() const {
   std::lock_guard<std::mutex> lock{*mtx_};
   return source_.size();
 }
-IBrw::IArgs *ArgsArray::Next(const size_t &idx) const {
-  IBrw::IArgs *result = nullptr;
+IBrwcfg::IArgs *ArgsArray::Next(const size_t &idx) const {
+  IBrwcfg::IArgs *result = nullptr;
   std::lock_guard<std::mutex> lock{*mtx_};
   do {
     if (source_.empty())
@@ -56,7 +56,7 @@ IBrw::IArgs *ArgsArray::Next(const size_t &idx) const {
     std::advance(it, idx);
     if (it == source_.end())
       break;
-    result = dynamic_cast<IBrw::IArgs *>(*it);
+    result = dynamic_cast<IBrwcfg::IArgs *>(*it);
   } while (0);
   return result;
 }

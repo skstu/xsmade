@@ -14,4 +14,4 @@
 add_subdirectory(browser/brwcfg)
 add_subdirectory(browser/brwext)
 add_subdirectory(browser/startup)
-add_subdirectory(browser/server)
+add_subdirectory(browser/brwsvr)

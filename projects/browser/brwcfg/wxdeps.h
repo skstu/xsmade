@@ -1,6 +1,6 @@
 #if !defined(__BC18A0BC_9395_4127_B5E1_F616AF02383C__)
 #define __BC18A0BC_9395_4127_B5E1_F616AF02383C__
-
+#if ENABLE_WXUI
 #if defined(__OSMAC__)
 #ifndef __WXOSX_COCOA__
 #undef __WXOSX_COCOA__
@@ -138,7 +138,7 @@ public:
   static bool LoadImgFormStream(const std::string &imageStream,
                                 wxImage **outputImg);
 };
-
+#endif
 /// /*_ Memade®（新生™） _**/
 /// /*_ Sun, 02 Mar 2025 12:23:37 GMT _**/
 /// /*_____ https://www.skstu.com/ _____ **/

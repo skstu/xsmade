@@ -1,5 +1,5 @@
 #include "brwcfg.h"
-
+#if ENABLE_WXUI
 App::App() {
 }
 App::~App() {
@@ -323,3 +323,4 @@ const int wxAppThreadEvt_ScreenShotClose = wxNewId();
 const int wxAppThreadEvt_RecordingBoxSelection = wxNewId();
 const int wxAppThreadEvt_WorkSpaceModeChanged = wxNewId();
 const int wxAppThreadEvt_RecordingBoxSelectionFinished = wxNewId();
+#endif

@@ -17,7 +17,6 @@ target_include_directories(
           ${xsINCLUDE_DIR}
           ${xsBUILD_INSTALLED_INCLUDE_DIR}
           ${xsBUILD_INSTALLED_INCLUDE_DIR}/utf8cpp
-          ${xsBUILD_INSTALLED_INCLUDE_DIR}/nsis-pluginapi
           ${xsOPENSSL_INCLUDE}
           ${wxINCLUDES})
 target_link_directories(${PROJECT_NAME} PRIVATE ${xsLIBS_DIR} ${xsLIBS_LIB_DIR}
@@ -26,6 +25,7 @@ target_link_directories(${PROJECT_NAME} PRIVATE ${xsLIBS_DIR} ${xsLIBS_LIB_DIR}
 if(WIN32)
   target_link_libraries(
     ${PROJECT_NAME}
+    ${MSYS2_CLANG64_DIR}/lib/libdl.a
     ${MSYS2_CLANG64_DIR}/lib/libc++.a
     wldap32.lib
     winmm.lib
@@ -50,6 +50,7 @@ if(WIN32)
     libzipcc.a
     libpthread.a
     libzlibstatic.a
+    libtinyxml2.a
     ${wxLIBS}
     ${xsOPENSSL_LIBRARY})
 elseif(APPLE)

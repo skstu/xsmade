@@ -30,3 +30,4 @@ endif()
 if("${CMAKE_SYSTEM_NAME}" STREQUAL "")
   set(CMAKE_SYSTEM_NAME ${xsSYSTEM_NAME})
 endif()
+

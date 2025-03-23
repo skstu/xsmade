@@ -1,279 +1,121 @@
 libAACdec/src/usacdec_fac.lo: libAACdec/src/usacdec_fac.cpp \
-  libAACdec/src/usacdec_fac.h libAACdec/src/channelinfo.h \
-  libFDK/include/common_fix.h libFDK/include/FDK_archdef.h \
-  libSYS/include/machine_type.h \
-  C:/msys64/clang64/include/c++/v1/stddef.h \
-  C:/msys64/clang64/include/c++/v1/__config \
-  C:/msys64/clang64/include/c++/v1/__config_site \
-  C:/msys64/clang64/include/c++/v1/__configuration/abi.h \
-  C:/msys64/clang64/include/c++/v1/__configuration/compiler.h \
-  C:/msys64/clang64/include/c++/v1/__configuration/platform.h \
-  C:/msys64/clang64/include/c++/v1/__configuration/availability.h \
-  C:/msys64/clang64/include/c++/v1/__configuration/language.h \
-  C:/msys64/clang64/lib/clang/19/include/stddef.h \
-  C:/msys64/clang64/include/stddef.h \
-  C:/msys64/clang64/lib/clang/19/include/__stddef_header_macro.h \
-  C:/msys64/clang64/lib/clang/19/include/__stddef_ptrdiff_t.h \
-  C:/msys64/clang64/lib/clang/19/include/__stddef_size_t.h \
-  C:/msys64/clang64/lib/clang/19/include/__stddef_wchar_t.h \
-  C:/msys64/clang64/lib/clang/19/include/__stddef_null.h \
-  C:/msys64/clang64/lib/clang/19/include/__stddef_nullptr_t.h \
-  C:/msys64/clang64/lib/clang/19/include/__stddef_max_align_t.h \
-  C:/msys64/clang64/lib/clang/19/include/__stddef_offsetof.h \
-  C:/msys64/clang64/include/assert.h C:/msys64/clang64/include/crtdefs.h \
-  C:/msys64/clang64/include/corecrt.h C:/msys64/clang64/include/_mingw.h \
-  C:/msys64/clang64/include/_mingw_mac.h \
-  C:/msys64/clang64/include/_mingw_secapi.h \
-  C:/msys64/clang64/lib/clang/19/include/vadefs.h \
-  C:/msys64/clang64/include/vadefs.h \
-  C:/msys64/clang64/include/sdks/_mingw_ddk.h \
-  C:/msys64/clang64/include/c++/v1/stdlib.h \
-  C:/msys64/clang64/include/stdlib.h \
-  C:/msys64/clang64/include/corecrt_wstdlib.h \
-  C:/msys64/clang64/lib/clang/19/include/limits.h \
-  C:/msys64/clang64/include/limits.h \
-  C:/msys64/clang64/include/sec_api/stdlib_s.h \
-  C:/msys64/clang64/include/malloc.h \
-  C:/msys64/clang64/lib/clang/19/include/mm_malloc.h \
-  libFDK/include/fixmul.h libFDK/include/x86/fixmul_x86.h \
-  libFDK/include/abs.h libFDK/include/x86/abs_x86.h libFDK/include/clz.h \
-  libFDK/include/x86/clz_x86.h libFDK/include/fixmadd.h \
-  libFDK/include/fixminmax.h libFDK/include/cplx_mul.h \
-  libFDK/include/fixpoint_math.h libFDK/include/scale.h \
-  libSYS/include/genericStds.h libFDK/include/x86/fixpoint_math_x86.h \
-  C:/msys64/clang64/include/c++/v1/math.h \
-  C:/msys64/clang64/include/math.h \
-  C:/msys64/clang64/include/c++/v1/__math/abs.h \
-  C:/msys64/clang64/include/c++/v1/__type_traits/enable_if.h \
-  C:/msys64/clang64/include/c++/v1/__type_traits/is_integral.h \
-  C:/msys64/clang64/include/c++/v1/__type_traits/integral_constant.h \
-  C:/msys64/clang64/include/c++/v1/__type_traits/remove_cv.h \
-  C:/msys64/clang64/include/c++/v1/__type_traits/remove_const.h \
-  C:/msys64/clang64/include/c++/v1/__type_traits/remove_volatile.h \
-  C:/msys64/clang64/include/c++/v1/__math/copysign.h \
-  C:/msys64/clang64/include/c++/v1/__type_traits/is_arithmetic.h \
-  C:/msys64/clang64/include/c++/v1/__type_traits/is_floating_point.h \
-  C:/msys64/clang64/include/c++/v1/__type_traits/promote.h \
-  C:/msys64/clang64/include/c++/v1/limits \
-  C:/msys64/clang64/include/c++/v1/__type_traits/is_signed.h \
-  C:/msys64/clang64/include/c++/v1/__undef_macros \
-  C:/msys64/clang64/include/c++/v1/version \
-  C:/msys64/clang64/include/c++/v1/type_traits \
-  C:/msys64/clang64/include/c++/v1/__fwd/functional.h \
-  C:/msys64/clang64/include/c++/v1/__type_traits/add_const.h \
-  C:/msys64/clang64/include/c++/v1/__type_traits/add_cv.h \
-  C:/msys64/clang64/include/c++/v1/__type_traits/add_lvalue_reference.h \
-  C:/msys64/clang64/include/c++/v1/__type_traits/is_referenceable.h \
-  C:/msys64/clang64/include/c++/v1/__type_traits/is_same.h \
-  C:/msys64/clang64/include/c++/v1/__type_traits/add_pointer.h \
-  C:/msys64/clang64/include/c++/v1/__type_traits/is_void.h \
-  C:/msys64/clang64/include/c++/v1/__type_traits/remove_reference.h \
-  C:/msys64/clang64/include/c++/v1/__type_traits/add_rvalue_reference.h \
-  C:/msys64/clang64/include/c++/v1/__type_traits/add_volatile.h \
-  C:/msys64/clang64/include/c++/v1/__type_traits/aligned_storage.h \
-  C:/msys64/clang64/include/c++/v1/__type_traits/conditional.h \
-  C:/msys64/clang64/include/c++/v1/__type_traits/nat.h \
-  C:/msys64/clang64/include/c++/v1/__type_traits/type_list.h \
-  C:/msys64/clang64/include/c++/v1/cstddef \
-  C:/msys64/clang64/include/c++/v1/__type_traits/aligned_union.h \
-  C:/msys64/clang64/include/c++/v1/__type_traits/alignment_of.h \
-  C:/msys64/clang64/include/c++/v1/__type_traits/common_type.h \
-  C:/msys64/clang64/include/c++/v1/__type_traits/decay.h \
-  C:/msys64/clang64/include/c++/v1/__type_traits/is_array.h \
-  C:/msys64/clang64/include/c++/v1/__type_traits/is_function.h \
-  C:/msys64/clang64/include/c++/v1/__type_traits/remove_extent.h \
-  C:/msys64/clang64/include/c++/v1/__type_traits/remove_cvref.h \
-  C:/msys64/clang64/include/c++/v1/__type_traits/void_t.h \
-  C:/msys64/clang64/include/c++/v1/__utility/declval.h \
-  C:/msys64/clang64/include/c++/v1/__type_traits/extent.h \
-  C:/msys64/clang64/include/c++/v1/__type_traits/has_virtual_destructor.h \
-  C:/msys64/clang64/include/c++/v1/__type_traits/is_abstract.h \
-  C:/msys64/clang64/include/c++/v1/__type_traits/is_assignable.h \
-  C:/msys64/clang64/include/c++/v1/__type_traits/is_base_of.h \
-  C:/msys64/clang64/include/c++/v1/__type_traits/is_class.h \
-  C:/msys64/clang64/include/c++/v1/__type_traits/is_compound.h \
-  C:/msys64/clang64/include/c++/v1/__type_traits/is_fundamental.h \
-  C:/msys64/clang64/include/c++/v1/__type_traits/is_null_pointer.h \
-  C:/msys64/clang64/include/c++/v1/__type_traits/is_const.h \
-  C:/msys64/clang64/include/c++/v1/__type_traits/is_constructible.h \
-  C:/msys64/clang64/include/c++/v1/__type_traits/is_convertible.h \
-  C:/msys64/clang64/include/c++/v1/__type_traits/is_destructible.h \
-  C:/msys64/clang64/include/c++/v1/__type_traits/is_reference.h \
-  C:/msys64/clang64/include/c++/v1/__type_traits/remove_all_extents.h \
-  C:/msys64/clang64/include/c++/v1/__type_traits/is_empty.h \
-  C:/msys64/clang64/include/c++/v1/__type_traits/is_enum.h \
-  C:/msys64/clang64/include/c++/v1/__type_traits/is_literal_type.h \
-  C:/msys64/clang64/include/c++/v1/__type_traits/is_member_pointer.h \
-  C:/msys64/clang64/include/c++/v1/__type_traits/is_nothrow_assignable.h \
-  C:/msys64/clang64/include/c++/v1/__type_traits/is_nothrow_constructible.h \
-  C:/msys64/clang64/include/c++/v1/__type_traits/is_nothrow_destructible.h \
-  C:/msys64/clang64/include/c++/v1/__type_traits/is_object.h \
-  C:/msys64/clang64/include/c++/v1/__type_traits/is_pod.h \
-  C:/msys64/clang64/include/c++/v1/__type_traits/is_pointer.h \
-  C:/msys64/clang64/include/c++/v1/__type_traits/is_polymorphic.h \
-  C:/msys64/clang64/include/c++/v1/__type_traits/is_scalar.h \
-  C:/msys64/clang64/include/c++/v1/__type_traits/is_standard_layout.h \
-  C:/msys64/clang64/include/c++/v1/__type_traits/is_trivial.h \
-  C:/msys64/clang64/include/c++/v1/__type_traits/is_trivially_assignable.h \
-  C:/msys64/clang64/include/c++/v1/__type_traits/is_trivially_constructible.h \
-  C:/msys64/clang64/include/c++/v1/__type_traits/is_trivially_copyable.h \
-  C:/msys64/clang64/include/c++/v1/cstdint \
-  C:/msys64/clang64/include/c++/v1/stdint.h \
-  C:/msys64/clang64/lib/clang/19/include/stdint.h \
-  C:/msys64/clang64/include/stdint.h \
-  C:/msys64/clang64/lib/clang/19/include/__stddef_wint_t.h \
-  C:/msys64/clang64/include/c++/v1/__type_traits/is_trivially_destructible.h \
-  C:/msys64/clang64/include/c++/v1/__type_traits/is_union.h \
-  C:/msys64/clang64/include/c++/v1/__type_traits/is_unsigned.h \
-  C:/msys64/clang64/include/c++/v1/__type_traits/is_volatile.h \
-  C:/msys64/clang64/include/c++/v1/__type_traits/make_signed.h \
-  C:/msys64/clang64/include/c++/v1/__type_traits/copy_cv.h \
-  C:/msys64/clang64/include/c++/v1/__type_traits/make_unsigned.h \
-  C:/msys64/clang64/include/c++/v1/__type_traits/rank.h \
-  C:/msys64/clang64/include/c++/v1/__type_traits/remove_pointer.h \
-  C:/msys64/clang64/include/c++/v1/__type_traits/result_of.h \
-  C:/msys64/clang64/include/c++/v1/__functional/invoke.h \
-  C:/msys64/clang64/include/c++/v1/__type_traits/invoke.h \
-  C:/msys64/clang64/include/c++/v1/__type_traits/is_core_convertible.h \
-  C:/msys64/clang64/include/c++/v1/__type_traits/is_reference_wrapper.h \
-  C:/msys64/clang64/include/c++/v1/__utility/forward.h \
-  C:/msys64/clang64/include/c++/v1/__type_traits/underlying_type.h \
-  C:/msys64/clang64/include/c++/v1/__type_traits/is_final.h \
-  C:/msys64/clang64/include/c++/v1/__type_traits/conjunction.h \
-  C:/msys64/clang64/include/c++/v1/__type_traits/disjunction.h \
-  C:/msys64/clang64/include/c++/v1/__type_traits/has_unique_object_representation.h \
-  C:/msys64/clang64/include/c++/v1/__type_traits/is_aggregate.h \
-  C:/msys64/clang64/include/c++/v1/__type_traits/is_swappable.h \
-  C:/msys64/clang64/include/c++/v1/__type_traits/negation.h \
-  C:/msys64/clang64/include/c++/v1/__math/error_functions.h \
-  C:/msys64/clang64/include/c++/v1/__math/exponential_functions.h \
-  C:/msys64/clang64/include/c++/v1/__math/fdim.h \
-  C:/msys64/clang64/include/c++/v1/__math/fma.h \
-  C:/msys64/clang64/include/c++/v1/__math/gamma.h \
-  C:/msys64/clang64/include/c++/v1/__math/hyperbolic_functions.h \
-  C:/msys64/clang64/include/c++/v1/__math/hypot.h \
-  C:/msys64/clang64/include/c++/v1/__algorithm/max.h \
-  C:/msys64/clang64/include/c++/v1/__algorithm/comp.h \
-  C:/msys64/clang64/include/c++/v1/__type_traits/desugars_to.h \
-  C:/msys64/clang64/include/c++/v1/__algorithm/comp_ref_type.h \
-  C:/msys64/clang64/include/c++/v1/__assert \
-  C:/msys64/clang64/include/c++/v1/__assertion_handler \
-  C:/msys64/clang64/include/c++/v1/__verbose_abort \
-  C:/msys64/clang64/include/c++/v1/__algorithm/max_element.h \
-  C:/msys64/clang64/include/c++/v1/__iterator/iterator_traits.h \
-  C:/msys64/clang64/include/c++/v1/__concepts/arithmetic.h \
-  C:/msys64/clang64/include/c++/v1/__type_traits/is_signed_integer.h \
-  C:/msys64/clang64/include/c++/v1/__type_traits/is_unsigned_integer.h \
-  C:/msys64/clang64/include/c++/v1/__concepts/constructible.h \
-  C:/msys64/clang64/include/c++/v1/__concepts/convertible_to.h \
-  C:/msys64/clang64/include/c++/v1/__concepts/destructible.h \
-  C:/msys64/clang64/include/c++/v1/__concepts/copyable.h \
-  C:/msys64/clang64/include/c++/v1/__concepts/assignable.h \
-  C:/msys64/clang64/include/c++/v1/__concepts/common_reference_with.h \
-  C:/msys64/clang64/include/c++/v1/__concepts/same_as.h \
-  C:/msys64/clang64/include/c++/v1/__type_traits/common_reference.h \
-  C:/msys64/clang64/include/c++/v1/__type_traits/copy_cvref.h \
-  C:/msys64/clang64/include/c++/v1/__type_traits/make_const_lvalue_ref.h \
-  C:/msys64/clang64/include/c++/v1/__concepts/movable.h \
-  C:/msys64/clang64/include/c++/v1/__concepts/swappable.h \
-  C:/msys64/clang64/include/c++/v1/__concepts/class_or_enum.h \
-  C:/msys64/clang64/include/c++/v1/__utility/exchange.h \
-  C:/msys64/clang64/include/c++/v1/__utility/move.h \
-  C:/msys64/clang64/include/c++/v1/__utility/swap.h \
-  C:/msys64/clang64/include/c++/v1/__concepts/equality_comparable.h \
-  C:/msys64/clang64/include/c++/v1/__concepts/boolean_testable.h \
-  C:/msys64/clang64/include/c++/v1/__concepts/totally_ordered.h \
-  C:/msys64/clang64/include/c++/v1/__fwd/pair.h \
-  C:/msys64/clang64/include/c++/v1/__fwd/tuple.h \
-  C:/msys64/clang64/include/c++/v1/__iterator/incrementable_traits.h \
-  C:/msys64/clang64/include/c++/v1/__type_traits/is_primary_template.h \
-  C:/msys64/clang64/include/c++/v1/__type_traits/is_valid_expansion.h \
-  C:/msys64/clang64/include/c++/v1/__iterator/readable_traits.h \
-  C:/msys64/clang64/include/c++/v1/initializer_list \
-  C:/msys64/clang64/include/c++/v1/__math/roots.h \
-  C:/msys64/clang64/include/c++/v1/__utility/pair.h \
-  C:/msys64/clang64/include/c++/v1/__compare/common_comparison_category.h \
-  C:/msys64/clang64/include/c++/v1/__compare/ordering.h \
-  C:/msys64/clang64/include/c++/v1/__compare/synth_three_way.h \
-  C:/msys64/clang64/include/c++/v1/__compare/three_way_comparable.h \
-  C:/msys64/clang64/include/c++/v1/__concepts/different_from.h \
-  C:/msys64/clang64/include/c++/v1/__fwd/array.h \
-  C:/msys64/clang64/include/c++/v1/__tuple/sfinae_helpers.h \
-  C:/msys64/clang64/include/c++/v1/__tuple/make_tuple_types.h \
-  C:/msys64/clang64/include/c++/v1/__tuple/tuple_element.h \
-  C:/msys64/clang64/include/c++/v1/__tuple/tuple_indices.h \
-  C:/msys64/clang64/include/c++/v1/__utility/integer_sequence.h \
-  C:/msys64/clang64/include/c++/v1/__tuple/tuple_types.h \
-  C:/msys64/clang64/include/c++/v1/__tuple/tuple_size.h \
-  C:/msys64/clang64/include/c++/v1/__tuple/tuple_like_ext.h \
-  C:/msys64/clang64/include/c++/v1/__tuple/tuple_like_no_subrange.h \
-  C:/msys64/clang64/include/c++/v1/__fwd/complex.h \
-  C:/msys64/clang64/include/c++/v1/__type_traits/is_implicitly_default_constructible.h \
-  C:/msys64/clang64/include/c++/v1/__type_traits/is_trivially_relocatable.h \
-  C:/msys64/clang64/include/c++/v1/__type_traits/unwrap_ref.h \
-  C:/msys64/clang64/include/c++/v1/__utility/piecewise_construct.h \
-  C:/msys64/clang64/include/c++/v1/__math/inverse_hyperbolic_functions.h \
-  C:/msys64/clang64/include/c++/v1/__math/inverse_trigonometric_functions.h \
-  C:/msys64/clang64/include/c++/v1/__math/logarithms.h \
-  C:/msys64/clang64/include/c++/v1/__math/min_max.h \
-  C:/msys64/clang64/include/c++/v1/__math/modulo.h \
-  C:/msys64/clang64/include/c++/v1/__math/remainder.h \
-  C:/msys64/clang64/include/c++/v1/__math/rounding_functions.h \
-  C:/msys64/clang64/include/c++/v1/__math/traits.h \
-  C:/msys64/clang64/include/c++/v1/__math/trigonometric_functions.h \
-  libAACdec/src/aac_rom.h libSYS/include/FDK_audio.h \
-  libSYS/include/syslib_channelMapDescr.h \
-  libAACdec/src/aacdec_hcr_types.h libFDK/include/FDK_bitstream.h \
-  libFDK/include/FDK_bitbuffer.h libAACdec/src/overlapadd.h \
-  libAACdec/src/aacdec_hcrs.h libAACdec/include/aacdecoder_lib.h \
-  libFDK/include/mdct.h libAACdec/src/stereo.h libAACdec/src/pulsedata.h \
-  libAACdec/src/aacdec_tns.h libAACdec/src/aacdec_pns.h \
-  libAACdec/src/rvlc_info.h libAACdec/src/usacdec_acelp.h \
-  libAACdec/src/usacdec_const.h libAACdec/src/usacdec_rom.h \
-  libFDK/include/FDK_lpc.h libArithCoding/include/ac_arith_coder.h \
-  libAACdec/src/conceal_types.h libAACdec/src/usacdec_lpc.h \
-  libAACdec/src/aacdec_drc_types.h libFDK/include/dct.h \
-  libFDK/include/FDK_tools_rom.h
+ libAACdec/src/usacdec_fac.h libAACdec/src/channelinfo.h \
+ libFDK/include/common_fix.h libFDK/include/FDK_archdef.h \
+ libSYS/include/machine_type.h \
+ C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/stddef.h \
+ C:/msys64/mingw64/include/stddef.h C:/msys64/mingw64/include/crtdefs.h \
+ C:/msys64/mingw64/include/corecrt.h C:/msys64/mingw64/include/_mingw.h \
+ C:/msys64/mingw64/include/_mingw_mac.h \
+ C:/msys64/mingw64/include/_mingw_secapi.h \
+ C:/msys64/mingw64/include/vadefs.h \
+ C:/msys64/mingw64/include/sdks/_mingw_ddk.h \
+ C:/msys64/mingw64/include/assert.h \
+ C:/msys64/mingw64/include/c++/14.2.0/stdlib.h \
+ C:/msys64/mingw64/include/c++/14.2.0/cstdlib \
+ C:/msys64/mingw64/include/c++/14.2.0/x86_64-w64-mingw32/bits/c++config.h \
+ C:/msys64/mingw64/include/c++/14.2.0/x86_64-w64-mingw32/bits/os_defines.h \
+ C:/msys64/mingw64/include/c++/14.2.0/x86_64-w64-mingw32/bits/cpu_defines.h \
+ C:/msys64/mingw64/include/c++/14.2.0/pstl/pstl_config.h \
+ C:/msys64/mingw64/include/stdlib.h \
+ C:/msys64/mingw64/include/corecrt_wstdlib.h \
+ C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/limits.h \
+ C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/syslimits.h \
+ C:/msys64/mingw64/include/limits.h \
+ C:/msys64/mingw64/include/sec_api/stdlib_s.h \
+ C:/msys64/mingw64/include/malloc.h \
+ C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/mm_malloc.h \
+ C:/msys64/mingw64/include/errno.h \
+ C:/msys64/mingw64/include/c++/14.2.0/bits/std_abs.h \
+ libFDK/include/fixmul.h libFDK/include/x86/fixmul_x86.h \
+ libFDK/include/abs.h libFDK/include/x86/abs_x86.h libFDK/include/clz.h \
+ libFDK/include/x86/clz_x86.h libFDK/include/fixmadd.h \
+ libFDK/include/fixminmax.h libFDK/include/cplx_mul.h \
+ libFDK/include/common_fix.h libFDK/include/fixpoint_math.h \
+ libFDK/include/scale.h libSYS/include/genericStds.h \
+ libSYS/include/machine_type.h libFDK/include/x86/fixpoint_math_x86.h \
+ C:/msys64/mingw64/include/c++/14.2.0/math.h \
+ C:/msys64/mingw64/include/c++/14.2.0/cmath \
+ C:/msys64/mingw64/include/c++/14.2.0/bits/requires_hosted.h \
+ C:/msys64/mingw64/include/c++/14.2.0/bits/cpp_type_traits.h \
+ C:/msys64/mingw64/include/c++/14.2.0/ext/type_traits.h \
+ C:/msys64/mingw64/include/math.h \
+ C:/msys64/mingw64/include/c++/14.2.0/bits/version.h \
+ C:/msys64/mingw64/include/c++/14.2.0/bits/specfun.h \
+ C:/msys64/mingw64/include/c++/14.2.0/bits/stl_algobase.h \
+ C:/msys64/mingw64/include/c++/14.2.0/bits/functexcept.h \
+ C:/msys64/mingw64/include/c++/14.2.0/bits/exception_defines.h \
+ C:/msys64/mingw64/include/c++/14.2.0/ext/numeric_traits.h \
+ C:/msys64/mingw64/include/c++/14.2.0/bits/stl_pair.h \
+ C:/msys64/mingw64/include/c++/14.2.0/type_traits \
+ C:/msys64/mingw64/include/c++/14.2.0/bits/move.h \
+ C:/msys64/mingw64/include/c++/14.2.0/bits/utility.h \
+ C:/msys64/mingw64/include/c++/14.2.0/bits/stl_iterator_base_types.h \
+ C:/msys64/mingw64/include/c++/14.2.0/bits/stl_iterator_base_funcs.h \
+ C:/msys64/mingw64/include/c++/14.2.0/bits/concept_check.h \
+ C:/msys64/mingw64/include/c++/14.2.0/debug/assertions.h \
+ C:/msys64/mingw64/include/c++/14.2.0/bits/stl_iterator.h \
+ C:/msys64/mingw64/include/c++/14.2.0/bits/ptr_traits.h \
+ C:/msys64/mingw64/include/c++/14.2.0/debug/debug.h \
+ C:/msys64/mingw64/include/c++/14.2.0/bits/predefined_ops.h \
+ C:/msys64/mingw64/include/c++/14.2.0/bit \
+ C:/msys64/mingw64/include/c++/14.2.0/concepts \
+ C:/msys64/mingw64/include/c++/14.2.0/limits \
+ C:/msys64/mingw64/include/c++/14.2.0/tr1/gamma.tcc \
+ C:/msys64/mingw64/include/c++/14.2.0/tr1/special_function_util.h \
+ C:/msys64/mingw64/include/c++/14.2.0/tr1/bessel_function.tcc \
+ C:/msys64/mingw64/include/c++/14.2.0/tr1/beta_function.tcc \
+ C:/msys64/mingw64/include/c++/14.2.0/tr1/ell_integral.tcc \
+ C:/msys64/mingw64/include/c++/14.2.0/tr1/exp_integral.tcc \
+ C:/msys64/mingw64/include/c++/14.2.0/tr1/hypergeometric.tcc \
+ C:/msys64/mingw64/include/c++/14.2.0/tr1/legendre_function.tcc \
+ C:/msys64/mingw64/include/c++/14.2.0/tr1/modified_bessel_func.tcc \
+ C:/msys64/mingw64/include/c++/14.2.0/tr1/poly_hermite.tcc \
+ C:/msys64/mingw64/include/c++/14.2.0/tr1/poly_laguerre.tcc \
+ C:/msys64/mingw64/include/c++/14.2.0/tr1/riemann_zeta.tcc \
+ libAACdec/src/aac_rom.h libSYS/include/FDK_audio.h \
+ libSYS/include/genericStds.h libSYS/include/syslib_channelMapDescr.h \
+ libAACdec/src/aacdec_hcr_types.h libFDK/include/FDK_bitstream.h \
+ libFDK/include/FDK_bitbuffer.h libAACdec/src/overlapadd.h \
+ libAACdec/src/aacdec_hcrs.h libAACdec/include/aacdecoder_lib.h \
+ libFDK/include/mdct.h libAACdec/src/stereo.h libAACdec/src/pulsedata.h \
+ libAACdec/src/aacdec_tns.h libAACdec/src/aacdec_pns.h \
+ libAACdec/src/rvlc_info.h libAACdec/src/usacdec_acelp.h \
+ libAACdec/src/usacdec_const.h libAACdec/src/usacdec_rom.h \
+ libFDK/include/FDK_lpc.h libArithCoding/include/ac_arith_coder.h \
+ libAACdec/src/conceal_types.h libAACdec/src/usacdec_lpc.h \
+ libAACdec/src/aacdec_drc_types.h libFDK/include/dct.h \
+ libFDK/include/FDK_tools_rom.h
 libAACdec/src/usacdec_fac.h:
 libAACdec/src/channelinfo.h:
 libFDK/include/common_fix.h:
 libFDK/include/FDK_archdef.h:
 libSYS/include/machine_type.h:
-C:/msys64/clang64/include/c++/v1/stddef.h:
-C:/msys64/clang64/include/c++/v1/__config:
-C:/msys64/clang64/include/c++/v1/__config_site:
-C:/msys64/clang64/include/c++/v1/__configuration/abi.h:
-C:/msys64/clang64/include/c++/v1/__configuration/compiler.h:
-C:/msys64/clang64/include/c++/v1/__configuration/platform.h:
-C:/msys64/clang64/include/c++/v1/__configuration/availability.h:
-C:/msys64/clang64/include/c++/v1/__configuration/language.h:
-C:/msys64/clang64/lib/clang/19/include/stddef.h:
-C:/msys64/clang64/include/stddef.h:
-C:/msys64/clang64/lib/clang/19/include/__stddef_header_macro.h:
-C:/msys64/clang64/lib/clang/19/include/__stddef_ptrdiff_t.h:
-C:/msys64/clang64/lib/clang/19/include/__stddef_size_t.h:
-C:/msys64/clang64/lib/clang/19/include/__stddef_wchar_t.h:
-C:/msys64/clang64/lib/clang/19/include/__stddef_null.h:
-C:/msys64/clang64/lib/clang/19/include/__stddef_nullptr_t.h:
-C:/msys64/clang64/lib/clang/19/include/__stddef_max_align_t.h:
-C:/msys64/clang64/lib/clang/19/include/__stddef_offsetof.h:
-C:/msys64/clang64/include/assert.h:
-C:/msys64/clang64/include/crtdefs.h:
-C:/msys64/clang64/include/corecrt.h:
-C:/msys64/clang64/include/_mingw.h:
-C:/msys64/clang64/include/_mingw_mac.h:
-C:/msys64/clang64/include/_mingw_secapi.h:
-C:/msys64/clang64/lib/clang/19/include/vadefs.h:
-C:/msys64/clang64/include/vadefs.h:
-C:/msys64/clang64/include/sdks/_mingw_ddk.h:
-C:/msys64/clang64/include/c++/v1/stdlib.h:
-C:/msys64/clang64/include/stdlib.h:
-C:/msys64/clang64/include/corecrt_wstdlib.h:
-C:/msys64/clang64/lib/clang/19/include/limits.h:
-C:/msys64/clang64/include/limits.h:
-C:/msys64/clang64/include/sec_api/stdlib_s.h:
-C:/msys64/clang64/include/malloc.h:
-C:/msys64/clang64/lib/clang/19/include/mm_malloc.h:
+C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/stddef.h:
+C:/msys64/mingw64/include/stddef.h:
+C:/msys64/mingw64/include/crtdefs.h:
+C:/msys64/mingw64/include/corecrt.h:
+C:/msys64/mingw64/include/_mingw.h:
+C:/msys64/mingw64/include/_mingw_mac.h:
+C:/msys64/mingw64/include/_mingw_secapi.h:
+C:/msys64/mingw64/include/vadefs.h:
+C:/msys64/mingw64/include/sdks/_mingw_ddk.h:
+C:/msys64/mingw64/include/assert.h:
+C:/msys64/mingw64/include/c++/14.2.0/stdlib.h:
+C:/msys64/mingw64/include/c++/14.2.0/cstdlib:
+C:/msys64/mingw64/include/c++/14.2.0/x86_64-w64-mingw32/bits/c++config.h:
+C:/msys64/mingw64/include/c++/14.2.0/x86_64-w64-mingw32/bits/os_defines.h:
+C:/msys64/mingw64/include/c++/14.2.0/x86_64-w64-mingw32/bits/cpu_defines.h:
+C:/msys64/mingw64/include/c++/14.2.0/pstl/pstl_config.h:
+C:/msys64/mingw64/include/stdlib.h:
+C:/msys64/mingw64/include/corecrt_wstdlib.h:
+C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/limits.h:
+C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/syslimits.h:
+C:/msys64/mingw64/include/limits.h:
+C:/msys64/mingw64/include/sec_api/stdlib_s.h:
+C:/msys64/mingw64/include/malloc.h:
+C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/mm_malloc.h:
+C:/msys64/mingw64/include/errno.h:
+C:/msys64/mingw64/include/c++/14.2.0/bits/std_abs.h:
 libFDK/include/fixmul.h:
 libFDK/include/x86/fixmul_x86.h:
 libFDK/include/abs.h:
@@ -283,192 +125,54 @@ libFDK/include/x86/clz_x86.h:
 libFDK/include/fixmadd.h:
 libFDK/include/fixminmax.h:
 libFDK/include/cplx_mul.h:
+libFDK/include/common_fix.h:
 libFDK/include/fixpoint_math.h:
 libFDK/include/scale.h:
 libSYS/include/genericStds.h:
+libSYS/include/machine_type.h:
 libFDK/include/x86/fixpoint_math_x86.h:
-C:/msys64/clang64/include/c++/v1/math.h:
-C:/msys64/clang64/include/math.h:
-C:/msys64/clang64/include/c++/v1/__math/abs.h:
-C:/msys64/clang64/include/c++/v1/__type_traits/enable_if.h:
-C:/msys64/clang64/include/c++/v1/__type_traits/is_integral.h:
-C:/msys64/clang64/include/c++/v1/__type_traits/integral_constant.h:
-C:/msys64/clang64/include/c++/v1/__type_traits/remove_cv.h:
-C:/msys64/clang64/include/c++/v1/__type_traits/remove_const.h:
-C:/msys64/clang64/include/c++/v1/__type_traits/remove_volatile.h:
-C:/msys64/clang64/include/c++/v1/__math/copysign.h:
-C:/msys64/clang64/include/c++/v1/__type_traits/is_arithmetic.h:
-C:/msys64/clang64/include/c++/v1/__type_traits/is_floating_point.h:
-C:/msys64/clang64/include/c++/v1/__type_traits/promote.h:
-C:/msys64/clang64/include/c++/v1/limits:
-C:/msys64/clang64/include/c++/v1/__type_traits/is_signed.h:
-C:/msys64/clang64/include/c++/v1/__undef_macros:
-C:/msys64/clang64/include/c++/v1/version:
-C:/msys64/clang64/include/c++/v1/type_traits:
-C:/msys64/clang64/include/c++/v1/__fwd/functional.h:
-C:/msys64/clang64/include/c++/v1/__type_traits/add_const.h:
-C:/msys64/clang64/include/c++/v1/__type_traits/add_cv.h:
-C:/msys64/clang64/include/c++/v1/__type_traits/add_lvalue_reference.h:
-C:/msys64/clang64/include/c++/v1/__type_traits/is_referenceable.h:
-C:/msys64/clang64/include/c++/v1/__type_traits/is_same.h:
-C:/msys64/clang64/include/c++/v1/__type_traits/add_pointer.h:
-C:/msys64/clang64/include/c++/v1/__type_traits/is_void.h:
-C:/msys64/clang64/include/c++/v1/__type_traits/remove_reference.h:
-C:/msys64/clang64/include/c++/v1/__type_traits/add_rvalue_reference.h:
-C:/msys64/clang64/include/c++/v1/__type_traits/add_volatile.h:
-C:/msys64/clang64/include/c++/v1/__type_traits/aligned_storage.h:
-C:/msys64/clang64/include/c++/v1/__type_traits/conditional.h:
-C:/msys64/clang64/include/c++/v1/__type_traits/nat.h:
-C:/msys64/clang64/include/c++/v1/__type_traits/type_list.h:
-C:/msys64/clang64/include/c++/v1/cstddef:
-C:/msys64/clang64/include/c++/v1/__type_traits/aligned_union.h:
-C:/msys64/clang64/include/c++/v1/__type_traits/alignment_of.h:
-C:/msys64/clang64/include/c++/v1/__type_traits/common_type.h:
-C:/msys64/clang64/include/c++/v1/__type_traits/decay.h:
-C:/msys64/clang64/include/c++/v1/__type_traits/is_array.h:
-C:/msys64/clang64/include/c++/v1/__type_traits/is_function.h:
-C:/msys64/clang64/include/c++/v1/__type_traits/remove_extent.h:
-C:/msys64/clang64/include/c++/v1/__type_traits/remove_cvref.h:
-C:/msys64/clang64/include/c++/v1/__type_traits/void_t.h:
-C:/msys64/clang64/include/c++/v1/__utility/declval.h:
-C:/msys64/clang64/include/c++/v1/__type_traits/extent.h:
-C:/msys64/clang64/include/c++/v1/__type_traits/has_virtual_destructor.h:
-C:/msys64/clang64/include/c++/v1/__type_traits/is_abstract.h:
-C:/msys64/clang64/include/c++/v1/__type_traits/is_assignable.h:
-C:/msys64/clang64/include/c++/v1/__type_traits/is_base_of.h:
-C:/msys64/clang64/include/c++/v1/__type_traits/is_class.h:
-C:/msys64/clang64/include/c++/v1/__type_traits/is_compound.h:
-C:/msys64/clang64/include/c++/v1/__type_traits/is_fundamental.h:
-C:/msys64/clang64/include/c++/v1/__type_traits/is_null_pointer.h:
-C:/msys64/clang64/include/c++/v1/__type_traits/is_const.h:
-C:/msys64/clang64/include/c++/v1/__type_traits/is_constructible.h:
-C:/msys64/clang64/include/c++/v1/__type_traits/is_convertible.h:
-C:/msys64/clang64/include/c++/v1/__type_traits/is_destructible.h:
-C:/msys64/clang64/include/c++/v1/__type_traits/is_reference.h:
-C:/msys64/clang64/include/c++/v1/__type_traits/remove_all_extents.h:
-C:/msys64/clang64/include/c++/v1/__type_traits/is_empty.h:
-C:/msys64/clang64/include/c++/v1/__type_traits/is_enum.h:
-C:/msys64/clang64/include/c++/v1/__type_traits/is_literal_type.h:
-C:/msys64/clang64/include/c++/v1/__type_traits/is_member_pointer.h:
-C:/msys64/clang64/include/c++/v1/__type_traits/is_nothrow_assignable.h:
-C:/msys64/clang64/include/c++/v1/__type_traits/is_nothrow_constructible.h:
-C:/msys64/clang64/include/c++/v1/__type_traits/is_nothrow_destructible.h:
-C:/msys64/clang64/include/c++/v1/__type_traits/is_object.h:
-C:/msys64/clang64/include/c++/v1/__type_traits/is_pod.h:
-C:/msys64/clang64/include/c++/v1/__type_traits/is_pointer.h:
-C:/msys64/clang64/include/c++/v1/__type_traits/is_polymorphic.h:
-C:/msys64/clang64/include/c++/v1/__type_traits/is_scalar.h:
-C:/msys64/clang64/include/c++/v1/__type_traits/is_standard_layout.h:
-C:/msys64/clang64/include/c++/v1/__type_traits/is_trivial.h:
-C:/msys64/clang64/include/c++/v1/__type_traits/is_trivially_assignable.h:
-C:/msys64/clang64/include/c++/v1/__type_traits/is_trivially_constructible.h:
-C:/msys64/clang64/include/c++/v1/__type_traits/is_trivially_copyable.h:
-C:/msys64/clang64/include/c++/v1/cstdint:
-C:/msys64/clang64/include/c++/v1/stdint.h:
-C:/msys64/clang64/lib/clang/19/include/stdint.h:
-C:/msys64/clang64/include/stdint.h:
-C:/msys64/clang64/lib/clang/19/include/__stddef_wint_t.h:
-C:/msys64/clang64/include/c++/v1/__type_traits/is_trivially_destructible.h:
-C:/msys64/clang64/include/c++/v1/__type_traits/is_union.h:
-C:/msys64/clang64/include/c++/v1/__type_traits/is_unsigned.h:
-C:/msys64/clang64/include/c++/v1/__type_traits/is_volatile.h:
-C:/msys64/clang64/include/c++/v1/__type_traits/make_signed.h:
-C:/msys64/clang64/include/c++/v1/__type_traits/copy_cv.h:
-C:/msys64/clang64/include/c++/v1/__type_traits/make_unsigned.h:
-C:/msys64/clang64/include/c++/v1/__type_traits/rank.h:
-C:/msys64/clang64/include/c++/v1/__type_traits/remove_pointer.h:
-C:/msys64/clang64/include/c++/v1/__type_traits/result_of.h:
-C:/msys64/clang64/include/c++/v1/__functional/invoke.h:
-C:/msys64/clang64/include/c++/v1/__type_traits/invoke.h:
-C:/msys64/clang64/include/c++/v1/__type_traits/is_core_convertible.h:
-C:/msys64/clang64/include/c++/v1/__type_traits/is_reference_wrapper.h:
-C:/msys64/clang64/include/c++/v1/__utility/forward.h:
-C:/msys64/clang64/include/c++/v1/__type_traits/underlying_type.h:
-C:/msys64/clang64/include/c++/v1/__type_traits/is_final.h:
-C:/msys64/clang64/include/c++/v1/__type_traits/conjunction.h:
-C:/msys64/clang64/include/c++/v1/__type_traits/disjunction.h:
-C:/msys64/clang64/include/c++/v1/__type_traits/has_unique_object_representation.h:
-C:/msys64/clang64/include/c++/v1/__type_traits/is_aggregate.h:
-C:/msys64/clang64/include/c++/v1/__type_traits/is_swappable.h:
-C:/msys64/clang64/include/c++/v1/__type_traits/negation.h:
-C:/msys64/clang64/include/c++/v1/__math/error_functions.h:
-C:/msys64/clang64/include/c++/v1/__math/exponential_functions.h:
-C:/msys64/clang64/include/c++/v1/__math/fdim.h:
-C:/msys64/clang64/include/c++/v1/__math/fma.h:
-C:/msys64/clang64/include/c++/v1/__math/gamma.h:
-C:/msys64/clang64/include/c++/v1/__math/hyperbolic_functions.h:
-C:/msys64/clang64/include/c++/v1/__math/hypot.h:
-C:/msys64/clang64/include/c++/v1/__algorithm/max.h:
-C:/msys64/clang64/include/c++/v1/__algorithm/comp.h:
-C:/msys64/clang64/include/c++/v1/__type_traits/desugars_to.h:
-C:/msys64/clang64/include/c++/v1/__algorithm/comp_ref_type.h:
-C:/msys64/clang64/include/c++/v1/__assert:
-C:/msys64/clang64/include/c++/v1/__assertion_handler:
-C:/msys64/clang64/include/c++/v1/__verbose_abort:
-C:/msys64/clang64/include/c++/v1/__algorithm/max_element.h:
-C:/msys64/clang64/include/c++/v1/__iterator/iterator_traits.h:
-C:/msys64/clang64/include/c++/v1/__concepts/arithmetic.h:
-C:/msys64/clang64/include/c++/v1/__type_traits/is_signed_integer.h:
-C:/msys64/clang64/include/c++/v1/__type_traits/is_unsigned_integer.h:
-C:/msys64/clang64/include/c++/v1/__concepts/constructible.h:
-C:/msys64/clang64/include/c++/v1/__concepts/convertible_to.h:
-C:/msys64/clang64/include/c++/v1/__concepts/destructible.h:
-C:/msys64/clang64/include/c++/v1/__concepts/copyable.h:
-C:/msys64/clang64/include/c++/v1/__concepts/assignable.h:
-C:/msys64/clang64/include/c++/v1/__concepts/common_reference_with.h:
-C:/msys64/clang64/include/c++/v1/__concepts/same_as.h:
-C:/msys64/clang64/include/c++/v1/__type_traits/common_reference.h:
-C:/msys64/clang64/include/c++/v1/__type_traits/copy_cvref.h:
-C:/msys64/clang64/include/c++/v1/__type_traits/make_const_lvalue_ref.h:
-C:/msys64/clang64/include/c++/v1/__concepts/movable.h:
-C:/msys64/clang64/include/c++/v1/__concepts/swappable.h:
-C:/msys64/clang64/include/c++/v1/__concepts/class_or_enum.h:
-C:/msys64/clang64/include/c++/v1/__utility/exchange.h:
-C:/msys64/clang64/include/c++/v1/__utility/move.h:
-C:/msys64/clang64/include/c++/v1/__utility/swap.h:
-C:/msys64/clang64/include/c++/v1/__concepts/equality_comparable.h:
-C:/msys64/clang64/include/c++/v1/__concepts/boolean_testable.h:
-C:/msys64/clang64/include/c++/v1/__concepts/totally_ordered.h:
-C:/msys64/clang64/include/c++/v1/__fwd/pair.h:
-C:/msys64/clang64/include/c++/v1/__fwd/tuple.h:
-C:/msys64/clang64/include/c++/v1/__iterator/incrementable_traits.h:
-C:/msys64/clang64/include/c++/v1/__type_traits/is_primary_template.h:
-C:/msys64/clang64/include/c++/v1/__type_traits/is_valid_expansion.h:
-C:/msys64/clang64/include/c++/v1/__iterator/readable_traits.h:
-C:/msys64/clang64/include/c++/v1/initializer_list:
-C:/msys64/clang64/include/c++/v1/__math/roots.h:
-C:/msys64/clang64/include/c++/v1/__utility/pair.h:
-C:/msys64/clang64/include/c++/v1/__compare/common_comparison_category.h:
-C:/msys64/clang64/include/c++/v1/__compare/ordering.h:
-C:/msys64/clang64/include/c++/v1/__compare/synth_three_way.h:
-C:/msys64/clang64/include/c++/v1/__compare/three_way_comparable.h:
-C:/msys64/clang64/include/c++/v1/__concepts/different_from.h:
-C:/msys64/clang64/include/c++/v1/__fwd/array.h:
-C:/msys64/clang64/include/c++/v1/__tuple/sfinae_helpers.h:
-C:/msys64/clang64/include/c++/v1/__tuple/make_tuple_types.h:
-C:/msys64/clang64/include/c++/v1/__tuple/tuple_element.h:
-C:/msys64/clang64/include/c++/v1/__tuple/tuple_indices.h:
-C:/msys64/clang64/include/c++/v1/__utility/integer_sequence.h:
-C:/msys64/clang64/include/c++/v1/__tuple/tuple_types.h:
-C:/msys64/clang64/include/c++/v1/__tuple/tuple_size.h:
-C:/msys64/clang64/include/c++/v1/__tuple/tuple_like_ext.h:
-C:/msys64/clang64/include/c++/v1/__tuple/tuple_like_no_subrange.h:
-C:/msys64/clang64/include/c++/v1/__fwd/complex.h:
-C:/msys64/clang64/include/c++/v1/__type_traits/is_implicitly_default_constructible.h:
-C:/msys64/clang64/include/c++/v1/__type_traits/is_trivially_relocatable.h:
-C:/msys64/clang64/include/c++/v1/__type_traits/unwrap_ref.h:
-C:/msys64/clang64/include/c++/v1/__utility/piecewise_construct.h:
-C:/msys64/clang64/include/c++/v1/__math/inverse_hyperbolic_functions.h:
-C:/msys64/clang64/include/c++/v1/__math/inverse_trigonometric_functions.h:
-C:/msys64/clang64/include/c++/v1/__math/logarithms.h:
-C:/msys64/clang64/include/c++/v1/__math/min_max.h:
-C:/msys64/clang64/include/c++/v1/__math/modulo.h:
-C:/msys64/clang64/include/c++/v1/__math/remainder.h:
-C:/msys64/clang64/include/c++/v1/__math/rounding_functions.h:
-C:/msys64/clang64/include/c++/v1/__math/traits.h:
-C:/msys64/clang64/include/c++/v1/__math/trigonometric_functions.h:
+C:/msys64/mingw64/include/c++/14.2.0/math.h:
+C:/msys64/mingw64/include/c++/14.2.0/cmath:
+C:/msys64/mingw64/include/c++/14.2.0/bits/requires_hosted.h:
+C:/msys64/mingw64/include/c++/14.2.0/bits/cpp_type_traits.h:
+C:/msys64/mingw64/include/c++/14.2.0/ext/type_traits.h:
+C:/msys64/mingw64/include/math.h:
+C:/msys64/mingw64/include/c++/14.2.0/bits/version.h:
+C:/msys64/mingw64/include/c++/14.2.0/bits/specfun.h:
+C:/msys64/mingw64/include/c++/14.2.0/bits/stl_algobase.h:
+C:/msys64/mingw64/include/c++/14.2.0/bits/functexcept.h:
+C:/msys64/mingw64/include/c++/14.2.0/bits/exception_defines.h:
+C:/msys64/mingw64/include/c++/14.2.0/ext/numeric_traits.h:
+C:/msys64/mingw64/include/c++/14.2.0/bits/stl_pair.h:
+C:/msys64/mingw64/include/c++/14.2.0/type_traits:
+C:/msys64/mingw64/include/c++/14.2.0/bits/move.h:
+C:/msys64/mingw64/include/c++/14.2.0/bits/utility.h:
+C:/msys64/mingw64/include/c++/14.2.0/bits/stl_iterator_base_types.h:
+C:/msys64/mingw64/include/c++/14.2.0/bits/stl_iterator_base_funcs.h:
+C:/msys64/mingw64/include/c++/14.2.0/bits/concept_check.h:
+C:/msys64/mingw64/include/c++/14.2.0/debug/assertions.h:
+C:/msys64/mingw64/include/c++/14.2.0/bits/stl_iterator.h:
+C:/msys64/mingw64/include/c++/14.2.0/bits/ptr_traits.h:
+C:/msys64/mingw64/include/c++/14.2.0/debug/debug.h:
+C:/msys64/mingw64/include/c++/14.2.0/bits/predefined_ops.h:
+C:/msys64/mingw64/include/c++/14.2.0/bit:
+C:/msys64/mingw64/include/c++/14.2.0/concepts:
+C:/msys64/mingw64/include/c++/14.2.0/limits:
+C:/msys64/mingw64/include/c++/14.2.0/tr1/gamma.tcc:
+C:/msys64/mingw64/include/c++/14.2.0/tr1/special_function_util.h:
+C:/msys64/mingw64/include/c++/14.2.0/tr1/bessel_function.tcc:
+C:/msys64/mingw64/include/c++/14.2.0/tr1/beta_function.tcc:
+C:/msys64/mingw64/include/c++/14.2.0/tr1/ell_integral.tcc:
+C:/msys64/mingw64/include/c++/14.2.0/tr1/exp_integral.tcc:
+C:/msys64/mingw64/include/c++/14.2.0/tr1/hypergeometric.tcc:
+C:/msys64/mingw64/include/c++/14.2.0/tr1/legendre_function.tcc:
+C:/msys64/mingw64/include/c++/14.2.0/tr1/modified_bessel_func.tcc:
+C:/msys64/mingw64/include/c++/14.2.0/tr1/poly_hermite.tcc:
+C:/msys64/mingw64/include/c++/14.2.0/tr1/poly_laguerre.tcc:
+C:/msys64/mingw64/include/c++/14.2.0/tr1/riemann_zeta.tcc:
 libAACdec/src/aac_rom.h:
 libSYS/include/FDK_audio.h:
+libSYS/include/genericStds.h:
 libSYS/include/syslib_channelMapDescr.h:
 libAACdec/src/aacdec_hcr_types.h:
 libFDK/include/FDK_bitstream.h:

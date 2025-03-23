@@ -56,15 +56,19 @@ class Protocol final {
 public:
   //!@ Need WSAStartup and WSACleanup
   //! But libuv has already initialized the method
-  static bool MakeIPAddr(const std::string &address_string,
-                         std::string &out_addr_buffer /*sockaddr_in|sockaddr|sockaddr_in6|sockaddr_storage
-                                                         buffer*/
-                         ,
-                         const AddressType &ip_type = AddressType::IPV4);
-  static bool UnMakeIPAddr(const std::string &address_buffer /*sockaddr_in|sockaddr|sockaddr_in6|sockaddr_storage
-                                                                buffer*/
-                           ,
-                           std::string &out_address_string);
+  static bool MakeIPAddr(
+      const std::string &address_string,
+      std::string
+          &out_addr_buffer /*sockaddr_in|sockaddr|sockaddr_in6|sockaddr_storage
+                              buffer*/
+      ,
+      const AddressType &ip_type = AddressType::IPV4);
+  static bool UnMakeIPAddr(
+      const std::string
+          &address_buffer /*sockaddr_in|sockaddr|sockaddr_in6|sockaddr_storage
+                             buffer*/
+      ,
+      std::string &out_address_string);
   static std::string MakeStream(const HEAD &, const std::string &);
   static bool UnMakeStream(const std::string &input, HEAD &,
                            std::string &output);

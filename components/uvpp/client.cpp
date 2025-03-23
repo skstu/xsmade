@@ -167,7 +167,10 @@ static void uv_main_init(void *arg, uv_loop_t *&loop, uv_handle_t *&client,
       break;
     }
 
-    client->data = new Session;
+    Session *newSessing = new Session();
+    newSessing->SetIdentify(Config::Get()->GetIdentify());
+    newSessing->ServerTypeSet(ServerType::INITIATOR);
+    client->data = newSessing;
     if (connect)
       connect->data = client->data;
     USERDATA_PTR(loop)->Caller(arg);
@@ -302,14 +305,16 @@ void Client::MainProcess(void *arg) {
                                          dynamic_cast<IBuffer *>(&msg));
         {
           CommandType cmdReply = CommandType::UNKNOWN;
-          Buffer messageReply;
+          Buffer *messageReply = new Buffer();
           Config::Get()->OnClientMessageReceiveReplyCb(
-              pSession, head.Command(), dynamic_cast<IBuffer *>(&msg), cmdReply,
-              dynamic_cast<IBuffer *>(&messageReply));
+              pSession, head.Command(), dynamic_cast<IBuffer *>(&msg),
+              &cmdReply, dynamic_cast<IBuffer *>(messageReply));
           if (CommandType::UNKNOWN != cmdReply) {
             if (!pSession->Write(static_cast<unsigned long>(cmdReply),
-                                 dynamic_cast<IBuffer *>(&messageReply)))
+                                 messageReply))
               pSession->ForceClose();
+          } else {
+            messageReply->Release();
           }
         }
 
@@ -318,16 +323,18 @@ void Client::MainProcess(void *arg) {
         switch (head.Command()) {
         case CommandType::WELCOME: {
           Buffer buffer(message);
-          Buffer replyWelcome;
-          Config::Get()->OnClientWelcome(
-              dynamic_cast<IBuffer *>(&buffer),
-              reinterpret_cast<IBuffer *>(&replyWelcome));
-          if (!replyWelcome.Empty()) {
+          Buffer *replyWelcome = new Buffer();
+          Config::Get()->OnClientWelcome(dynamic_cast<IBuffer *>(&buffer),
+                                         dynamic_cast<IBuffer *>(replyWelcome));
+          if (!replyWelcome->Empty()) {
             if (!pSession->Write(static_cast<unsigned long>(CommandType::HELLO),
-                                 replyWelcome.GetData(),
-                                 replyWelcome.GetDataSize())) {
+                                 replyWelcome->GetData(),
+                                 replyWelcome->GetDataSize())) {
               pSession->ForceClose();
             }
+
+          } else {
+            replyWelcome->Release();
           }
         } break;
         default:
@@ -442,8 +449,11 @@ void Client::ConnectCb(uv_connect_t *req, int status) {
     if (0 != uv_read_start(reinterpret_cast<uv_stream_t *>(pSession->Handle()),
                            Protocol::uv_alloc_cb, uv__read_cb))
       break;
-    Config::Get()->OnClientConnection(pSession);
     pSession->Status(SessionStatus::CONNECTED);
+    CommandType reqCmd = CommandType::UNKNOWN;
+    Buffer *reqMsg = new Buffer();
+    Config::Get()->OnClientConnection(pSession, &reqCmd, reqMsg);
+    pSession->Write(static_cast<unsigned long>(reqCmd), reqMsg);
     LOG_OUTPUT("Connect to the service({}) complete.",
                Config::Get()->Address());
     success = true;

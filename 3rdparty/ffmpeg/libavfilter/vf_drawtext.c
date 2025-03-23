@@ -1156,7 +1156,11 @@ static int config_input(AVFilterLink *inlink)
     char *expr;
     int ret;
 
-    ff_draw_init2(&s->dc, inlink->format, inlink->colorspace, inlink->color_range, FF_DRAW_PROCESS_ALPHA);
+    ret = ff_draw_init2(&s->dc, inlink->format, inlink->colorspace, inlink->color_range, FF_DRAW_PROCESS_ALPHA);
+    if (ret < 0) {
+        av_log(ctx, AV_LOG_ERROR, "Failed to initialize FFDrawContext\n");
+        return ret;
+    }
     ff_draw_color(&s->dc, &s->fontcolor,   s->fontcolor.rgba);
     ff_draw_color(&s->dc, &s->shadowcolor, s->shadowcolor.rgba);
     ff_draw_color(&s->dc, &s->bordercolor, s->bordercolor.rgba);
@@ -1226,6 +1230,7 @@ static int command(AVFilterContext *ctx, const char *cmd, const char *arg, char 
 
         ctx->priv = old;
         uninit(ctx);
+        av_opt_free(old);
         av_freep(&old);
 
         ctx->priv = new;
@@ -1914,16 +1919,16 @@ static const AVFilterPad avfilter_vf_drawtext_inputs[] = {
     },
 };
 
-const AVFilter ff_vf_drawtext = {
-    .name          = "drawtext",
-    .description   = NULL_IF_CONFIG_SMALL("Draw text on top of video frames using libfreetype library."),
+const FFFilter ff_vf_drawtext = {
+    .p.name        = "drawtext",
+    .p.description = NULL_IF_CONFIG_SMALL("Draw text on top of video frames using libfreetype library."),
+    .p.priv_class  = &drawtext_class,
+    .p.flags       = AVFILTER_FLAG_SUPPORT_TIMELINE_GENERIC,
     .priv_size     = sizeof(DrawTextContext),
-    .priv_class    = &drawtext_class,
     .init          = init,
     .uninit        = uninit,
     FILTER_INPUTS(avfilter_vf_drawtext_inputs),
     FILTER_OUTPUTS(ff_video_default_filterpad),
     FILTER_QUERY_FUNC2(query_formats),
     .process_command = command,
-    .flags         = AVFILTER_FLAG_SUPPORT_TIMELINE_GENERIC,
 };

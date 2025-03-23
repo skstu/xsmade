@@ -19,6 +19,14 @@ void Config::Init() {
 }
 void Config::UnInit() {
 }
+void Config::SetIdentify(const unsigned long long &identify) {
+  std::lock_guard<std::mutex> lock{*mtx_};
+  m_Identify.store(identify);
+}
+unsigned long long Config::GetIdentify() const {
+  std::lock_guard<std::mutex> lock{*mtx_};
+  return m_Identify.load();
+}
 void Config::SetServiceType(const unsigned long &type) {
   std::lock_guard<std::mutex> lock{*mtx_};
   service_type_ = type;
@@ -119,7 +127,7 @@ void Config::RegisterServerHelloCb(const tfOnServerHelloCb &cb) {
   std::lock_guard<std::mutex> lock{*mtx_};
   server_hello_cb_ = cb;
 }
-void Config::OnServerHello(const ISession *session, const IBuffer *data,
+void Config::OnServerHello(ISession *session, const IBuffer *data,
                            IBuffer *reply) const {
   std::lock_guard<std::mutex> lock{*mtx_};
   if (server_hello_cb_)
@@ -150,7 +158,7 @@ void Config::RegisterServerSessionReadyCb(const tfOnServerSessionReadyCb &cb) {
   std::lock_guard<std::mutex> lock{*mtx_};
   server_session_ready_cb_ = cb;
 }
-void Config::OnServerSessionReady(const ISession *pSession) const {
+void Config::OnServerSessionReady(ISession *pSession) const {
   std::lock_guard<std::mutex> lock{*mtx_};
   if (server_session_ready_cb_)
     server_session_ready_cb_(pSession);
@@ -217,7 +225,7 @@ void Config::RegisterServerMessageReceiveReplyCb(
   std::lock_guard<std::mutex> lock{*mtx_};
   server_message_receive_reply_cb_ = cb;
 }
-void Config::OnServerMessage(const ISession *pSession, const CommandType &cmd,
+void Config::OnServerMessage(ISession *pSession, const CommandType &cmd,
                              const IBuffer *pMsg) const {
   std::lock_guard<std::mutex> lock{*mtx_};
   if (server_message_cb_)
@@ -280,7 +288,7 @@ void Config::OnClientMessageCb(const ISession *pSession, const CommandType &cmd,
 void Config::OnClientMessageReceiveReplyCb(const ISession *pSession,
                                            const CommandType &cmd,
                                            const IBuffer *msg,
-                                           CommandType &repCmd,
+                                           CommandType *repCmd,
                                            IBuffer *repMsg) const {
   std::lock_guard<std::mutex> lock{*mtx_};
   if (client_message_receive_reply_cb_)
@@ -300,10 +308,11 @@ void Config::OnClientDisconnection(const ISession *pSession) const {
   if (client_disconnection_cb_)
     client_disconnection_cb_(pSession);
 }
-void Config::OnClientConnection(const ISession *pSession) const {
+void Config::OnClientConnection(const ISession *pSession, CommandType *reqType,
+                                IBuffer *reqMsg) const {
   std::lock_guard<std::mutex> lock{*mtx_};
   if (client_connection_cb_)
-    client_connection_cb_(pSession);
+    client_connection_cb_(pSession, reqType, reqMsg);
 }
 void Config::RegisterClientDisconnection(const tfOnClientDisconnection &cb) {
   std::lock_guard<std::mutex> lock{*mtx_};

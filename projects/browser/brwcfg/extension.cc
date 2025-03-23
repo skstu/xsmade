@@ -9,11 +9,11 @@ Extension::~Extension() {
   if (root_)
     root_->Release();
 }
-const IBrw::IBuffer *Extension::Manifest() const {
-  return dynamic_cast<const IBrw::IBuffer *>(manifest_);
+const IBrwcfg::IBuffer *Extension::Manifest() const {
+  return dynamic_cast<const IBrwcfg::IBuffer *>(manifest_);
 }
-const IBrw::IBuffer *Extension::Root() const {
-  return dynamic_cast<const IBrw::IBuffer *>(root_);
+const IBrwcfg::IBuffer *Extension::Root() const {
+  return dynamic_cast<const IBrwcfg::IBuffer *>(root_);
 }
 bool Extension::IsReload() const {
   return reload_;
@@ -35,8 +35,8 @@ size_t ExtensionArray::Total() const {
   std::lock_guard<std::mutex> lock{*mtx_};
   return source_.size();
 }
-IBrw::IExtension *ExtensionArray::Next(const size_t &idx) const {
-  IBrw::IExtension *result = nullptr;
+IBrwcfg::IExtension *ExtensionArray::Next(const size_t &idx) const {
+  IBrwcfg::IExtension *result = nullptr;
   std::lock_guard<std::mutex> lock{*mtx_};
   do {
     if (source_.empty())
@@ -47,7 +47,7 @@ IBrw::IExtension *ExtensionArray::Next(const size_t &idx) const {
     std::advance(it, idx);
     if (it == source_.end())
       break;
-    result = dynamic_cast<IBrw::IExtension *>(*it);
+    result = dynamic_cast<IBrwcfg::IExtension *>(*it);
   } while (0);
   return result;
 }

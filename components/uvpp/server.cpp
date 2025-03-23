@@ -341,8 +341,10 @@ void Server::SessionConnectionCb(uv_stream_t *server, int status) {
     if (welcome.Empty())
       break;
     if (pSession->Write(static_cast<unsigned long>(CommandType::WELCOME),
-                        welcome.GetData(), welcome.GetDataSize()))
+                        welcome.GetData(), welcome.GetDataSize())) {
+      std::cout << "Send welcome message to client." << std::endl;
       break;
+    }
     pSession->ForceClose();
   } while (0);
 }
@@ -433,6 +435,8 @@ void Server::WorkProcess(uv_handle_t *client, void *arg) {
             break;
           }
 
+          dynamic_cast<ISession *>(pSession)->SetIdentify(head.server_identify);
+
           Buffer msg(message);
           Config::Get()->OnServerMessage(pSession, head.Command(),
                                          dynamic_cast<IBuffer *>(&msg));
@@ -467,6 +471,8 @@ void Server::WorkProcess(uv_handle_t *client, void *arg) {
               pSession->ForceClose();
           } break;
           case CommandType::HELLO: {
+            pSession->SetHelloBuffer(
+                dynamic_cast<IBuffer *>(new Buffer(message)));
             Buffer buffer(message);
             Buffer welcome;
             Config::Get()->OnServerHello(

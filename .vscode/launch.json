@@ -5,9 +5,13 @@
       "name": "Windows Build With CMake Ninja",
       "type": "cppdbg",
       "request": "launch",
-      "program": "${workspaceFolder}/bin/browser/chromium/130.0.6723.191/FanBrowser.exe",
+      "program": "${workspaceFolder}/bin/tests/test_brwsvr.exe",
       "args": [
       ],
+      // "program": "${workspaceFolder}/bin/browser/chromium/130.0.6723.191/FanBrowser.exe",
+      // "args": [
+      //   //"--gpu-startup-dialog"
+      // ],
       // "program": "${workspaceFolder}/bin/main.exe",
       // "args": [],
       // "program": "${workspaceFolder}/out/bin/test_curlcc.exe",

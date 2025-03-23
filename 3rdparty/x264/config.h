@@ -2,11 +2,12 @@
 #define HAVE_MMX 1
 #define ARCH_X86_64 1
 #define SYS_WINDOWS 1
-#define STACK_ALIGNMENT 64
+#define STACK_ALIGNMENT 16
 #define HAVE_WIN32THREAD 1
 #define HAVE_THREAD 1
 #define HAVE_LOG2F 1
 #define HAVE_STRTOK_R 1
+#define HAVE_CLOCK_GETTIME 1
 #define HAVE_AVS 1
 #define HAVE_VECTOREXT 1
 #define fseek fseeko
@@ -40,7 +41,6 @@
 #define HAVE_WINRT 0
 #define HAVE_VSX 0
 #define HAVE_ARM_INLINE_ASM 0
-#define HAVE_CLOCK_GETTIME 0
 #define HAVE_SVE 0
 #define HAVE_SVE2 0
 #define HAVE_ELF_AUX_INFO 0

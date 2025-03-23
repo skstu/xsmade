@@ -3,6 +3,33 @@
 
 class Config final {
 public:
+  class Path final {
+  public:
+    Path() = default;
+    ~Path() = default;
+
+  public:
+    std::u16string root;
+    std::u16string module_name;
+    std::u16string logs_dir;
+    std::u16string temp_dir;
+    std::u16string configure_path;
+    std::u16string chromium_cache_dir;
+    std::u16string settings_path;
+    std::u16string libuvpp_path;
+    std::u16string components_dir;
+    std::u16string chromium_userdata_dir;
+    std::u16string chromium_userenv_dir;
+    std::u16string configure_cache_dir;
+    std::u16string configure_cache_path;
+    std::u16string chromium_envpath_route_path;
+  };
+
+public:
+  static Config *GetOrCreate();
+  static void Destroy();
+
+private:
   Config();
   virtual ~Config();
 
@@ -11,16 +38,14 @@ private:
   void UnInit();
 
 public:
-  const std::u16string &GetRoot() const;
-  const std::u16string &GetConfigurePathname() const;
-  const std::u16string &GetChromiumCacheRoot() const;
-  std::u16string
-  GetChromiumCachePath(const unsigned long long &policy_id) const;
+  const brwcfg::ISettings &GetSettings() const;
+  const brwcfg::IConfigure &GetConfigure() const;
+  const Path &GetPath() const;
 
 private:
-  std::u16string root_;
-  std::u16string configure_pathname_;
-  std::u16string chromium_cache_root_;
+  Path path_;
+  brwcfg::ISettings *settings_ = nullptr;
+  IConfigure *configure_ = nullptr;
   std::shared_ptr<std::mutex> mtx_ = std::make_shared<std::mutex>();
 };
 /// /*_ Memade®（新生™） _**/

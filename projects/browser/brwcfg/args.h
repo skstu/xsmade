@@ -1,27 +1,29 @@
 #if !defined(__B7672112_2269_4E6C_93A3_24D2CFA41FDD__)
 #define __B7672112_2269_4E6C_93A3_24D2CFA41FDD__
 
-class Args final : public IBrw::IArgs {
+class Args final : public IBrwcfg::IArgs {
 public:
   Args();
-  Args(const std::string& u8key);
-  Args(const std::string& u8key,const std::string& u8value,const bool& ispath=false);
+  Args(const std::string &u8key);
+  Args(const std::string &u8key, const std::string &u8value,
+       const bool &ispath = false);
   virtual ~Args();
 
 public:
   void Release() const override final;
 
 protected:
-  IBrw::IBuffer *GetKey() const override final;
-  IBrw::IBuffer *GetValue() const override final;
+  IBrwcfg::IBuffer *GetKey() const override final;
+  IBrwcfg::IBuffer *GetValue() const override final;
   bool IsPath() const override final;
+
 private:
   Buffer *key_ = nullptr;
   Buffer *value_ = nullptr;
   bool ispath_ = false;
 };
 
-class ArgsArray final : public IBrw::IArgsArray {
+class ArgsArray final : public IBrwcfg::IArgsArray {
 public:
   ArgsArray();
 
@@ -30,7 +32,7 @@ private:
 
 protected:
   size_t Total() const override final;
-  IBrw::IArgs *Next(const size_t &) const override final;
+  IBrwcfg::IArgs *Next(const size_t &) const override final;
   void Release() const override final;
 
 public:

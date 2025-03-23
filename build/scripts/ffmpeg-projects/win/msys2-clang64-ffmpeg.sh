@@ -3,7 +3,7 @@
 CURRENT=$(pwd)
 ROOT_DIR=${CURRENT}/../../../..
 SRC_DIR=${ROOT_DIR}/3rdparty/ffmpeg
-INSTALL_DIR=${ROOT_DIR}/build/installed
+INSTALL_DIR=${ROOT_DIR}/build/installed/ffmpeg
 
 cd $SRC_DIR
 
@@ -24,8 +24,8 @@ bash ./configure \
 --disable-doc \
 --enable-sdl \
 --enable-ffplay \
---enable-decoder='mjpeg,png,aac,libx264,libx265,libmp3lame,libfaac' \
---enable-encoder='aac,png,mjpeg,libx264,libx265,libmp3lame,libfaac' \
+--enable-decoder='aac,mjpeg,libx264,libx265,png' \
+--enable-encoder='aac,libx264,libx265,png' \
 --enable-demuxer=image2 \
 --enable-protocol=file \
 --enable-zlib \
@@ -37,44 +37,77 @@ bash ./configure \
 --enable-pic \
 --enable-libx264 \
 --enable-libx265 \
---enable-libvpx \
---enable-libopus \
---enable-libfdk-aac \
---enable-libmp3lame \
---enable-libfreetype \
---enable-libass \
---enable-libvorbis \
---enable-libtheora \
---enable-libxvid \
 --enable-openssl \
 --enable-postproc \
---enable-libwebp \
---enable-libspeex \
---enable-libzvbi \
---enable-libvidstab \
---enable-libsoxr \
---enable-libshine \
---enable-librtmp \
---enable-libopenjpeg \
---enable-libbluray \
---enable-libaom \
---enable-libdav1d \
---enable-libzimg \
---enable-libsnappy \
---enable-libsvtav1 \
---enable-libsrt \
---enable-libvmaf \
---enable-libmysofa \
---enable-libxml2 \
---enable-libgsm \
---enable-filters \
 --enable-static \
 --enable-avfilter \
 --enable-filter=movie \
 --disable-w32threads \
 --enable-runtime-cpudetect \
 --extra-ldflags=-LIBPATH:${deps_lib_dir} \
---extra-cflags=-I${deps_include_dir} 
+--extra-cflags=-I${deps_include_dir}
+
+
+# bash ./configure \
+# --cc=clang \
+# --cxx=clang++ \
+# --prefix="${INSTALL_DIR}" \
+# --arch=x86_64 \
+# --disable-debug \
+# --disable-doc \
+# --enable-sdl \
+# --enable-ffplay \
+# --enable-decoder='mjpeg,png,aac,libx264,libx265,libmp3lame,libfaac' \
+# --enable-encoder='aac,png,mjpeg,libx264,libx265,libmp3lame,libfaac' \
+# --enable-demuxer=image2 \
+# --enable-protocol=file \
+# --enable-zlib \
+# --enable-bzlib \
+# --enable-gpl \
+# --enable-nonfree \
+# --enable-version3 \
+# --disable-shared \
+# --enable-pic \
+# --enable-libx264 \
+# --enable-libx265 \
+# --enable-libvpx \
+# --enable-libopus \
+# --enable-libfdk-aac \
+# --enable-libmp3lame \
+# --enable-libfreetype \
+# --enable-libass \
+# --enable-libvorbis \
+# --enable-libtheora \
+# --enable-libxvid \
+# --enable-openssl \
+# --enable-postproc \
+# --enable-libwebp \
+# --enable-libspeex \
+# --enable-libzvbi \
+# --enable-libvidstab \
+# --enable-libsoxr \
+# --enable-libshine \
+# --enable-librtmp \
+# --enable-libopenjpeg \
+# --enable-libbluray \
+# --enable-libaom \
+# --enable-libdav1d \
+# --enable-libzimg \
+# --enable-libsnappy \
+# --enable-libsvtav1 \
+# --enable-libsrt \
+# --enable-libvmaf \
+# --enable-libmysofa \
+# --enable-libxml2 \
+# --enable-libgsm \
+# --enable-filters \
+# --enable-static \
+# --enable-avfilter \
+# --enable-filter=movie \
+# --disable-w32threads \
+# --enable-runtime-cpudetect \
+# --extra-ldflags=-LIBPATH:${deps_lib_dir} \
+# --extra-cflags=-I${deps_include_dir} 
 
 #--extra-ldflags=-L/c/msys64/clang/lib 
 #--extra-cflags=-I/c/msys64/clang/include 

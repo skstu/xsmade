@@ -2,54 +2,43 @@
 using namespace stl;
 using namespace std;
 namespace fs = filesystem;
-std::u16string Path::Normalize(const std::u16string &PathOrPathname) {
-  std::u16string result{PathOrPathname};
-  if (result.empty())
-    return result;
-  for (auto it = result.begin(); it != result.end();) {
-    if (*it == u'\\') {
-      *it = u'/';
-    } else if (*it == 0) {
-      it = result.erase(it);
-      continue;
-    }
-    ++it;
+std::u16string Path::Absolute(const std::u16string &input) {
+  std::u16string result;
+  try {
+    result = fs::absolute(input).generic_u16string();
+  } catch (const std::filesystem::filesystem_error &e) {
+    e.what();
   }
-  // do {
-  //   auto found = result.find(u"\\\\");
-  //   if (found == std::string::npos) {
-  //     found = result.find(u"//");
-  //     if (found == std::string::npos)
-  //       break;
-  //   }
-  //   std::u16string sss(u"/");
-  //   result.replace(found, sss.size(), sss);
-  // } while (1);
   return result;
 }
-std::string Path::Normalize(const std::string &PathOrPathname) {
-  std::string result{PathOrPathname};
-  if (result.empty())
-    return result;
-  for (auto it = result.begin(); it != result.end();) {
-    if (*it == '\\') {
-      *it = '/';
-    } else if (*it == 0) {
-      it = result.erase(it);
-      continue;
-    }
-    ++it;
+#if _STL_HAS_CXX20
+std::u8string Path::Absolute(const std::u8string &input) {
+  std::u8string result;
+  try {
+    result = fs::absolute(input).generic_u8string();
+  } catch (const std::filesystem::filesystem_error &e) {
+    e.what();
   }
-  // do {
-  //   auto found = result.find("\\\\");
-  //   if (found == std::string::npos) {
-  //     found = result.find("//");
-  //     if (found == std::string::npos)
-  //       break;
-  //   }
-  //   std::string sss("/");
-  //   result.replace(found, sss.size(), sss);
-  // } while (1);
+  return result;
+}
+#endif
+std::wstring Path::Absolute(const std::wstring &input) {
+  std::wstring result;
+  try {
+    result = fs::absolute(input).generic_wstring();
+  } catch (const std::filesystem::filesystem_error &e) {
+    e.what();
+  }
+
+  return result;
+}
+std::string Path::Absolute(const std::string &input) {
+  std::string result;
+  try {
+    result = fs::absolute(input).generic_string();
+  } catch (const std::filesystem::filesystem_error &e) {
+    e.what();
+  }
   return result;
 }
 std::u16string Path::U8PathToU16Path(const std::string &input_path) {

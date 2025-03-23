@@ -549,6 +549,7 @@ static int aac_encode_frame(AVCodecContext *avctx, AVPacket *avpkt,
     }
 
     avpkt->size     = out_args.numOutBytes;
+    avpkt->flags   |= AV_PKT_FLAG_KEY;
     *got_packet_ptr = 1;
     return 0;
 }
@@ -606,12 +607,11 @@ const FFCodec ff_libfdk_aac_encoder = {
     FF_CODEC_ENCODE_CB(aac_encode_frame),
     .flush                 = aac_encode_flush,
     .close                 = aac_encode_close,
-    .p.sample_fmts         = (const enum AVSampleFormat[]){ AV_SAMPLE_FMT_S16,
-                                                            AV_SAMPLE_FMT_NONE },
+    CODEC_SAMPLEFMTS(AV_SAMPLE_FMT_S16),
     .p.priv_class          = &aac_enc_class,
     .defaults              = aac_encode_defaults,
     .p.profiles            = profiles,
-    .p.supported_samplerates = aac_sample_rates,
+    CODEC_SAMPLERATES_ARRAY(aac_sample_rates),
     .p.wrapper_name        = "libfdk",
-    .p.ch_layouts          = aac_ch_layouts,
+    CODEC_CH_LAYOUTS_ARRAY(aac_ch_layouts),
 };

@@ -38,6 +38,10 @@ public:
   void SessionTypeSet(const SessionType &) override final;
   const SessionType &SessionTypeGet() const override final;
   unsigned long long CreateTimeMS() const override final;
+  const IBuffer *GetHelloBuffer() const override final;
+  void SetHelloBuffer(IBuffer *) override final;
+  unsigned long long GetIdentify() const override final;
+  void SetIdentify(const unsigned long long &) override final;
 
 public:
   void Status(const SessionStatus &);
@@ -68,6 +72,8 @@ private:
   Stream *m_pWriteStream = nullptr;
   std::atomic_ullong m_ActivationTime = 0;
   std::atomic_ullong m_CreateTimeMS = 0;
+  IBuffer *hello_buffer_ = nullptr;
+  unsigned long long identify_ = 0;
 } UserData;
 
 /// /*_ Memade®（新生™） _**/

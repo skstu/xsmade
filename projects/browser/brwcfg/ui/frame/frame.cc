@@ -1,4 +1,5 @@
 #include <brwcfg.h>
+#if ENABLE_WXUI
 wxBEGIN_EVENT_TABLE(IFrame, wxFrame) EVT_SIZE(IFrame::OnSize)
     EVT_CLOSE(IFrame::OnClose) wxEND_EVENT_TABLE();
 
@@ -391,5 +392,6 @@ Frame::Frame(wxWindow *parent, wxWindowID id, const wxString &title,
 }
 Frame::~Frame() {
 }
+#endif
 #endif
 #endif

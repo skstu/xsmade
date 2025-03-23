@@ -3,7 +3,7 @@
 CURRENT=$(pwd)
 ROOT_DIR=${CURRENT}/../../../..
 SRC_DIR=${ROOT_DIR}/3rdparty/fdk-aac
-INSTALL_DIR=${ROOT_DIR}/build/installed
+INSTALL_DIR=${ROOT_DIR}/build/installed/ffmpeg
 
 cd $SRC_DIR
 #CC=clang

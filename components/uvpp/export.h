@@ -146,6 +146,10 @@ public:
   virtual void SessionTypeSet(const SessionType &) = 0;
   virtual const SessionType &SessionTypeGet() const = 0;
   virtual unsigned long long CreateTimeMS() const = 0;
+  virtual const IBuffer *GetHelloBuffer() const = 0;
+  virtual void SetHelloBuffer(IBuffer *) = 0;
+  virtual unsigned long long GetIdentify() const = 0;
+  virtual void SetIdentify(const unsigned long long &) = 0;
 };
 
 class IService {
@@ -186,18 +190,17 @@ public:
   using tfOnServerExitBefore = void (*)(const ISession *);
   using tfOnClientExitCb = tfOnServerExitCb;
   using tfOnServerReadyCb = void (*)(void);
-  using tfOnServerHelloCb = void (*)(const ISession *, const IBuffer *,
-                                     IBuffer *);
+  using tfOnServerHelloCb = void (*)(ISession *, const IBuffer *, IBuffer *);
   using tfOnServerSessionCreateCb = void (*)(const ISession *);
   using tfOnServerSessionDestroyCb = void (*)(const ISession *);
-  using tfOnServerSessionReadyCb = void (*)(const ISession *);
+  using tfOnServerSessionReadyCb = void (*)(ISession *);
   using tfOnServerSessionTimeoutCb = void (*)(const ISession *, const time_t &);
   using tfOnServerSessionAcceptCb = void (*)(const ISession *, const bool &);
   using tfOnHookServerWelcomeSendCb = void (*)(const ISession *, IBuffer *);
   using tfOnHookServerSessionWriteCb = void (*)(const ISession *, IBuffer *);
   using tfOnServerKeepAliveCb = void (*)(const ISession *, const IBuffer *,
                                          IBuffer *);
-  using tfOnServerMessageCb = void (*)(const ISession *, const CommandType &,
+  using tfOnServerMessageCb = void (*)(ISession *, const CommandType &,
                                        const IBuffer *);
   using tfOnServerMessageReceiveReply = void (*)(const ISession *,
                                                  const CommandType &,
@@ -210,15 +213,18 @@ public:
                                        const IBuffer *);
   using tfOnClientMessageReceiveReply = void (*)(const ISession *,
                                                  const CommandType &,
-                                                 const IBuffer *, CommandType &,
+                                                 const IBuffer *, CommandType *,
                                                  IBuffer *);
   using tfOnClientDisconnection = void (*)(const ISession *);
-  using tfOnClientConnection = void (*)(const ISession *);
+  using tfOnClientConnection = void (*)(const ISession *, CommandType *,
+                                        IBuffer *);
   using tfOnHookClientSessionWriteCb = void (*)(const ISession *, IBuffer *);
 
 public:
   virtual unsigned long Version() const = 0;
   virtual const char *VersionString() const = 0;
+  virtual void SetIdentify(const unsigned long long &) = 0;
+  virtual unsigned long long GetIdentify() const = 0;
   /*
    * ipv4: 0.0.0.0:8888
    * ipv6: [0:0:0:0:0:0:0:0]:8888

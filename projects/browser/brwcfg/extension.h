@@ -1,7 +1,7 @@
 #if !defined(__D911105A_3FCD_4391_A635_15971B7E1900__)
 #define __D911105A_3FCD_4391_A635_15971B7E1900__
 
-class Extension final : public IBrw::IExtension {
+class Extension final : public IBrwcfg::IExtension {
 public:
   Extension(const Buffer *root, const Buffer *manifest,const bool& reload = false);
   virtual ~Extension();
@@ -9,8 +9,8 @@ public:
 
 protected:
   bool IsReload() const override final;
-  const IBrw::IBuffer *Manifest() const override final;
-  const IBrw::IBuffer *Root() const override final;
+  const IBrwcfg::IBuffer *Manifest() const override final;
+  const IBrwcfg::IBuffer *Root() const override final;
 
 private:
   const Buffer *manifest_;
@@ -18,7 +18,7 @@ private:
   bool reload_ = false;
 };
 
-class ExtensionArray final : public IBrw::IExtensionArray {
+class ExtensionArray final : public IBrwcfg::IExtensionArray {
 public:
   ExtensionArray();
 
@@ -27,7 +27,7 @@ private:
 
 protected:
   size_t Total() const override final;
-  IBrw::IExtension *Next(const size_t &) const override final;
+  IBrwcfg::IExtension *Next(const size_t &) const override final;
   void Release() const override final;
 
 public:

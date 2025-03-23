@@ -398,8 +398,12 @@ public:
 
 class Path {
 public:
-  static std::string Normalize(const std::string &PathOrPathname);
-  static std::u16string Normalize(const std::u16string &PathOrPathname);
+  static std::u16string Absolute(const std::u16string &);
+#if _STL_HAS_CXX20
+  static std::u8string Absolute(const std::u8string &);
+#endif
+  static std::wstring Absolute(const std::wstring &);
+  static std::string Absolute(const std::string &);
   static std::u16string U8PathToU16Path(const std::string &);
   static std::string U16PathToU8Path(const std::u16string &);
   static std::wstring U16PathToWPath(const std::u16string &);
