@@ -76,18 +76,15 @@ void Brwcfg::OnGpuScreenshotImageStream(const IBuffer *stream) const {
 }
 bool Brwcfg::OnGpuCanvasFrameGetResolution(int *width, int *height) const {
   bool result = false;
-  do {
-    if (!width || !height)
-      break;
-    if (!Config::GetOrCreate()->GetConfigure().frame.enable)
-      break;
-    if (Config::GetOrCreate()->GetConfigure().frame.resolution.width <= 0 ||
-        Config::GetOrCreate()->GetConfigure().frame.resolution.height <= 0)
-      break;
-    *width = Config::GetOrCreate()->GetConfigure().frame.resolution.width;
-    *height = Config::GetOrCreate()->GetConfigure().frame.resolution.height;
-    result = true;
-  } while (0);
+  const auto &cfg = Config::GetOrCreate()->GetConfigure();
+  if (width && height && cfg.frame.enable) {
+    if (cfg.frame.resolution.width > 0 && cfg.frame.resolution.height > 0) {
+
+      *width = cfg.frame.resolution.width;
+      *height = cfg.frame.resolution.height;
+      result = true;
+    }
+  }
   return result;
 }
 void Brwcfg::FreeS(void **p) const {

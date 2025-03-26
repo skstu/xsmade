@@ -40,7 +40,14 @@ void Server::Init() {
       LOG_INFO("module({}) ({})", "Server", "Service ready.");
       std::cout << "Server readyed." << std::endl;
     });
-    uvpp_config_->RegisterServerSessionReadyCb([](ISession *session) {});
+    uvpp_config_->RegisterServerSessionReadyCb([](ISession *session) {
+      session->Route(Server::GetOrCreate());
+      const std::string log =
+          fmt::format("Server session({})({}) readyed.", session->GetIdentify(),
+                      session->Address());
+      std::cout << log << std::endl;
+      LOG_INFO("module({}) ({})", "Server", log);
+    });
     uvpp_config_->RegisterServerSessionDestroyCb([](const ISession *session) {
       Server::GetOrCreate()->sessions_gpu_.pop(session->GetIdentify());
       Server::GetOrCreate()->sessions_main_.pop(session->GetIdentify());
@@ -49,33 +56,50 @@ void Server::Init() {
         [](const ISession *session, const CommandType &cmd, const IBuffer *msg,
            CommandType &repCmd, IBuffer *repMsg) {
           const unsigned long long identify = session->GetIdentify();
-          switch (LocalCommandType(cmd)) {
-          case LocalCommandType::LCT_CHROMIUM_GPU_FRAMEBUFFERSTREAM: {
+          if (identify <= 0) {
+            LOG_ERROR("module({}) cmd({:x}) identify({}) desc({})", "Server",
+                      static_cast<unsigned long>(cmd), identify,
+                      "Invalid session identify.");
+            return;
+          }
+          IChromium *chromium = nullptr;
+
+          switch (static_cast<command_type_t>(cmd)) {
+          case command_type_t::LCT_CHROMIUM_GPU_FRAMEBUFFERSTREAM: {
             policy_id_t policy_id = session->GetIdentify();
             Server::GetOrCreate()->OnFrameBufferStream(
                 policy_id, msg->GetData(), msg->GetDataSize());
           } break;
-          case LocalCommandType::LCT_CHROMIUM_GPU_REPNOTIFY: {
+          case command_type_t::LCT_CHROMIUM_GPU_REPNOTIFY: {
           } break;
-          case LocalCommandType::LCT_CHROMIUM_MAIN_REPNOTIFY: {
-            if (msg->Empty())
+          case command_type_t::LCT_CHROMIUM_MAIN_REPNOTIFY: {
+            if (msg->Empty()) {
+              LOG_WARN("Web notify msg is empty({})",
+                       "LCT_CHROMIUM_MAIN_REPNOTIFY");
+              std::cout << fmt::format("Web notify msg is empty({})",
+                                       "LCT_CHROMIUM_MAIN_REPNOTIFY")
+                        << std::endl;
               break;
+            }
             std::string notify_body(msg->GetData(), msg->GetDataSize());
             std::cout << notify_body << std::endl;
             Server::GetOrCreate()->OnNotify(identify, notify_body);
+            LOG_INFO("Recved web notify msg is ({})", notify_body.c_str());
           } break;
-          case LocalCommandType::LCT_CHROMIUM_MAIN_PLEASEPREPARE: {
+          case command_type_t::LCT_CHROMIUM_MAIN_PLEASEPREPARE: {
             Server::GetOrCreate()->sessions_main_.push(
                 identify, const_cast<uvpp::ISession *>(session));
-            repCmd = CommandType(LocalCommandType::LCT_SERVER_SERVERREADY);
+            repCmd = static_cast<CommandType>(
+                command_type_t::LCT_SERVER_SERVERREADY);
             repMsg->SetData("Server ready", strlen("Server ready"));
             LOG_INFO("module({}) cmd({:x}) def({}) identify({}) desc({}) ",
                      "Server", static_cast<unsigned long>(cmd),
                      "LCT_CHROMIUM_MAIN_PLEASEPREPARE", identify,
                      "Reply to chromium 'main' process ready.");
           } break;
-          case LocalCommandType::LCT_CHROMIUM_GPU_PLEASEPREPARE: {
-            repCmd = CommandType(LocalCommandType::LCT_SERVER_SERVERREADY);
+          case command_type_t::LCT_CHROMIUM_GPU_PLEASEPREPARE: {
+            repCmd = static_cast<CommandType>(
+                command_type_t::LCT_SERVER_SERVERREADY);
             repMsg->SetData("Server ready", strlen("Server ready"));
             Server::GetOrCreate()->sessions_gpu_.push(
                 identify, const_cast<uvpp::ISession *>(session));
@@ -112,6 +136,25 @@ void Server::Init() {
     ready_.store(true);
   } while (0);
 }
+bool Server::RequestCommand(const browser_id_t &brwid,
+                            const std::string &body) const {
+  bool result = false;
+  std::lock_guard<std::mutex> lck(*mtx_);
+  do {
+    if (!uvpp_service_ || body.empty())
+      break;
+    if (sessions_main_.size() <= 0)
+      break;
+    auto f = sessions_main_.search(brwid);
+    if (!f)
+      break;
+    uvpp::ISession *f_session = *f;
+    result = f_session->Write(
+        static_cast<unsigned long>(command_type_t::LCT_SERVER_REQCOMMAND),
+        body.data(), body.size());
+  } while (0);
+  return result;
+}
 bool Server::RequestInput(const browser_id_t &brwid,
                           const std::string &body) const {
   bool result = false;
@@ -126,7 +169,7 @@ bool Server::RequestInput(const browser_id_t &brwid,
       break;
     uvpp::ISession *f_session = *f;
     result = f_session->Write(
-        static_cast<unsigned long>(LocalCommandType::LCT_SERVER_REQINPUT),
+        static_cast<unsigned long>(command_type_t::LCT_SERVER_REQINPUT),
         body.data(), body.size());
   } while (0);
   return result;

@@ -1,6 +1,9 @@
 #include <xs.h>
 #include <dlfcn.h>
+#include "rapidjson.h"
+#include <projects/browser/configure.hpp>
 #include <projects/browser/ibrwsvr.h>
+#include <projects/browser/protocol.hpp>
 static char *__gpsFrameBufferPngDir = nullptr;
 static size_t __gsFrameId = 0;
 static browser_id_t __gsBrowserId = 0;
@@ -41,6 +44,15 @@ int main(int argc, char **argv) {
       break;
     startup();
   } while (0);
+
+  char *current_dir = nullptr;
+  size_t current_dir_len = 0;
+  xs_sys_process_getpath(&current_dir, &current_dir_len);
+  const std::string configures_dir =
+      stl::Path::Parent(std::string(current_dir, current_dir_len)) +
+      "\\configures\\";
+  xs_sys_free((void **)&current_dir);
+
   std::string input;
   /*
 分辨率名称	分辨率（宽 x 高）	用途
@@ -64,177 +76,41 @@ int main(int argc, char **argv) {
     if (input == "q" || std::cin.eof()) {
       break;
     } else if (input == "openbrw") {
-      const std::string cfg_create_browser = R"(
-{
-	"enable": true,
-	"type": 0,
-	"policy": {
-		"id": 5568668
-	},
-	"startup_urls": ["https://baidu.com","https://bing.com"],
-	"homepage": {
-		"enable": true,
-		"open_new_tab": true,
-		"url": "zhihu.com"
-	},
-	"search_engine": "bing",
-	"startup_args": [
-		{
-			"key": "--no-sandbox",
-			"value": "",
-			"type": 0
-		},
-		{
-			"key": "--disable-web-security",
-			"value": "",
-			"type": 0
-		},
-		{
-			"key": "--no-first-run",
-			"value": "",
-			"type": 0
-		},
-		{
-			"key": "--disable-sync",
-			"value": "",
-			"type": 0
-		},
-		{
-			"key": "--disable-top-sites",
-			"value": "",
-			"type": 0
-		},
-		{
-			"key": "--disable-gaia-services",
-			"value": "",
-			"type": 0
-		},
-		{
-			"key": "--disable-account-consistency",
-			"value": "",
-			"type": 0
-		},
-		{
-			"key": "--disable-features",
-			"value": "ChromeSignin,AccountConsistency,SameSiteByDefaultCookies,CookiesWithoutSameSiteMustBeSecure,ThirdPartyCookieDeprecationTrial,TrackingProtection3PCD",
-			"type": 0
-		},
-		{
-			"key": "--disable-background-mode",
-			"value": "",
-			"type": 0
-		},
-		{
-			"key": "--no-default-browser-check",
-			"value": "",
-			"type": 0
-		},
-		{
-			"key": "--disable-popup-blocking",
-			"value": "",
-			"type": 0
-		},
-		{
-			"key": "--disable-session-crashed-bubble",
-			"value": "",
-			"type": 0
-		},
-		{
-			"key": "--disable-restore-session-state",
-			"value": "",
-			"type": 0
-		},
-		{
-			"key": "--lang",
-			"value": "en-US",
-			"type": 0
-		},
-		{
-			"key": "--accept-lang",
-			"value": "en-US",
-			"type": 0
-		},
-		{
-			"key": "--headless",
-			"value": "new",
-			"type": 0
-		},
-		{
-			"key": "--disable-gpu",
-			"value": "",
-			"type": 0
-		},
-		{
-			"key": "--remote-debugging-port",
-			"value": "9222",
-			"type": 0
-		}
-	]
-}
-)";
+      std::string cfg =
+          stl::File::ReadFile(configures_dir + "test_openbrw.json");
       request_id_t reqid = 0;
       register_request_cbs(
           [](unsigned long long browser_id, const char *stream,
              unsigned long stream_len) {
+            std::string strFrameBufferPngDir(__gpsFrameBufferPngDir);
+            std::string strFrameBufferPngPath =
+                strFrameBufferPngDir + std::to_string(__gsFrameId++) + ".png";
+            stl::File::WriteFile(strFrameBufferPngPath,
+                                 std::string((char *)stream, stream_len));
             ///
             auto ssss = 0;
           },
-          [](browser_id_t brwid, request_id_t reqid, mp_errno_t err,
-             const char *res, unsigned long reslen) {
+          [](browser_id_t brwid, request_id_t reqid, int err, const char *res,
+             unsigned long reslen) {
             ///////////////////
             auto ssss = 0;
           });
-      mp_errno_t ret =
-          request(cfg_create_browser.data(), cfg_create_browser.size());
-      if (ret != mp_errno_t::MP_DONE) {
+      int ret = request(cfg.data(), cfg.size());
+      if (ret != (int)MP_DONE) {
         std::cout << "Create browser failed." << std::endl;
       }
     } else if (input == "closebrw") {
-      const std::string cfg_destroy_browser = R"(
-        {
-          "enable": true,
-          "type": 1,
-          "policy": {
-            "id": 5568668
-          }
-        }
-        )";
-      mp_errno_t ret =
-          request(cfg_destroy_browser.data(), cfg_destroy_browser.size());
-      if (ret != mp_errno_t::MP_DONE) {
+      std::string cfg =
+          stl::File::ReadFile(configures_dir + "test_closebrw.json");
+      int ret = request(cfg.data(), cfg.size());
+      if (ret != MP_DONE) {
         std::cout << "Destroy browser failed." << std::endl;
       }
     } else if (input == "input") {
-      const std::string cfg_openurl = R"(
-        {
-	"enable": true,
-	"type": 2,
-	"policy": {
-		"id": 5568668
-	},
-	"reqid": 1,
-	"input": {
-		"enable": true,
-		"type": 2,
-		"url": "",
-		"key": "",
-		"text": "",
-		"pressType": 3,
-		"mouseButtonType": 0,
-		"x": 123,
-		"y": 321,
-		"from_x": 0,
-		"from_y": 0,
-		"to_x": 0,
-		"to_y": 0,
-		"wheel": 0,
-		"touch": 0
-	}
-}
-        )";
-
-      mp_errno_t ret = request(cfg_openurl.data(), cfg_openurl.size());
-      if (ret != mp_errno_t::MP_DONE) {
+      std::string cfg =
+          stl::File::ReadFile(configures_dir + "test_brwinput.json");
+      int ret = request(cfg.data(), cfg.size());
+      if (ret != MP_DONE) {
         std::cout << "Destroy browser failed." << std::endl;
       }
     } else {

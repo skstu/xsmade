@@ -10,7 +10,11 @@ class IBrwcfg : public Interface<IBrwcfg> {
 public:
   class IBrowser {
   public:
+    typedef void (*tf_browser_input_event_cb)(unsigned long long reqid,
+                                              IConfigure::Input::ResultCode,
+                                              long long route);
     virtual bool IForwardInputEvent(const char *, size_t) = 0;
+    virtual void IForwardInputEventCb(tf_browser_input_event_cb, long long) = 0;
   };
   class IBuffer {
   public:
@@ -26,7 +30,34 @@ public:
     virtual size_t Total() const = 0;
     virtual void Release() const = 0;
   };
-
+  class IPosition {
+  public:
+    virtual int GetX() const = 0;
+    virtual int GetY() const = 0;
+    virtual void SetX(int) = 0;
+    virtual void SetY(int) = 0;
+    virtual void Release() const = 0;
+  };
+  class ISize {
+  public:
+    virtual int GetWidth() const = 0;
+    virtual int GetHeight() const = 0;
+    virtual void SetWidth(int) = 0;
+    virtual void SetHeight(int) = 0;
+    virtual void Release() const = 0;
+  };
+  class IRectangle {
+  public:
+    virtual int GetX() const = 0;
+    virtual int GetY() const = 0;
+    virtual int GetWidth() const = 0;
+    virtual int GetHeight() const = 0;
+    virtual void SetX(int) = 0;
+    virtual void SetY(int) = 0;
+    virtual void SetWidth(int) = 0;
+    virtual void SetHeight(int) = 0;
+    virtual void Release() const = 0;
+  };
   class IArgs {
   public:
     virtual bool IsPath() const = 0;
@@ -60,6 +91,9 @@ public:
   virtual void FreeS(void **) const = 0;
   virtual void *MallocS(const size_t &) const = 0;
   virtual IBuffer *CreateBuffer(const char *, const size_t &) const = 0;
+  virtual IPosition *CreatePosition() const = 0;
+  virtual ISize *CreateSize() const = 0;
+  virtual IRectangle *CreateRectangle() const = 0;
   virtual void OnAppendArgs(IArgsArray **) const = 0;
   virtual bool OnExtensionMessage(const char *extid, const IBuffer *req,
                                   IBuffer **res) const = 0;

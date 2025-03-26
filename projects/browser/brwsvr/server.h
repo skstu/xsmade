@@ -14,7 +14,7 @@ using namespace uvpp;
 #include "protocol.hpp"
 #include "config.h"
 #include "ffcodec.h"
-#include "brwobj.h"
+#include "chromium/chromium.h"
 #include "brwmnr.h"
 class Server final {
 public:
@@ -38,15 +38,16 @@ public:
   void OnFrameBufferStream(const browser_id_t &, const char *,
                            const size_t &) const;
   bool RequestInput(const browser_id_t &, const std::string &) const;
+  bool RequestCommand(const browser_id_t &, const std::string &) const;
 
 private:
+  void Process(void);
   std::atomic_bool ready_ = false;
   std::atomic_bool open_ = false;
 
   stl::container::queue<IRequest *> request_queue_;
 
   stl::tfThreads threads_;
-  void Process(void);
   tf_notify_cb notify_cb_ = nullptr;
   tf_frame_buffer_stream_cb frame_buffer_stream_cb_ = nullptr;
 
@@ -60,6 +61,9 @@ private:
   std::shared_ptr<std::mutex> mtx_ = std::make_shared<std::mutex>();
   stl::container::map<browser_id_t, uvpp::ISession *> sessions_gpu_;
   stl::container::map<browser_id_t, uvpp::ISession *> sessions_main_;
+
+private:
+  std::map<browser_id_t, IChromium *> chromiums_;
 };
 /// /*_ Memade®（新生™） _**/
 /// /*_ Fri, 14 Mar 2025 21:47:43 GMT _**/

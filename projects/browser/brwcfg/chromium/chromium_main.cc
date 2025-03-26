@@ -7,161 +7,102 @@ ChromiumMain::~ChromiumMain() {
   UnInit();
 }
 void ChromiumMain::Init() {
-  uvpp_config_->RegisterClientMessageReceiveReplyCb(
-      [](const ISession *session, const CommandType &cmd, const IBuffer *buffer,
-         CommandType *cmd_reply, IBuffer *buffer_reply) {
-        switch (LocalCommandType(cmd)) {
-        case LocalCommandType::LCT_SERVER_REQINPUT: {
-          if (buffer->Empty())
-            break;
-          IRequest req(std::string(buffer->GetData(), buffer->GetDataSize()));
-          req.SetErrno(mp_errno_t::MP_EINVALIDREQ);
-          *cmd_reply =
-              CommandType(LocalCommandType::LCT_CHROMIUM_MAIN_REPNOTIFY);
-          do {
-            if (req.GetCfg().type != brwcfg::IConfigure::Type::BrwInputEvent) {
-              req.SetErrno(mp_errno_t::MP_EINVEVENT);
-              break;
-            }
-            Brwcfg::IBrowser *brwObj =
-                Brwcfg::GetOrCreate()->GetChromiumBrowserObj();
-
-            if (!brwObj) {
-              req.SetErrno(mp_errno_t::MP_ESYSNOTFOUND);
-              break;
-            }
-            if (brwObj->IForwardInputEvent(buffer->GetData(),
-                                           buffer->GetDataSize())) {
-              req.SetErrno(mp_errno_t::MP_ESYSTEMEXC);
-              break;
-            }
-            req.SetErrno(mp_errno_t::MP_OK);
-          } while (0);
-          std::string resBody = req.GetRes();
-          buffer_reply->SetData(resBody.data(), resBody.size());
-        } break;
-        case LocalCommandType::LCT_SERVER_SERVERREADY: {
-          Brwcfg::GetOrCreate()->ServerStatus(true);
-        } break;
-        default:
+  uvpp_config_->RegisterClientMessageReceiveReplyCb([](const ISession *session,
+                                                       const CommandType &cmd,
+                                                       const IBuffer *buffer,
+                                                       CommandType *cmd_reply,
+                                                       IBuffer *buffer_reply) {
+    brwcfg::IConfigure::Input::ResultCode *resultCode =
+        (brwcfg::IConfigure::Input::ResultCode *)malloc(
+            sizeof(brwcfg::IConfigure::Input::ResultCode));
+    switch (static_cast<command_type_t>(cmd)) {
+    case command_type_t::LCT_SERVER_REQCOMMAND:
+      [[fallthrough]];
+    case command_type_t::LCT_SERVER_REQINPUT: {
+      if (buffer->Empty())
+        break;
+      IRequest req(std::string(buffer->GetData(), buffer->GetDataSize()));
+      req.SetErrno(mp_errno_t::MP_EINVALIDREQ);
+      *cmd_reply = CommandType(command_type_t::LCT_CHROMIUM_MAIN_REPNOTIFY);
+      do {
+        if (req.GetCfg().type != brwcfg::IConfigure::Type::BrwInputEvent &&
+            req.GetCfg().type != brwcfg::IConfigure::Type::BrwCommandEvent) {
+          req.SetErrno(mp_errno_t::MP_EINVEVENT);
           break;
         }
-        LOG_INFO("module({}) reqCmd({:x}) reqBody({})", "ChromiumMain",
-                 static_cast<unsigned long>(cmd),
-                 (buffer && buffer->GetDataSize() > 0)
-                     ? std::string(buffer->GetData(), buffer->GetDataSize())
-                     : "");
-      });
+        Brwcfg::IBrowser *brwObj =
+            Brwcfg::GetOrCreate()->GetChromiumBrowserObj();
+
+        if (!brwObj) {
+          req.SetErrno(mp_errno_t::MP_ESYSNOTFOUND);
+          break;
+        }
+        brwObj->IForwardInputEvent(buffer->GetData(), buffer->GetDataSize());
+        req.SetErrno(mp_errno_t::MP_DONE);
+      } while (0);
+      std::string resBody = req.GetRes();
+      // if (req.GetErrno() != mp_errno_t::MP_DONE)
+      buffer_reply->SetData(resBody.data(), resBody.size());
+
+    } break;
+    case command_type_t::LCT_SERVER_SERVERREADY: {
+      Brwcfg::GetOrCreate()->ServerStatus(true);
+    } break;
+    default:
+      break;
+    }
+    LOG_INFO("module({}) reqCmd({:x}) reqBody({})", "ChromiumMain",
+             static_cast<unsigned long>(cmd),
+             (buffer && buffer->GetDataSize() > 0)
+                 ? std::string(buffer->GetData(), buffer->GetDataSize())
+                 : "");
+  });
   uvpp_config_->RegisterClientConnection([](const ISession *session,
                                             CommandType *cmd_reply,
                                             IBuffer *buffer_reply) {
-    *cmd_reply = CommandType(LocalCommandType::LCT_CHROMIUM_MAIN_PLEASEPREPARE);
+    *cmd_reply = CommandType(command_type_t::LCT_CHROMIUM_MAIN_PLEASEPREPARE);
     buffer_reply->SetData("Please prepare on main",
                           strlen("Please prepare on main"));
     LOG_INFO("module({}) ({})", "ChromiumMain", "Request server prepare.");
   });
-#if 0
-  do {
-    policy_id_ = Config::GetOrCreate()->GetConfigure().policy.id;
-    uvpp_ = dynamic_cast<IUvpp *>(IUvpp::Create(
-        Conv::u16_to_u8(Config::GetOrCreate()->GetPath().libuvpp_path)
-            .c_str()));
-    uvpp_config_ = uvpp_->ConfigGet();
-    uvpp_config_->SetIdentify(policy_id_);
-    uvpp_config_->SetServiceType(
-        static_cast<unsigned long>(uvpp::ServerType::INITIATOR) |
-        static_cast<unsigned long>(uvpp::AddressType::IPC) |
-        static_cast<unsigned long>(uvpp::SessionType::IPC));
-    std::string addr(Config::GetOrCreate()->GetSettings().server.pipe_addr);
-    uvpp_config_->Address(addr.data(), addr.size());
-    uvpp_client_ = uvpp_->CreateSevice();
-    uvpp_config_->RegisterClientMessageReceiveReplyCb(
-        [](const ISession *session, const CommandType &cmd,
-           const IBuffer *buffer, CommandType *cmd_reply,
-           IBuffer *buffer_reply) {
-          switch (LocalCommandType(cmd)) {
-          case LocalCommandType::LCT_SERVER_REQINPUT: {
-            if (buffer->Empty())
-              break;
-            IRequest req(std::string(buffer->GetData(), buffer->GetDataSize()));
-            req.SetErrno(mp_errno_t::MP_EINVALIDREQ);
-            *cmd_reply =
-                CommandType(LocalCommandType::LCT_CHROMIUM_MAIN_REPNOTIFY);
-            do {
-              if (req.GetCfg().type !=
-                  brwcfg::IConfigure::Type::BrwInputEvent) {
-                req.SetErrno(mp_errno_t::MP_EINVEVENT);
-                break;
-              }
-              Brwcfg::IBrowser *brwObj =
-                  Brwcfg::GetOrCreate()->GetChromiumBrowserObj();
-
-              if (!brwObj) {
-                req.SetErrno(mp_errno_t::MP_ESYSNOTFOUND);
-                break;
-              }
-              if (brwObj->IForwardInputEvent(buffer->GetData(),
-                                             buffer->GetDataSize())) {
-                req.SetErrno(mp_errno_t::MP_ESYSTEMEXC);
-                break;
-              }
-              req.SetErrno(mp_errno_t::MP_OK);
-            } while (0);
-            std::string resBody = req.GetRes();
-            buffer_reply->SetData(resBody.data(), resBody.size());
-          } break;
-          case LocalCommandType::LCT_SERVER_SERVERREADY: {
-            std::unique_lock<std::mutex> lck(gs_server_ready_mtx_,
-                                             std::defer_lock);
-            lck.lock();
-            gs_server_ready_ = true;
-            lck.unlock();
-          } break;
-          default:
-            break;
-          }
-          LOG_INFO("module({}) reqCmd({:x}) reqBody({})", "ChromiumMain",
-                   static_cast<unsigned long>(cmd),
-                   (buffer && buffer->GetDataSize() > 0)
-                       ? std::string(buffer->GetData(), buffer->GetDataSize())
-                       : "");
-        });
-    uvpp_config_->RegisterClientConnection([](const ISession *session,
-                                              CommandType *cmd_reply,
-                                              IBuffer *buffer_reply) {
-      *cmd_reply =
-          CommandType(LocalCommandType::LCT_CHROMIUM_MAIN_PLEASEPREPARE);
-      buffer_reply->SetData("Please prepare on main",
-                            strlen("Please prepare on main"));
-      LOG_INFO("module({}) ({})", "ChromiumMain", "Request server prepare.");
-    });
-    ready_.store(true);
-  } while (0);
-#endif
 }
 void ChromiumMain::UnInit() {
 }
 void ChromiumMain::Release() const {
   delete this;
 }
-#if 0
-bool ChromiumMain::Start() {
-  
+void ChromiumMain::OnChromiumInputEvent(
+    const unsigned long long &reqid,
+    const brwcfg::IConfigure::Input::ResultCode &resultCode) const {
   do {
-    if (!ready_.load())
+    if (!uvpp_client_ || !uvpp_)
       break;
-    if (!uvpp_client_->Start())
-      break;
-    open_.store(true);
+    rapidjson::Document doc(rapidjson::kObjectType);
+    doc.AddMember(
+        rapidjson::Value().SetString("status", doc.GetAllocator()).Move(),
+        rapidjson::Value().SetInt(static_cast<int>(MP_EASYNCNOTIFY)).Move(),
+        doc.GetAllocator());
+    doc.AddMember(
+        rapidjson::Value()
+            .SetString("inputEventResultCode", doc.GetAllocator())
+            .Move(),
+        rapidjson::Value().SetInt(static_cast<int>(resultCode)).Move(),
+        doc.GetAllocator());
+    doc.AddMember(
+        rapidjson::Value().SetString("brwid", doc.GetAllocator()).Move(),
+        rapidjson::Value().SetUint64(policy_id_).Move(), doc.GetAllocator());
+    doc.AddMember(
+        rapidjson::Value().SetString("reqid", doc.GetAllocator()).Move(),
+        rapidjson::Value().SetUint64(reqid).Move(), doc.GetAllocator());
+    doc.AddMember(
+        rapidjson::Value().SetString("reqBody", doc.GetAllocator()).Move(),
+        rapidjson::Value().SetString("{}", doc.GetAllocator()).Move(),
+        doc.GetAllocator());
+    std::string body = Json::toString(doc);
+
+    uvpp::IBuffer *buffer = uvpp_->CreateBuffer(body.data(), body.size());
+    uvpp_client_->Write(
+        static_cast<unsigned long>(command_type_t::LCT_CHROMIUM_MAIN_REPNOTIFY),
+        buffer);
   } while (0);
-  return open_.load();
 }
-void ChromiumMain::Stop() {
-  do {
-    if (!open_.load())
-      break;
-    open_.store(false);
-    uvpp_client_->Stop();
-  } while (0);
-}
-#endif

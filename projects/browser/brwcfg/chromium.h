@@ -1,16 +1,6 @@
 #if !defined(__C44D8EFE_09E4_440E_A764_9915D43B3B0D__)
 #define __C44D8EFE_09E4_440E_A764_9915D43B3B0D__
 
-enum class ChromiumProcessType : unsigned long {
-  ChromiumUnknownProcess = 0,
-  ChromiumProcess,
-  ChromiumGpuProcess,
-  ChromiumRendererProcess,
-  ChromiumUtilityNetworkMojomServiceProcess,
-  ChromiumUtilityStorageMojomServiceProcess,
-  ChromiumCrashpadHandlerProcess,
-};
-
 class IChromium {
 public:
   IChromium(const ChromiumProcessType &type, const std::string &server_addr);
@@ -26,6 +16,10 @@ public:
   virtual const ChromiumProcessType &GetType() const;
   virtual void OnGpuScreenshotImageStream(const char *stream,
                                           const size_t &stream_size) {
+  }
+  virtual void OnChromiumInputEvent(
+      const unsigned long long &reqid,
+      const brwcfg::IConfigure::Input::ResultCode &resultCode) const {
   }
 
 protected:
@@ -54,6 +48,9 @@ private:
 
 protected:
   void Release() const override final;
+  void OnChromiumInputEvent(const unsigned long long &reqid,
+                            const brwcfg::IConfigure::Input::ResultCode
+                                &resultCode) const override final;
 };
 
 class ChromiumGpu final : public IChromium {

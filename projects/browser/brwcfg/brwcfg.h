@@ -24,6 +24,7 @@ using namespace brwcfg;
 #include "vmem.h"
 #endif
 #include "buffer.h"
+#include "position.h"
 #include "extension.h"
 #include "args.h"
 #include <components/uvpp/export.h>
@@ -51,6 +52,9 @@ protected:
   void OnAppendArgs(IArgsArray **) const override final;
   IBrwcfg::IBuffer *CreateBuffer(const char *,
                                  const size_t &) const override final;
+  IPosition *CreatePosition() const override final;
+  ISize *CreateSize() const override final;
+  IRectangle *CreateRectangle() const override final;
   void OnExtensionsInstall(const IBuffer *,
                            IExtensionArray **) const override final;
   void OnGetUserDataDirectory(IBuffer **) const override final;

@@ -1,10 +1,8 @@
 #include "server.h"
 extern "C" {
 static int started = 0;
-
-SHARED_API mp_errno_t request(const char *protocol,
-                              unsigned long protocol_len) {
-  mp_errno_t result = MP_EUNKN;
+SHARED_API int request(const char *protocol, unsigned long protocol_len) {
+  int result = MP_EUNKN;
   do {
     if (!protocol || protocol_len <= 0) {
       result = MP_EINVALIDREQ;
@@ -16,9 +14,10 @@ SHARED_API mp_errno_t request(const char *protocol,
   } while (0);
   return result;
 }
-SHARED_API mp_errno_t register_request_cbs(
-    tf_frame_buffer_stream_cb frame_buffer_stream_cb, tf_notify_cb notify_cb) {
-  mp_errno_t result = MP_EUNKN;
+SHARED_API int
+register_request_cbs(tf_frame_buffer_stream_cb frame_buffer_stream_cb,
+                     tf_notify_cb notify_cb) {
+  int result = MP_EUNKN;
   Server::GetOrCreate()->RegisterCbs(frame_buffer_stream_cb, notify_cb);
   result = MP_OK;
   return result;
@@ -38,8 +37,8 @@ SHARED_API void free_s(void **p) {
     *p = nullptr;
   }
 }
-SHARED_API mp_errno_t startup(void) {
-  mp_errno_t result = MP_EUNKN;
+SHARED_API int startup(void) {
+  int result = MP_EUNKN;
   do {
     if (started) {
       result = MP_EALREADY;

@@ -74,6 +74,21 @@ const char *Brwcfg::IConfigureGet() const {
   m[strJson.size()] = 0;
   return m;
 }
+IBrwcfg::IPosition *Brwcfg::CreatePosition() const {
+  IBrwcfg::IPosition *result = nullptr;
+  local::Position *pos = new local::Position();
+  return dynamic_cast<IBrwcfg::IPosition *>(pos);
+}
+IBrwcfg::ISize *Brwcfg::CreateSize() const {
+  IBrwcfg::ISize *result = nullptr;
+  local::Size *size = new local::Size();
+  return dynamic_cast<IBrwcfg::ISize *>(size);
+}
+IBrwcfg::IRectangle *Brwcfg::CreateRectangle() const {
+  IBrwcfg::IRectangle *result = nullptr;
+  local::Rectangle *rect = new local::Rectangle();
+  return dynamic_cast<IBrwcfg::IRectangle *>(rect);
+}
 IBrwcfg::IBuffer *Brwcfg::CreateBuffer(const char *data,
                                        const size_t &len) const {
   IBrwcfg::IBuffer *result = nullptr;
@@ -167,37 +182,23 @@ void Brwcfg::OnBrowserReadyed(void) const {
   std::unique_lock<std::mutex> lck(*mtx_, std::defer_lock);
   lck.lock();
   do {
-    break;
-    if (!chromium_browser_object_)
-      break;
-    std::string cfg = R"(
-{
-	"enable": true,
-	"type": 2,
-	"policy": {
-		"id": 5568668
-	},
-	"reqid": 1,
-	"input": {
-		"enable": true,
-		"type": 3,
-		"url": "https://google.com",
-		"key": "a",
-		"text": "你好，欢迎!",
-		"pressType": 0,
-		"mouseButtonType": 0,
-		"x": 0,
-		"y": 0,
-		"from_x": 0,
-		"from_y": 0,
-		"to_x": 0,
-		"to_y": 0,
-		"wheel": 0,
-		"touch": 0
-	}
-}
-)";
-    chromium_browser_object_->IForwardInputEvent(cfg.data(), cfg.size());
+#if 0
+    if (chromium_browser_object_) {
+      chromium_browser_object_->IForwardInputEventCb(
+          [](unsigned long long reqid, IConfigure::Input::ResultCode resultCode,
+             long long route) {
+            do {
+              IChromium *chromium = reinterpret_cast<IChromium *>(route);
+              if (!chromium)
+                break;
+              chromium->OnChromiumInputEvent(reqid, resultCode);
+            } while (0);
+            LOG_INFO("module({}) reqid({}) resultCode({})", "BrwcfgInput",
+                     reqid, static_cast<int>(resultCode));
+          },
+          reinterpret_cast<long long>(chromium_));
+    }
+#endif
   } while (0);
   lck.unlock();
 }
