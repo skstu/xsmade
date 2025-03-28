@@ -307,18 +307,6 @@ u16string Path::Normal(const u16string &path) {
   } while (0);
   return result;
 }
-#ifdef _STL_HAS_CXX20
-u8string Path::Normal(const u8string &path) {
-  u8string result;
-  do {
-    if (path.empty())
-      break;
-    fs::path _path = path;
-    result = _path.lexically_normal().u8string();
-  } while (0);
-  return result;
-}
-#endif
 wstring Path::Normal(const wstring &path) {
   wstring result;
   do {
