@@ -15,6 +15,7 @@ extern "C" {
   XX(EALREADY, "already running")                                              \
   XX(EINVBRWID, "invalid browser id")                                          \
   XX(EBRWENVCFG, "browser configure error")                                    \
+  XX(EBRWOPEN, "browser open error")                                           \
   XX(EREQFAILED, "reqeust failed")                                             \
   XX(EFAILED, "failed")                                                        \
   XX(EINVEVENT, "invalid event")                                               \

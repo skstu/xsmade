@@ -43,7 +43,7 @@ bool OpenChromium() {
     std::wstring wstrCurrentPath = Conv::u8_to_ws(strCurrentPath);
     wchar_t targetChromium[MAX_PATH];
     swprintf(targetChromium, MAX_PATH,
-             L"%s\\browser\\chromium\\130.0.6723.191\\FanBrowser.exe",
+             L"%s\\browser\\chromium\\134.0.6998.166\\FanBrowser.exe",
              wstrCurrentPath.c_str());
     if (!stl::File::Exists(targetChromium))
       break;

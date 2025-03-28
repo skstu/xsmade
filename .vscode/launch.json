@@ -10,7 +10,8 @@
       ],
       // "program": "${workspaceFolder}/bin/browser/chromium/130.0.6723.191/FanBrowser.exe",
       // "args": [
-      //   //"--gpu-startup-dialog"
+      //   //"--gpu-startup-dialog",
+       //     //"--renderer-startup-dialog"
       // ],
       // "program": "${workspaceFolder}/bin/main.exe",
       // "args": [],

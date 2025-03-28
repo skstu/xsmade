@@ -396,7 +396,7 @@ public:
     inline void operator<<(const rapidjson::Value &);
     // Returns true if the WebInputEvent |type| is a mouse event.
     inline bool IsMouseEventType() const;
-
+    inline bool IsMouseWheelEventType() const;
     // Returns true if the WebInputEvent |type| is a keyboard event.
     inline bool IsKeyboardEventType() const;
     // Returns true if the WebInputEvent |type| is a touch event.
@@ -557,7 +557,7 @@ public:
     inline ~Policy();
 
   public:
-    unsigned long long id = 0;
+    unsigned long id = 0;
   };
   class HomePage final {
   public:
@@ -918,6 +918,24 @@ public:
   inline void operator=(const std::string &protocol_buffer);
   inline void operator+=(const std::string &protocol_buffer);
   inline void operator=(const IConfigure &cfg) = delete;
+  inline bool InvalidPolicId() const {
+    return !(policy.id > 0 && policy.id < 0xFF);
+  }
+  inline const unsigned long &GetPolicyId() const {
+    return policy.id;
+  }
+  inline const unsigned long &GetBrwId() const {
+    return GetPolicyId();
+  }
+  inline const unsigned long long &GetReqId() const {
+    return reqid;
+  }
+  inline const bool &Enable() const {
+    return enable;
+  }
+  inline const IConfigure::Type &GetType() const {
+    return type;
+  }
 
 public:
   unsigned long long reqid = 0;
@@ -956,8 +974,19 @@ inline IConfigure::Input::Input() {
 inline IConfigure::Input::~Input() {
 }
 inline bool IConfigure::Input::IsMouseEventType() const {
-  return Input::Type::kMouseTypeFirst <= type &&
-         type <= Input::Type::kMouseTypeLast;
+  bool result = false;
+  do {
+    if (type != Input::Type::kMouseDown && type != Input::Type::kMouseUp &&
+        type != Input::Type::kMouseMove && type != Input::Type::kMouseEnter &&
+        type != Input::Type::kMouseLeave && type != Input::Type::kContextMenu &&
+        type != Input::Type::kMouseWheel)
+      break;
+    result = true;
+  } while (0);
+  return result;
+}
+inline bool IConfigure::Input::IsMouseWheelEventType() const {
+  return type == Input::Type::kMouseWheel;
 }
 inline bool IConfigure::Input::IsKeyboardEventType() const {
   return Input::Type::kKeyboardTypeFirst <= type &&
@@ -1697,9 +1726,9 @@ inline void IConfigure::operator=(const std::string &protocol_buffer) {
       auto &policyObj = doc["policy"];
       if (!policyObj.HasMember("id"))
         break;
-      if (!policyObj["id"].IsUint64())
+      if (!policyObj["id"].IsUint())
         break;
-      policy.id = policyObj["id"].GetUint64();
+      policy.id = policyObj["id"].GetUint();
     } while (0);
     do { //!@ .proxy
       if (!doc.HasMember("proxy"))

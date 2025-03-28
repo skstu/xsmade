@@ -15,42 +15,36 @@ void Server::Process(void) {
         if (!req->Ready())
           break;
         LOG_INFO("module({}) cfgType({:x}) cfgBody({})", "ServerProcess",
-                 static_cast<unsigned long>(req->GetCfg().type),
+                 static_cast<unsigned long>(req->GetCfg().GetType()),
                  req->GetCfg().Serialization());
-        switch (req->GetCfg().type) {
+        switch (req->GetCfg().GetType()) {
         case brwcfg::IConfigure::Type::BrwCreate: {
-          Brwobj *brwObj =
-              Brwmnr::GetOrCreate()->CreateBrowser(req->GetCfg(), ret);
-          if (!brwObj)
+          IChromium *pChromium = CreateBrowser(req->GetCfg(), ret);
+          if (!pChromium)
             break;
-          ret = MP_OK;
         } break;
         case brwcfg::IConfigure::Type::BrwDestory: {
-          Brwmnr::GetOrCreate()->DestroyBrowser(policy_id, ret);
-
+          DestroyBrowser(req->GetCfg().GetBrwId(), ret);
         } break;
+        case brwcfg::IConfigure::Type::BrwCommandEvent:
+          //[[fallthrough]];
+          {
+            IChromium *pChromium = GetBrowser(policy_id, ret);
+            if (!pChromium)
+              break;
+            if (!pChromium->Request(command_type_t::LCT_SERVER_REQCOMMAND,
+                                    req->GetCfg().Serialization(), ret))
+              break;
+            ret = MP_DONE;
+          }
+          break;
         case brwcfg::IConfigure::Type::BrwInputEvent: {
-          Brwobj *brwobj = Brwmnr::GetOrCreate()->GetBrowser(policy_id);
-          if (!brwobj) {
-            ret = mp_errno_t::MP_ENOTFOUND;
+          IChromium *pChromium = GetBrowser(policy_id, ret);
+          if (!pChromium)
             break;
-          }
-          if (!RequestInput(policy_id, req->GetCfg().Serialization())) {
-            ret = mp_errno_t::MP_EREQFAILED;
+          if (!pChromium->Request(command_type_t::LCT_SERVER_REQINPUT,
+                                  req->GetCfg().Serialization(), ret))
             break;
-          }
-          ret = MP_DONE;
-        } break;
-        case brwcfg::IConfigure::Type::BrwCommandEvent: {
-          Brwobj *brwobj = Brwmnr::GetOrCreate()->GetBrowser(policy_id);
-          if (!brwobj) {
-            ret = mp_errno_t::MP_ENOTFOUND;
-            break;
-          }
-          if (!RequestCommand(policy_id, req->GetCfg().Serialization())) {
-            ret = mp_errno_t::MP_EREQFAILED;
-            break;
-          }
           ret = MP_DONE;
         } break;
         default:

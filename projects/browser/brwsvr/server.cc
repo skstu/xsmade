@@ -24,18 +24,7 @@ void Server::Init() {
         Config::GetOrCreate()->GetSettings().server.pipe_addr.data(),
         Config::GetOrCreate()->GetSettings().server.pipe_addr.size());
     uvpp_config_->RegisterServerHelloCb(
-        [](ISession *session, const IBuffer *buffer, IBuffer *) {
-          do {
-            const IBuffer *hello = session->GetHelloBuffer();
-            if (!hello)
-              break;
-            if (hello->Empty())
-              break;
-            policy_id_t policy_id = 0;
-            memcpy(&policy_id, hello->GetData(), hello->GetDataSize());
-            session->Route(Brwmnr::GetOrCreate()->GetBrowser(policy_id));
-          } while (0);
-        });
+        [](ISession *session, const IBuffer *buffer, IBuffer *) {});
     uvpp_config_->RegisterServerReadyCb([]() {
       LOG_INFO("module({}) ({})", "Server", "Service ready.");
       std::cout << "Server readyed." << std::endl;
@@ -49,26 +38,32 @@ void Server::Init() {
       LOG_INFO("module({}) ({})", "Server", log);
     });
     uvpp_config_->RegisterServerSessionDestroyCb([](const ISession *session) {
-      Server::GetOrCreate()->sessions_gpu_.pop(session->GetIdentify());
-      Server::GetOrCreate()->sessions_main_.pop(session->GetIdentify());
+      const unsigned long long identify = session->GetIdentify();
+      const browser_id_t brwid = stl::HighLowStorage(identify).High();
+      const xs_process_id_t pid = stl::HighLowStorage(identify).Low();
+      mp_errno_t ret = mp_errno_t::MP_EUNKN;
+      Server::GetOrCreate()->DestroyBrowser(brwid, ret);
     });
     uvpp_config_->RegisterServerMessageReceiveReplyCb(
         [](const ISession *session, const CommandType &cmd, const IBuffer *msg,
            CommandType &repCmd, IBuffer *repMsg) {
           const unsigned long long identify = session->GetIdentify();
-          if (identify <= 0) {
-            LOG_ERROR("module({}) cmd({:x}) identify({}) desc({})", "Server",
-                      static_cast<unsigned long>(cmd), identify,
-                      "Invalid session identify.");
+          const browser_id_t brwid = stl::HighLowStorage(identify).High();
+          const xs_process_id_t pid = stl::HighLowStorage(identify).Low();
+          if (brwid <= 0) {
+            LOG_ERROR("module({}) cmd({:x}) brwid({}) desc({})", "Server",
+                      static_cast<unsigned long>(cmd), brwid,
+                      "Invalid session brwid.");
             return;
           }
-          IChromium *chromium = nullptr;
+
+          mp_errno_t ret = mp_errno_t::MP_EUNKN;
+          IChromium *chromium = Server::GetOrCreate()->GetBrowser(brwid, ret);
 
           switch (static_cast<command_type_t>(cmd)) {
           case command_type_t::LCT_CHROMIUM_GPU_FRAMEBUFFERSTREAM: {
-            policy_id_t policy_id = session->GetIdentify();
-            Server::GetOrCreate()->OnFrameBufferStream(
-                policy_id, msg->GetData(), msg->GetDataSize());
+            Server::GetOrCreate()->OnFrameBufferStream(brwid, msg->GetData(),
+                                                       msg->GetDataSize());
           } break;
           case command_type_t::LCT_CHROMIUM_GPU_REPNOTIFY: {
           } break;
@@ -83,29 +78,33 @@ void Server::Init() {
             }
             std::string notify_body(msg->GetData(), msg->GetDataSize());
             std::cout << notify_body << std::endl;
-            Server::GetOrCreate()->OnNotify(identify, notify_body);
+            Server::GetOrCreate()->OnNotify(brwid, notify_body);
             LOG_INFO("Recved web notify msg is ({})", notify_body.c_str());
           } break;
           case command_type_t::LCT_CHROMIUM_MAIN_PLEASEPREPARE: {
-            Server::GetOrCreate()->sessions_main_.push(
-                identify, const_cast<uvpp::ISession *>(session));
+            if (!chromium)
+              break;
+            chromium->ProcessReady(ChromiumProcessType::ChromiumProcess, pid,
+                                   session);
             repCmd = static_cast<CommandType>(
                 command_type_t::LCT_SERVER_SERVERREADY);
             repMsg->SetData("Server ready", strlen("Server ready"));
-            LOG_INFO("module({}) cmd({:x}) def({}) identify({}) desc({}) ",
+            LOG_INFO("module({}) cmd({:x}) def({}) brwid({}) desc({}) ",
                      "Server", static_cast<unsigned long>(cmd),
-                     "LCT_CHROMIUM_MAIN_PLEASEPREPARE", identify,
+                     "LCT_CHROMIUM_MAIN_PLEASEPREPARE", brwid,
                      "Reply to chromium 'main' process ready.");
           } break;
           case command_type_t::LCT_CHROMIUM_GPU_PLEASEPREPARE: {
+            if (!chromium)
+              break;
+            chromium->ProcessReady(ChromiumProcessType::ChromiumGpuProcess, pid,
+                                   session);
             repCmd = static_cast<CommandType>(
                 command_type_t::LCT_SERVER_SERVERREADY);
             repMsg->SetData("Server ready", strlen("Server ready"));
-            Server::GetOrCreate()->sessions_gpu_.push(
-                identify, const_cast<uvpp::ISession *>(session));
-            LOG_INFO("module({}) cmd({:x}) def({}) identify({}) desc({}) ",
+            LOG_INFO("module({}) cmd({:x}) def({}) brwid({}) desc({}) ",
                      "Server", static_cast<unsigned long>(cmd),
-                     "LCT_CHROMIUM_GPU_PLEASEPREPARE", identify,
+                     "LCT_CHROMIUM_GPU_PLEASEPREPARE", brwid,
                      "Reply to chromium 'gpu' process ready.");
           } break;
           default:
@@ -136,44 +135,6 @@ void Server::Init() {
     ready_.store(true);
   } while (0);
 }
-bool Server::RequestCommand(const browser_id_t &brwid,
-                            const std::string &body) const {
-  bool result = false;
-  std::lock_guard<std::mutex> lck(*mtx_);
-  do {
-    if (!uvpp_service_ || body.empty())
-      break;
-    if (sessions_main_.size() <= 0)
-      break;
-    auto f = sessions_main_.search(brwid);
-    if (!f)
-      break;
-    uvpp::ISession *f_session = *f;
-    result = f_session->Write(
-        static_cast<unsigned long>(command_type_t::LCT_SERVER_REQCOMMAND),
-        body.data(), body.size());
-  } while (0);
-  return result;
-}
-bool Server::RequestInput(const browser_id_t &brwid,
-                          const std::string &body) const {
-  bool result = false;
-  std::lock_guard<std::mutex> lck(*mtx_);
-  do {
-    if (!uvpp_service_ || body.empty())
-      break;
-    if (sessions_main_.size() <= 0)
-      break;
-    auto f = sessions_main_.search(brwid);
-    if (!f)
-      break;
-    uvpp::ISession *f_session = *f;
-    result = f_session->Write(
-        static_cast<unsigned long>(command_type_t::LCT_SERVER_REQINPUT),
-        body.data(), body.size());
-  } while (0);
-  return result;
-}
 void Server::UnInit() {
 #if ENABLE_FFCODEC
   SK_DELETE_PTR(ffcodec_);
@@ -203,6 +164,67 @@ void Server::Stop(void) {
     threads_.clear();
     uvpp_service_->Stop();
   } while (0);
+}
+IChromium *Server::GetBrowser(const policy_id_t &brwid, mp_errno_t &ret) const {
+  IChromium *result = nullptr;
+  ret = mp_errno_t::MP_EUNKN;
+  std::lock_guard<std::mutex> lck(*mtx_);
+  do {
+    auto fExists = chromiums_.find(brwid);
+    if (fExists == chromiums_.end())
+      break;
+    result = fExists->second;
+    ret = MP_OK;
+  } while (0);
+  return result;
+}
+IChromium *Server::CreateBrowser(const brwcfg::IConfigure &cfg,
+                                 mp_errno_t &ret) {
+  IChromium *result = nullptr;
+  std::lock_guard<std::mutex> lck(*mtx_);
+  do {
+    // if (!(cfg.GetBrwId() > 0 && cfg.GetBrwId() < MAXULONG32)) {
+    //   ret = mp_errno_t::MP_EINVBRWID;
+    //   break;
+    // }
+    auto fExists = chromiums_.find(cfg.GetPolicyId());
+    if (fExists != chromiums_.end()) {
+      ret = mp_errno_t::MP_EALREADY;
+      result = fExists->second;
+      break;
+    }
+    if (!Config::GetOrCreate()->CreateBrowserEnv(cfg.GetPolicyId(),
+                                                 cfg.Serialization())) {
+      ret = mp_errno_t::MP_EBRWENVCFG;
+      break;
+    }
+    result = new IChromium(cfg.GetPolicyId());
+    if (!result->Open()) {
+      ret = mp_errno_t::MP_EBRWOPEN;
+      result->Release();
+      break;
+    }
+    chromiums_.emplace(cfg.GetPolicyId(), result);
+    ret = mp_errno_t::MP_OK;
+  } while (0);
+  return result;
+}
+bool Server::DestroyBrowser(const browser_id_t &brwid, mp_errno_t &ret) {
+  bool result = false;
+  std::lock_guard<std::mutex> lck(*mtx_);
+  do {
+    auto f = chromiums_.find(brwid);
+    if (f == chromiums_.end()) {
+      ret = mp_errno_t::MP_ENOTFOUND;
+      break;
+    }
+    f->second->Close();
+    f->second->Release();
+    chromiums_.erase(brwid);
+    ret = mp_errno_t::MP_OK;
+    result = true;
+  } while (0);
+  return result;
 }
 void Server::OnNotify(const browser_id_t &brwid, const std::string &res) const {
   std::lock_guard<std::mutex> lck(*mtx_);

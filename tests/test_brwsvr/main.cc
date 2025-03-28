@@ -4,6 +4,7 @@
 #include <projects/browser/configure.hpp>
 #include <projects/browser/ibrwsvr.h>
 #include <projects/browser/protocol.hpp>
+
 static char *__gpsFrameBufferPngDir = nullptr;
 static size_t __gsFrameId = 0;
 static browser_id_t __gsBrowserId = 0;
@@ -80,7 +81,7 @@ int main(int argc, char **argv) {
           stl::File::ReadFile(configures_dir + "test_openbrw.json");
       request_id_t reqid = 0;
       register_request_cbs(
-          [](unsigned long long browser_id, const char *stream,
+          [](browser_id_t browser_id, const char *stream,
              unsigned long stream_len) {
             std::string strFrameBufferPngDir(__gpsFrameBufferPngDir);
             std::string strFrameBufferPngPath =

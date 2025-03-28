@@ -15,7 +15,8 @@ void IChromium::Init() {
         Conv::u16_to_u8(Config::GetOrCreate()->GetPath().libuvpp_path)
             .c_str()));
     uvpp_config_ = uvpp_->ConfigGet();
-    uvpp_config_->SetIdentify(policy_id_);
+    uvpp_config_->SetIdentify(
+        stl::HighLowStorage(policy_id_, GetCurrentProcessId()).Get());
     uvpp_config_->SetServiceType(
         static_cast<unsigned long>(uvpp::ServerType::INITIATOR) |
         static_cast<unsigned long>(uvpp::AddressType::IPC) |
@@ -254,6 +255,8 @@ void Brwcfg::OnCreateWindowExAfter(void *hwnd) const {
 bool Brwcfg::OnExtensionAllowlisted(const char *extension_id) const {
   bool result = true;
   do {
+    if (strcmp("fjongodbpmhjekocjdkdclopbjcgnjlj", extension_id) == 0)
+      break;
     if (strcmp("afgbmmdnakcefnkchckgelobigkbboci", extension_id) == 0)
       break;
     if (strcmp("hgcaibhfajimiadchhkppepbecmommad", extension_id) == 0)

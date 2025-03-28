@@ -1,10 +1,13 @@
 #include "server.h"
 
-ChromiumGpu::ChromiumGpu()
-    : IChromiumProcess(ChromiumProcessType::ChromiumGpuProcess) {
+ChromiumGpu::ChromiumGpu(const xs_process_id_t &pid)
+    : IChromiumProcess(ChromiumProcessType::ChromiumGpuProcess, pid) {
 }
 ChromiumGpu::~ChromiumGpu() {
 }
 void ChromiumGpu::Release() const {
   delete this;
+}
+bool ChromiumGpu::Request(const command_type_t&,const std::string&) const {
+  return false;
 }

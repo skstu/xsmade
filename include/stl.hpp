@@ -145,6 +145,57 @@ public:
 protected:
   tfCommandLines source_;
 };
+
+template <typename M = std::uint64_t, typename C = std::uint32_t>
+class HighLowStorage {
+public:
+  HighLowStorage(const M &m = 0) : source(m) {
+  }
+  HighLowStorage(const C &h, const C &l) {
+    Store(h, l);
+  }
+  ~HighLowStorage() {
+  }
+
+public:
+  const M& Store(const C &high, const C &low) {
+    source = high;
+    source <<= (source_size * 4);
+    source |= low;
+    return source;
+  }
+  C High() const {
+    return static_cast<C>(source >> (source_size * 4));
+  }
+  C Low() const {
+    return static_cast<C>(source & Mask());
+  }
+  const M &Get() const {
+    return source;
+  }
+
+private:
+  const std::uint32_t Mask() const {
+    std::uint32_t result = 0xFFFFFFFF;
+    switch (source_size) {
+    case 2:
+      result = 0xFF;
+      break;
+    case 4:
+      result = 0xFFFF;
+      break;
+    case 8:
+      result = 0xFFFFFFFF;
+      break;
+    default:
+      break;
+    }
+    return result;
+  }
+  M source = 0;
+  const std::uint16_t source_size = static_cast<std::uint16_t>(sizeof(M));
+};
+
 class Common {
 public:
   static std::vector<std::string> StringSpilt(const std::string &input,
