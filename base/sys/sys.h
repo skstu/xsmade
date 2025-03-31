@@ -18,7 +18,20 @@
 #include <gdiplus.h>
 #pragma comment(lib, "gdiplus.lib")
 #elif defined(__OSLINUX__)
-
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <string.h>
+#include <sys/types.h>
+#include <sys/socket.h>
+#include <sys/wait.h>
+#include <netinet/in.h>
+#include <arpa/inet.h>
+#include <spawn.h>          // posix_spawn
+#include <signal.h>         // kill
+#include <sys/wait.h>       // waitpid
+#include <fcntl.h>          // file locks
+#include <sys/file.h>       // flock
 #elif defined(__OSAPPLE__)
 #include <netinet/in.h>
 #include <unistd.h>

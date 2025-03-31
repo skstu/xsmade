@@ -158,7 +158,7 @@ public:
   }
 
 public:
-  const M& Store(const C &high, const C &low) {
+  const M &Store(const C &high, const C &low) {
     source = high;
     source <<= (source_size * 4);
     source |= low;
@@ -220,8 +220,8 @@ public:
   template <typename T = std::chrono::seconds>
 #if _STL_HAS_CXX20
   requires std::is_convertible_v<T, std::chrono::milliseconds> ||
-           std::is_convertible_v<T, std::chrono::minutes> ||
-           std::is_convertible_v<T, std::chrono::microseconds>
+      std::is_convertible_v<T, std::chrono::minutes> ||
+      std::is_convertible_v<T, std::chrono::microseconds>
 #endif
   static time_t TimeStamp() {
     return std::chrono::duration_cast<T>(
@@ -246,9 +246,9 @@ public:
   requires(std::is_same_v<T, std::chrono::milliseconds> ||
            std::is_same_v<T, std::chrono::seconds>)
 #endif
-  static std::string
-  TimestampToISO8601(std::uint64_t timestamp,
-                     const bool &local = true /*or UTC == false*/) {
+      static std::string
+      TimestampToISO8601(std::uint64_t timestamp,
+                         const bool &local = true /*or UTC == false*/) {
     std::ostringstream os;
     auto ms = T(timestamp);
     auto tp = std::chrono::time_point<std::chrono::system_clock, T>(ms);
@@ -268,7 +268,7 @@ public:
   requires(std::is_same_v<T, std::chrono::milliseconds> ||
            std::is_same_v<T, std::chrono::seconds>)
 #endif
-  static std::time_t TimeStampUTC() {
+      static std::time_t TimeStampUTC() {
     return std::chrono::duration_cast<T>(
                std::chrono::time_point_cast<T>(std::chrono::system_clock::now())
                    .time_since_epoch())
@@ -297,8 +297,10 @@ public:
 } ///! return value
 { //! return void
   for (int i = 0; i < 10; i++) {
-    pThreadPool->enqueue(
-        [i] { std::cout << "abc123" << " " << i << std::endl; });
+    pThreadPool->enqueue([i] {
+      std::cout << "abc123"
+                << " " << i << std::endl;
+    });
   } /// for (int i = 0; i < 10; i++)
 } ///! return void
 #endif /// ExampleCode
@@ -523,10 +525,12 @@ public:
   ReadFile(/*std::ios::_Nocreate | std::ios::_Noreplace | std::ios::binary*/
            const std::string &, std::vector<char> &,
            const int &mode_ = std::ios::in | std::ios::binary);
+#ifndef __OSLINUX__
   static void
   ReadFile(/*std::ios::_Nocreate | std::ios::_Noreplace | std::ios::binary*/
            const std::wstring &, std::vector<wchar_t> &,
            const int &mode_ = std::ios::in | std::ios::binary);
+#endif
   static bool WriteFile(const std::string &, const std::string &,
                         const int &mode_ = static_cast<int>(std::ios::binary) |
                                            static_cast<int>(std::ios::out) |

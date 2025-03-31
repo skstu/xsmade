@@ -34,5 +34,10 @@ endif()
 # gfn_message_info( "Single-config generator detected. Build type:
 # ${CMAKE_BUILD_TYPE}") endif()
 
+if(xsSYSTYPE_LINUX)
+add_compile_options(-Wno-nontrivial-memaccess)
+add_compile_options(-Wno-deprecated-copy-dtor)
+else()
 add_compile_options(-Wno-nontrivial-memcall)
 add_compile_options(-Wno-deprecated-literal-operator)
+endif()

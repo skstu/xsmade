@@ -1,8 +1,22 @@
 #include "system.h"
+#include "conv.hpp"
 
 int main(int argc, char **argv) {
+  const char *ddd = xs_err_name(xs_errno_t::XS_OK);
+  char *curpath = nullptr;
+  size_t curpath_len = 0;
 
-  const char* ddd = xs_err_name(xs_errno_t::XS_OK);
+  std::cout << "hello" << std::endl;
+  int r = xs_sys_process_getpath(&curpath, &curpath_len);
+  if (r != 0) {
+    std::cerr << "Failed to get process path" << std::endl;
+    return 1; // Exit early if we failed to get the path
+  }
+  std::string strPath(curpath, curpath_len);
+  std::u16string u16path = Conv::u8_to_u16(strPath);
+  std::cout << strPath.c_str() << std::endl;
+  xs_sys_free((void **)&curpath);
+
   return 0;
 }
 

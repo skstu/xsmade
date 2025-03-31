@@ -4,23 +4,29 @@
     "C_Cpp.intelliSenseEngine": "disabled",
     "git.ignoreLimitWarning": true,
     "editor.formatOnType": true,
-    "cmakeFormat.mergeEnv": false,
-    "cmakeFormat.exePath": "cmake-format",
     "clangd.trace": "clangd",
     "clangd.path": "clangd",
-    //"cmakeFormat.exePath": "/Users/huoxingxiongmao/.local/bin/cmake-format",
-    "[windows]": {
-        "clangd.trace": "C:\\devenv\\bin\\clangd.exe",
-        "clangd.path": "C:\\devenv\\bin\\clangd.exe",
+    "cmakeFormat.env": null,
+    "cmakeFormat.mergeEnv": false,
+    "cmakeFormat.exePath": "/home/memade/.local/bin/cmake-format",
+    "terminal.integrated.profiles.windows": {
+        "PowerShell": {
+            "path": "pwsh.exe"
+        }
     },
-    "[mac]": {
-        "clangd.trace": "/usr/bin/clangd",
-        "clangd.path": "/usr/bin/clangd",
+    "terminal.integrated.profiles.linux": {
+        "bash": {
+            "path": "bash"
+        }
     },
-    "[linux]": {
-        "clangd.trace": "/usr/bin/clangd",
-        "clangd.path": "/usr/bin/clangd",
+    "terminal.integrated.profiles.osx": {
+        "zsh": {
+            "path": "zsh"
+        }
     },
+    "terminal.integrated.defaultProfile.windows": "PowerShell",
+    "terminal.integrated.defaultProfile.linux": "bash",
+    "terminal.integrated.defaultProfile.osx": "zsh",
     "files.exclude": {
         "**/.git": true,
         "**/.svn": true,

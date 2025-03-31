@@ -2,14 +2,15 @@ option(xsUSE_3RDPARTY "Enable configure 3rdparty" OFF)
 option(xsUSE_3RDPARTY_WXWIDGETS "Enable configure 3rdparty - wxWidgets" OFF)
 option(xsUSE_3RDPARTY_LIBUV "Enable configure 3rdparty - libuv" OFF)
 option(xsUSE_3RDPARTY_TINYXML2 "Enable configure 3rdparty - tinyxml2" OFF)
-option(xsUSE_3RDPARTY_ZLIB "Enable configure 3rdparty - zlib" OFF)
+option(xsUSE_3RDPARTY_ZLIB "Enable configure 3rdparty - zlib" ON)
 option(xsUSE_3RDPARTY_MINIZIP "Enable configure 3rdparty - minizip" OFF)
 option(xsUSE_3RDPARTY_SQLITE3 "Enable configure 3rdparty - sqlite3" OFF)
 option(xsUSE_3RDPARTY_CURL "Enable configure 3rdparty - curl" OFF)
 option(xsUSE_3RDPARTY_HTTP_PARSER "Enable configure 3rdparty - http-parser" OFF)
-option(xsUSE_3RDPARTY_UTF8CPP "Enable configure 3rdparty - utf8cpp" OFF)
+option(xsUSE_3RDPARTY_UTF8CPP "Enable configure 3rdparty - utf8cpp" ON)
 option(xsUSE_3RDPARTY_SPDLOG "Enable configure 3rdparty - spdlog" OFF)
 option(xsUSE_3RDPARTY_JSONNET "Enable configure 3rdparty - jsonnet" OFF)
+option(xsUSE_3RDPARTY_FMT "Enable configure 3rdparty - fmt" ON)
 option(xsUSE_3RDPARTY_NSISPLUGINAPI
        "Enable configure 3rdparty - nsis-pluginapi" OFF)
 
@@ -18,11 +19,13 @@ if(xsUSE_3RDPARTY)
       ""
       CACHE STRING "..." FORCE)
   set(CMAKE_INSTALL_PREFIX
-      ${xsBUILD_INSTALLED_DIR}/${CMAKE_BUILD_TYPE}
+      ${xsBUILD_INSTALLED_DIR}/${CMAKE_SYSTEM_NAME}/${CMAKE_BUILD_TYPE}
       CACHE STRING "Install path prefix, prepended onto install directories."
             FORCE)
 endif()
-
+if(xsUSE_3RDPARTY AND xsUSE_3RDPARTY_FMT)
+  include(build/cmake/deps/fmt.cmake)
+endif()
 if(xsUSE_3RDPARTY AND xsUSE_3RDPARTY_WXWIDGETS)
   include(build/cmake/deps/wxWidgets.cmake)
 endif()

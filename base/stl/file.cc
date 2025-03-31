@@ -323,7 +323,7 @@ void File::ReadFile(/*ios::_Nocreate | ios::_Noreplace | ios::binary*/
                     const wstring &file_, vector<wchar_t> &out_,
                     const int &mode_ /*= ios::in | ios::binary*/) {
   out_.clear();
-  wfstream of(file_.c_str(), static_cast<ios_base::openmode>(mode_));
+  wfstream of(fs::path(file_), static_cast<ios_base::openmode>(mode_));
   do {
     if (!of.is_open())
       break;

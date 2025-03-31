@@ -7,25 +7,18 @@ add_definitions(-DCPPHTTPLIB_OPENSSL_SUPPORT)
 add_definitions(-DUNICODE -D_UNICODE)
 add_executable(${PROJECT_NAME} ${SOURCES})
 
-if(MSVC)
-  # add_compile_options(/wd4996 /wd4267)
-  add_compile_options(/utf-8)
-endif()
-
-if(APPLE)
+if(xsSYSTYPE_APPLE)
   target_include_directories(
     ${PROJECT_NAME}
-    PRIVATE
-      ${xsINCLUDE_DIR}
-      ${xs3RDPARTY_DIR}/utfcpp/source/
-      ${xs3RDPARTY_DIR}/cpp-httplib/
-      /opt/homebrew/opt/openssl@3/include/
-      /opt/homebrew/Cellar/fmt/11.0.2/include/
-      /opt/homebrew/Cellar/libuv/1.49.2/include/)
+    PRIVATE ${xsINCLUDE_DIR}
+            ${xs3RDPARTY_DIR}/utfcpp/source/
+            ${xs3RDPARTY_DIR}/cpp-httplib/
+            /opt/homebrew/opt/openssl@3/include/
+            /opt/homebrew/Cellar/fmt/11.0.2/include/
+            /opt/homebrew/Cellar/libuv/1.49.2/include/)
 
- # target_link_directories(${PROJECT_NAME} PRIVATE
-  #                        ${xsOUTPUT_DIR}/wxWidgets/lib/)
-
+  # target_link_directories(${PROJECT_NAME} PRIVATE
+  # ${xsOUTPUT_DIR}/wxWidgets/lib/)
 
   target_link_libraries(
     ${PROJECT_NAME}
@@ -36,21 +29,22 @@ if(APPLE)
     /opt/homebrew/opt/openssl@3/lib/libssl.a
     /opt/homebrew/Cellar/fmt/11.0.2/lib/libfmt.a
     /opt/homebrew/Cellar/libuv/1.49.2/lib/libuv.a)
-elseif(WIN32)
+elseif(xsSYSTYPE_WINDOWS)
+  if(MSVC)
+    # add_compile_options(/wd4996 /wd4267)
+    add_compile_options(/utf-8)
+  endif()
   # target_link_options(${PROJECT_NAME} PRIVATE -Wl,--allow-multiple-definition)
   # set_target_properties(${PROJECT_NAME} PROPERTIES LINK_FLAGS
   # "-Wl,--allow-multiple-definition")
   target_include_directories(
     ${PROJECT_NAME}
-    PRIVATE ${xsINCLUDE_DIR}
-            ${xs3RDPARTY_DIR}/utfcpp/source/
-            ${xs3RDPARTY_DIR}/cpp-httplib/
-            c:/msys64/clang64/include/
-  )
+    PRIVATE ${xsINCLUDE_DIR} ${xs3RDPARTY_DIR}/utfcpp/source/
+            ${xs3RDPARTY_DIR}/cpp-httplib/ c:/msys64/clang64/include/)
 
-  #target_link_directories(${PROJECT_NAME} PRIVATE
-  #                        ${xsOUTPUT_DIR}/wxWidgets/lib/)
-  
+  # target_link_directories(${PROJECT_NAME} PRIVATE
+  # ${xsOUTPUT_DIR}/wxWidgets/lib/)
+
   target_link_libraries(
     ${PROJECT_NAME}
     wldap32.lib
@@ -75,6 +69,34 @@ elseif(WIN32)
     c:/msys64/clang64/lib/libfmt.a
     c:/msys64/clang64/lib/libuv.a
     ${WX_LIBS})
+elseif(xsSYSTYPE_LINUX)
+  target_include_directories(
+    ${PROJECT_NAME}
+    PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}
+            ${CMAKE_CURRENT_SOURCE_DIR}/..
+            ${xsROOT_DIR}
+            ${xsINCLUDE_DIR}
+            ${xsBUILD_INSTALLED_INCLUDE_DIR}
+            ${xsBUILD_INSTALLED_INCLUDE_DIR}/utf8cpp
+            ${xsOPENSSL_INCLUDE})
+  target_link_directories(${PROJECT_NAME} PRIVATE ${xsLIBS_LIB_DIR}
+                          ${xsBUILD_INSTALLED_LIB_DIR})
+
+  target_link_libraries(
+    ${PROJECT_NAME}
+    fmt.a
+    libsys.a
+    libstl.a
+    libzipcc.a
+    libpthread.a
+    libz.a)
 endif()
 
-#target_compile_definitions(${PROJECT_NAME} PRIVATE wxUSE_GUI=0 wxUSE_BASE=1)
+add_custom_command(
+  TARGET ${PROJECT_NAME}
+  POST_BUILD
+  COMMAND echo
+          "Output file: ${xsBIN_TESTS_DIR}/$<TARGET_FILE_NAME:${PROJECT_NAME}>"
+  COMMAND ${CMAKE_COMMAND} -E copy_if_different $<TARGET_FILE:${PROJECT_NAME}>
+          ${xsBIN_TESTS_DIR}/$<TARGET_FILE_NAME:${PROJECT_NAME}>
+  COMMENT "Printing output file path and copying file")

@@ -4,11 +4,11 @@
 # Licence:     skstu licence
 # ##############################################################################
 
-option(xsUSE_3RDPARTY "Enable configure 3rdparty" OFF)
+option(xsUSE_3RDPARTY "Enable configure 3rdparty" ON)
 option(xsUSE_TESTS "Enable configure tests" ON)
 option(xsUSE_BASE "Enable configure base" ON)
-option(xsUSE_PROJECTS "Enable configure base" ON)
-option(xsUSE_COMPONENTS "Enable configure components" ON)
+option(xsUSE_PROJECTS "Enable configure base" OFF)
+option(xsUSE_COMPONENTS "Enable configure components" OFF)
 
 if(xsUSE_3RDPARTY)
   include(build/cmake/modules/3rdparty.cmake)

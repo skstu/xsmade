@@ -1,4 +1,7 @@
 #include "sys.h"
+#ifndef PROC_PIDPATHINFO_MAXSIZE
+#define PROC_PIDPATHINFO_MAXSIZE 1024
+#endif
 
 XS_EXTERN int xs_sys_process_spawn(const char *proc, const char **args,
                                    int show_flag, xs_process_id_t *out_pid) {
@@ -45,25 +48,56 @@ XS_EXTERN int xs_sys_process_getpid(long *pid) {
   *pid = getpid();
   return 0;
 }
-XS_EXTERN int xs_sys_process_getpath(char **exepath, size_t *len) {
+#include <unistd.h>
+#include <stdlib.h>
+#include <string.h>
+#include <stdio.h>
+#include <string>
+#include <sys/types.h>
+
+#if 0
+char *get_exe_path(char *buf, int count)
+{
+    int i;
+    
+    int result = readlink("/home/ubuntu14-04/workspace/abcd",buf,count - 1);
+    if (result < 0 || (result >= count - 1))
+    {
+        perror("readlink ");
+        return NULL;
+    }
+
+    buf[result] = '\0';
+    for (i = result; i >= 0; i--)
+    {
+        printf("buf[%d] %c\n",i,buf[i]);
+        if (buf[i] == '/')
+        {
+            buf[i+1] = '\0';
+            break;
+        }
+    }
+
+    return buf;
+}
+#endif
+XS_EXTERN int get_process_path(char **exepath, size_t *len) {
   int r = -1;
-  *exepath = NULL;
-  *len = 0;
-
-  pid_t pid = getpid();
-  char path[PROC_PIDPATHINFO_MAXSIZE];
-
-  *len = proc_pidpath(pid, path, sizeof(path));
-  if (*len <= 0) {
-    return r;
-  }
-  *exepath = (char *)malloc(*len);
-  if (*exepath) {
-    memcpy(*exepath, path, *len);
+  char path[4096] = {0};
+  ssize_t readlink_len = readlink("/proc/self/exe", path, sizeof(path) - 1);
+  do {
+    if (readlink_len <= 0)
+      break;
+    printf("%s\n", path);
+    *len = readlink_len + 1;
+    *exepath = (char *)malloc(*len);
+    memcpy(*exepath, &path[0], *len);
+    (*exepath)[*len] = 0;
     r = 0;
-  }
+  } while (0);
   return r;
 }
+
 XS_EXTERN int
 xs_sys_process_already_exists(xs_process_id_t pid /*==0 ? current*/) {
   int r = -1;

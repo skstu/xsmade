@@ -5,13 +5,13 @@
       "name": "Windows Build With CMake Ninja",
       "type": "cppdbg",
       "request": "launch",
-      "program": "${workspaceFolder}/bin/tests/test_brwsvr.exe",
-      "args": [
-      ],
+      // "program": "${workspaceFolder}/bin/tests/test_brwsvr.exe",
+      // "args": [
+      // ],
       // "program": "${workspaceFolder}/bin/browser/chromium/130.0.6723.191/FanBrowser.exe",
       // "args": [
       //   //"--gpu-startup-dialog",
-       //     //"--renderer-startup-dialog"
+      //     //"--renderer-startup-dialog"
       // ],
       // "program": "${workspaceFolder}/bin/main.exe",
       // "args": [],
@@ -69,12 +69,14 @@
       "name": "Linux Build With CMake Ninja",
       "type": "cppdbg",
       "request": "launch",
-      "program": "${workspaceFolder}/out/tests/test_main/test_main",
-      "args": [
-        " ",
-        "--type=service",
-        " ",
-      ],
+      // "program": "${workspaceFolder}/out/tests/test_main/test_main",
+      // "args": [
+      //   " ",
+      //   "--type=service",
+      //   " ",
+      // ],
+      "program": "${workspaceFolder}/bin/tests/test_main",
+      "args": [],
       "stopAtEntry": false,
       "cwd": "${workspaceFolder}",
       "environment": [],
@@ -89,6 +91,14 @@
         }
       ],
       "preLaunchTask": "Linux Build Debug On CMake"
+    },
+    {
+      "name": "Linux Build With CMake Ninja(lldb)",
+      "type": "lldb",
+      "request": "launch",
+      "program": "${workspaceFolder}/bin/tests/test_main",
+      "args": [],
+      "cwd": "${workspaceFolder}"
     },
     {
       "name": "MacOS Build With CMake Ninja",

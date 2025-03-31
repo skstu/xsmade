@@ -38,18 +38,21 @@ include(build/cmake/modules/global.cmake)
 include(build/cmake/functions.cmake)
 include(build/cmake/modules/FindSSL.cmake)
 
-set(xsLIBS_LIB_DIR ${xsLIBS_DIR}/${CMAKE_BUILD_TYPE}/lib)
-set(xsLIBS_INCLUDE_DIR ${xsLIBS_DIR}/${CMAKE_BUILD_TYPE}/include)
-set(xsBUILD_INSTALLED_LIB_DIR ${xsBUILD_DIR}/installed/${CMAKE_BUILD_TYPE}/lib)
+set(xsLIBS_LIB_DIR ${xsLIBS_DIR}/${CMAKE_SYSTEM_NAME}/${CMAKE_BUILD_TYPE}/lib)
+set(xsLIBS_INCLUDE_DIR
+    ${xsLIBS_DIR}/${CMAKE_SYSTEM_NAME}/${CMAKE_BUILD_TYPE}/include)
+set(xsBUILD_INSTALLED_LIB_DIR
+    ${xsBUILD_DIR}/installed/${CMAKE_SYSTEM_NAME}/${CMAKE_BUILD_TYPE}/lib)
 set(xsBUILD_INSTALLED_INCLUDE_DIR
-    ${xsBUILD_DIR}/installed/${CMAKE_BUILD_TYPE}/include)
+    ${xsBUILD_DIR}/installed/${CMAKE_SYSTEM_NAME}/${CMAKE_BUILD_TYPE}/include)
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS
     ON
     CACHE BOOL "enable output - clangd compile commands" FORCE)
-project(xsmade VERSION 1.0.1)
+project(xsmade VERSION 1.1.0)
 
-set(xsBASE_INSTALL_PREFIX ${xsSOURCE_DIR}/libs/${CMAKE_BUILD_TYPE})
+set(xsBASE_INSTALL_PREFIX
+    ${xsSOURCE_DIR}/libs/${CMAKE_SYSTEM_NAME}/${CMAKE_BUILD_TYPE})
 include(build/cmake/main.cmake)
 
 gfn_message_info("CMAKE_C_COMPILER=${CMAKE_C_COMPILER}")
