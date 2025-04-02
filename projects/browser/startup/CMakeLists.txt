@@ -5,23 +5,22 @@ set(SOURCES ${OUT_HEADER_S} ${OUT_SOURCE_S})
 
 add_executable(${PROJECT_NAME} ${SOURCES})
 
-target_include_directories(
-  ${PROJECT_NAME}
-  PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}
-          ${xsROOT_DIR}
-          ${xsINCLUDE_DIR}
-          ${xsBUILD_INSTALLED_INCLUDE_DIR}/utf8cpp
-          ${xsBUILD_INSTALLED_INCLUDE_DIR}/http-parser
-          ${xs3RDPARTY_DIR}/cpp-httplib
-          ${xsOPENSSL_INCLUDE}
-          ${MSYS2_CLANG64_DIR}/include
-          ${xs3RDPARTY_DIR}/tinyxml2/
-          ${xs3RDPARTY_DIR}/wxWidgets/include/)
-
-target_link_directories(${PROJECT_NAME} PRIVATE ${xsLIBS_DIR} ${xsLIBS_LIB_DIR}
-                        ${xsBUILD_INSTALLED_LIB_DIR})
-
 if(xsSYSTYPE_WINDOWS)
+  target_include_directories(
+    ${PROJECT_NAME}
+    PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}
+            ${xsROOT_DIR}
+            ${xsINCLUDE_DIR}
+            ${xsBUILD_INSTALLED_INCLUDE_DIR}/utf8cpp
+            ${xsBUILD_INSTALLED_INCLUDE_DIR}/http-parser
+            ${xs3RDPARTY_DIR}/cpp-httplib
+            ${xsOPENSSL_INCLUDE}
+            ${MSYS2_CLANG64_DIR}/include
+            ${xs3RDPARTY_DIR}/tinyxml2/
+            ${xs3RDPARTY_DIR}/wxWidgets/include/)
+
+  target_link_directories(${PROJECT_NAME} PRIVATE ${xsLIBS_DIR}
+                          ${xsLIBS_LIB_DIR} ${xsBUILD_INSTALLED_LIB_DIR})
   target_link_libraries(
     ${PROJECT_NAME}
     PRIVATE ${MSYS2_CLANG64_DIR}/lib/libc++.a
@@ -55,9 +54,26 @@ if(xsSYSTYPE_WINDOWS)
   set_target_properties(${PROJECT_NAME} PROPERTIES LINK_FLAGS "-mwindows"
                                                    WIN32_EXECUTABLE YES)
 elseif(xsSYSTYPE_LINUX)
+  target_include_directories(
+    ${PROJECT_NAME}
+    PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}
+            ${xsROOT_DIR}
+            ${xsINCLUDE_DIR}
+            ${xsBUILD_INSTALLED_INCLUDE_DIR}
+            ${xsBUILD_INSTALLED_INCLUDE_DIR}/utf8cpp
+            ${xsBUILD_INSTALLED_INCLUDE_DIR}/http-parser
+            ${xs3RDPARTY_DIR}/cpp-httplib
+            ${xsOPENSSL_INCLUDE}
+            ${xs3RDPARTY_DIR}/tinyxml2/
+            ${xs3RDPARTY_DIR}/wxWidgets/include/)
+
+  target_link_directories(${PROJECT_NAME} PRIVATE ${xsLIBS_DIR}
+                          ${xsLIBS_LIB_DIR} ${xsBUILD_INSTALLED_LIB_DIR})
+                          
   target_link_libraries(
     ${PROJECT_NAME}
-    PRIVATE libfmt.a
+    PRIVATE libdl.a
+            libfmt.a
             libsys.a
             libstl.a
             libzipcc.a
@@ -102,12 +118,26 @@ endif()
 
 # xs_set_target_output_dir(${PROJECT_NAME})
 
-add_custom_command(
-  TARGET ${PROJECT_NAME}
-  POST_BUILD
-  COMMAND echo "Output file: ${xsBIN_DIR}/main.exe"
-  COMMAND
-    ${CMAKE_COMMAND} -E copy_if_different $<TARGET_FILE:${PROJECT_NAME}>
-    # ${xsOUTPUT_PLUGINS_DIR}/$<TARGET_FILE_NAME:${PROJECT_NAME}>
-    ${xsBIN_DIR}/main.exe
-  COMMENT "Printing output file path and copying file")
+if(xsSYSTYPE_WINDOWS)
+  add_custom_command(
+    TARGET ${PROJECT_NAME}
+    POST_BUILD
+    COMMAND echo "Output file: ${xsBIN_DIR}/main.exe"
+    COMMAND
+      ${CMAKE_COMMAND} -E copy_if_different $<TARGET_FILE:${PROJECT_NAME}>
+      # ${xsOUTPUT_PLUGINS_DIR}/$<TARGET_FILE_NAME:${PROJECT_NAME}>
+      ${xsBIN_DIR}/main.exe
+    COMMENT "Printing output file path and copying file")
+elseif(xsSYSTYPE_LINUX)
+  add_custom_command(
+    TARGET ${PROJECT_NAME}
+    POST_BUILD
+    COMMAND echo "Output file: ${xsBIN_DIR}/main"
+    COMMAND
+      ${CMAKE_COMMAND} -E copy_if_different $<TARGET_FILE:${PROJECT_NAME}>
+      # ${xsOUTPUT_PLUGINS_DIR}/$<TARGET_FILE_NAME:${PROJECT_NAME}>
+      ${xsBIN_DIR}/main
+    COMMENT "Printing output file path and copying file")
+elseif(xsSYSTYPE_APPLE)
+
+endif()

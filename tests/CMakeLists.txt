@@ -9,9 +9,6 @@
 # add_subdirectory(test_engine) add_subdirectory(test_ffx)
 # add_subdirectory(test_uvpp_server) add_subdirectory(test_uvpp_client)
 # add_subdirectory(test_brwcfg) add_subdirectory(test_httpserver)
-add_subdirectory(test_brwsvr)
+# add_subdirectory(test_brwsvr)
 
-
-
-#add_subdirectory(test_main)
-
+add_subdirectory(test_main)

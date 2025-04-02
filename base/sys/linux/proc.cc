@@ -98,7 +98,7 @@ char *get_exe_path(char *buf, int count)
     return buf;
 }
 #endif
-XS_EXTERN int get_process_path(char **exepath, size_t *len) {
+XS_EXTERN int xs_sys_process_getpath(char **exepath, size_t *len) {
   int r = -1;
   char path[4096] = {0};
   ssize_t readlink_len = readlink("/proc/self/exe", path, sizeof(path) - 1);

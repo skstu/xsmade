@@ -32,6 +32,7 @@
 #include <sys/wait.h>       // waitpid
 #include <fcntl.h>          // file locks
 #include <sys/file.h>       // flock
+#include <pwd.h>           // getpwuid
 #elif defined(__OSAPPLE__)
 #include <netinet/in.h>
 #include <unistd.h>

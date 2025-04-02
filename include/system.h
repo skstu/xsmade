@@ -74,6 +74,11 @@ XS_EXTERN int xs_sys_shared_memory_create(const char *name, size_t size,
 XS_EXTERN int xs_sys_shared_memory_destroy(const char *name);
 XS_EXTERN int xs_sys_shared_memory_open(const char *name, void **base);
 XS_EXTERN int xs_sys_get_commandline(char **, size_t *);
+//!@ linux ~/.config	~/.local/share	~/.cache  /home
+XS_EXTERN int xs_sys_get_linux_home_path(char **, size_t *);
+XS_EXTERN int xs_sys_get_linux_config_path(char **, size_t *);
+XS_EXTERN int xs_sys_get_linux_cache_path(char **, size_t *);
+XS_EXTERN int xs_sys_get_linux_local_share_path(char **, size_t *);
 #ifdef __cplusplus
 }
 #endif
