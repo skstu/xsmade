@@ -402,10 +402,10 @@ bool Client::Connect(const std::string &address, uv_handle_t *connect,
       if (!Protocol::MakeIPAddr(Config::Get()->Address(), sockaddr_buffer,
                                 pClient->AddressTypeGet()))
         break;
-      pSession->SockAddr(*reinterpret_cast<LPSOCKADDR>(sockaddr_buffer.data()));
+      pSession->SockAddr(*reinterpret_cast<sockaddr *>(sockaddr_buffer.data()));
       if (0 !=
           uv_udp_connect(reinterpret_cast<uv_udp_t *>(client),
-                         reinterpret_cast<LPSOCKADDR>(sockaddr_buffer.data())))
+                         reinterpret_cast<sockaddr *>(sockaddr_buffer.data())))
         break;
       if (0 != uv_udp_recv_start(reinterpret_cast<uv_udp_t *>(client),
                                  uv__udp_alloc_cb, uv__udp_recv_cb))
@@ -420,8 +420,7 @@ bool Client::Connect(const std::string &address, uv_handle_t *connect,
       break;
     result = false;
 
-    {
-    }
+    {}
 
     result = true;
   } while (0);

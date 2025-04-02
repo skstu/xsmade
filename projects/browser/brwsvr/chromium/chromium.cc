@@ -134,10 +134,12 @@ bool Brwobj::Open() {
   do {
     if (open_.load())
       break;
+    xs_process_id_t pid = 0;
     if (0 != xs_sys_process_spawn(
                  Conv::u16_to_u8(Config::GetOrCreate()->GetChrome("")).c_str(),
-                 nullptr, false, &pid_))
+                 nullptr, false, &pid))
       break;
+    pid_ = static_cast<decltype(pid_)>(pid);
     open_.store(true);
   } while (0);
   return open_.load();

@@ -73,6 +73,7 @@ XS_EXTERN int xs_sys_shared_memory_create(const char *name, size_t size,
                                           void **base);
 XS_EXTERN int xs_sys_shared_memory_destroy(const char *name);
 XS_EXTERN int xs_sys_shared_memory_open(const char *name, void **base);
+XS_EXTERN int xs_sys_get_commandline(char **, size_t *);
 #ifdef __cplusplus
 }
 #endif

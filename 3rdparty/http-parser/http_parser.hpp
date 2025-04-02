@@ -1,6 +1,7 @@
 ﻿#if !defined(__B1027CDC_2643_45DF_A446_AC4CA7F399DF__)
 #define __B1027CDC_2643_45DF_A446_AC4CA7F399DF__
 
+#include <string.h>
 #include <http_parser.h>
 #include <stdlib.h>
 #include <assert.h>
@@ -13,6 +14,7 @@
 #include <list>
 #include <mutex>
 #include <memory>
+#include <algorithm>
 #include <unordered_map>
 
 namespace httpparser {
@@ -62,10 +64,10 @@ typedef struct tag_message {
   int allow_chunked_length;
 
   tag_message() {
-    ::memset(this, 0x00, sizeof(*this));
+    memset(this, 0x00, sizeof(*this));
   }
   void operator=(const tag_message &msg) {
-    ::memcpy(this, &msg, sizeof(*this));
+    memcpy(this, &msg, sizeof(*this));
   }
 } message;
 #pragma pack(pop)

@@ -1,5 +1,11 @@
 ﻿#if !defined(__DF04609E_A0A4_4236_8390_A763A9F4678B__)
 #define __DF04609E_A0A4_4236_8390_A763A9F4678B__
+#ifndef __max
+#define __max(a, b) (((a) > (b)) ? (a) : (b))
+#endif
+#ifndef __min
+#define __min(a, b) (((a) < (b)) ? (a) : (b))
+#endif
 
 #include <macros.h>
 #include <stl.hpp>

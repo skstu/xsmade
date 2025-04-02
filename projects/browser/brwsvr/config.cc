@@ -1,5 +1,4 @@
 #include "server.h"
-#include <Windows.h>
 Config::Config() {
   Init();
 }

@@ -39,8 +39,15 @@ elseif(xsSYSTYPE_WINDOWS)
   # "-Wl,--allow-multiple-definition")
   target_include_directories(
     ${PROJECT_NAME}
-    PRIVATE ${xsINCLUDE_DIR} ${xs3RDPARTY_DIR}/utfcpp/source/
-            ${xs3RDPARTY_DIR}/cpp-httplib/ c:/msys64/clang64/include/)
+    PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}
+            ${CMAKE_CURRENT_SOURCE_DIR}/..
+            ${xsROOT_DIR}
+            ${xsINCLUDE_DIR}
+            ${xsBUILD_INSTALLED_INCLUDE_DIR}
+            ${xsBUILD_INSTALLED_INCLUDE_DIR}/utf8cpp
+            ${xsOPENSSL_INCLUDE})
+  target_link_directories(${PROJECT_NAME} PRIVATE ${xsLIBS_LIB_DIR}
+                          ${xsBUILD_INSTALLED_LIB_DIR})
 
   # target_link_directories(${PROJECT_NAME} PRIVATE
   # ${xsOUTPUT_DIR}/wxWidgets/lib/)
@@ -68,6 +75,10 @@ elseif(xsSYSTYPE_WINDOWS)
     c:/msys64/clang64/lib/libcrypto.a
     c:/msys64/clang64/lib/libfmt.a
     c:/msys64/clang64/lib/libuv.a
+    libsys.a
+    libstl.a
+    libzipcc.a
+    libpthread.a
     ${WX_LIBS})
 elseif(xsSYSTYPE_LINUX)
   target_include_directories(

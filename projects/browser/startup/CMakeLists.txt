@@ -21,7 +21,7 @@ target_include_directories(
 target_link_directories(${PROJECT_NAME} PRIVATE ${xsLIBS_DIR} ${xsLIBS_LIB_DIR}
                         ${xsBUILD_INSTALLED_LIB_DIR})
 
-if(WIN32)
+if(xsSYSTYPE_WINDOWS)
   target_link_libraries(
     ${PROJECT_NAME}
     PRIVATE ${MSYS2_CLANG64_DIR}/lib/libc++.a
@@ -54,7 +54,17 @@ if(WIN32)
 
   set_target_properties(${PROJECT_NAME} PROPERTIES LINK_FLAGS "-mwindows"
                                                    WIN32_EXECUTABLE YES)
-elseif(APPLE)
+elseif(xsSYSTYPE_LINUX)
+  target_link_libraries(
+    ${PROJECT_NAME}
+    PRIVATE libfmt.a
+            libsys.a
+            libstl.a
+            libzipcc.a
+            libpthread.a
+            libhttp_parser.a
+            libz.a)
+elseif(xsSYSTYPE_APPLE)
   target_include_directories(
     ${PROJECT_NAME}
     PRIVATE ${xsINCLUDE_DIR}
@@ -90,15 +100,14 @@ elseif(APPLE)
     ${xsOPENSSL_LIBRARY})
 endif()
 
-#xs_set_target_output_dir(${PROJECT_NAME})
+# xs_set_target_output_dir(${PROJECT_NAME})
 
 add_custom_command(
   TARGET ${PROJECT_NAME}
   POST_BUILD
+  COMMAND echo "Output file: ${xsBIN_DIR}/main.exe"
   COMMAND
-    echo
-    "Output file: ${xsBIN_DIR}/main.exe"
-  COMMAND ${CMAKE_COMMAND} -E copy_if_different $<TARGET_FILE:${PROJECT_NAME}>
-          #${xsOUTPUT_PLUGINS_DIR}/$<TARGET_FILE_NAME:${PROJECT_NAME}>
-          ${xsBIN_DIR}/main.exe
+    ${CMAKE_COMMAND} -E copy_if_different $<TARGET_FILE:${PROJECT_NAME}>
+    # ${xsOUTPUT_PLUGINS_DIR}/$<TARGET_FILE_NAME:${PROJECT_NAME}>
+    ${xsBIN_DIR}/main.exe
   COMMENT "Printing output file path and copying file")

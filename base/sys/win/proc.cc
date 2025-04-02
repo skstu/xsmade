@@ -1,5 +1,19 @@
 #include "sys.h"
 
+XS_EXTERN int xs_sys_get_commandline(char **out, size_t *out_size) {
+  int r = -1;
+  do {
+    auto pstrwCmdline = GetCommandLineW();
+    if (!pstrwCmdline)
+      break;
+    std::string u8 = Conv::ws_to_u8(pstrwCmdline);
+    *out_size = u8.size();
+    *out = (char *)malloc(*out_size);
+    memcpy(*out,u8.data(),*out_size);
+    r = 0;
+  } while (0);
+  return r;
+}
 XS_EXTERN int xs_sys_process_spawn(const char *proc_u8, const char **args,
                                    int show_flag, xs_process_id_t *out_pid) {
   int r = -1;
@@ -103,7 +117,7 @@ XS_EXTERN int xs_sys_process_getpath(char **path, size_t *path_len) {
     *path_len = u8.size();
     *path = (char *)malloc(*path_len + 1);
     memcpy(*path, u8.data(), *path_len);
-    (*path)[*path_len]=0;
+    (*path)[*path_len] = 0;
     r = 0;
   } while (0);
   return r;

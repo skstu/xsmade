@@ -15,8 +15,10 @@ void IChromium::Init() {
         Conv::u16_to_u8(Config::GetOrCreate()->GetPath().libuvpp_path)
             .c_str()));
     uvpp_config_ = uvpp_->ConfigGet();
+    xs_process_id_t pid = 0;
+    xs_sys_process_getpid(&pid);
     uvpp_config_->SetIdentify(
-        stl::HighLowStorage(policy_id_, GetCurrentProcessId()).Get());
+        stl::HighLowStorage(policy_id_, static_cast<unsigned long>(pid)).Get());
     uvpp_config_->SetServiceType(
         static_cast<unsigned long>(uvpp::ServerType::INITIATOR) |
         static_cast<unsigned long>(uvpp::AddressType::IPC) |

@@ -81,27 +81,38 @@ bool Protocol::MakeIPAddr(
     std::string
         &out_addr_buffer /*out sockaddr_in | sockaddr or sockaddr_in6 buffer*/,
     const AddressType &ip_type /*= AF_INET*/ /*AF_INET or AF_INET6*/) {
+
   bool result = false;
   out_addr_buffer.clear();
-  /*WSADATA wsaData = { 0 };
-  if (0 != WSAStartup(MAKEWORD(2, 2), &wsaData))
-          break;*/
-  do {
-    if (address_string.empty())
-      break;
-    int addr_len = sizeof(struct sockaddr_storage);
+
+  // 如果输入为空，直接返回失败
+  if (address_string.empty())
+    return false;
+
+  uv_getaddrinfo_t req;
+  struct addrinfo hints;
+  struct addrinfo *res = nullptr;
+
+  // 设置 hints 以指定 IP 类型
+  memset(&hints, 0, sizeof(hints));
+  hints.ai_family = (ip_type == AddressType::IPV4) ? AF_INET : AF_INET6;
+
+  int err = uv_getaddrinfo(uv_default_loop(), &req, nullptr,
+                           address_string.c_str(), nullptr, &hints);
+  if (err < 0) {
+    return false;
+  }
+
+  // 获取第一个有效的地址信息
+  res = req.addrinfo;
+  if (res != nullptr) {
+    int addr_len = res->ai_addrlen;
     out_addr_buffer.resize(addr_len);
-    if (0 !=
-        WSAStringToAddressA((LPSTR)address_string.c_str(),
-                            ip_type == AddressType::IPV4 ? AF_INET : AF_INET6,
-                            NULL, (LPSOCKADDR)&out_addr_buffer[0], &addr_len))
-      break;
-    out_addr_buffer.resize(addr_len);
+    memcpy(&out_addr_buffer[0], res->ai_addr, addr_len);
     result = true;
-  } while (0);
-  if (!result)
-    out_addr_buffer.clear();
-  /*WSACleanup();*/
+  }
+
+  uv_freeaddrinfo(res); // 释放资源
   return result;
 }
 
@@ -109,24 +120,30 @@ bool Protocol::UnMakeIPAddr(
     const std::string
         &address_buffer /*in sockaddr_in | sockaddr or sockaddr_in6 buffer*/,
     std::string &out_address_string) {
+
   bool result = false;
   out_address_string.clear();
-  /*WSADATA wsaData = { 0 };
-  if (0 != WSAStartup(MAKEWORD(2, 2), &wsaData))
-          break;*/
-  do {
-    if (address_buffer.size() < sizeof(struct sockaddr_in))
-      break;
-    out_address_string.resize(1024, 0x00);
-    DWORD out_buffer_len = out_address_string.size();
-    if (0 != WSAAddressToStringA((LPSOCKADDR)address_buffer.data(),
-                                 address_buffer.size(), NULL,
-                                 &out_address_string[0], &out_buffer_len))
-      break;
-    out_address_string.resize(out_buffer_len);
+
+  if (address_buffer.empty())
+    return false;
+
+  struct sockaddr_in *addr_in = (struct sockaddr_in *)&address_buffer[0];
+  char ip_str[INET6_ADDRSTRLEN] = {0};
+
+  // 判断地址类型并转换
+  if (address_buffer.size() == sizeof(struct sockaddr_in)) {
+    // IPv4 地址
+    uv_inet_ntop(AF_INET, &addr_in->sin_addr, ip_str, sizeof(ip_str));
+    out_address_string = ip_str;
     result = true;
-  } while (0);
-  /*WSACleanup();*/
+  } else if (address_buffer.size() == sizeof(struct sockaddr_in6)) {
+    // IPv6 地址
+    struct sockaddr_in6 *addr_in6 = (struct sockaddr_in6 *)&address_buffer[0];
+    uv_inet_ntop(AF_INET6, &addr_in6->sin6_addr, ip_str, sizeof(ip_str));
+    out_address_string = ip_str;
+    result = true;
+  }
+
   return result;
 }
 
@@ -334,4 +351,4 @@ unsigned long tagPacketHeader::PacketSize() const {
 
 const std::uint64_t TIMEOUT_HEARBEAT_MS = 30000;
 const size_t PACKET_HEAD_SIZE = sizeof(HEAD);
-const size_t PACKET_COMPRESSION_STANDARD_SIZE = MAXSIZE_T;
+const size_t PACKET_COMPRESSION_STANDARD_SIZE = ((size_t) ~((size_t)0));

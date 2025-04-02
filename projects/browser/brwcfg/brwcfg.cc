@@ -15,25 +15,30 @@ bool Brwcfg::Start() {
   do {
     if (open_.load())
       break;
-    std::wstring cmdline = stl::String::Lower(GetCommandLineW());
-    if (cmdline.find(L"--type") == std::wstring::npos) {
+    char *cmdline_ = nullptr;
+    size_t cmdline_len_ = 0;
+    xs_sys_get_commandline(&cmdline_, &cmdline_len_);
+    std::string strCmdline(cmdline_, cmdline_len_);
+    xs_sys_free((void**)&cmdline_);
+    std::string cmdline = stl::String::Lower(strCmdline);
+    if (cmdline.find("--type") == std::wstring::npos) {
       LOG_INIT(config->GetPath().logs_dir + u"/" +
                config->GetPath().module_name + u"_main.log");
       chromium_ = new ChromiumMain(
           Config::GetOrCreate()->GetSettings().server.pipe_addr);
-    } else if (cmdline.find(L"--type=gpu-process") != std::wstring::npos) {
+    } else if (cmdline.find("--type=gpu-process") != std::wstring::npos) {
       LOG_INIT(config->GetPath().logs_dir + u"/" +
                config->GetPath().module_name + u"_gpu.log");
       chromium_ = new ChromiumGpu(
           Config::GetOrCreate()->GetSettings().server.pipe_addr);
-    } else if (cmdline.find(L"--type=renderer") != std::wstring::npos) {
+    } else if (cmdline.find("--type=renderer") != std::wstring::npos) {
     } else if (cmdline.find(
-                   L"--utility-sub-type=network.mojom.networkservice") !=
+                   "--utility-sub-type=network.mojom.networkservice") !=
                std::wstring::npos) {
     } else if (cmdline.find(
-                   L"--utility-sub-type=storage.mojom.storageservice") !=
+                   "--utility-sub-type=storage.mojom.storageservice") !=
                std::wstring::npos) {
-    } else if (cmdline.find(L"--type=crashpad-handler") != std::wstring::npos) {
+    } else if (cmdline.find("--type=crashpad-handler") != std::wstring::npos) {
     } else {
     }
 #if ENABLE_WXUI

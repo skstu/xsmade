@@ -721,6 +721,35 @@ public:
       bool enable = false;
       Hash hash;
     };
+    class WebRTC final {
+    public:
+      enum class ProtectionType : unsigned int {
+        Default = 0,
+        WebRTCIPHandlingProtected = 1,
+        CustomIPAddrProtected = 2,
+      };
+
+      enum class WebRTCIPHandlingProtectedType : unsigned int {
+        kWebRTCIPHandlingDefault = 0,
+        kWebRTCIPHandlingDefaultPublicAndPrivateInterfaces = 1,
+        kWebRTCIPHandlingDefaultPublicInterfaceOnly = 2,
+        kWebRTCIPHandlingDisableNonProxiedUdp = 3,
+      };
+
+    public:
+      inline WebRTC();
+      inline ~WebRTC();
+      inline void operator=(const WebRTC &);
+      inline void operator<<(const rapidjson::Value &);
+
+    public:
+      bool enable = false;
+      ProtectionType protection_type = ProtectionType::Default;
+      std::string ip = "203.0.113.1";
+      unsigned short port = 8888;
+      WebRTCIPHandlingProtectedType webrtc_ip_handling_protected_type =
+          WebRTCIPHandlingProtectedType::kWebRTCIPHandlingDefault;
+    };
     class Webgl final {
     public:
       class ContextAttributes final {
@@ -893,6 +922,7 @@ public:
     Font font;
     Canvas canvas;
     Webgl webgl;
+    WebRTC webrtc;
     Audio audio;
     Screen screen;
     Timezone timezone;
@@ -1369,6 +1399,44 @@ inline IConfigure::Fps::Audio::~Audio() {
 inline IConfigure::Fps::Canvas::Canvas() {
 }
 inline IConfigure::Fps::Canvas::~Canvas() {
+}
+inline IConfigure::Fps::WebRTC::WebRTC() {
+}
+inline IConfigure::Fps::WebRTC::~WebRTC() {
+}
+inline void IConfigure::Fps::WebRTC::operator=(const WebRTC &rhs) {
+  enable = rhs.enable;
+  protection_type = rhs.protection_type;
+  ip = rhs.ip;
+  port = rhs.port;
+  webrtc_ip_handling_protected_type = rhs.webrtc_ip_handling_protected_type;
+}
+inline void
+IConfigure::Fps::WebRTC::operator<<(const rapidjson::Value &webrtcObj) {
+  do {
+    if (!webrtcObj.IsObject())
+      break;
+    if (webrtcObj.HasMember("enable") && webrtcObj["enable"].IsBool())
+      enable = webrtcObj["enable"].GetBool();
+
+    if (webrtcObj.HasMember("protection_type") &&
+        webrtcObj["protection_type"].IsUint())
+      protection_type = static_cast<WebRTC::ProtectionType>(
+          webrtcObj["protection_type"].GetUint());
+
+    if (webrtcObj.HasMember("ip") && webrtcObj["ip"].IsString())
+      ip = webrtcObj["ip"].GetString();
+
+    if (webrtcObj.HasMember("port") && webrtcObj["port"].IsUint())
+      port = static_cast<unsigned short>(webrtcObj["port"].GetUint());
+
+    if (webrtcObj.HasMember("webrtc_ip_handling_protected_type") &&
+        webrtcObj["webrtc_ip_handling_protected_type"].IsUint()) {
+      webrtc_ip_handling_protected_type =
+          static_cast<WebRTCIPHandlingProtectedType>(
+              webrtcObj["webrtc_ip_handling_protected_type"].GetUint());
+    }
+  } while (0);
 }
 inline IConfigure::Fps::Webgl::Webgl() {
 }
@@ -2014,6 +2082,13 @@ inline void IConfigure::operator=(const std::string &protocol_buffer) {
             fpsObj["audio"]["hash"].IsObject()) {
           fps.audio.hash << Json::toString(fpsObj["audio"]["hash"]);
         }
+      } while (0);
+      do { //!@ .fps.webrtc
+        if (!fpsObj.HasMember("webrtc"))
+          break;
+        if (!fpsObj["webrtc"].IsObject())
+          break;
+        fps.webrtc << fpsObj["webrtc"];
       } while (0);
       do { //!@ .fps.webgl
         if (!fpsObj.HasMember("webgl"))

@@ -1,5 +1,11 @@
 #include "sys.h"
-
+XS_EXTERN int xs_sys_get_commandline(char **out, size_t *out_size) {
+  int r = -1;
+  do {
+    r = 0;
+  } while (0);
+  return r;
+}
 XS_EXTERN int xs_sys_process_spawn(const char *proc, const char **args,
                                    int show_flag, xs_process_id_t *out_pid) {
   int r = -1;

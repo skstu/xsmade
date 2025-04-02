@@ -24,7 +24,7 @@ register_request_cbs(tf_frame_buffer_stream_cb frame_buffer_stream_cb,
 }
 
 ////////////////////////////////////////////////////////////////////////////////////
-SHARED_API char *malloc_s(size_t len) {
+SHARED_API char *malloc_s(unsigned long long len) {
   char *result = nullptr;
   if (len) {
     result = (char *)malloc(len);

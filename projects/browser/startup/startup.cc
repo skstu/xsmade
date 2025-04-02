@@ -1,5 +1,5 @@
 #include "startup.h"
-
+#ifdef __OSWIN__
 bool RegisterHandle() {
   bool result = false;
   do {
@@ -31,7 +31,7 @@ bool RegisterHandle() {
 
   return result;
 }
-
+#endif
 bool OpenChromium() {
   bool result = false;
   do {
@@ -41,8 +41,8 @@ bool OpenChromium() {
     std::string strCurrentPath(current_path, current_path_size);
     xs_sys_free((void **)&current_path);
     std::wstring wstrCurrentPath = Conv::u8_to_ws(strCurrentPath);
-    wchar_t targetChromium[MAX_PATH];
-    swprintf(targetChromium, MAX_PATH,
+    wchar_t targetChromium[260];
+    swprintf(targetChromium, 260,
              L"%s\\browser\\chromium\\134.0.6998.166\\FanBrowser.exe",
              wstrCurrentPath.c_str());
     if (!stl::File::Exists(targetChromium))
@@ -82,10 +82,12 @@ void Startup::Run() const {
       {16, {"-xs-outfile", "test_yuv420p_x264.mp4"}},
   });
   do {
-    // auto ffxObj = new ffx::FFmpeg();
-    // ffxObj->Start(ffxArgs.GetArgs(), false);
-    // ffxObj->Stop();
+// auto ffxObj = new ffx::FFmpeg();
+// ffxObj->Start(ffxArgs.GetArgs(), false);
+// ffxObj->Stop();
+#ifdef __OSWIN__
     RegisterHandle();
+#endif
     OpenChromium();
 
     auto sss = 0;

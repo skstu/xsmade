@@ -34,7 +34,7 @@ private:
   void Init();
   void UnInit();
   bool IsClose() const;
-  HANDLE thread_main_ = nullptr;
+  uv_thread_t thread_main_ = 0;
   std::atomic_bool ready_ = false;
   std::atomic_bool open_ = false;
   ServerStatus m_ServerStatus = ServerStatus::UNKNOWN;

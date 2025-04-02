@@ -34,7 +34,7 @@ private:
   static void MainProcess(void *);
   static void WorkProcess(uv_handle_t *handle, void *arg);
   static void SessionConnectionCb(uv_stream_t *server, int status);
-  HANDLE thread_main_ = nullptr;
+  uv_thread_t thread_main_ = 0;
   std::atomic_bool ready_ = false;
   std::atomic_bool open_ = false;
   std::atomic_ulong m_SessionCount = 0;

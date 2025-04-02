@@ -2,7 +2,24 @@
 #ifndef PROC_PIDPATHINFO_MAXSIZE
 #define PROC_PIDPATHINFO_MAXSIZE 1024
 #endif
-
+XS_EXTERN int xs_sys_get_commandline(char **out, size_t *out_size) {
+  int r = -1;
+  std::ifstream cmdline("/proc/self/cmdline");
+  do {
+    if (!cmdline.is_open())
+      break;
+    std::string line;
+    std::getline(cmdline, line);
+    if (line.empty())
+      break;
+    *out_size = line.size();
+    *out = (char *)malloc(*out_size);
+    memcpy(*out, line.data(), *out_size);
+    r = 0;
+  } while (0);
+  cmdline.close();
+  return r;
+}
 XS_EXTERN int xs_sys_process_spawn(const char *proc, const char **args,
                                    int show_flag, xs_process_id_t *out_pid) {
   int r = -1;

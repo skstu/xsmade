@@ -186,7 +186,7 @@ void Server::MainProcess(void *arg) {
                                 pServer->AddressTypeGet()))
         break;
       if (0 != uv_udp_bind(reinterpret_cast<uv_udp_t *>(server),
-                           reinterpret_cast<LPSOCKADDR>(addr_buffer.data()), 0))
+                           reinterpret_cast<sockaddr *>(addr_buffer.data()), 0))
         break;
       if (0 != uv_udp_recv_start(reinterpret_cast<uv_udp_t *>(server),
                                  udp_alloc_cb, udp_recv_cb))
