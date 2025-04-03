@@ -5,3 +5,6 @@ set(FMT_DEBUG_POSTFIX
     ""
     CACHE STRING "..." FORCE)
 add_subdirectory(${xs3RDPARTY_DIR}/fmt/ ${FMT_PROJECT_NAME})
+
+set_target_properties(${FMT_PROJECT_NAME} PROPERTIES POSITION_INDEPENDENT_CODE
+                                                     TRUE)

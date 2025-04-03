@@ -23,8 +23,19 @@ int main(int argc, char **argv) {
   __gpsFrameBufferPngDir[strFrameBufferPngDir.size()] = '\0';
   stl::Directory::Create(__gpsFrameBufferPngDir);
   std::string componentsDir = u8strCurrentPath.append(R"(\..\components)");
+#if defined(__OSWIN__)
   std::string libbrwsvrPath = componentsDir + R"(\libbrwsvr.dll)";
-  void *handle = dlopen(libbrwsvrPath.c_str(), RTLD_NOW);
+#elif defined(__OSLINUX__)
+  std::string libbrwsvrPath = componentsDir + R"(\libbrwsvr.so)";
+#endif
+  void *handle =
+      dlopen("/home/ponyo/Desktop/projects/xsmade/bin/components/libbrwsvr.so",
+             RTLD_NOW);
+  auto dlerr = dlerror();
+  if (dlerr) {
+    std::cerr << "dlopen error: " << dlerr << std::endl;
+    return -1;
+  }
   tf_startup startup = nullptr;
   tf_shutdown shutdown = nullptr;
   tf_malloc_s malloc_s = nullptr;

@@ -9,7 +9,7 @@ XS_EXTERN int xs_sys_get_commandline(char **out, size_t *out_size) {
     std::string u8 = Conv::ws_to_u8(pstrwCmdline);
     *out_size = u8.size();
     *out = (char *)malloc(*out_size);
-    memcpy(*out,u8.data(),*out_size);
+    memcpy(*out, u8.data(), *out_size);
     r = 0;
   } while (0);
   return r;
@@ -55,8 +55,8 @@ XS_EXTERN int xs_sys_process_spawn(const char *proc_u8, const char **args,
   } while (0);
   return r;
 }
-XS_EXTERN int xs_sys_process_kill(xs_process_id_t pid) {
-  int r = 0;
+XS_EXTERN xs_errno_t xs_sys_process_kill(xs_process_id_t pid) {
+  xs_errno_t err = xs_errno_t::XS_NO;
   HANDLE hProcess = nullptr;
   do {
     if (pid <= 4)
@@ -66,13 +66,13 @@ XS_EXTERN int xs_sys_process_kill(xs_process_id_t pid) {
       break;
     if (::TerminateProcess(hProcess, 3762) != TRUE)
       break;
-    r = 0;
+    err = xs_errno_t::XS_OK;
   } while (0);
   if (hProcess) {
     CloseHandle(hProcess);
     hProcess = nullptr;
   }
-  return r;
+  return err;
 }
 XS_EXTERN int xs_sys_process_has_exit(xs_process_id_t pid) {
   int r = -1;

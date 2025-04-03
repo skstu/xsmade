@@ -52,10 +52,10 @@ XS_EXTERN void xs_sys_free_buffer(xs_buffer_t **);
 XS_EXTERN unsigned short xs_sys_get_free_port(void);
 XS_EXTERN int xs_sys_process_spawn(const char *proc, const char **args,
                                    int show_flag, xs_process_id_t *out_pid);
-XS_EXTERN int xs_sys_process_kill(xs_process_id_t pid);
+XS_EXTERN xs_errno_t xs_sys_process_kill(xs_process_id_t pid);
 //!@ exited == 0 and running  == !0
 XS_EXTERN int xs_sys_process_has_exit(xs_process_id_t pid);
-XS_EXTERN int xs_sys_process_getpath(char **, size_t *);
+XS_EXTERN xs_errno_t xs_sys_process_getpath(char **, size_t *);
 XS_EXTERN int xs_sys_process_getpid(xs_process_id_t *);
 //!@ exists == 0 and not exists == !0
 XS_EXTERN int
@@ -73,12 +73,12 @@ XS_EXTERN int xs_sys_shared_memory_create(const char *name, size_t size,
                                           void **base);
 XS_EXTERN int xs_sys_shared_memory_destroy(const char *name);
 XS_EXTERN int xs_sys_shared_memory_open(const char *name, void **base);
-XS_EXTERN int xs_sys_get_commandline(char **, size_t *);
+XS_EXTERN xs_errno_t xs_sys_get_commandline(char **, size_t *);
 //!@ linux ~/.config	~/.local/share	~/.cache  /home
-XS_EXTERN int xs_sys_get_linux_home_path(char **, size_t *);
-XS_EXTERN int xs_sys_get_linux_config_path(char **, size_t *);
-XS_EXTERN int xs_sys_get_linux_cache_path(char **, size_t *);
-XS_EXTERN int xs_sys_get_linux_local_share_path(char **, size_t *);
+XS_EXTERN xs_errno_t xs_sys_get_home_path(char **, size_t *);
+XS_EXTERN xs_errno_t xs_sys_get_config_path(char **, size_t *);
+XS_EXTERN xs_errno_t xs_sys_get_cache_path(char **, size_t *);
+XS_EXTERN xs_errno_t xs_sys_get_local_share_path(char **, size_t *);
 #ifdef __cplusplus
 }
 #endif

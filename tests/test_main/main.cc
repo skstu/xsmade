@@ -2,20 +2,56 @@
 #include "conv.hpp"
 
 int main(int argc, char **argv) {
-  const char *ddd = xs_err_name(xs_errno_t::XS_OK);
-  char *curpath = nullptr;
-  size_t curpath_len = 0;
+  std::u16string current_path_u16;
+  do {
+    const char *ddd = xs_err_name(xs_errno_t::XS_OK);
+    char *curpath = nullptr;
+    size_t curpath_len = 0;
+    xs_sys_process_getpath(&curpath, &curpath_len);
+    std::string strPath(stl::Path::Parent(std::string(curpath, curpath_len)));
+    xs_sys_free((void **)&curpath);
+    current_path_u16 = Conv::u8_to_u16(strPath);
+  } while (0);
 
-  std::cout << "hello" << std::endl;
-  int r = xs_sys_process_getpath(&curpath, &curpath_len);
-  if (r != 0) {
-    std::cerr << "Failed to get process path" << std::endl;
-    return 1; // Exit early if we failed to get the path
-  }
-  std::string strPath(curpath, curpath_len);
-  std::u16string u16path = Conv::u8_to_u16(strPath);
-  std::cout << strPath.c_str() << std::endl;
-  xs_sys_free((void **)&curpath);
+  do {
+    char *cmdline = nullptr;
+    size_t cmdline_len = 0;
+    xs_sys_get_commandline(&cmdline, &cmdline_len);
+    std::string strCmdline(cmdline, cmdline_len);
+    xs_sys_free((void **)&cmdline);
+    std::cout << strCmdline << std::endl;
+    auto ss = 0;
+  } while (0);
+
+  do {
+    char *path = nullptr;
+    size_t path_len = 0;
+    if (xs_errno_t::XS_OK != xs_sys_get_home_path(&path, &path_len))
+      break;
+    std::string strPath(path, path_len);
+    std::cout << strPath << std::endl;
+    xs_sys_free((void **)&path);
+    auto ss = 0;
+  } while (0);
+
+  do {
+    char *path = nullptr;
+    size_t path_len = 0;
+    if (xs_errno_t::XS_OK != xs_sys_get_cache_path(&path, &path_len))
+      break;
+    std::string strPath(path, path_len);
+    std::cout << strPath << std::endl;
+    xs_sys_free((void **)&path);
+    auto ss = 0;
+  } while (0);
+
+  stl::MainProc([](const std::string &input, bool &exit_flag) {
+    if (input == "q") {
+      exit_flag = true;
+    } else {
+      std::cout << "You entered: " << input << std::endl;
+    }
+  });
 
   return 0;
 }

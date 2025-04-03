@@ -127,6 +127,24 @@
 namespace stl {
 using tfThreads = std::vector<std::thread>;
 using tfCommandLines = std::map<std::string, std::string>;
+
+class MainProc final {
+public:
+  using MainProcCb =
+      std::function<void(const std::string &input, bool &exit_flag)>;
+
+public:
+  MainProc(const MainProcCb &callback);
+  ~MainProc() = default;
+
+private:
+  void Proc();
+  const MainProcCb callback_;
+  MainProc(const MainProc &) = delete;
+  MainProc &operator=(const MainProc &) = delete;
+  void *operator new(size_t) = delete;
+};
+
 class CmdLine {
 public:
   CmdLine(const std::string &cmdline);
@@ -505,6 +523,13 @@ public:
   static bool Remove(const std::string &);
   static bool Remove(const std::wstring &);
   static bool Remove(const std::u16string &);
+  static std::vector<char> Read(
+      /*std::ios::_Nocreate | std::ios::_Noreplace | std::ios::binary*/
+      const std::string &, const int &mode_ = std::ios::in | std::ios::binary);
+  static std::vector<char> Read(
+      /*std::ios::_Nocreate | std::ios::_Noreplace | std::ios::binary*/
+      const std::u16string &,
+      const int &mode_ = std::ios::in | std::ios::binary);
   static std::string
   ReadFile(/*std::ios::_Nocreate | std::ios::_Noreplace | std::ios::binary*/
            const std::string &,
@@ -826,7 +851,7 @@ public:
   }
 
 public:
-  __inline void operator=(const std::unordered_map<KEY, VAL> &_Target) {
+  inline void operator=(const std::unordered_map<KEY, VAL> &_Target) {
     std::lock_guard<std::mutex> _lock(*mutex_);
     m_unordered_map.clear();
     m_unordered_map = _Target;

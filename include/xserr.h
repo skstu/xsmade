@@ -1,14 +1,14 @@
 #if !defined(__533973DF_1B2B_4CC9_8911_A862F3DEC534__)
 #define __533973DF_1B2B_4CC9_8911_A862F3DEC534__
 
-#define XS__OK   (-0)
-#define XS__NO   (-1)
+#define XS__OK (-0)
+#define XS__NO (-1)
 #define XS__DONE (1)
 //! system [ -1000 ~ -1999]
 //! component [ -2000 ~ -2999 ]
 //! plugin [ -3000 ~ -3999 ]
 #define XS__EUNKN (-50000)
-#define XS__EOF   (-65533)
+#define XS__EOF (-65533)
 
 #define XS_ERRNO_MAP(XX)                                                       \
   XX(OK, "ok ")                                                                \

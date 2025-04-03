@@ -2,23 +2,24 @@
 #ifndef PROC_PIDPATHINFO_MAXSIZE
 #define PROC_PIDPATHINFO_MAXSIZE 1024
 #endif
-XS_EXTERN int xs_sys_get_commandline(char **out, size_t *out_size) {
-  int r = -1;
-  std::ifstream cmdline("/proc/self/cmdline");
+XS_EXTERN xs_errno_t xs_sys_get_commandline(char **out, size_t *out_size) {
+  xs_errno_t err = xs_errno_t::XS_NO;
   do {
-    if (!cmdline.is_open())
+    std::vector<char> args = stl::File::Read("/proc/self/cmdline");
+    if (args.empty())
       break;
-    std::string line;
-    std::getline(cmdline, line);
-    if (line.empty())
-      break;
-    *out_size = line.size();
+    std::string final_args;
+    for (auto &c : args) {
+      if (c == 0)
+        c = ' ';
+    }
+    final_args.append(&args[0], args.size());
+    *out_size = final_args.size();
     *out = (char *)malloc(*out_size);
-    memcpy(*out, line.data(), *out_size);
-    r = 0;
+    memcpy(*out, final_args.data(), *out_size);
+    err = xs_errno_t::XS_OK;
   } while (0);
-  cmdline.close();
-  return r;
+  return err;
 }
 XS_EXTERN int xs_sys_process_spawn(const char *proc, const char **args,
                                    int show_flag, xs_process_id_t *out_pid) {
@@ -34,10 +35,10 @@ XS_EXTERN int xs_sys_process_spawn(const char *proc, const char **args,
   return r;
 }
 
-XS_EXTERN int xs_sys_process_kill(xs_process_id_t pid) {
-  int r = 0;
-  r = kill(pid, 9);
-  return r;
+XS_EXTERN xs_errno_t xs_sys_process_kill(xs_process_id_t pid) {
+  xs_errno_t err = xs_errno_t::XS_NO;
+  err = (xs_errno_t)kill(pid, 9);
+  return err;
 }
 // XS_EXTERN int xs_sys_process_has_exit(long long pid) {
 //   return kill(pid, 0) == 0 ? 1 : 0;
@@ -98,21 +99,21 @@ char *get_exe_path(char *buf, int count)
     return buf;
 }
 #endif
-XS_EXTERN int xs_sys_process_getpath(char **exepath, size_t *len) {
-  int r = -1;
+XS_EXTERN xs_errno_t xs_sys_process_getpath(char **exepath, size_t *len) {
+  xs_errno_t err = xs_errno_t::XS_NO;
   char path[4096] = {0};
   ssize_t readlink_len = readlink("/proc/self/exe", path, sizeof(path) - 1);
   do {
     if (readlink_len <= 0)
       break;
-    printf("%s\n", path);
-    *len = readlink_len + 1;
+    std::string strPath(path, readlink_len);
+    strPath = stl::Path::PathnameToPath(strPath);
+    *len = strPath.size();
     *exepath = (char *)malloc(*len);
-    memcpy(*exepath, &path[0], *len);
-    (*exepath)[*len] = 0;
-    r = 0;
+    memcpy(*exepath, strPath.data(), *len);
+    err = xs_errno_t::XS_OK;
   } while (0);
-  return r;
+  return err;
 }
 
 XS_EXTERN int

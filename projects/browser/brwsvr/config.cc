@@ -99,8 +99,12 @@ std::u16string Config::GetChrome(const std::string &brwver) const {
 
 void Config::Path::init(void) {
   xs_buffer_t *tmppath = nullptr;
+#if defined(__OSWIN__)
   static int static_dummy_variable;
   xs_sys_get_dll_path(&tmppath, &static_dummy_variable);
+#elif defined(__OSLINUX__)
+  //xs_sys_get_dll_path(&tmppath, &static_dummy_variable);
+#endif
   current_dir = Conv::u8_to_u16(std::string(tmppath->buffer, tmppath->len));
   std::u16string module_name;
   {

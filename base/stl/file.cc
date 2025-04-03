@@ -2,7 +2,29 @@
 using namespace stl;
 using namespace std;
 namespace fs = std::filesystem;
+std::vector<char> File::Read(
+    /*std::ios::_Nocreate | std::ios::_Noreplace | std::ios::binary*/
+    const std::string &fpath, const int &mode_) {
+  std::vector<char> result = {};
+  std::ifstream ifo(fpath, static_cast<ios_base::openmode>(mode_));
+  do {
+    if (!ifo.is_open())
+      break;
+    result = std::vector<char>((std::istreambuf_iterator<char>(ifo)),
+                               std::istreambuf_iterator<char>());
+    ifo.close();
+  } while (0);
+  return result;
+}
+std::vector<char> File::Read(
+    /*std::ios::_Nocreate | std::ios::_Noreplace | std::ios::binary*/
+    const std::u16string &, const int &mode_) {
+  std::vector<char> result;
+  do {
 
+  } while (0);
+  return result;
+}
 bool File::Remove(const u16string &file) {
   bool result = false;
   try {

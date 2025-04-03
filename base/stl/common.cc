@@ -1,8 +1,29 @@
 #include "stl.hpp"
 using namespace stl;
-
-bool Common::strIcmp(const std::string& str1,const std::string& str2){
-return toLower(str1).compare(toLower(str2)) == 0;
+MainProc::MainProc(const MainProcCb &callback) : callback_(callback) {
+  if (callback_) {
+    Proc();
+  } else {
+    std::cerr << "Callback function is not valid!" << std::endl;
+  }
+}
+void MainProc::Proc() {
+  std::string input;
+  do {
+    input.clear();
+    std::getline(std::cin, input);
+    if (input.empty()) {
+      continue;
+    }
+    bool exit_flag = false;
+    callback_(input, exit_flag);
+    if (exit_flag || std::cin.eof()) {
+      break;
+    }
+  } while (true);
+}
+bool Common::strIcmp(const std::string &str1, const std::string &str2) {
+  return toLower(str1).compare(toLower(str2)) == 0;
 }
 std::string Common::toLower(const std::string &input) {
   std::string result(input);
@@ -12,7 +33,7 @@ std::string Common::toLower(const std::string &input) {
   return result;
 }
 std::vector<std::string> Common::StringSpilt(const std::string &input,
-                                          const std::string &delim) {
+                                             const std::string &delim) {
   std::vector<std::string> result;
   do {
     if (input.empty()) {
@@ -31,4 +52,3 @@ std::vector<std::string> Common::StringSpilt(const std::string &input,
   } while (0);
   return result;
 }
-
