@@ -2,6 +2,10 @@
 #ifndef PROC_PIDPATHINFO_MAXSIZE
 #define PROC_PIDPATHINFO_MAXSIZE 1024
 #endif
+XS_EXTERN xs_errno_t xs_sys_process_getpid(xs_process_id_t *pid) {
+  *pid = getpid();
+  return xs_errno_t::XS_OK;
+}
 XS_EXTERN xs_errno_t xs_sys_get_commandline(char **out, size_t *out_size) {
   xs_errno_t err = xs_errno_t::XS_NO;
   do {
@@ -61,10 +65,6 @@ XS_EXTERN int xs_sys_process_has_exit(xs_process_id_t pid) {
     r = -1;
   }
   return r;
-}
-XS_EXTERN int xs_sys_process_getpid(long *pid) {
-  *pid = getpid();
-  return 0;
 }
 #include <unistd.h>
 #include <stdlib.h>

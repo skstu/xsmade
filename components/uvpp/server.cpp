@@ -168,6 +168,9 @@ void Server::MainProcess(void *arg) {
         break;
       if (0 != uv_pipe_init(loop, (uv_pipe_t *)server, 0))
         break;
+#if defined(__OSLINUX__)
+      unlink(server_start_address.c_str());
+#endif
       if (0 != uv_pipe_bind((uv_pipe_t *)server, server_start_address.c_str()))
         break;
       if (0 != uv_listen((uv_stream_t *)server, SOMAXCONN,

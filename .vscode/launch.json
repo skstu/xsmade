@@ -102,7 +102,9 @@
       //   "--type=service",
       //   "888",
       // ],
-      "program": "${workspaceFolder}/bin/tests/test_brwsvr",
+      // "program": "${workspaceFolder}/bin/tests/test_brwsvr",
+      // "args": [],
+      "program": "${workspaceFolder}/bin/tests/test_brwcfg",
       "args": [],
       "cwd": "${workspaceFolder}"
     },

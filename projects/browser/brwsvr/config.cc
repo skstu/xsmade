@@ -103,7 +103,8 @@ void Config::Path::init(void) {
   static int static_dummy_variable;
   xs_sys_get_dll_path(&tmppath, &static_dummy_variable);
 #elif defined(__OSLINUX__)
-  //xs_sys_get_dll_path(&tmppath, &static_dummy_variable);
+  static auto sfn = []() {};
+  xs_sys_get_dll_path(&tmppath, (void *)&sfn);
 #endif
   current_dir = Conv::u8_to_u16(std::string(tmppath->buffer, tmppath->len));
   std::u16string module_name;
@@ -115,13 +116,17 @@ void Config::Path::init(void) {
   xs_sys_free((void **)&tmppath);
   current_dir = stl::Path::Parent(current_dir);
   root_dir = stl::Path::Parent(current_dir);
-  libuvpp_path = stl::Path::Absolute(root_dir + u"\\components\\libuvpp.dll");
-  settings_path = stl::Path::Absolute(root_dir + u"\\configures\\settings.xml");
+#if defined(__OSLINUX__)
+  libuvpp_path = stl::Path::Absolute(root_dir + u"/components/libuvpp.so");
+#else
+  libuvpp_path = stl::Path::Absolute(root_dir + u"/components/libuvpp.dll");
+#endif
+  settings_path = stl::Path::Absolute(root_dir + u"/configures/settings.xml");
   configure_path =
-      stl::Path::Absolute(root_dir + u"\\configures\\configure.json");
-  temp_dir = stl::Path::Absolute(root_dir + u"\\temp");
-  browser_dir = stl::Path::Absolute(root_dir + u"\\browser");
-  chromium_dir = stl::Path::Absolute(browser_dir + u"\\chromium");
+      stl::Path::Absolute(root_dir + u"/configures/configure.json");
+  temp_dir = stl::Path::Absolute(root_dir + u"/temp");
+  browser_dir = stl::Path::Absolute(root_dir + u"/browser");
+  chromium_dir = stl::Path::Absolute(browser_dir + u"/chromium");
   cache_dir = stl::Path::Absolute(root_dir + u"/cache");
   logs_path = stl::Path::Absolute(root_dir + u"/logs");
   stl::Directory::Create(temp_dir);

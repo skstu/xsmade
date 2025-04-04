@@ -56,7 +56,7 @@ XS_EXTERN xs_errno_t xs_sys_process_kill(xs_process_id_t pid);
 //!@ exited == 0 and running  == !0
 XS_EXTERN int xs_sys_process_has_exit(xs_process_id_t pid);
 XS_EXTERN xs_errno_t xs_sys_process_getpath(char **, size_t *);
-XS_EXTERN int xs_sys_process_getpid(xs_process_id_t *);
+XS_EXTERN xs_errno_t xs_sys_process_getpid(xs_process_id_t *);
 //!@ exists == 0 and not exists == !0
 XS_EXTERN int
 xs_sys_process_already_exists(xs_process_id_t pid /*==0 ? current*/);
@@ -67,7 +67,7 @@ XS_EXTERN int xs_sys_capturescreen(xs_position_t pos,
                                    xs_image_stream_t **stream);
 XS_EXTERN int xs_sys_get_image_type(const char *buffer, size_t buffer_size,
                                     xs_image_type_t *output_image_type);
-XS_EXTERN int xs_sys_get_dll_path(xs_buffer_t **out_buffer,
+XS_EXTERN xs_errno_t xs_sys_get_dll_path(xs_buffer_t **out_buffer,
                                   void *static_dummy_variable);
 XS_EXTERN int xs_sys_shared_memory_create(const char *name, size_t size,
                                           void **base);

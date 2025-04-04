@@ -27,6 +27,7 @@ set(CMAKE_CXX_FLAGS_MINSIZEREL "-Os -DNDEBUG") # MinSizeRel
 
 option(xsBUILD_PIC "Enable configure position independent code" ON)
 if(xsBUILD_PIC)
+  set(CMAKE_POSITION_INDEPENDENT_CODE ON)
   set_property(GLOBAL PROPERTY POSITION_INDEPENDENT_CODE ON)
 endif()
 # if(CMAKE_CONFIGURATION_TYPES) gfn_message_info( "Multi-config generator

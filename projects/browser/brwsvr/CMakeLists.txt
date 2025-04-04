@@ -50,8 +50,29 @@ if(xsSYSTYPE_WINDOWS)
     libuv.a
     ${ffxLIBS}
     ${xsOPENSSL_LIBRARY})
-elseif()
+elseif(xsSYSTYPE_LINUX)
+  target_include_directories(
+    ${PROJECT_NAME}
+    PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}
+            ${CMAKE_CURRENT_SOURCE_DIR}/..
+            ${xsROOT_DIR}
+            ${xsINCLUDE_DIR}
+            ${xsBUILD_INSTALLED_INCLUDE_DIR}
+            ${xsBUILD_INSTALLED_INCLUDE_DIR}/utf8cpp
+            ${xsOPENSSL_INCLUDE})
+  target_link_directories(${PROJECT_NAME} PRIVATE ${xsLIBS_LIB_DIR}
+                          ${xsBUILD_INSTALLED_LIB_DIR})
 
+  target_link_libraries(
+    ${PROJECT_NAME}
+    fmt.a
+    libsys.a
+    libstl.a
+    libzipcc.a
+    libpthread.a
+    libz.a
+    libtinyxml2.a
+    libuv.a)
 elseif(xsSYSTYPE_APPLE)
   target_include_directories(
     ${PROJECT_NAME}
@@ -78,29 +99,8 @@ elseif(xsSYSTYPE_APPLE)
     /opt/homebrew/opt/openssl@3/lib/libssl.a
     /opt/homebrew/Cellar/fmt/11.0.2/lib/libfmt.a
     /opt/homebrew/Cellar/libuv/1.49.2/lib/libuv.a)
-endif(xsSYSTYPE_LINUX)
-target_include_directories(
-  ${PROJECT_NAME}
-  PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}
-          ${CMAKE_CURRENT_SOURCE_DIR}/..
-          ${xsROOT_DIR}
-          ${xsINCLUDE_DIR}
-          ${xsBUILD_INSTALLED_INCLUDE_DIR}
-          ${xsBUILD_INSTALLED_INCLUDE_DIR}/utf8cpp
-          ${xsOPENSSL_INCLUDE})
-target_link_directories(${PROJECT_NAME} PRIVATE ${xsLIBS_LIB_DIR}
-                        ${xsBUILD_INSTALLED_LIB_DIR})
+endif()
 
-target_link_libraries(
-  ${PROJECT_NAME}
-  fmt.a
-  libsys.a
-  libstl.a
-  libzipcc.a
-  libpthread.a
-  libz.a
-  libtinyxml2.a
-  libuv.a)
 add_custom_command(
   TARGET ${PROJECT_NAME}
   POST_BUILD

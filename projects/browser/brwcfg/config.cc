@@ -31,7 +31,11 @@ void Config::Init() {
 
     path_.configure_path = path_.root + u"/configures/configure.json";
     path_.settings_path = path_.root + u"/configures/settings.xml";
+#if defined(__OSLINUX__)
+    path_.libuvpp_path = path_.components_dir + u"/libuvpp.so";
+#elif defined(__OSWIN__)
     path_.libuvpp_path = path_.components_dir + u"/libuvpp.dll";
+#endif
 
     do {
       if (!stl::File::Exists(path_.chromium_envpath_route_path))

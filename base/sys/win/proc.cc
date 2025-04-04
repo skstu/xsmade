@@ -122,9 +122,9 @@ XS_EXTERN int xs_sys_process_getpath(char **path, size_t *path_len) {
   } while (0);
   return r;
 }
-XS_EXTERN int xs_sys_process_getpid(xs_process_id_t *pid) {
+XS_EXTERN xs_errno_t xs_sys_process_getpid(xs_process_id_t *pid) {
   *pid = (xs_process_id_t)GetCurrentProcessId();
-  return 0;
+  return xs_errno_t::XS_OK;
 }
 XS_EXTERN int
 xs_sys_process_already_exists(xs_process_id_t pid /*==0 ? current*/) {

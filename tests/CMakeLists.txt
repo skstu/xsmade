@@ -13,4 +13,5 @@
 
 add_subdirectory(test_main)
 add_subdirectory(test_brwsvr)
+add_subdirectory(test_brwcfg)
 

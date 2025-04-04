@@ -2,4 +2,4 @@ set(MINIZIP_PROJECT_NAME "minizip")
 
 add_subdirectory(${xs3RDPARTY_DIR}/minizip/ ${MINIZIP_PROJECT_NAME})
 
-
+set_target_properties(${MINIZIP_PROJECT_NAME} PROPERTIES POSITION_INDEPENDENT_CODE ON)

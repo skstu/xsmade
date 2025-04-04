@@ -6,7 +6,7 @@ set(SOURCES ${OUT_HEADER_S} ${OUT_SOURCE_S}
 
 add_executable(${PROJECT_NAME} ${SOURCES})
 
-if(WIN32)
+if(xsSYSTYPE_WINDOWS)
   target_include_directories(
     ${PROJECT_NAME}
     PRIVATE ${xsROOT_DIR} ${xsINCLUDE_DIR} ${xs3RDPARTY_DIR}/utfcpp/source/
@@ -41,7 +41,40 @@ if(WIN32)
     ${MSYS2_CLANG64_DIR}/lib/libuv.a)
 
   add_dependencies(${PROJECT_NAME} sys stl)
-elseif(APPLE)
+elseif(xsSYSTYPE_LINUX)
+  target_include_directories(
+    ${PROJECT_NAME}
+    PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}
+            ${CMAKE_CURRENT_SOURCE_DIR}/..
+            ${xsROOT_DIR}
+            ${xsINCLUDE_DIR}
+            ${xsBUILD_INSTALLED_INCLUDE_DIR}
+            ${xsBUILD_INSTALLED_INCLUDE_DIR}/utf8cpp
+            ${xsOPENSSL_INCLUDE})
+  target_link_directories(${PROJECT_NAME} PRIVATE ${xsLIBS_DIR}
+                          ${xsLIBS_LIB_DIR} ${xsBUILD_INSTALLED_LIB_DIR})
+
+  target_include_directories(
+    ${PROJECT_NAME}
+    PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}
+            ${CMAKE_CURRENT_SOURCE_DIR}/..
+            ${xsROOT_DIR}
+            ${xsINCLUDE_DIR}
+            ${xsBUILD_INSTALLED_INCLUDE_DIR}
+            ${xsBUILD_INSTALLED_INCLUDE_DIR}/utf8cpp
+            ${xsOPENSSL_INCLUDE})
+  target_link_directories(${PROJECT_NAME} PRIVATE ${xsLIBS_LIB_DIR}
+                          ${xsBUILD_INSTALLED_LIB_DIR})
+
+  target_link_libraries(
+    ${PROJECT_NAME}
+    fmt.a
+    libsys.a
+    libstl.a
+    libzipcc.a
+    libpthread.a
+    libz.a)
+elseif(xsSYSTYPE_APPLE)
   target_include_directories(
     ${PROJECT_NAME}
     PRIVATE ${xsROOT_DIR}
@@ -55,7 +88,7 @@ elseif(APPLE)
   # target_link_directories(${PROJECT_NAME} PRIVATE
   # ${xsOUTPUT_DIR}/wxWidgets/lib/)
   target_link_directories(${PROJECT_NAME} PRIVATE ${xsLIBS_DIR})
-  
+
   target_link_libraries(
     ${PROJECT_NAME}
     "-framework CoreFoundation"
@@ -69,5 +102,13 @@ elseif(APPLE)
     /opt/homebrew/Cellar/libuv/1.49.2/lib/libuv.a)
 endif()
 
-xs_set_target_output_dir(${PROJECT_NAME})
+# xs_set_target_output_dir(${PROJECT_NAME})
 # target_compile_definitions(${PROJECT_NAME} PRIVATE wxUSE_GUI=0 wxUSE_BASE=1)
+add_custom_command(
+  TARGET ${PROJECT_NAME}
+  POST_BUILD
+  COMMAND echo
+          "Output file: ${xsBIN_TESTS_DIR}/$<TARGET_FILE_NAME:${PROJECT_NAME}>"
+  COMMAND ${CMAKE_COMMAND} -E copy_if_different $<TARGET_FILE:${PROJECT_NAME}>
+          ${xsBIN_TESTS_DIR}/$<TARGET_FILE_NAME:${PROJECT_NAME}>
+  COMMENT "Printing output file path and copying file")

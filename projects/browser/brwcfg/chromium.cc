@@ -16,7 +16,7 @@ void IChromium::Init() {
             .c_str()));
     uvpp_config_ = uvpp_->ConfigGet();
     xs_process_id_t pid = 0;
-    xs_sys_process_getpid(&pid);
+    xs_sys_process_getpid(&pid); 
     uvpp_config_->SetIdentify(
         stl::HighLowStorage(policy_id_, static_cast<unsigned long>(pid)).Get());
     uvpp_config_->SetServiceType(

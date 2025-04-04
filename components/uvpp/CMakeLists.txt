@@ -29,13 +29,35 @@ if(xsSYSTYPE_WINDOWS)
     libpthread.a
     libuv.a
     libzlibstatic.a)
-
   add_custom_command(
     TARGET ${PROJECT_NAME}
     POST_BUILD
     COMMAND
       ${CMAKE_COMMAND} -E copy_if_different $<TARGET_FILE:${PROJECT_NAME}>
       C:/Users/k34ub/AppData/Roaming/MarsProjects/plugins/${PROJECT_NAME}.dll)
+elseif(xsSYSTYPE_LINUX)
+  target_include_directories(
+    ${PROJECT_NAME}
+    PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}
+            ${CMAKE_CURRENT_SOURCE_DIR}/..
+            ${xsROOT_DIR}
+            ${xsINCLUDE_DIR}
+            ${xsBUILD_INSTALLED_INCLUDE_DIR}
+            ${xsBUILD_INSTALLED_INCLUDE_DIR}/utf8cpp
+            ${xsOPENSSL_INCLUDE})
+  target_link_directories(${PROJECT_NAME} PRIVATE ${xsLIBS_LIB_DIR}
+                          ${xsBUILD_INSTALLED_LIB_DIR})
+
+  target_link_libraries(
+    ${PROJECT_NAME}
+    fmt.a
+    libsys.a
+    libstl.a
+    libzipcc.a
+    libpthread.a
+    libminizip.a
+    libuv.a
+    z)
 elseif(xsSYSTYPE_APPLE)
   target_include_directories(
     ${PROJECT_NAME}
@@ -71,7 +93,9 @@ endif()
 add_custom_command(
   TARGET ${PROJECT_NAME}
   POST_BUILD
-  COMMAND echo "Output file: ${xsOUTPUT_COMPONENTS_DIR}/$<TARGET_FILE_NAME:${PROJECT_NAME}>"
+  COMMAND
+    echo
+    "Output file: ${xsOUTPUT_COMPONENTS_DIR}/$<TARGET_FILE_NAME:${PROJECT_NAME}>"
   COMMAND ${CMAKE_COMMAND} -E copy_if_different $<TARGET_FILE:${PROJECT_NAME}>
           ${xsOUTPUT_COMPONENTS_DIR}/$<TARGET_FILE_NAME:${PROJECT_NAME}>
   COMMENT "Printing output file path and copying file")

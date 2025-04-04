@@ -187,7 +187,7 @@ GUID guidBmp = {};
   return r;
 }
 
-int xs_sys_get_dll_path(xs_buffer_t **out_buffer, void *static_dummy_variable) {
+xs_errno_t xs_sys_get_dll_path(xs_buffer_t **out_buffer, void *static_dummy_variable) {
   *out_buffer = nullptr;
   HMODULE hModule = nullptr;
   if (TRUE ==
@@ -204,5 +204,5 @@ int xs_sys_get_dll_path(xs_buffer_t **out_buffer, void *static_dummy_variable) {
     memset((*out_buffer)->buffer, 0x00, alloc_size);
     memcpy((*out_buffer)->buffer, u8path.data(), u8path.size());
   }
-  return 0;
+  return xs_errno_t::XS_OK;
 }

@@ -6,7 +6,7 @@ set(SOURCES ${OUT_HEADER_S} ${OUT_SOURCE_S})
 add_definitions(-DCPPHTTPLIB_OPENSSL_SUPPORT)
 add_definitions(-DUNICODE -D_UNICODE)
 add_executable(${PROJECT_NAME} ${SOURCES})
-
+set_target_properties(${PROJECT_NAME} PROPERTIES POSITION_INDEPENDENT_CODE ON)
 if(xsSYSTYPE_APPLE)
   target_include_directories(
     ${PROJECT_NAME}

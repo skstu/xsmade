@@ -15,22 +15,20 @@ int main(int argc, char **argv) {
   std::string u8strCurrentPath(current_path, current_path_len);
   xs_sys_free((void **)&current_path);
   std::string strFrameBufferPngDir =
-      u8strCurrentPath + "\\" +
+      u8strCurrentPath + "/" +
       std::to_string(stl::Time::TimeStamp<std::chrono::microseconds>()) + "\\";
   __gpsFrameBufferPngDir = (char *)malloc(strFrameBufferPngDir.size() + 1);
   memcpy(__gpsFrameBufferPngDir, strFrameBufferPngDir.c_str(),
          strFrameBufferPngDir.size());
   __gpsFrameBufferPngDir[strFrameBufferPngDir.size()] = '\0';
   stl::Directory::Create(__gpsFrameBufferPngDir);
-  std::string componentsDir = u8strCurrentPath.append(R"(\..\components)");
+  std::string componentsDir = u8strCurrentPath.append(R"(/../components)");
 #if defined(__OSWIN__)
-  std::string libbrwsvrPath = componentsDir + R"(\libbrwsvr.dll)";
+  std::string libbrwsvrPath = componentsDir + R"(/libbrwsvr.dll)";
 #elif defined(__OSLINUX__)
-  std::string libbrwsvrPath = componentsDir + R"(\libbrwsvr.so)";
+  std::string libbrwsvrPath = componentsDir + R"(/libbrwsvr.so)";
 #endif
-  void *handle =
-      dlopen("/home/ponyo/Desktop/projects/xsmade/bin/components/libbrwsvr.so",
-             RTLD_NOW);
+  void *handle = dlopen(libbrwsvrPath.c_str(), RTLD_NOW);
   auto dlerr = dlerror();
   if (dlerr) {
     std::cerr << "dlopen error: " << dlerr << std::endl;

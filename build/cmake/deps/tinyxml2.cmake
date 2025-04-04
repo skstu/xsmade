@@ -5,4 +5,4 @@ set(TINYXML2_PROJECT_NAME "tinyxml2")
 add_subdirectory(${xs3RDPARTY_DIR}/tinyxml2/ ${TINYXML2_PROJECT_NAME})
 
 set_target_properties(${TINYXML2_PROJECT_NAME}
-                      PROPERTIES POSITION_INDEPENDENT_CODE TRUE)
+                      PROPERTIES POSITION_INDEPENDENT_CODE ON)

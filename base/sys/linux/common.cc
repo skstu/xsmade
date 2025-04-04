@@ -107,7 +107,29 @@ XS_EXTERN int xs_sys_capturescreen(xs_position_t pos,
                                    xs_image_stream_t **stream) {
   return -1;
 }
-XS_EXTERN int xs_sys_get_dll_path(xs_buffer_t **out_buffer,
-                                  void *static_dummy_variable) {
-  return -1;
+XS_EXTERN xs_errno_t xs_sys_get_dll_path(xs_buffer_t **out_buffer,
+                                         void *static_dummy_variable) {
+  *out_buffer = NULL;
+  do {
+    Dl_info dl_info;
+    if (dladdr(static_dummy_variable, &dl_info) == 0)
+      break;
+    *out_buffer = (xs_buffer_t *)malloc(sizeof(xs_buffer_t));
+    if (*out_buffer == NULL)
+      break;
+
+    const char *path = dl_info.dli_fname;
+    size_t len = strlen(path);
+
+    (*out_buffer)->len = len;
+    (*out_buffer)->buffer = (char *)malloc(len + 1);
+    if ((*out_buffer)->buffer == NULL) {
+      perror("malloc failed");
+      free(*out_buffer);
+      *out_buffer = NULL;
+      break;
+    }
+    strcpy((*out_buffer)->buffer, path);
+  } while (0);
+  return xs_errno_t::XS_OK;
 }

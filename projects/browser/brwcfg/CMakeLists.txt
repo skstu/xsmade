@@ -9,20 +9,22 @@ set(SOURCES ${OUT_HEADER_S} ${OUT_SOURCE_S})
 add_definitions(-DSHARED_IMPLEMENTATION)
 add_library(${PROJECT_NAME} SHARED ${SOURCES})
 
-target_include_directories(
-  ${PROJECT_NAME}
-  PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}
-          ${CMAKE_CURRENT_SOURCE_DIR}/..
-          ${xsROOT_DIR}
-          ${xsINCLUDE_DIR}
-          ${xsBUILD_INSTALLED_INCLUDE_DIR}
-          ${xsBUILD_INSTALLED_INCLUDE_DIR}/utf8cpp
-          ${xsOPENSSL_INCLUDE}
-          ${wxINCLUDES})
-target_link_directories(${PROJECT_NAME} PRIVATE ${xsLIBS_DIR} ${xsLIBS_LIB_DIR}
-                        ${xsBUILD_INSTALLED_LIB_DIR} ${wxINCLUDES})
+if(xsSYSTYPE_WINDOWS)
+  target_include_directories(
+    ${PROJECT_NAME}
+    PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}
+            ${CMAKE_CURRENT_SOURCE_DIR}/..
+            ${xsROOT_DIR}
+            ${xsINCLUDE_DIR}
+            ${xsBUILD_INSTALLED_INCLUDE_DIR}
+            ${xsBUILD_INSTALLED_INCLUDE_DIR}/utf8cpp
+            ${xsOPENSSL_INCLUDE}
+            ${wxINCLUDES})
 
-if(WIN32)
+  target_link_directories(
+    ${PROJECT_NAME} PRIVATE ${xsLIBS_DIR} ${xsLIBS_LIB_DIR}
+    ${xsBUILD_INSTALLED_LIB_DIR} ${wxINCLUDES})
+
   target_link_libraries(
     ${PROJECT_NAME}
     ${MSYS2_CLANG64_DIR}/lib/libdl.a
@@ -53,7 +55,30 @@ if(WIN32)
     libtinyxml2.a
     ${wxLIBS}
     ${xsOPENSSL_LIBRARY})
-elseif(APPLE)
+elseif(xsSYSTYPE_LINUX)
+  target_include_directories(
+    ${PROJECT_NAME}
+    PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}
+            ${CMAKE_CURRENT_SOURCE_DIR}/..
+            ${xsROOT_DIR}
+            ${xsINCLUDE_DIR}
+            ${xsBUILD_INSTALLED_INCLUDE_DIR}
+            ${xsBUILD_INSTALLED_INCLUDE_DIR}/utf8cpp
+            ${xsOPENSSL_INCLUDE})
+  target_link_directories(${PROJECT_NAME} PRIVATE ${xsLIBS_LIB_DIR}
+                          ${xsBUILD_INSTALLED_LIB_DIR})
+
+  target_link_libraries(
+    ${PROJECT_NAME}
+    fmt.a
+    libsys.a
+    libstl.a
+    libzipcc.a
+    libpthread.a
+    libz.a
+    libtinyxml2.a
+    libuv.a)
+elseif(xsSYSTYPE_APPLE)
   target_include_directories(
     ${PROJECT_NAME}
     PRIVATE ${xsINCLUDE_DIR} ${xs3RDPARTY_DIR}/utfcpp/source/

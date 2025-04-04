@@ -22,8 +22,11 @@ public:
         break;
       }
       handle_ = dlopen(dyPathname, /*RTLD_NOW*/ RTLD_LAZY);
-      if (!handle_)
+      if (!handle_) {
+        char *err = dlerror();
+        std::cout << err << std::endl;
         break;
+      }
       init_ = decltype(init_)(dlsym(handle_, name_interface_init));
       uninit_ = decltype(uninit_)(dlsym(handle_, name_interface_uninit));
       if (!init_ || !uninit_) {
