@@ -104,7 +104,9 @@
       // ],
       // "program": "${workspaceFolder}/bin/tests/test_brwsvr",
       // "args": [],
-      "program": "${workspaceFolder}/bin/tests/test_brwcfg",
+      // "program": "${workspaceFolder}/bin/tests/test_brwcfg",
+      // "args": [],
+      "program": "${workspaceFolder}/bin/tests/test_main",
       "args": [],
       "cwd": "${workspaceFolder}"
     },

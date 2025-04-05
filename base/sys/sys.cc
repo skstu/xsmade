@@ -1,5 +1,8 @@
 #include "sys.h"
-
+XS_EXTERN void xs_sys_startup(void) {
+}
+XS_EXTERN void xs_sys_shutdown(void) {
+}
 XS_EXTERN char *xs_sys_malloc(size_t len) {
   char *result = nullptr;
   do {

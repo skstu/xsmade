@@ -79,6 +79,7 @@ XS_EXTERN xs_errno_t xs_sys_get_home_path(char **, size_t *);
 XS_EXTERN xs_errno_t xs_sys_get_config_path(char **, size_t *);
 XS_EXTERN xs_errno_t xs_sys_get_cache_path(char **, size_t *);
 XS_EXTERN xs_errno_t xs_sys_get_local_share_path(char **, size_t *);
+
 #ifdef __cplusplus
 }
 #endif

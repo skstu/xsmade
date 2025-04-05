@@ -94,10 +94,6 @@ XS_EXTERN xs_errno_t xs_sys_get_local_share_path(char **out, size_t *out_size) {
 }
 
 //////////////////////////////////////////////////////////////////////////////////////
-XS_EXTERN void xs_sys_startup(void) {
-}
-XS_EXTERN void xs_sys_shutdown(void) {
-}
 XS_EXTERN int xs_sys_get_appdata_path(char **out, size_t *len) {
   return -1;
 }

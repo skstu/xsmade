@@ -1,7 +1,26 @@
 #include "system.h"
 #include "conv.hpp"
-
+#include "uvcc.h"
 int main(int argc, char **argv) {
+  do {
+    std::string hostname;
+    uvcc::System::os_gethostname(hostname);
+    std::cout << hostname << std::endl;
+
+    std::string exepath;
+    uvcc::System::exepath(exepath);
+    std::cout << exepath << std::endl;
+  } while (0);
+
+  do {
+    uvcc::System::utsname_t uname;
+    uvcc::System::os_uname(uname);
+    std::cout << uname.sysname << std::endl
+              << uname.release << std::endl
+              << uname.version << std::endl
+              << uname.machine << std::endl;
+  } while (0);
+
   std::u16string current_path_u16;
   do {
     const char *ddd = xs_err_name(xs_errno_t::XS_OK);

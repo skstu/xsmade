@@ -6,7 +6,7 @@ set(SOURCES ${OUT_HEADER_S} ${OUT_SOURCE_S})
 add_definitions(-DCPPHTTPLIB_OPENSSL_SUPPORT)
 add_definitions(-DUNICODE -D_UNICODE)
 add_executable(${PROJECT_NAME} ${SOURCES})
-set_target_properties(${PROJECT_NAME} PROPERTIES POSITION_INDEPENDENT_CODE ON)
+
 if(xsSYSTYPE_APPLE)
   target_include_directories(
     ${PROJECT_NAME}
@@ -96,11 +96,13 @@ elseif(xsSYSTYPE_LINUX)
   target_link_libraries(
     ${PROJECT_NAME}
     fmt.a
-    libsys.a
-    libstl.a
-    libzipcc.a
+    ${xsOUTPUT_DIR}/base/sys/libsys.a
+    ${xsOUTPUT_DIR}/base/stl/libstl.a
+    ${xsOUTPUT_DIR}/base/uvcc/libuvcc.a
+    ${xsOUTPUT_DIR}/base/zipcc/libzipcc.a
     libpthread.a
-    libz.a)
+    libz.a
+    libuv.a)
 endif()
 
 add_custom_command(

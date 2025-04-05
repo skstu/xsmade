@@ -1,4 +1,5 @@
 #include "sys.h"
+#if 0
 static ULONG_PTR gdiplustoken_ = 0;
 static Gdiplus::GdiplusStartupInput gdiplusStartupInput_ = {0};
 XS_EXTERN void xs_sys_startup(void) {
@@ -8,6 +9,7 @@ XS_EXTERN void xs_sys_startup(void) {
 XS_EXTERN void xs_sys_shutdown(void) {
   Gdiplus::GdiplusShutdown(gdiplustoken_);
 }
+#endif
 XS_EXTERN int xs_sys_get_appdata_path(char **path, size_t *path_len) {
   int r = -1;
   std::wstring ws;
@@ -187,7 +189,8 @@ GUID guidBmp = {};
   return r;
 }
 
-xs_errno_t xs_sys_get_dll_path(xs_buffer_t **out_buffer, void *static_dummy_variable) {
+xs_errno_t xs_sys_get_dll_path(xs_buffer_t **out_buffer,
+                               void *static_dummy_variable) {
   *out_buffer = nullptr;
   HMODULE hModule = nullptr;
   if (TRUE ==

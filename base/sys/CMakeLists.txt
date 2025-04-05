@@ -27,7 +27,8 @@ set_target_properties(${PROJECT_NAME} PROPERTIES POSITION_INDEPENDENT_CODE TRUE)
 target_include_directories(
   ${PROJECT_NAME}
   PRIVATE ${xsINCLUDE_DIR} ${CMAKE_CURRENT_SOURCE_DIR}
-          ${xs3RDPARTY_DIR}/utfcpp/source/ ${xs3RDPARTY_DIR}/tinyxml2/)
+          ${xs3RDPARTY_DIR}/utfcpp/source/ ${xs3RDPARTY_DIR}/tinyxml2/
+          ${xs3RDPARTY_DIR}/libuv/include)
 
 # xs_set_target_output_dir(${PROJECT_NAME})
 

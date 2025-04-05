@@ -1,6 +1,12 @@
 #if !defined(__2CC5C4ED_79BA_4EA1_B4F2_ABD980B03F15__)
 #define __2CC5C4ED_79BA_4EA1_B4F2_ABD980B03F15__
-
+#ifdef __cplusplus
+extern "C" {
+#endif
+#include <uv.h>
+#ifdef __cplusplus
+}
+#endif
 #include <xs.h>
 #include <conv.hpp>
 #if defined(__OSWIN__)
@@ -27,12 +33,12 @@
 #include <sys/wait.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
-#include <spawn.h>          // posix_spawn
-#include <signal.h>         // kill
-#include <sys/wait.h>       // waitpid
-#include <fcntl.h>          // file locks
-#include <sys/file.h>       // flock
-#include <pwd.h>            // getpwuid
+#include <spawn.h>    // posix_spawn
+#include <signal.h>   // kill
+#include <sys/wait.h> // waitpid
+#include <fcntl.h>    // file locks
+#include <sys/file.h> // flock
+#include <pwd.h>      // getpwuid
 #include <dlfcn.h>
 #elif defined(__OSAPPLE__)
 #include <netinet/in.h>

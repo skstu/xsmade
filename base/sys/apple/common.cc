@@ -1,8 +1,4 @@
 #include "sys.h"
-XS_EXTERN void xs_sys_startup(void) {
-}
-XS_EXTERN void xs_sys_shutdown(void) {
-}
 XS_EXTERN int xs_sys_get_appdata_path(char **out, size_t *len) {
   int r = -1;
   const char *homeDir = std::getenv("HOME");
