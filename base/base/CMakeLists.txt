@@ -1,4 +1,4 @@
-project(uvcc)
+project(base)
 
 gfn_project_source_get(${CMAKE_CURRENT_SOURCE_DIR} OUT_HEADER_S OUT_SOURCE_S)
 
@@ -25,8 +25,8 @@ set(INSTALL_PKGCONFIG_DIR
     "${xsBASE_INSTALL_PREFIX}/share/pkgconfig"
     CACHE PATH "Installation directory for pkgconfig (.pc) files")
 
-set(PROJECT_PC ${CMAKE_CURRENT_BINARY_DIR}/uvcc.pc)
-configure_file(${CMAKE_CURRENT_SOURCE_DIR}/uvcc.pc.cmakein ${PROJECT_PC} @ONLY)
+set(PROJECT_PC ${CMAKE_CURRENT_BINARY_DIR}/base.pc)
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/base.pc.cmakein ${PROJECT_PC} @ONLY)
 # configure_file( ${CMAKE_CURRENT_SOURCE_DIR}/zconf.h.cmakein
 # ${CMAKE_CURRENT_BINARY_DIR}/zconf.h @ONLY)
 

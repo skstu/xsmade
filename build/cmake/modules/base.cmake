@@ -1,5 +1,5 @@
 add_subdirectory(${xsBASE_DIR}/stl)
 add_subdirectory(${xsBASE_DIR}/sys)
 add_subdirectory(${xsBASE_DIR}/zipcc)
-add_subdirectory(${xsBASE_DIR}/uvcc)
+add_subdirectory(${xsBASE_DIR}/base)
 # add_subdirectory(${xsBASE_DIR}/logcc)

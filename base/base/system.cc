@@ -1,9 +1,9 @@
-#include "uvcc.h"
-using namespace uvcc;
+#include "base.h"
 #ifndef PATHMAX
 #undef PATHMAX
 #define PATHMAX 4096
 #endif
+using namespace xs::base;
 System::System() {
 }
 

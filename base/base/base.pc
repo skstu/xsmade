@@ -4,8 +4,8 @@ libdir=C:/Users/k34ub/source/skstu/xsmade/libs/Debug/lib
 sharedlibdir=C:/Users/k34ub/source/skstu/xsmade/libs/Debug/lib
 includedir=C:/Users/k34ub/source/skstu/xsmade/libs/Debug/include
 
-Name: uvcc
-Description: uvcc compression library
+Name: base
+Description: base compression library
 Version: 
 
 Requires:

@@ -52,32 +52,32 @@
 #if defined(__OSWIN__)
 #if defined(SHARED_IMPLEMENTATION)
 #if defined(_MSC_VER)
-#define SHARED_API         __declspec(dllexport)
+#define SHARED_API __declspec(dllexport)
 #define SHARED_API_PRIVATE __declspec(dllexport)
 #elif defined(__clang__)
-#define SHARED_API         __declspec(dllexport)
+#define SHARED_API __declspec(dllexport)
 #define SHARED_API_PRIVATE __declspec(dllexport)
 #elif defined(__GNUC__)
-#define SHARED_API         __declspec(dllexport)
+#define SHARED_API __declspec(dllexport)
 #define SHARED_API_PRIVATE __declspec(dllexport)
 #else
-#define SHARED_API         __declspec(dllexport)
+#define SHARED_API __declspec(dllexport)
 #define SHARED_API_PRIVATE __declspec(dllexport)
 #endif
 #else
-#define SHARED_API         __declspec(dllimport)
+#define SHARED_API __declspec(dllimport)
 #define SHARED_API_PRIVATE __declspec(dllimport)
 #endif
 #else // __OSWIN__
 #if defined(SHARED_IMPLEMENTATION)
 #if defined(__clang__)
-#define SHARED_API         __attribute__((visibility("default")))
+#define SHARED_API __attribute__((visibility("default")))
 #define SHARED_API_PRIVATE __attribute__((visibility("default")))
 #elif defined(__GNUC__)
-#define SHARED_API         __attribute__((visibility("default")))
+#define SHARED_API __attribute__((visibility("default")))
 #define SHARED_API_PRIVATE __attribute__((visibility("default")))
 #else
-#define SHARED_API         __attribute__((visibility("default")))
+#define SHARED_API __attribute__((visibility("default")))
 #define SHARED_API_PRIVATE __attribute__((visibility("default")))
 #endif
 #else

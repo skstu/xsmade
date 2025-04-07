@@ -1,12 +1,5 @@
 #if !defined(__2CC5C4ED_79BA_4EA1_B4F2_ABD980B03F15__)
 #define __2CC5C4ED_79BA_4EA1_B4F2_ABD980B03F15__
-#ifdef __cplusplus
-extern "C" {
-#endif
-#include <uv.h>
-#ifdef __cplusplus
-}
-#endif
 #include <xs.h>
 #include <conv.hpp>
 #if defined(__OSWIN__)

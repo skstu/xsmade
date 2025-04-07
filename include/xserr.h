@@ -7,6 +7,10 @@
 //! system [ -1000 ~ -1999]
 //! component [ -2000 ~ -2999 ]
 //! plugin [ -3000 ~ -3999 ]
+//! base [-10000~ -19999 ]
+#define XS__EBASINIT (-10001)
+#define XS__EBASUNINIT (-10002)
+#define XS__EBASFREE (-10003)
 #define XS__EUNKN (-50000)
 #define XS__EOF (-65533)
 
@@ -14,6 +18,9 @@
   XX(OK, "ok ")                                                                \
   XX(NO, "no ")                                                                \
   XX(DONE, "done ")                                                            \
+  XX(EBASINIT, "base init error")                                              \
+  XX(EBASUNINIT, "base uninit error")                                          \
+  XX(EBASFREE, "base free error")                                              \
   XX(EUNKN, "unknown error")
 
 typedef enum {

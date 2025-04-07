@@ -4,8 +4,8 @@ libdir=@INSTALL_LIB_DIR@
 sharedlibdir=@INSTALL_LIB_DIR@
 includedir=@INSTALL_INC_DIR@
 
-Name: uvcc
-Description: uvcc compression library
+Name: base
+Description: base compression library
 Version: @VERSION@
 
 Requires:

@@ -1,20 +1,23 @@
 #include "system.h"
 #include "conv.hpp"
-#include "uvcc.h"
+#include "base.hpp"
+using namespace xs::base;
 int main(int argc, char **argv) {
+  xs_base_startup();
+  xs_base_shutdown();
   do {
     std::string hostname;
-    uvcc::System::os_gethostname(hostname);
+    System::os_gethostname(hostname);
     std::cout << hostname << std::endl;
 
     std::string exepath;
-    uvcc::System::exepath(exepath);
+    System::exepath(exepath);
     std::cout << exepath << std::endl;
   } while (0);
 
   do {
-    uvcc::System::utsname_t uname;
-    uvcc::System::os_uname(uname);
+    System::utsname_t uname;
+    System::os_uname(uname);
     std::cout << uname.sysname << std::endl
               << uname.release << std::endl
               << uname.version << std::endl
