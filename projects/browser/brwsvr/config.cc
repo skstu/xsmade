@@ -16,9 +16,15 @@ void Config::Init() {
     std::map<std::u16string, std::u16string> dirs, files;
     stl::Directory::Enum(path_.chromium_dir, dirs, files, false);
     for (const auto &node : dirs) {
+#if defined(__OSWIN__)
       if (!stl::File::Exists(node.second + u"/fanbrowser.exe"))
         continue;
       chromes_[Conv::u16_to_u8(node.first)] = node.second + u"/fanbrowser.exe";
+#elif defined(__OSLINUX__)
+      if (!stl::File::Exists(node.second + u"/chrome"))
+        continue;
+      chromes_[Conv::u16_to_u8(node.first)] = node.second + u"/chrome";
+#endif
     }
   } while (0);
 }

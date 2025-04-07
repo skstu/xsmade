@@ -6,7 +6,7 @@ public:
   IChromiumProcess(const ChromiumProcessType &, const xs_process_id_t &);
   ~IChromiumProcess();
   virtual void Release() const = 0;
-  virtual bool Request(const command_type_t&,const std::string&) const = 0;
+  virtual bool Request(const command_type_t &, const std::string &) const = 0;
 
 public:
   const xs_process_id_t &GetProcessId() const;
@@ -26,7 +26,8 @@ public:
   void Release() const override final;
 
 protected:
-  bool Request(const command_type_t&,const std::string&) const override final;
+  bool Request(const command_type_t &,
+               const std::string &) const override final;
 };
 class ChromiumGpu final : public IChromiumProcess {
 public:
@@ -35,7 +36,8 @@ public:
   void Release() const override final;
 
 protected:
-  bool Request(const command_type_t&,const std::string&) const override final;
+  bool Request(const command_type_t &,
+               const std::string &) const override final;
 };
 
 class Brwobj final {
@@ -69,17 +71,17 @@ public:
   const browser_id_t &GetBrowserId() const;
   IChromiumProcess *GetProcess(const ChromiumProcessType &) const;
   bool ProcessReady(const ChromiumProcessType &, const xs_process_id_t &,
-                     const uvpp::ISession *);
-  bool Request(const command_type_t&,const std::string&, mp_errno_t &) const;
+                    const uvpp::ISession *);
+  bool Request(const command_type_t &, const std::string &, mp_errno_t &) const;
 
 private:
   ~IChromium();
   const browser_id_t browser_id_;
-  
+
 private:
   std::atomic_bool open_ = false;
   xs_process_id_t main_pid_ = 0;
-  std::map<ChromiumProcessType, IChromiumProcess *> processes_;
+  stl::container::map<ChromiumProcessType, IChromiumProcess *> processes_;
   std::shared_ptr<std::mutex> mtx_ = std::make_shared<std::mutex>();
 };
 /// /*_ Memade®（新生™） _**/

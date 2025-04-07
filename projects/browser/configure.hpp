@@ -2355,7 +2355,8 @@ inline void IConfigure::operator=(const std::string &protocol_buffer) {
                 break;
               if (!it->value.IsString())
                 break;
-              unsigned int key = strtoul(it->name.GetString(), nullptr, 10);
+              unsigned int key = static_cast<unsigned int>(
+                  strtoul(it->name.GetString(), nullptr, 10));
               std::string value;
               if (it->value.GetStringLength() > 0)
                 value = it->value.GetString();

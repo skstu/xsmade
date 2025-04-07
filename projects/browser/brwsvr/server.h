@@ -6,6 +6,7 @@
 #include <fmt/format.h>
 #include <log.hpp>
 #include <conv.hpp>
+#include <base.hpp>
 #include <components/uvpp/export.h>
 using namespace uvpp;
 #include "ibrwsvr.h"

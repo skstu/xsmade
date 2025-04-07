@@ -60,7 +60,7 @@ int main(int argc, char **argv) {
   xs_sys_process_getpath(&current_dir, &current_dir_len);
   const std::string configures_dir =
       stl::Path::Parent(std::string(current_dir, current_dir_len)) +
-      "\\configures\\";
+      "/configures/";
   xs_sys_free((void **)&current_dir);
 
   std::string input;

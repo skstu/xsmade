@@ -26,23 +26,23 @@ bool IChromium::ProcessReady(const ChromiumProcessType &type,
   bool result = false;
   std::lock_guard<std::mutex> lck(*mtx_);
   do {
-    auto f = processes_.find(type);
-    if (f != processes_.end()) {
+    auto f = processes_.search(type);
+    if (!f) {
       std::cout << "Process already exists." << std::endl;
-      f->second->Release();
-      processes_.erase(f);
+      (*f)->Release();
+      processes_.pop(type);
     }
     switch (type) {
     case ChromiumProcessType::ChromiumProcess: {
       auto p = new ChromiumMain(pid);
       p->SetSession(session);
-      processes_.emplace(type, p);
+      processes_.push(type, p);
       result = true;
     } break;
     case ChromiumProcessType::ChromiumGpuProcess: {
       auto p = new ChromiumGpu(pid);
       p->SetSession(session);
-      processes_.emplace(type, p);
+      processes_.push(type, p);
       result = true;
     } break;
     default:
@@ -58,12 +58,12 @@ bool IChromium::Request(const command_type_t &cmd, const std::string &body,
   ret = mp_errno_t::MP_EUNKN;
   std::lock_guard<std::mutex> lck(*mtx_);
   do {
-    auto f = processes_.find(ChromiumProcessType::ChromiumProcess);
-    if (f == processes_.end()) {
+    auto f = processes_.search(ChromiumProcessType::ChromiumProcess);
+    if (!f) {
       ret = mp_errno_t::MP_ENOTFOUND;
       break;
     }
-    IChromiumProcess *main = f->second;
+    IChromiumProcess *main = *f;
     if (!main) {
       ret = mp_errno_t::MP_ENOTFOUND;
       break;
@@ -86,12 +86,29 @@ bool IChromium::Open() {
   do {
     if (open_.load())
       break;
-    if (0 != xs_sys_process_spawn(
-                 Conv::u16_to_u8(Config::GetOrCreate()->GetChrome("")).c_str(),
-                 nullptr, false, &main_pid_))
-      break;
-    processes_.emplace(ChromiumProcessType::ChromiumProcess,
-                       new ChromiumMain(main_pid_));
+    main_pid_ = 0;
+    auto u8path = Conv::u16_to_u8(Config::GetOrCreate()->GetChrome(""));
+    // xs_base_spawn(const char **args, const char **envs);
+    //  if (0 != xs_sys_process_spawn(
+    //               Conv::u16_to_u8(Config::GetOrCreate()->GetChrome("")).c_str(),
+    //               nullptr, false, &main_pid_))
+    //    break;
+#if 0
+"--no-sandbox",
+"--disable-gpu",
+"--headless=new",
+"--remote-debugging-port=9222",
+#endif
+    const char *spawn_args[] = {u8path.c_str(), nullptr};
+    const char *spawn_envs[] = {"DISPLAY=:0", nullptr};
+    xs_base_spawn(spawn_args, spawn_envs, this,
+                  [](xs_process_id_t pid, xs_errno_t err, const void *route) {
+                    auto self =
+                        static_cast<IChromium *>(const_cast<void *>(route));
+                    self->main_pid_ = pid;
+                    self->processes_.push(ChromiumProcessType::ChromiumProcess,
+                                          new ChromiumMain(self->main_pid_));
+                  });
     open_.store(true);
   } while (0);
   return open_.load();
@@ -101,11 +118,11 @@ void IChromium::Close() {
   do {
     if (!open_.load())
       break;
-    for (auto &p : processes_) {
-      xs_sys_process_kill(p.second->GetProcessId());
-      p.second->Release();
-    }
-    xs_sys_process_kill(main_pid_);
+    processes_.iterate([&](const auto &, auto brw) {
+      xs_base_kill(brw->GetProcessId(), 9);
+      brw->Release();
+    });
+    xs_base_kill(main_pid_, 9);
     main_pid_ = 0;
     processes_.clear();
     open_.store(false);
@@ -115,10 +132,10 @@ IChromiumProcess *IChromium::GetProcess(const ChromiumProcessType &type) const {
   IChromiumProcess *result = nullptr;
   std::lock_guard<std::mutex> lck(*mtx_);
   do {
-    auto f = processes_.find(type);
-    if (f == processes_.end())
+    auto f = processes_.search(type);
+    if (!f)
       break;
-    result = f->second;
+    result = *f;
   } while (0);
   return result;
 }

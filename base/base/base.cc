@@ -1,5 +1,6 @@
 ﻿#include <base.h>
 
+static uv_loop_t *g_uv_default_loop = nullptr;
 Base::Base() {
   Init();
 }
@@ -7,11 +8,11 @@ Base::~Base() {
   UnInit();
 }
 void Base::Init() {
-  auto loop = uv_default_loop();
+  g_uv_default_loop = uv_default_loop();
   ready_.store(true);
 }
 void Base::UnInit() {
-  uv_loop_close(uv_default_loop());
+  uv_loop_close(g_uv_default_loop);
   ready_.store(false);
 }
 bool Base::Ready() const {
@@ -39,15 +40,16 @@ void Base::Stop() {
   do {
     if (!open_.load())
       break;
-    uv_stop(uv_default_loop());
+    uv_stop(g_uv_default_loop);
     open_.store(false);
     uv_thread_join(&thread_);
+    uv_library_shutdown();
   } while (0);
 }
 void Base::Process() {
   do {
     tasks_.execute();
-    uv_run(uv_default_loop(), UV_RUN_NOWAIT);
+    uv_run(g_uv_default_loop, UV_RUN_NOWAIT);
     if (!open_.load()) {
 
       break;

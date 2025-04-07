@@ -175,10 +175,10 @@ void Directory::Enum(const std::u16string &inputPath,
 
         if (fs::is_directory(entry.path())) {
           dirs.emplace(relativePathStr,
-                       stl::Path::Normal(inputPath + u"\\" + relativePathStr));
+                       stl::Path::Normal(inputPath + u"/" + relativePathStr));
         } else {
           files.emplace(relativePathStr,
-                        stl::Path::Normal(inputPath + u"\\" + relativePathStr));
+                        stl::Path::Normal(inputPath + u"/" + relativePathStr));
         }
       }
     } else {
@@ -189,10 +189,10 @@ void Directory::Enum(const std::u16string &inputPath,
 
         if (fs::is_directory(entry.path())) {
           dirs.emplace(relativePathStr,
-                       stl::Path::Normal(inputPath + u"\\" + relativePathStr));
+                       stl::Path::Normal(inputPath + u"/" + relativePathStr));
         } else {
           files.emplace(relativePathStr,
-                        stl::Path::Normal(inputPath + u"\\" + relativePathStr));
+                        stl::Path::Normal(inputPath + u"/" + relativePathStr));
         }
       }
     }
@@ -214,10 +214,10 @@ void Directory::Enum(
 
         if (fs::is_directory(entry.path())) {
           dirs.emplace(relativePathStr,
-                       stl::Path::Normal(inputPath + "\\" + relativePathStr));
+                       stl::Path::Normal(inputPath + "/" + relativePathStr));
         } else {
           files.emplace(relativePathStr,
-                        stl::Path::Normal(inputPath + "\\" + relativePathStr));
+                        stl::Path::Normal(inputPath + "/" + relativePathStr));
         }
       }
     } else {
@@ -228,10 +228,10 @@ void Directory::Enum(
 
         if (fs::is_directory(entry.path())) {
           dirs.emplace(relativePathStr,
-                       stl::Path::Normal(inputPath + "\\" + relativePathStr));
+                       stl::Path::Normal(inputPath + "/" + relativePathStr));
         } else {
           files.emplace(relativePathStr,
-                        stl::Path::Normal(inputPath + "\\" + relativePathStr));
+                        stl::Path::Normal(inputPath + "/" + relativePathStr));
         }
       }
     }
@@ -268,10 +268,10 @@ void Directory::Enum(const std::u8string &inputPath,
 
         if (fs::is_directory(entry.path())) {
           dirs.emplace(relativePathStr,
-                       stl::Path::Normal(inputPath + u8"\\" + relativePathStr));
+                       stl::Path::Normal(inputPath + u8"/" + relativePathStr));
         } else {
-          files.emplace(relativePathStr, stl::Path::Normal(inputPath + u8"\\" +
-                                                           relativePathStr));
+          files.emplace(relativePathStr,
+                        stl::Path::Normal(inputPath + u8"/" + relativePathStr));
         }
       }
     } else {
@@ -282,10 +282,10 @@ void Directory::Enum(const std::u8string &inputPath,
 
         if (fs::is_directory(entry.path())) {
           dirs.emplace(relativePathStr,
-                       stl::Path::Normal(inputPath + u8"\\" + relativePathStr));
+                       stl::Path::Normal(inputPath + u8"/" + relativePathStr));
         } else {
-          files.emplace(relativePathStr, stl::Path::Normal(inputPath + u8"\\" +
-                                                           relativePathStr));
+          files.emplace(relativePathStr,
+                        stl::Path::Normal(inputPath + u8"/" + relativePathStr));
         }
       }
     }
@@ -306,10 +306,10 @@ void Directory::Enum(
       std::wstring relativePathStr = relativePath.generic_wstring();
       if (fs::is_directory(entry.path())) {
         dirs.emplace(relativePathStr,
-                     stl::Path::Normal(inputPath + L"\\" + relativePathStr));
+                     stl::Path::Normal(inputPath + L"/" + relativePathStr));
       } else {
         files.emplace(relativePathStr,
-                      stl::Path::Normal(inputPath + L"\\" + relativePathStr));
+                      stl::Path::Normal(inputPath + L"/" + relativePathStr));
       }
     }
   } while (0);

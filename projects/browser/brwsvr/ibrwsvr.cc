@@ -44,6 +44,7 @@ SHARED_API int startup(void) {
       result = MP_EALREADY;
       break;
     }
+    xs_base_startup();
     auto config = Config::GetOrCreate();
     auto brwmnr = Brwmnr::GetOrCreate();
     auto server = Server::GetOrCreate();
@@ -61,6 +62,7 @@ SHARED_API void cleanup(void) {
   Brwmnr::Destroy();
   Server::Destroy();
   Config::Destroy();
+  xs_base_shutdown();
   LOG_UNINIT;
 }
 } /// extern "C"
