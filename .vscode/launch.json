@@ -66,6 +66,43 @@
       "preLaunchTask": "Windows Build Debug On CMake"
     },
     {
+      "name": "Linux Chrome(gdb)",
+      "type": "cppdbg",
+      "request": "launch",
+      "program": "${workspaceFolder}/bin/browser/chromium/130.0.6723.116/chrome",
+      "args": [
+        "--no-sandbox",
+        "--disable-gpu",
+      ],
+      "stopAtEntry": false,
+      "cwd": "${workspaceFolder}",
+      "environment": [
+        {
+          "name": "LD_LIBRARY_PATH",
+          "value": "${workspaceFolder}/bin/browser/chromium/130.0.6723.116"
+        },
+        {
+          "name": "GDK_BACKEND",
+          "value": "x11"
+        },
+        {
+          "name": "DISPLAY",
+          "value": ":0"
+        }
+      ],
+      "externalConsole": false,
+      "MIMode": "gdb", // 在 Windows 上使用 GDB
+      "miDebuggerPath": "/usr/bin/gdb",
+      "setupCommands": [
+        {
+          "description": "Enable pretty-printing for gdb",
+          "text": "-enable-pretty-printing",
+          "ignoreFailures": true
+        }
+      ],
+      "preLaunchTask": "Windows Build Debug On CMake"
+    },
+    {
       "name": "Linux Build With CMake Ninja",
       "type": "cppdbg",
       "request": "launch",
@@ -96,16 +133,20 @@
       "name": "Linux Build With CMake Ninja(lldb)",
       "type": "lldb",
       "request": "launch",
-      // "program": "${workspaceFolder}/bin/tests/test_main",
+      // "program": "${workspaceFolder}/bin/browser/chromium/130.0.6723.116/chrome",
       // "args": [
-      //   "666",
-      //   "--type=service",
-      //   "888",
+      //   "--no-sandbox",
+      //   "--disable-gpu",
       // ],
-      "program": "${workspaceFolder}/bin/tests/test_brwsvr",
-      "args": [],
-      // "program": "${workspaceFolder}/bin/tests/test_brwcfg",
+      // "env": {
+      //   "LD_LIBRARY_PATH": "${workspaceFolder}/bin/browser/chromium/130.0.6723.116",
+      //   "GDK_BACKEND": "x11",
+      //   "DISPLAY": ":0"
+      // },
+      // "program": "${workspaceFolder}/bin/tests/test_brwsvr",
       // "args": [],
+      "program": "${workspaceFolder}/bin/tests/test_brwcfg",
+      "args": [],
       // "program": "${workspaceFolder}/bin/tests/test_main",
       // "args": [],
       // "program": "${workspaceFolder}/bin/tests/test_base",
