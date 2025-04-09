@@ -557,7 +557,7 @@ public:
     inline ~Policy();
 
   public:
-    unsigned long id = 0;
+    unsigned long long id = 0;
   };
   class HomePage final {
   public:
@@ -949,15 +949,15 @@ public:
   inline void operator+=(const std::string &protocol_buffer);
   inline void operator=(const IConfigure &cfg) = delete;
   inline bool InvalidPolicId() const {
-    return !(policy.id > 0 && policy.id < 0xFF);
+    return !(policy.id > 0 && policy.id < 0xFFFFFFFF);
   }
-  inline const unsigned long &GetPolicyId() const {
+  inline unsigned long long GetPolicyId() const {
     return policy.id;
   }
-  inline const unsigned long &GetBrwId() const {
+  inline unsigned long long GetBrwId() const {
     return GetPolicyId();
   }
-  inline const unsigned long long &GetReqId() const {
+  inline unsigned long long GetReqId() const {
     return reqid;
   }
   inline const bool &Enable() const {
@@ -1276,27 +1276,27 @@ inline void IConfigure::Input::operator<<(const rapidjson::Value &inputObj) {
     if (inputObj.HasMember("button") && inputObj["button"].IsInt())
       button = static_cast<Input::Button>(inputObj["button"].GetInt());
 #if 0
-    if (inputObj.HasMember("text") && inputObj["text"].IsString() &&
+       if (inputObj.HasMember("text") && inputObj["text"].IsString() &&
         inputObj["text"].GetStringLength() > 0) {
-      text.clear();
-      std::string tmp = inputObj["text"].GetString();
-      for (auto &c : tmp) {
-        text.push_back(c);
-        if (text.size() >= 4)
+        text.clear();
+        std::string tmp = inputObj["text"].GetString();
+        for (auto& c : tmp) {
+         text.push_back(c);
+         if (text.size() >= 4)
           break;
-      }
-    }
-    if (inputObj.HasMember("unmodified_text") &&
+        }
+       }
+       if (inputObj.HasMember("unmodified_text") &&
         inputObj["unmodified_text"].IsString() &&
         inputObj["unmodified_text"].GetStringLength() > 0) {
-      unmodified_text.clear();
-      std::string tmp = inputObj["unmodified_text"].GetString();
-      for (auto &c : tmp) {
-        unmodified_text.push_back(c);
-        if (unmodified_text.size() >= 4)
+        unmodified_text.clear();
+        std::string tmp = inputObj["unmodified_text"].GetString();
+        for (auto& c : tmp) {
+         unmodified_text.push_back(c);
+         if (unmodified_text.size() >= 4)
           break;
-      }
-    }
+        }
+       }
 #endif
 
   } while (0);
@@ -1794,9 +1794,9 @@ inline void IConfigure::operator=(const std::string &protocol_buffer) {
       auto &policyObj = doc["policy"];
       if (!policyObj.HasMember("id"))
         break;
-      if (!policyObj["id"].IsUint())
+      if (!policyObj["id"].IsUint64())
         break;
-      policy.id = policyObj["id"].GetUint();
+      policy.id = policyObj["id"].GetUint64();
     } while (0);
     do { //!@ .proxy
       if (!doc.HasMember("proxy"))

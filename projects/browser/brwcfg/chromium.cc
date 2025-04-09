@@ -11,12 +11,13 @@ IChromium::~IChromium() {
 void IChromium::Init() {
   do {
     policy_id_ = Config::GetOrCreate()->GetConfigure().policy.id;
-    uvpp_ = dynamic_cast<IUvpp *>(IUvpp::Create(
+#if ENABLE_UVPP
+    uvpp_ = static_cast<IUvpp *>(IUvpp::Create(
         Conv::u16_to_u8(Config::GetOrCreate()->GetPath().libuvpp_path)
             .c_str()));
-    uvpp_config_ = uvpp_->ConfigGet();
+    uvpp_config_ = static_cast<IConfig *>(uvpp_->ConfigGet());
     xs_process_id_t pid = 0;
-    xs_sys_process_getpid(&pid); 
+    xs_sys_process_getpid(&pid);
     uvpp_config_->SetIdentify(
         stl::HighLowStorage(policy_id_, static_cast<unsigned long>(pid)).Get());
     uvpp_config_->SetServiceType(
@@ -25,6 +26,7 @@ void IChromium::Init() {
         static_cast<unsigned long>(uvpp::SessionType::IPC));
     uvpp_config_->Address(server_addr_.data(), server_addr_.size());
     uvpp_client_ = uvpp_->CreateSevice();
+#endif
     ready_.store(true);
   } while (0);
 }
@@ -41,8 +43,10 @@ bool IChromium::Start() {
       break;
     if (open_.load())
       break;
+#if ENABLE_UVPP
     if (!uvpp_client_->Start())
       break;
+#endif
     open_.store(true);
     threads_.emplace_back([this]() { Process(); });
   } while (0);

@@ -7,6 +7,7 @@ ChromiumGpu::~ChromiumGpu() {
   UnInit();
 }
 void ChromiumGpu::Init() {
+#if ENABLE_UVPP
   uvpp_config_->RegisterClientMessageReceiveReplyCb(
       [](const ISession *session, const CommandType &cmd, const IBuffer *buffer,
          CommandType *cmd_reply, IBuffer *buffer_reply) {
@@ -33,6 +34,7 @@ void ChromiumGpu::Init() {
     LOG_INFO("module({}) reqBody({})", "ChromiumGpu",
              "Request server prepare.");
   });
+#endif
 }
 void ChromiumGpu::UnInit() {
   do {
@@ -44,6 +46,7 @@ void ChromiumGpu::Release() const {
 }
 void ChromiumGpu::OnGpuScreenshotImageStream(const char *stream,
                                              const size_t &stream_size) {
+#if ENABLE_UVPP
   do {
     if (!open_.load())
       break;
@@ -52,8 +55,10 @@ void ChromiumGpu::OnGpuScreenshotImageStream(const char *stream,
     std::string pak(stream, stream_size);
     write_cache_.push(pak);
   } while (0);
+#endif
 }
 void ChromiumGpu::Process() {
+#if ENABLE_UVPP
   do {
     do {
       if (write_cache_.empty())
@@ -75,4 +80,5 @@ void ChromiumGpu::Process() {
     }
     std::this_thread::sleep_for(std::chrono::milliseconds(20));
   } while (1);
+#endif
 }

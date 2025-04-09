@@ -53,7 +53,7 @@ SHARED_API void *interface_init(void *data, unsigned long len) {
   auto config = Config::Create();
   auto uvpp = Uvpp::Create();
 
-  return dynamic_cast<IUvpp *>(uvpp);
+  return reinterpret_cast<void *>(uvpp);
 }
 SHARED_API void interface_uninit() {
   Server::Destroy();

@@ -99,7 +99,12 @@ bool IChromium::Open() {
 "--headless=new",
 "--remote-debugging-port=9222",
 #endif
-    const char *spawn_args[] = {u8path.c_str(), nullptr};
+    const char *spawn_args[] = {u8path.c_str(),
+                                "--no-sandbox",
+                                "--disable-gpu",
+                                "--headless=new",
+                                "--remote-debugging-port=9222",
+                                nullptr};
     const char *spawn_envs[] = {"DISPLAY=:0", nullptr};
     xs_base_spawn(spawn_args, spawn_envs, this,
                   [](xs_process_id_t pid, xs_errno_t err, const void *route) {

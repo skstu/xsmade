@@ -19,7 +19,7 @@ bool Brwcfg::Start() {
     size_t cmdline_len_ = 0;
     xs_sys_get_commandline(&cmdline_, &cmdline_len_);
     std::string strCmdline(cmdline_, cmdline_len_);
-    xs_sys_free((void**)&cmdline_);
+    xs_sys_free((void **)&cmdline_);
     std::string cmdline = stl::String::Lower(strCmdline);
     if (cmdline.find("--type") == std::wstring::npos) {
       LOG_INIT(config->GetPath().logs_dir + u"/" +
@@ -128,8 +128,8 @@ void Brwcfg::Destroy() {
 extern "C" {
 SHARED_API void *interface_init(void *, unsigned long) {
   Config::GetOrCreate();
-  IBrwcfg *result = dynamic_cast<IBrwcfg *>(Brwcfg::GetOrCreate());
-  return result;
+  return reinterpret_cast<void *>(
+      dynamic_cast<IBrwcfg *>(Brwcfg::GetOrCreate()));
 }
 SHARED_API void interface_uninit(void) {
   Brwcfg::Destroy();

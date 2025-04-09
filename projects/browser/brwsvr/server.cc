@@ -8,14 +8,21 @@ Server::~Server() {
 }
 void Server::Init() {
   do {
-    uvpp_ = dynamic_cast<IUvpp *>(IUvpp::Create(
+#if ENABLE_UVPP
+    uvpp_ = static_cast<IUvpp *>(IUvpp::Create(
         Conv::u16_to_u8(Config::GetOrCreate()->GetPath().libuvpp_path)
             .c_str()));
-    if (!uvpp_)
+    if (!uvpp_) {
+      LOG_INFO("{} is empty pointer.", "uvpp_");
+      std::cout << "uvpp_ is empty pointer." << std::endl;
       break;
+    }
     uvpp_config_ = uvpp_->ConfigGet();
-    if (!uvpp_config_)
+    if (!uvpp_config_) {
+      LOG_INFO("{} is empty pointer.", "uvpp_config_");
+      std::cout << "uvpp_config_ is empty pointer." << std::endl;
       break;
+    }
     uvpp_config_->SetServiceType(
         static_cast<unsigned long>(uvpp::ServerType::ACCEPTOR) |
         static_cast<unsigned long>(uvpp::AddressType::IPC) |
@@ -111,7 +118,7 @@ void Server::Init() {
             break;
           }
         });
-
+#endif
 #if ENABLE_FFCODEC
     const std::string stream_path = R"(C:\Users\k34ub\Desktop\test.mp4)";
     stl::File::Remove(stream_path);
@@ -144,11 +151,23 @@ bool Server::Start(void) {
   do {
     if (!ready_.load() || open_.load())
       break;
-    uvpp_service_ = uvpp_->CreateSevice();
-    if (!uvpp_service_)
+#if ENABLE_UVPP
+    if (!uvpp_) {
+      LOG_INFO("{} is empty pointer.", "uvpp_");
+      std::cout << "uvpp_ is empty pointer." << std::endl;
       break;
+    }
+    uvpp_service_ = uvpp_->CreateSevice();
+    if (!uvpp_service_) {
+      LOG_INFO("{} is empty pointer.", "uvpp_service_");
+      std::cout << "uvpp_service_ is empty pointer." << std::endl;
+      break;
+    }
     open_.store(true);
     uvpp_service_->Start();
+#else
+    open_.store(true);
+#endif
     threads_.emplace_back([this]() { Process(); });
   } while (0);
   return open_.load();

@@ -61,6 +61,7 @@ void Server::Process(void) {
     } while (0);
     if (!open_.load()) {
       LOG_INFO("module({}) ({})", "ServerProcess", "Process thread stopped.");
+      std::cout << "Process thread stopped." << std::endl;
       break;
     }
     std::this_thread::sleep_for(std::chrono::milliseconds(20));

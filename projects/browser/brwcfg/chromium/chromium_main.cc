@@ -7,6 +7,7 @@ ChromiumMain::~ChromiumMain() {
   UnInit();
 }
 void ChromiumMain::Init() {
+#if ENABLE_UVPP
   uvpp_config_->RegisterClientMessageReceiveReplyCb([](const ISession *session,
                                                        const CommandType &cmd,
                                                        const IBuffer *buffer,
@@ -65,6 +66,7 @@ void ChromiumMain::Init() {
                           strlen("Please prepare on main"));
     LOG_INFO("module({}) ({})", "ChromiumMain", "Request server prepare.");
   });
+#endif
 }
 void ChromiumMain::UnInit() {
 }
@@ -74,6 +76,7 @@ void ChromiumMain::Release() const {
 void ChromiumMain::OnChromiumInputEvent(
     const unsigned long long &reqid,
     const brwcfg::IConfigure::Input::ResultCode &resultCode) const {
+#if ENABLE_UVPP
   do {
     if (!uvpp_client_ || !uvpp_)
       break;
@@ -105,4 +108,5 @@ void ChromiumMain::OnChromiumInputEvent(
         static_cast<unsigned long>(command_type_t::LCT_CHROMIUM_MAIN_REPNOTIFY),
         buffer);
   } while (0);
+#endif
 }

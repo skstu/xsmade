@@ -46,10 +46,8 @@ SHARED_API int startup(void) {
     }
     xs_base_startup();
     auto config = Config::GetOrCreate();
-    auto brwmnr = Brwmnr::GetOrCreate();
-    auto server = Server::GetOrCreate();
-
     LOG_INIT(config->GetPath().logs_path);
+    auto server = Server::GetOrCreate();
     if (!server->Start())
       break;
     started = 1;
@@ -59,7 +57,6 @@ SHARED_API int startup(void) {
 }
 SHARED_API void cleanup(void) {
   started = 0;
-  Brwmnr::Destroy();
   Server::Destroy();
   Config::Destroy();
   xs_base_shutdown();

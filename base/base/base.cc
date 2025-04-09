@@ -20,7 +20,6 @@ bool Base::Ready() const {
   return open_.load();
 }
 bool Base::Start() {
-  std::lock_guard<std::mutex> lock(*mtx_);
   do {
     if (!ready_.load() || open_.load())
       break;
@@ -36,7 +35,6 @@ bool Base::Start() {
   return open_.load();
 }
 void Base::Stop() {
-  std::lock_guard<std::mutex> lock(*mtx_);
   do {
     if (!open_.load())
       break;
@@ -51,7 +49,6 @@ void Base::Process() {
     tasks_.execute();
     uv_run(g_uv_default_loop, UV_RUN_NOWAIT);
     if (!open_.load()) {
-
       break;
     }
     std::this_thread::sleep_for(std::chrono::milliseconds(10));
