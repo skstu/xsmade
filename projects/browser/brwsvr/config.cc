@@ -52,10 +52,10 @@ bool Config::CreateBrowserEnv(const browser_id_t &brwid,
     if (buffer.empty())
       break;
     const std::string hexPolicyIdString = fmt::format("{:x}", brwid);
-    // C:\Users\k34ub\source\skstu\xsmade\bin\cache\90fa4b4b8d7ac982\mpUserEnv\configures
+    // C:\Users\k34ub\source\skstu\xsmade\bin\cache\90fa4b4b8d7ac982\MPUserEnv\configures
     const std::u16string cfgDir = path_.cache_dir + u"/" +
                                   Conv::u8_to_u16(hexPolicyIdString) +
-                                  u"/mpUserEnv/configures";
+                                  u"/MPUserEnv/configures";
     stl::Directory::Create(cfgDir);
     const std::u16string cfgPath = cfgDir + u"/configure.json";
     stl::File::WriteFile(cfgPath, buffer);
@@ -82,7 +82,7 @@ std::u16string Config::GetChromiumUserEnvDir(const browser_id_t &brwid) const {
   std::lock_guard<std::mutex> lck(*mtx_);
   std::string hexPolicyIdString = fmt::format("{:x}", brwid);
   result = path_.cache_dir + u"/" + Conv::u8_to_u16(hexPolicyIdString) +
-           u"/mpUserEnv";
+           u"/MPUserEnv";
   stl::Directory::Create(result);
   return result;
 }

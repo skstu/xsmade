@@ -181,7 +181,9 @@ void Server::Stop(void) {
       t.join();
     }
     threads_.clear();
+#if ENABLE_UVPP
     uvpp_service_->Stop();
+#endif
   } while (0);
 }
 IChromium *Server::GetBrowser(const policy_id_t &brwid, mp_errno_t &ret) const {
@@ -217,7 +219,7 @@ IChromium *Server::CreateBrowser(const brwcfg::IConfigure &cfg,
       ret = mp_errno_t::MP_EBRWENVCFG;
       break;
     }
-    result = new IChromium(cfg.GetPolicyId());
+    result = new IChromium(cfg.Serialization());
     if (!result->Open()) {
       ret = mp_errno_t::MP_EBRWOPEN;
       result->Release();

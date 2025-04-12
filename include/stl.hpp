@@ -404,6 +404,15 @@ public:
   static std::u8string Lower(const std::u8string &);
   static std::u8string Upper(const std::u8string &);
 #endif
+  template <typename T>
+  static std::string IntegerToHexString(const T &value,
+                                        const bool &upper = false) {
+    std::ostringstream oss;
+    oss << std::hex
+        << (upper ? std::ios_base::uppercase : std::ios_base::uppercase)
+        << value;
+    return oss.str();
+  }
   static std::string BinaryToHexString(const std::string &s);
   static std::string HexStringToBinary(const std::string &s);
   static std::vector<std::string> StringSpilt(const std::string &,
@@ -480,6 +489,9 @@ public:
   static std::wstring U16PathToWPath(const std::u16string &);
   static std::u16string WPathToU16Path(const std::wstring &);
   static std::string Normal(const std::string &);
+  #if _STL_HAS_CXX20
+  static std::u8string Normal(const std::u8string &);
+  #endif
   static std::u16string Normal(const std::u16string &);
   static std::wstring Normal(const std::wstring &);
   static bool IsDirectoryPath(const std::string &input_path);

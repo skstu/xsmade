@@ -124,25 +124,23 @@
       "preLaunchTask": "Linux Build Debug On CMake"
     },
     {
-      "name": "Linux Build With CMake Ninja(lldb)",
+      "name": "Linux(lldb)",
       "type": "lldb",
       "request": "launch",
-      "program": "${workspaceFolder}/bin/browser/chromium/130.0.6723.116/chrome",
-      "args": [
-        "--no-sandbox",
-        "--disable-gpu",
-      ],
-      "env": {
-        "LD_LIBRARY_PATH": "${workspaceFolder}/bin/browser/chromium/130.0.6723.116",
-        "GDK_BACKEND": "x11",
-        "DISPLAY": ":0"
-      },
+      // "program": "${workspaceFolder}/bin/browser/chromium/130.0.6723.116/chrome",
+      // "args": [
+      //   "--no-sandbox",
+      //   "--disable-gpu",
+      // ],
+      // "env": {
+      //   "DISPLAY": ":0"
+      // },
       // "program": "${workspaceFolder}/bin/tests/test_brwsvr",
       // "args": [],
       // "program": "${workspaceFolder}/bin/tests/test_brwcfg",
       // "args": [],
-      // "program": "${workspaceFolder}/bin/tests/test_main",
-      // "args": [],
+      "program": "${workspaceFolder}/bin/main",
+      "args": [],
       // "program": "${workspaceFolder}/bin/tests/test_base",
       // "args": [],
       "cwd": "${workspaceFolder}"

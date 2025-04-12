@@ -51,16 +51,10 @@ void Config::Init() {
     path_.logs_dir = path_.root + u"/logs";
     stl::Directory::Create(path_.logs_dir);
     path_.chromium_cache_dir = path_.root + u"/cache";
-#if 0
     std::string hexPolicyIdString = fmt::format("{:x}", configure_->policy.id);
     path_.chromium_userdata_dir =
         path_.chromium_cache_dir + u"/" + Conv::u8_to_u16(hexPolicyIdString);
-#else
-    std::string hexPolicyIdString = std::to_string(configure_->policy.id);
-    path_.chromium_userdata_dir =
-        path_.chromium_cache_dir + u"/" + Conv::u8_to_u16(hexPolicyIdString);
-#endif
-    path_.chromium_userenv_dir = path_.chromium_userdata_dir + u"/mpUserEnv";
+    path_.chromium_userenv_dir = path_.chromium_userdata_dir + u"/MPUserEnv";
     stl::Directory::Create(Conv::u16_to_ws(path_.chromium_userenv_dir));
     path_.configure_cache_dir = path_.chromium_userenv_dir + u"/configures";
     stl::Directory::Create(path_.configure_cache_dir);

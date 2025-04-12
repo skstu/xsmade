@@ -21,7 +21,9 @@ if(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
 endif()
 
 set(CMAKE_CXX_FLAGS_DEBUG "-g -O0 -DDEBUG -D_DEBUG")
-set(CMAKE_CXX_FLAGS_RELEASE "-O3 -DNDEBUG")
+set(CMAKE_CXX_FLAGS_RELEASE "-O2 -DNDEBUG")
+set(CMAKE_C_FLAGS_RELEASE "-O2 -DNDEBUG")
+
 set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "-O2 -g") # Release with Debug Info
 set(CMAKE_CXX_FLAGS_MINSIZEREL "-Os -DNDEBUG") # MinSizeRel
 
@@ -35,10 +37,7 @@ endif()
 # gfn_message_info( "Single-config generator detected. Build type:
 # ${CMAKE_BUILD_TYPE}") endif()
 
-if(xsSYSTYPE_LINUX)
-add_compile_options(-Wno-nontrivial-memaccess)
-add_compile_options(-Wno-deprecated-copy-dtor)
-else()
-add_compile_options(-Wno-nontrivial-memcall)
-add_compile_options(-Wno-deprecated-literal-operator)
-endif()
+# if(xsSYSTYPE_LINUX) add_compile_options(-Wno-nontrivial-memaccess)
+# add_compile_options(-Wno-deprecated-copy-dtor) add_compile_options(-mno-avx
+# -mno-avx2 -mno-sse4.2) else() add_compile_options(-Wno-nontrivial-memcall)
+# add_compile_options(-Wno-deprecated-literal-operator) endif()

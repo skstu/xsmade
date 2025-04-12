@@ -283,6 +283,20 @@ bool Path::IsFilePath(const std::u16string &input_path) {
   }
   return result;
 }
+#if _STL_HAS_CXX20
+std::u8string Normal(const std::u8string &path) {
+  u8string result;
+  do {
+    if (path.empty())
+      break;
+#ifdef _STL_HAS_CXX17
+    fs::path _path = path;
+    result = _path.lexically_normal().u8string();
+#endif
+  } while (0);
+  return result;
+}
+#endif
 string Path::Normal(const string &path) {
   string result;
   do {

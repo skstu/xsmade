@@ -10,10 +10,13 @@ public:
 
 public:
   const xs_process_id_t &GetProcessId() const;
+#if ENABLE_UVPP
   void SetSession(const uvpp::ISession *);
-
+#endif
 protected:
+#if ENABLE_UVPP
   uvpp::ISession *session_ = nullptr;
+#endif
   const ChromiumProcessType process_type_;
   const xs_process_id_t process_id_;
   std::shared_ptr<std::mutex> mtx_ = std::make_shared<std::mutex>();
@@ -62,7 +65,7 @@ private:
 
 class IChromium {
 public:
-  IChromium(const browser_id_t &brwid);
+  IChromium(const std::string& cfg);
   void Release() const;
 
 public:
@@ -76,7 +79,7 @@ public:
 
 private:
   ~IChromium();
-  const browser_id_t browser_id_;
+  const brwcfg::IConfigure brwcfg_;
 
 private:
   std::atomic_bool open_ = false;

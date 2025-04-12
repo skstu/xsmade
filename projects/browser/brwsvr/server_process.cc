@@ -19,7 +19,8 @@ void Server::Process(void) {
                  req->GetCfg().Serialization());
         switch (req->GetCfg().GetType()) {
         case brwcfg::IConfigure::Type::BrwCreate: {
-          IChromium *pChromium = CreateBrowser(req->GetCfg(), ret);
+          IChromium *pChromium =
+              CreateBrowser(req->GetCfg().Serialization(), ret);
           if (!pChromium)
             break;
         } break;

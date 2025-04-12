@@ -977,6 +977,7 @@ public:
   Jss jss;
   Frame frame;
   std::map<std::string, std::string> startup_args;
+  std::map<std::string, std::string> startup_envs;
   rapidjson::Document doc;
   Policy policy;
   Proxy proxy;
@@ -1869,6 +1870,40 @@ inline void IConfigure::operator=(const std::string &protocol_buffer) {
       } while (0);
 
     } while (0);
+    do { //!@ .startup_envs
+      if (!doc.HasMember("startup_envs"))
+        break;
+      if (!doc["startup_envs"].IsArray())
+        break;
+
+      for (auto it = doc["startup_envs"].Begin();
+           it != doc["startup_envs"].End(); ++it) {
+        if (!it->IsObject())
+          break;
+        auto &obj = *it;
+        std::string key, value;
+        if (obj.HasMember("key") && obj["key"].IsString() &&
+            obj["key"].GetStringLength() > 0) {
+          key = obj["key"].GetString();
+          /*do {
+            if (key.empty())
+              break;
+            if (*key.begin() == '-')
+              key.erase(key.begin());
+            else
+              break;
+          } while (1);*/
+          std::transform(key.begin(), key.end(), key.begin(), ::tolower);
+        }
+        if (obj.HasMember("value") && obj["value"].IsString() &&
+            obj["value"].GetStringLength() > 0) {
+          value = obj["value"].GetString();
+        }
+        if (!key.empty() && !value.empty()) {
+          startup_envs.emplace(key, value);
+        }
+      }
+    } while (0);
     do { //!@ .startup_args
       if (!doc.HasMember("startup_args"))
         break;
@@ -1884,14 +1919,14 @@ inline void IConfigure::operator=(const std::string &protocol_buffer) {
         if (obj.HasMember("key") && obj["key"].IsString() &&
             obj["key"].GetStringLength() > 0) {
           key = obj["key"].GetString();
-          do {
+          /*do {
             if (key.empty())
               break;
             if (*key.begin() == '-')
               key.erase(key.begin());
             else
               break;
-          } while (1);
+          } while (1);*/
           std::transform(key.begin(), key.end(), key.begin(), ::tolower);
         }
         if (obj.HasMember("value") && obj["value"].IsString() &&

@@ -13,11 +13,13 @@ bool ChromiumMain::Request(const command_type_t &cmd,
   bool result = false;
   std::lock_guard<std::mutex> lck(*mtx_);
   do {
+#if ENABLE_UVPP
     if (!session_)
       break;
     if (!session_->Write(cmd, body.data(), body.size()))
       break;
     result = true;
+#endif
   } while (0);
   return result;
 }

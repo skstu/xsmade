@@ -23,7 +23,7 @@ typedef enum : unsigned long {
 } command_type_t;
 
 ////////////////////////////////////////////////////////////////////////////////
-typedef unsigned long browser_id_t;
+typedef unsigned long long browser_id_t;
 typedef unsigned long long request_id_t;
 typedef browser_id_t policy_id_t;
 typedef void (*tf_frame_buffer_stream_cb)(browser_id_t browser_id,

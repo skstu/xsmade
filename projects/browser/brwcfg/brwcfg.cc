@@ -126,12 +126,12 @@ void Brwcfg::Destroy() {
   SK_DELETE_PTR(__gpsBrwcfg);
 }
 extern "C" {
-SHARED_API void *interface_init(void *, unsigned long) {
+SHARED_API void *interface_init1(void *, unsigned long) {
   Config::GetOrCreate();
   return reinterpret_cast<void *>(
       dynamic_cast<IBrwcfg *>(Brwcfg::GetOrCreate()));
 }
-SHARED_API void interface_uninit(void) {
+SHARED_API void interface_uninit1(void) {
   Brwcfg::Destroy();
   Config::Destroy();
 }

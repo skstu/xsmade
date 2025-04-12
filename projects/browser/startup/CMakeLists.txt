@@ -57,6 +57,7 @@ elseif(xsSYSTYPE_LINUX)
   target_include_directories(
     ${PROJECT_NAME}
     PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}
+            ${CMAKE_CURRENT_SOURCE_DIR}/..
             ${xsROOT_DIR}
             ${xsINCLUDE_DIR}
             ${xsBUILD_INSTALLED_INCLUDE_DIR}
@@ -69,16 +70,17 @@ elseif(xsSYSTYPE_LINUX)
 
   target_link_directories(${PROJECT_NAME} PRIVATE ${xsLIBS_DIR}
                           ${xsLIBS_LIB_DIR} ${xsBUILD_INSTALLED_LIB_DIR})
-                          
+
   target_link_libraries(
     ${PROJECT_NAME}
     PRIVATE libdl.a
             libfmt.a
-            libsys.a
-            libstl.a
-            libzipcc.a
             libpthread.a
             libhttp_parser.a
+            ${xsOUTPUT_DIR}/base/sys/libsys.a
+            ${xsOUTPUT_DIR}/base/stl/libstl.a
+            ${xsOUTPUT_DIR}/base/base/libbase.a
+            ${xsOUTPUT_DIR}/base/zipcc/libzipcc.a
             libz.a)
 elseif(xsSYSTYPE_APPLE)
   target_include_directories(

@@ -5,15 +5,17 @@ IChromiumProcess::IChromiumProcess(const ChromiumProcessType &type,
 }
 IChromiumProcess::~IChromiumProcess() {
 }
+#if ENABLE_UVPP
 void IChromiumProcess::SetSession(const uvpp::ISession *session) {
   std::lock_guard<std::mutex> lck(*mtx_);
   session_ = const_cast<uvpp::ISession *>(session);
 }
+#endif
 const xs_process_id_t &IChromiumProcess::GetProcessId() const {
   std::lock_guard<std::mutex> lck(*mtx_);
   return process_id_;
 }
-IChromium::IChromium(const browser_id_t &brwid) : browser_id_(brwid) {
+IChromium::IChromium(const std::string &cfg) : brwcfg_(cfg) {
 }
 IChromium::~IChromium() {
 }
@@ -35,13 +37,17 @@ bool IChromium::ProcessReady(const ChromiumProcessType &type,
     switch (type) {
     case ChromiumProcessType::ChromiumProcess: {
       auto p = new ChromiumMain(pid);
+#if ENABLE_UVPP
       p->SetSession(session);
+#endif
       processes_.push(type, p);
       result = true;
     } break;
     case ChromiumProcessType::ChromiumGpuProcess: {
       auto p = new ChromiumGpu(pid);
+#if ENABLE_UVPP
       p->SetSession(session);
+#endif
       processes_.push(type, p);
       result = true;
     } break;
@@ -79,7 +85,7 @@ bool IChromium::Request(const command_type_t &cmd, const std::string &body,
 }
 const browser_id_t &IChromium::GetBrowserId() const {
   std::lock_guard<std::mutex> lck(*mtx_);
-  return browser_id_;
+  return brwcfg_.policy.id;
 }
 bool IChromium::Open() {
   std::lock_guard<std::mutex> lck(*mtx_);
@@ -87,26 +93,56 @@ bool IChromium::Open() {
     if (open_.load())
       break;
     main_pid_ = 0;
-    auto u8path = Conv::u16_to_u8(Config::GetOrCreate()->GetChrome(""));
-    // xs_base_spawn(const char **args, const char **envs);
-    //  if (0 != xs_sys_process_spawn(
-    //               Conv::u16_to_u8(Config::GetOrCreate()->GetChrome("")).c_str(),
-    //               nullptr, false, &main_pid_))
-    //    break;
-#if 0
-"--no-sandbox",
-"--disable-gpu",
-"--headless=new",
-"--remote-debugging-port=9222",
-#endif
-    const char *spawn_args[] = {u8path.c_str(),
-                                "--no-sandbox",
-                                "--disable-gpu",
-                                "--headless=new",
-                                "--remote-debugging-port=9222",
-                                nullptr};
-    const char *spawn_envs[] = {"DISPLAY=:0", nullptr};
-    xs_base_spawn(spawn_args, spawn_envs, this,
+    const std::string u8path =
+        Conv::u16_to_u8(Config::GetOrCreate()->GetChrome(""));
+    LOG_INFO("current dir", u8path);
+    std::vector<std::string> startup_args_cache, startup_envs_cache;
+    for (const auto &it : brwcfg_.startup_args) {
+      if (it.first.empty())
+        continue;
+      std::string args = it.first;
+      if (!it.second.empty()) {
+        args.append("=");
+        args.append(it.second);
+      }
+      startup_args_cache.push_back(args);
+    }
+    for (const auto &it : brwcfg_.startup_envs) {
+      if (it.first.empty() || it.second.empty())
+        continue;
+      std::string args = it.first;
+      args.append("=");
+      args.append(it.second);
+      startup_envs_cache.push_back(args);
+    }
+    std::vector<const char *> startup_args{u8path.c_str()}, startup_envs;
+    for (const auto &it : startup_args_cache) {
+      startup_args.push_back(it.c_str());
+    }
+    for (const auto &it : startup_envs_cache) {
+      startup_envs.push_back(it.c_str());
+    }
+
+    // // brwcfg_.startup_args
+    // const char *spawn_args[] = {u8path.c_str(), "--no-sandbox",
+    // "--disable-gpu",
+    //                             "--headless=new", nullptr};
+    // /*"DISPLAY=:0"*/
+    // const char *spawn_envs[] = {"", nullptr};
+
+    startup_args.push_back(nullptr);
+    startup_envs.push_back(nullptr);
+    for (const auto &it : startup_args) {
+      if (it == nullptr)
+        break;
+      LOG_INFO("args: {}", it);
+    }
+    for (const auto &it : startup_envs) {
+      if (it == nullptr)
+        break;
+      LOG_INFO("envs: {}", it);
+    }
+    xs_base_spawn(&startup_args[0], &startup_envs[0], this,
                   [](xs_process_id_t pid, xs_errno_t err, const void *route) {
                     auto self =
                         static_cast<IChromium *>(const_cast<void *>(route));
