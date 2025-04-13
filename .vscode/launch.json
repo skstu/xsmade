@@ -66,22 +66,22 @@
       "preLaunchTask": "Windows Build Debug On CMake"
     },
     {
-      "name": "Linux Chrome(gdb)",
+      "name": "Linux(gdb)",
       "type": "cppdbg",
       "request": "launch",
-      "program": "${workspaceFolder}/bin/browser/chromium/130.0.6723.116/chrome",
-      "args": [
-        "--no-sandbox",
-        "--disable-gpu",
-      ],
-      "environment": [
-        {
-          "name": "DISPLAY",
-          "value": ":0"
-        }
-      ],
-      // "program": "${workspaceFolder}/bin/tests/test_brwsvr",
-      // "args": [],
+      // "program": "${workspaceFolder}/bin/browser/chromium/130.0.6723.116/chrome",
+      // "args": [
+      //   "--no-sandbox",
+      //   "--disable-gpu",
+      // ],
+      // "environment": [
+      //   {
+      //     "name": "DISPLAY",
+      //     "value": ":0"
+      //   }
+      // ],
+      "program": "${workspaceFolder}/bin/tests/test_brwsvr",
+      "args": [],
       "stopAtEntry": false,
       "cwd": "${workspaceFolder}",
       "externalConsole": false,
@@ -135,12 +135,12 @@
       // "env": {
       //   "DISPLAY": ":0"
       // },
-      // "program": "${workspaceFolder}/bin/tests/test_brwsvr",
-      // "args": [],
+      "program": "${workspaceFolder}/bin/tests/test_brwsvr",
+      "args": [],
       // "program": "${workspaceFolder}/bin/tests/test_brwcfg",
       // "args": [],
-      "program": "${workspaceFolder}/bin/main",
-      "args": [],
+      // "program": "${workspaceFolder}/bin/main",
+      // "args": [],
       // "program": "${workspaceFolder}/bin/tests/test_base",
       // "args": [],
       "cwd": "${workspaceFolder}"

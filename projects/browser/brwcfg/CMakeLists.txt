@@ -65,7 +65,6 @@ elseif(xsSYSTYPE_LINUX)
 
   target_link_libraries(
     ${PROJECT_NAME}
-    libc++.a
     fmt.a
     libpthread.a
     libz.a

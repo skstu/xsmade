@@ -636,6 +636,337 @@ public:
     public:
       inline void operator<<(const std::string &);
     };
+    class ThridParty final {
+    public:
+      class ScreenSize final {
+      public:
+        inline ScreenSize();
+        inline ~ScreenSize();
+        inline void operator=(const ScreenSize &obj) {
+          width = obj.width;
+          height = obj.height;
+        }
+
+      public:
+        unsigned int width = 1920;
+        unsigned int height = 1080;
+      };
+      class Tls final {
+      public:
+        inline Tls();
+        inline ~Tls();
+        inline void operator=(const Tls &obj) {
+          enabled = obj.enabled;
+          seed = obj.seed;
+        }
+
+      public:
+        bool enabled = true;
+        unsigned long long seed = 1130449385;
+      };
+      class Webrtc final {
+      public:
+        inline Webrtc();
+        inline ~Webrtc();
+        inline void operator=(const Webrtc &obj) {
+          enabled = obj.enabled;
+          localIP = obj.localIP;
+          publicIP = obj.publicIP;
+        }
+
+      public:
+        bool enabled = true;
+        std::string localIP;
+        std::string publicIP;
+      };
+
+      class Storage final {
+      public:
+        inline Storage();
+        inline ~Storage();
+        inline void operator=(const Storage &obj) {
+          quota = obj.quota;
+          usage = obj.usage;
+          enabled = obj.enabled;
+        }
+
+      public:
+        unsigned long long quota = 77310667161;
+        int usage = 0;
+        bool enabled = true;
+      };
+
+      class FontsFull final { //!@ "fontsFull": [],
+      public:
+        inline FontsFull();
+        inline ~FontsFull();
+        inline void operator=(const FontsFull &obj) {
+        }
+
+      public:
+      };
+
+      class AudioNoise final {
+      public:
+        inline AudioNoise();
+        inline ~AudioNoise();
+        inline void operator=(const AudioNoise &obj) {
+          enabled = obj.enabled;
+          sumStep = obj.sumStep;
+          freqStep = obj.freqStep;
+          sumNoise = obj.sumNoise;
+          freqNoise = obj.freqNoise;
+          gainNoise = obj.gainNoise;
+          timeDomainNoise = obj.timeDomainNoise;
+        }
+
+      public:
+        bool enabled = true;
+        int sumStep = 3;
+        int freqStep = 3;
+        double sumNoise = 0.00000006500532991952443;
+        double freqNoise = 0.000004;
+        double gainNoise = 0.0000049999999999999996;
+        double timeDomainNoise = 0.000002;
+      };
+      class Canvas final {
+      public:
+        inline Canvas();
+        inline ~Canvas();
+        inline void operator=(const Canvas &obj) {
+          enabled = obj.enabled;
+          alpha = obj.alpha;
+          widthRandPercent = obj.widthRandPercent;
+          heightRandPercent = obj.heightRandPercent;
+          colorDisturbedValue = obj.colorDisturbedValue;
+        }
+
+      public:
+        bool enabled = true;
+        int alpha = 2;
+        float widthRandPercent = 0.1;
+        float heightRandPercent = 0.4;
+        int colorDisturbedValue = 2;
+      };
+      class ClientHints final {
+      public:
+        inline ClientHints();
+        inline ~ClientHints();
+        inline void operator=(const ClientHints &obj) {
+          bit = obj.bit;
+          arch = obj.arch;
+          wow64 = obj.wow64;
+          isMobile = obj.isMobile;
+          platform = obj.platform;
+          fullVersion = obj.fullVersion;
+          platformVersion = obj.platformVersion;
+          model = obj.model;
+        }
+
+      public:
+        std::string bit;
+        std::string arch;
+        std::string model;
+        bool wow64 = false;
+        bool isMobile = false;
+        std::string platform;
+        std::string fullVersion;
+        //"brandVersions": [],
+        std::string platformVersion;
+      };
+
+      class ClientRects final {
+      public:
+        inline ClientRects();
+        inline ~ClientRects();
+        inline void operator=(const ClientRects &obj) {
+          enabled = obj.enabled;
+          scale = obj.scale;
+        }
+
+      public:
+        double scale = 1.0015135571877196;
+        bool enabled = true;
+      };
+
+      class Geolocation final {
+      public:
+        inline Geolocation();
+        inline ~Geolocation();
+        inline void operator=(const Geolocation &obj) {
+          enabled = obj.enabled;
+          latitude = obj.latitude;
+          longitude = obj.longitude;
+          accuracy = obj.accuracy;
+        }
+
+      public:
+        bool enabled = true;
+        double latitude = 31.2304;
+        double longitude = 121.4737;
+        double accuracy = 1000.0;
+      };
+      class MediaDevice final {
+      public:
+        class AudioOutputs final {
+        public:
+          inline AudioOutputs();
+          inline ~AudioOutputs();
+          inline void operator=(const AudioOutputs &obj) {
+            label = obj.label;
+            groupId = obj.groupId;
+            deviceId = obj.deviceId;
+          }
+
+        public:
+          std::string label;
+          std::string groupId = "5b0ebeb5d54c97754ae6d4e4a55d212508f8a0bd3060a6"
+                                "641c00b3e8e79c1cae";
+          std::string deviceId;
+        };
+
+      public:
+        inline MediaDevice();
+        inline ~MediaDevice();
+        inline void operator=(const MediaDevice &obj) {
+          enabled = obj.enabled;
+          audio = obj.audio;
+          audioOutputs = obj.audioOutputs;
+        }
+
+      public:
+        bool enabled = true;
+        bool audio = true;
+        /*
+"audioInputs": [],
+    "videoInputs": [],
+*/
+        std::vector<AudioOutputs> audioOutputs;
+      };
+      class SpeechVoice final {
+      public:
+        class Voices final {
+        public:
+          inline Voices();
+          inline ~Voices();
+          inline void operator=(const Voices &obj) {
+            lang = obj.lang;
+            name = obj.name;
+            default_ = obj.default_;
+            voiceURI = obj.voiceURI;
+            localService = obj.localService;
+          }
+
+        public:
+          std::string lang;
+          std::string name;
+          bool default_ = true;
+          std::string voiceURI;
+          std::string localService;
+        };
+
+      public:
+        inline SpeechVoice();
+        inline ~SpeechVoice();
+        inline void operator=(const SpeechVoice &obj) {
+          enabled = obj.enabled;
+          voices = obj.voices;
+        }
+
+      public:
+        std::vector<Voices> voices;
+        bool enabled = true;
+      };
+
+      class WebglCustomConfig final {
+      public:
+        inline WebglCustomConfig();
+        inline ~WebglCustomConfig();
+        inline void operator=(const WebglCustomConfig &obj) {
+          webglCustomEnabled = obj.webglCustomEnabled;
+          webglVendor = obj.webglVendor;
+          webglRenderer = obj.webglRenderer;
+        }
+
+      public:
+        bool webglCustomEnabled = true;
+        std::string webglVendor = "Google Inc.";
+        std::string webglRenderer =
+            "ANGLE (Intel(R) UHD Graphics 730 Direct3D11 vs_5_0 ps_5_0)";
+      };
+      class PermissionSimulation final {
+      public:
+        inline PermissionSimulation();
+        inline ~PermissionSimulation();
+        inline void operator=(const PermissionSimulation &obj) {
+          maxDelay = obj.maxDelay;
+          minDelay = obj.minDelay;
+          oddsGrant = obj.oddsGrant;
+          oddsCancel = obj.oddsCancel;
+          oddsRefuse = obj.oddsRefuse;
+        }
+
+      public:
+        int maxDelay = 4;
+        float minDelay = 2.5;
+        int oddsGrant = 90;
+        int oddsCancel = 5;
+        int oddsRefuse = 5;
+      };
+
+    public:
+      inline ThridParty();
+      inline ~ThridParty();
+      inline void operator=(const ThridParty &);
+      inline bool operator<<(const rapidjson::Value &);
+
+    public:
+      ThridParty::PermissionSimulation permissionSimulation;
+      ThridParty::WebglCustomConfig webglCustomConfig;
+      ThridParty::SpeechVoice speechVoice;
+      ThridParty::MediaDevice mediaDevice;
+      ThridParty::Geolocation geolocation;
+      ThridParty::ClientRects clientRects;
+      ThridParty::ClientHints clientHints;
+      ThridParty::Canvas canvas;
+      ThridParty::AudioNoise audioNoise;
+      std::set<std::string> languages;
+      ThridParty::Tls tls;
+      ThridParty::Webrtc webrtc;
+      ThridParty::ScreenSize screenSize;
+      ThridParty::FontsFull fontsFull;
+      ThridParty::Storage storage;
+      std::string id;
+      unsigned int cpu = 2;
+      std::string dnt = "0";
+      unsigned int colorDepth = 24;
+      std::string appCodeName = "Mozilla";
+      std::string userDataDir = "";
+      int windowWidth = 1920;
+      int windowHeight = 937;
+      int batteryLevel = 1;
+      unsigned int deviceMemory = 8;
+      std::string acceptLanguage = "zh-CN,zh;q=0.9";
+      bool batteryCharging = true;
+      float devicePixelRatio = 1;
+      bool fontsFullEnabled = false;
+      int batteryChargingTime = 0;
+      int windowTitleBarHeight = 103;
+      int batteryDischargingTime = -1;
+      std::string appName = "Netscape";
+      std::string fontDir = "";
+      std::string product = "Gecko";
+      std::string platform = "Win32";
+      std::string timezone = "Asia/Shanghai";
+      std::string userAgent = "Mozilla/5.0 (Windows NT 10.0; WOW64) "
+                              "AppleWebKit/537.36 (KHTML, like "
+                              "Gecko) Chrome/86.0.4240.198 Safari/537.36";
+      std::string appVersion = "5.0 (Windows NT 10.0; WOW64) "
+                               "AppleWebKit/537.36 (KHTML, like "
+                               "Gecko) Chrome/86.0.4240.198 Safari/537.36";
+      std::string socks5 = "";
+      std::string vendor = "Google Inc.";
+    };
     class Navigator final {
     public:
       class Plugins final {
@@ -927,6 +1258,7 @@ public:
     Screen screen;
     Timezone timezone;
     Navigator navigator;
+    ThridParty thrid_party;
   };
 
   class Jss final {
@@ -938,6 +1270,9 @@ public:
     bool enable = false;
     std::map<std::string, std::string> source;
   };
+
+private:
+  inline void Final();
 
 public:
   inline IConfigure();
@@ -984,6 +1319,7 @@ public:
   std::set<std::string> startup_urls;
   HomePage homepage;
   std::string search_engine;
+  bool fps_use3rd = false;
 };
 inline IConfigure::IConfigure() {
 }
@@ -1696,6 +2032,13 @@ inline void IConfigure::operator=(const std::string &protocol_buffer) {
         break;
       enable = doc["enable"].GetBool();
     } while (0);
+    do { //!@ .fps_use3rd
+      if (!doc.HasMember("fps_use3rd"))
+        break;
+      if (!doc["fps_use3rd"].IsBool())
+        break;
+      fps_use3rd = doc["fps_use3rd"].GetBool();
+    } while (0);
     do { //!@ .reqid
       if (!doc.HasMember("reqid"))
         break;
@@ -1975,6 +2318,13 @@ inline void IConfigure::operator=(const std::string &protocol_buffer) {
         if (!fpsObj["enable"].IsBool())
           break;
         fps.enable = fpsObj["enable"].GetBool();
+      } while (0);
+      do {
+        if (!fpsObj.HasMember("3rd"))
+          break;
+        if (!fpsObj["3rd"].IsObject())
+          break;
+        fps.thrid_party << fpsObj["3rd"];
       } while (0);
       do { //!@ .fps.enable_do_not_track
         if (!fpsObj.HasMember("enable_do_not_track"))
@@ -2449,12 +2799,459 @@ inline void IConfigure::operator=(const std::string &protocol_buffer) {
               fpsObj["screen"]["devicePixelRatio"].GetDouble();
         }
       } while (0);
+
+      Final();
     } while (0);
     success = true;
   } while (0);
   if (!success)
     doc.SetObject();
 }
+///////////////////////////////////////////////////////////////////////////
+
+inline IConfigure::Fps::ThridParty::ThridParty() {
+}
+inline IConfigure::Fps::ThridParty::~ThridParty() {
+}
+inline void IConfigure::Fps::ThridParty::operator=(const ThridParty &rhs) {
+  permissionSimulation = rhs.permissionSimulation;
+  webglCustomConfig = rhs.webglCustomConfig;
+  speechVoice = rhs.speechVoice;
+  mediaDevice = rhs.mediaDevice;
+  geolocation = rhs.geolocation;
+  clientRects = rhs.clientRects;
+  clientHints = rhs.clientHints;
+  canvas = rhs.canvas;
+  audioNoise = rhs.audioNoise;
+  languages = rhs.languages;
+  tls = rhs.tls;
+  webrtc = rhs.webrtc;
+  screenSize = rhs.screenSize;
+  fontsFull = rhs.fontsFull;
+  storage = rhs.storage;
+  id = rhs.id;
+  cpu = rhs.cpu;
+  dnt = rhs.dnt;
+  colorDepth = rhs.colorDepth;
+  appCodeName = rhs.appCodeName;
+  userDataDir = rhs.userDataDir;
+  windowWidth = rhs.windowWidth;
+  batteryLevel = rhs.batteryLevel;
+  deviceMemory = rhs.deviceMemory;
+  windowHeight = rhs.windowHeight;
+  acceptLanguage = rhs.acceptLanguage;
+  batteryCharging = rhs.batteryCharging;
+  devicePixelRatio = rhs.devicePixelRatio;
+  fontsFullEnabled = rhs.fontsFullEnabled;
+  batteryChargingTime = rhs.batteryChargingTime;
+  windowTitleBarHeight = rhs.windowTitleBarHeight;
+  batteryDischargingTime = rhs.batteryDischargingTime;
+  appName = rhs.appName;
+  fontDir = rhs.fontDir;
+  product = rhs.product;
+  platform = rhs.platform;
+  timezone = rhs.timezone;
+  userAgent = rhs.userAgent;
+  appVersion = rhs.appVersion;
+  socks5 = rhs.socks5;
+  vendor = rhs.vendor;
+}
+inline IConfigure::Fps::ThridParty::PermissionSimulation::
+    PermissionSimulation() {
+}
+inline IConfigure::Fps::ThridParty::PermissionSimulation::
+    ~PermissionSimulation() {
+}
+inline IConfigure::Fps::ThridParty::Storage::Storage() {
+}
+inline IConfigure::Fps::ThridParty::Storage::~Storage() {
+}
+inline IConfigure::Fps::ThridParty::FontsFull::FontsFull() {
+}
+inline IConfigure::Fps::ThridParty::FontsFull::~FontsFull() {
+}
+inline IConfigure::Fps::ThridParty::ScreenSize::ScreenSize() {
+}
+inline IConfigure::Fps::ThridParty::ScreenSize::~ScreenSize() {
+}
+inline IConfigure::Fps::ThridParty::Webrtc::Webrtc() {
+}
+inline IConfigure::Fps::ThridParty::Webrtc::~Webrtc() {
+}
+inline IConfigure::Fps::ThridParty::Tls::Tls() {
+}
+inline IConfigure::Fps::ThridParty::Tls::~Tls() {
+}
+inline IConfigure::Fps::ThridParty::AudioNoise::AudioNoise() {
+}
+inline IConfigure::Fps::ThridParty::AudioNoise::~AudioNoise() {
+}
+inline IConfigure::Fps::ThridParty::Canvas::Canvas() {
+}
+inline IConfigure::Fps::ThridParty::Canvas::~Canvas() {
+}
+inline IConfigure::Fps::ThridParty::ClientHints::ClientHints() {
+}
+inline IConfigure::Fps::ThridParty::ClientHints::~ClientHints() {
+}
+inline IConfigure::Fps::ThridParty::ClientRects::ClientRects() {
+}
+inline IConfigure::Fps::ThridParty::ClientRects::~ClientRects() {
+}
+inline IConfigure::Fps::ThridParty::Geolocation::Geolocation() {
+}
+inline IConfigure::Fps::ThridParty::Geolocation::~Geolocation() {
+}
+inline IConfigure::Fps::ThridParty::MediaDevice::AudioOutputs::AudioOutputs() {
+}
+inline IConfigure::Fps::ThridParty::MediaDevice::AudioOutputs::~AudioOutputs() {
+}
+inline IConfigure::Fps::ThridParty::MediaDevice::MediaDevice() {
+}
+inline IConfigure::Fps::ThridParty::MediaDevice::~MediaDevice() {
+}
+inline IConfigure::Fps::ThridParty::WebglCustomConfig::WebglCustomConfig() {
+}
+inline IConfigure::Fps::ThridParty::WebglCustomConfig::~WebglCustomConfig() {
+}
+inline IConfigure::Fps::ThridParty::SpeechVoice::Voices::Voices() {
+}
+inline IConfigure::Fps::ThridParty::SpeechVoice::Voices::~Voices() {
+}
+inline IConfigure::Fps::ThridParty::SpeechVoice::SpeechVoice() {
+}
+inline IConfigure::Fps::ThridParty::SpeechVoice::~SpeechVoice() {
+}
+inline bool
+IConfigure::Fps::ThridParty::operator<<(const rapidjson::Value &obj) {
+  bool result = false;
+  do {
+    if (!obj.IsObject())
+      break;
+    if (obj.HasMember("id") && obj["id"].IsString())
+      id = obj["id"].GetString();
+    if (obj.HasMember("cpu") && obj["cpu"].IsUint())
+      cpu = obj["cpu"].GetUint();
+    if (obj.HasMember("dnt") && obj["dnt"].IsString())
+      dnt = obj["dnt"].GetString();
+    if (obj.HasMember("colorDepth") && obj["colorDepth"].IsInt())
+      colorDepth = obj["colorDepth"].GetInt();
+    if (obj.HasMember("appCodeName") && obj["appCodeName"].IsString())
+      appCodeName = obj["appCodeName"].GetString();
+    if (obj.HasMember("userDataDir") && obj["userDataDir"].IsString())
+      userDataDir = obj["userDataDir"].GetString();
+    if (obj.HasMember("windowWidth") && obj["windowWidth"].IsInt())
+      windowWidth = obj["windowWidth"].GetInt();
+    if (obj.HasMember("windowHeight") && obj["windowHeight"].IsInt())
+      windowHeight = obj["windowHeight"].GetInt();
+    if (obj.HasMember("batteryLevel") && obj["batteryLevel"].IsInt())
+      batteryLevel = obj["batteryLevel"].GetInt();
+    if (obj.HasMember("deviceMemory") && obj["deviceMemory"].IsUint())
+      deviceMemory = obj["deviceMemory"].GetUint();
+    if (obj.HasMember("acceptLanguage") && obj["acceptLanguage"].IsString())
+      acceptLanguage = obj["acceptLanguage"].GetString();
+    if (obj.HasMember("batteryCharging") && obj["batteryCharging"].IsBool())
+      batteryCharging = obj["batteryCharging"].GetBool();
+    if (obj.HasMember("devicePixelRatio")) {
+      if (obj["devicePixelRatio"].IsDouble())
+        devicePixelRatio = obj["devicePixelRatio"].GetDouble();
+      else if (obj["devicePixelRatio"].IsInt())
+        devicePixelRatio = obj["devicePixelRatio"].GetInt() * 1.0f;
+    }
+    if (obj.HasMember("fontsFullEnabled") && obj["fontsFullEnabled"].IsBool())
+      fontsFullEnabled = obj["fontsFullEnabled"].GetBool();
+    if (obj.HasMember("batteryChargingTime") &&
+        obj["batteryChargingTime"].IsInt())
+      batteryChargingTime = obj["batteryChargingTime"].GetInt();
+    if (obj.HasMember("windowTitleBarHeight") &&
+        obj["windowTitleBarHeight"].IsInt())
+      windowTitleBarHeight = obj["windowTitleBarHeight"].GetInt();
+    if (obj.HasMember("batteryDischargingTime") &&
+        obj["batteryDischargingTime"].IsInt())
+      batteryDischargingTime = obj["batteryDischargingTime"].GetInt();
+    if (obj.HasMember("appName") && obj["appName"].IsString())
+      appName = obj["appName"].GetString();
+    if (obj.HasMember("fontDir") && obj["fontDir"].IsString())
+      fontDir = obj["fontDir"].GetString();
+    if (obj.HasMember("product") && obj["product"].IsString())
+      product = obj["product"].GetString();
+    if (obj.HasMember("platform") && obj["platform"].IsString())
+      platform = obj["platform"].GetString();
+    if (obj.HasMember("timezone") && obj["timezone"].IsString())
+      timezone = obj["timezone"].GetString();
+    if (obj.HasMember("userAgent") && obj["userAgent"].IsString())
+      userAgent = obj["userAgent"].GetString();
+    if (obj.HasMember("appVersion") && obj["appVersion"].IsString())
+      appVersion = obj["appVersion"].GetString();
+    if (obj.HasMember("socks5") && obj["socks5"].IsString())
+      socks5 = obj["socks5"].GetString();
+    if (obj.HasMember("vendor") && obj["vendor"].IsString())
+      vendor = obj["vendor"].GetString();
+    if (obj.HasMember("tls") && obj["tls"].IsObject()) {
+      auto &tlsObj = obj["tls"];
+      if (tlsObj.HasMember("enabled") && tlsObj["enabled"].IsBool())
+        tls.enabled = tlsObj["enabled"].GetBool();
+      if (tlsObj.HasMember("seed") && tlsObj["seed"].IsUint64()) {
+        tls.seed = tlsObj["seed"].GetUint64();
+      }
+    }
+    if (obj.HasMember("webrtc") && obj["webrtc"].IsObject()) {
+      auto &webrtcObj = obj["webrtc"];
+      if (webrtcObj.HasMember("enabled") && webrtcObj["enabled"].IsBool())
+        webrtc.enabled = webrtcObj["enabled"].GetBool();
+      if (webrtcObj.HasMember("localIP") && webrtcObj["localIP"].IsString())
+        webrtc.localIP = webrtcObj["localIP"].GetString();
+      if (webrtcObj.HasMember("publicIP") && webrtcObj["publicIP"].IsString())
+        webrtc.publicIP = webrtcObj["publicIP"].GetString();
+    }
+    if (obj.HasMember("storage") && obj["storage"].IsObject()) {
+      auto &storageObj = obj["storage"];
+      if (storageObj.HasMember("enabled") && storageObj["enabled"].IsBool())
+        storage.enabled = storageObj["enabled"].GetBool();
+      if (storageObj.HasMember("quota") && storageObj["quota"].IsUint64())
+        storage.quota = storageObj["quota"].GetUint64();
+      if (storageObj.HasMember("usage") && storageObj["usage"].IsInt())
+        storage.usage = storageObj["usage"].GetInt();
+    }
+    if (obj.HasMember("fontsFull") && obj["fontsFull"].IsArray()) {
+    }
+    if (obj.HasMember("languages") && obj["languages"].IsArray()) {
+      for (auto it = obj["languages"].Begin(); it != obj["languages"].End();
+           ++it) {
+        if (!it->IsString())
+          break;
+        if (it->GetStringLength() <= 0)
+          continue;
+        std::string value = it->GetString();
+        languages.emplace(value);
+      }
+    }
+    if (obj.HasMember("audioNoise") && obj["audioNoise"].IsObject()) {
+      auto &audioNoiseObj = obj["audioNoise"];
+      if (audioNoiseObj.HasMember("enabled") &&
+          audioNoiseObj["enabled"].IsBool())
+        audioNoise.enabled = audioNoiseObj["enabled"].GetBool();
+      if (audioNoiseObj.HasMember("sumStep") &&
+          audioNoiseObj["sumStep"].IsInt()) {
+        audioNoise.sumStep = audioNoiseObj["sumStep"].GetInt();
+      }
+      if (audioNoiseObj.HasMember("freqStep") &&
+          audioNoiseObj["freqStep"].IsInt()) {
+        audioNoise.freqStep = audioNoiseObj["freqStep"].GetInt();
+      }
+      if (audioNoiseObj.HasMember("sumNoise") &&
+          audioNoiseObj["sumNoise"].IsDouble()) {
+        audioNoise.sumNoise = audioNoiseObj["sumNoise"].GetDouble();
+      }
+      if (audioNoiseObj.HasMember("freqNoise") &&
+          audioNoiseObj["freqNoise"].IsDouble()) {
+        audioNoise.freqNoise = audioNoiseObj["freqNoise"].GetDouble();
+      }
+      if (audioNoiseObj.HasMember("gainNoise") &&
+          audioNoiseObj["gainNoise"].IsDouble()) {
+        audioNoise.gainNoise = audioNoiseObj["gainNoise"].GetDouble();
+      }
+
+      if (audioNoiseObj.HasMember("timeDomainNoise") &&
+          audioNoiseObj["timeDomainNoise"].IsDouble()) {
+        audioNoise.timeDomainNoise =
+            audioNoiseObj["timeDomainNoise"].GetDouble();
+      }
+    }
+    if (obj.HasMember("canvas") && obj["canvas"].IsObject()) {
+      auto &canvasObj = obj["canvas"];
+      if (canvasObj.HasMember("enabled") && canvasObj["enabled"].IsBool())
+        canvas.enabled = canvasObj["enabled"].GetBool();
+      if (canvasObj.HasMember("alpha") && canvasObj["alpha"].IsInt())
+        canvas.alpha = canvasObj["alpha"].GetInt();
+      if (canvasObj.HasMember("colorDisturbedValue") &&
+          canvasObj["colorDisturbedValue"].IsInt())
+        canvas.colorDisturbedValue = canvasObj["colorDisturbedValue"].GetInt();
+      if (canvasObj.HasMember("widthRandPercent") &&
+          canvasObj["widthRandPercent"].IsDouble())
+        canvas.widthRandPercent = canvasObj["widthRandPercent"].GetDouble();
+      if (canvasObj.HasMember("heightRandPercent") &&
+          canvasObj["heightRandPercent"].IsDouble())
+        canvas.heightRandPercent = canvasObj["heightRandPercent"].GetDouble();
+    }
+    if (obj.HasMember("clientHints") && obj["clientHints"].IsObject()) {
+      auto &clientHintsObj = obj["clientHints"];
+      if (clientHintsObj.HasMember("wow64") && clientHintsObj["wow64"].IsBool())
+        clientHints.wow64 = clientHintsObj["wow64"].GetBool();
+      if (clientHintsObj.HasMember("isMobile") &&
+          clientHintsObj["isMobile"].IsBool())
+        clientHints.isMobile = clientHintsObj["isMobile"].GetBool();
+      if (clientHintsObj.HasMember("bit") && clientHintsObj["bit"].IsString()) {
+        clientHints.bit = clientHintsObj["bit"].GetString();
+      }
+      if (clientHintsObj.HasMember("arch") &&
+          clientHintsObj["arch"].IsString()) {
+        clientHints.arch = clientHintsObj["arch"].GetString();
+      }
+      if (clientHintsObj.HasMember("model") &&
+          clientHintsObj["model"].IsString()) {
+        clientHints.model = clientHintsObj["model"].GetString();
+      }
+      if (clientHintsObj.HasMember("platform") &&
+          clientHintsObj["platform"].IsString()) {
+        clientHints.platform = clientHintsObj["platform"].GetString();
+      }
+      if (clientHintsObj.HasMember("fullVersion") &&
+          clientHintsObj["fullVersion"].IsString()) {
+        clientHints.fullVersion = clientHintsObj["fullVersion"].GetString();
+      }
+      if (clientHintsObj.HasMember("platformVersion") &&
+          clientHintsObj["platformVersion"].IsString()) {
+        clientHints.platformVersion =
+            clientHintsObj["platformVersion"].GetString();
+      }
+      if (clientHintsObj.HasMember("brandVersions") &&
+          clientHintsObj["brandVersions"].IsArray()) {
+      }
+    }
+    if (obj.HasMember("clientRects") && obj["clientRects"].IsObject()) {
+      auto &clientRectsObj = obj["clientRects"];
+      if (clientRectsObj.HasMember("enabled") &&
+          clientRectsObj["enabled"].IsBool())
+        clientRects.enabled = clientRectsObj["enabled"].GetBool();
+      if (clientRectsObj.HasMember("scale") &&
+          clientRectsObj["scale"].IsDouble())
+        clientRects.scale = clientRectsObj["scale"].GetDouble();
+    }
+    if (obj.HasMember("geolocation") && obj["geolocation"].IsObject()) {
+      auto &geolocationObj = obj["geolocation"];
+      if (geolocationObj.HasMember("enabled") &&
+          geolocationObj["enabled"].IsBool())
+        geolocation.enabled = geolocationObj["enabled"].GetBool();
+      if (geolocationObj.HasMember("accuracy") &&
+          geolocationObj["accuracy"].IsDouble()) {
+        geolocation.accuracy = geolocationObj["accuracy"].GetDouble();
+      }
+      if (geolocationObj.HasMember("latitude") &&
+          geolocationObj["latitude"].IsDouble()) {
+        geolocation.latitude = geolocationObj["latitude"].GetDouble();
+      }
+      if (geolocationObj.HasMember("longitude") &&
+          geolocationObj["longitude"].IsDouble()) {
+        geolocation.longitude = geolocationObj["longitude"].GetDouble();
+      }
+    }
+    if (obj.HasMember("permissionSimulation") &&
+        obj["permissionSimulation"].IsObject()) {
+      auto &permissionSimulationObj = obj["permissionSimulation"];
+      if (permissionSimulationObj.HasMember("maxDelay") &&
+          permissionSimulationObj["maxDelay"].IsInt()) {
+        permissionSimulation.maxDelay =
+            permissionSimulationObj["maxDelay"].GetInt();
+      }
+      if (permissionSimulationObj.HasMember("oddsGrant") &&
+          permissionSimulationObj["oddsGrant"].IsInt()) {
+        permissionSimulation.oddsGrant =
+            permissionSimulationObj["oddsGrant"].GetInt();
+      }
+      if (permissionSimulationObj.HasMember("oddsCancel") &&
+          permissionSimulationObj["oddsCancel"].IsInt()) {
+        permissionSimulation.oddsCancel =
+            permissionSimulationObj["oddsCancel"].GetInt();
+      }
+      if (permissionSimulationObj.HasMember("oddsRefuse") &&
+          permissionSimulationObj["oddsRefuse"].IsInt()) {
+        permissionSimulation.oddsRefuse =
+            permissionSimulationObj["oddsRefuse"].GetInt();
+      }
+      if (permissionSimulationObj.HasMember("minDelay") &&
+          permissionSimulationObj["minDelay"].IsDouble()) {
+        permissionSimulation.minDelay =
+            permissionSimulationObj["minDelay"].GetDouble();
+      }
+    }
+    if (obj.HasMember("webglCustomConfig") &&
+        obj["webglCustomConfig"].IsObject()) {
+      auto &webglCustomConfigObj = obj["webglCustomConfig"];
+      if (webglCustomConfigObj.HasMember("webglVendor") &&
+          webglCustomConfigObj["webglVendor"].IsString()) {
+        webglCustomConfig.webglVendor =
+            webglCustomConfigObj["webglVendor"].GetString();
+      }
+      if (webglCustomConfigObj.HasMember("webglRenderer") &&
+          webglCustomConfigObj["webglRenderer"].IsString()) {
+        webglCustomConfig.webglRenderer =
+            webglCustomConfigObj["webglRenderer"].GetString();
+      }
+      if (webglCustomConfigObj.HasMember("webglCustomEnabled") &&
+          webglCustomConfigObj["webglCustomEnabled"].IsBool()) {
+        webglCustomConfig.webglCustomEnabled =
+            webglCustomConfigObj["webglCustomEnabled"].GetBool();
+      }
+    }
+    if (obj.HasMember("mediaDevice") && obj["mediaDevice"].IsObject()) {
+      auto &mediaDeviceObj = obj["mediaDevice"];
+      if (mediaDeviceObj.HasMember("enabled") &&
+          mediaDeviceObj["enabled"].IsBool())
+        mediaDevice.enabled = mediaDeviceObj["enabled"].GetBool();
+    }
+    if (obj.HasMember("speechVoice") && obj["speechVoice"].IsObject()) {
+      auto &speechVoiceObj = obj["speechVoice"];
+    }
+    result = true;
+  } while (0);
+  return result;
+}
+inline void IConfigure::Final() {
+  do { //!@ fps_use3rd
+    if (!fps_use3rd)
+      break;
+    if (fps.thrid_party.cpu > 0) {
+      fps.hardwareConcurrency =
+          static_cast<decltype(fps.hardwareConcurrency)>(fps.thrid_party.cpu);
+    }
+    if (fps.thrid_party.deviceMemory > 0) {
+      fps.deviceMemory = static_cast<decltype(fps.deviceMemory)>(
+          fps.thrid_party.deviceMemory * 1024 * 1024 * 1024);
+    }
+    if (!fps.thrid_party.userAgent.empty()) {
+      fps.userAgent = fps.thrid_party.userAgent;
+    }
+    if (!fps.thrid_party.platform.empty()) {
+      fps.platform = fps.thrid_party.platform;
+    }
+    if (!fps.thrid_party.dnt.empty()) {
+      fps.enable_do_not_track = fps.thrid_party.dnt;
+    }
+    if (fps.thrid_party.devicePixelRatio > 0) {
+      fps.screen.devicePixelRatio = fps.thrid_party.devicePixelRatio;
+    }
+    if (fps.thrid_party.windowHeight > 0) {
+      fps.screen.height = fps.thrid_party.windowHeight;
+    }
+    if (fps.thrid_party.windowWidth > 0) {
+      fps.screen.width = fps.thrid_party.windowWidth;
+    }
+    if (fps.thrid_party.colorDepth > 0) {
+      fps.screen.colorDepth = fps.thrid_party.colorDepth;
+    }
+    if (!fps.thrid_party.webglCustomConfig.webglVendor.empty()) {
+      fps.webgl.parameters[37445] =
+          fps.thrid_party.webglCustomConfig.webglVendor;
+    }
+    if (!fps.thrid_party.webglCustomConfig.webglRenderer.empty()) {
+      fps.webgl.parameters[37446] =
+          fps.thrid_party.webglCustomConfig.webglRenderer;
+    }
+    if (!fps.thrid_party.timezone.empty()) {
+      for (const auto &it : fps.timezone.sources) {
+        if (it.second.name == fps.thrid_party.timezone) {
+          fps.timezone.enable = true;
+          fps.timezone.hash.random = false;
+          fps.timezone.hash.base =
+              static_cast<decltype(fps.timezone.hash.base)>(it.first);
+          break;
+        }
+      }
+    }
+  } while (0);
+}
+///////////////////////////////////////////////////////////////////////////
 inline std::string IConfigure::Serialization() const {
   return Json::toString(doc);
 }

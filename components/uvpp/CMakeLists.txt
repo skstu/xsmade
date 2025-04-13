@@ -50,8 +50,6 @@ elseif(xsSYSTYPE_LINUX)
 
   target_link_libraries(
     ${PROJECT_NAME}
-    libc++abi.a
-    c++.a
     fmt.a
     libsys.a
     libstl.a
