@@ -9,6 +9,23 @@ public:
     BrwInputEvent = 2,
     BrwCommandEvent = 3,
   };
+  class Server final {
+  public:
+    inline Server();
+    inline ~Server();
+    inline void operator=(const Server &obj) {
+      pipe = obj.pipe;
+      tcp = obj.tcp;
+      udp = obj.udp;
+    }
+    inline void operator<<(const rapidjson::Value &);
+
+  public:
+    bool enable = false;
+    std::string pipe;
+    std::string tcp;
+    std::string udp;
+  };
   class Command final {
   public:
     enum class Type : unsigned int {
@@ -849,13 +866,8 @@ public:
         public:
           inline Voices();
           inline ~Voices();
-          inline void operator=(const Voices &obj) {
-            lang = obj.lang;
-            name = obj.name;
-            default_ = obj.default_;
-            voiceURI = obj.voiceURI;
-            localService = obj.localService;
-          }
+          inline Voices(const Voices &obj);
+          inline void operator=(const Voices &obj);
 
         public:
           std::string lang;
@@ -939,7 +951,7 @@ public:
       std::string id;
       unsigned int cpu = 2;
       std::string dnt = "0";
-      unsigned int colorDepth = 24;
+      int colorDepth = 24;
       std::string appCodeName = "Mozilla";
       std::string userDataDir = "";
       int windowWidth = 1920;
@@ -1315,6 +1327,7 @@ public:
   std::map<std::string, std::string> startup_envs;
   rapidjson::Document doc;
   Policy policy;
+  Server server;
   Proxy proxy;
   std::set<std::string> startup_urls;
   HomePage homepage;
@@ -1613,27 +1626,27 @@ inline void IConfigure::Input::operator<<(const rapidjson::Value &inputObj) {
     if (inputObj.HasMember("button") && inputObj["button"].IsInt())
       button = static_cast<Input::Button>(inputObj["button"].GetInt());
 #if 0
-       if (inputObj.HasMember("text") && inputObj["text"].IsString() &&
-        inputObj["text"].GetStringLength() > 0) {
-        text.clear();
-        std::string tmp = inputObj["text"].GetString();
-        for (auto& c : tmp) {
-         text.push_back(c);
-         if (text.size() >= 4)
-          break;
-        }
-       }
-       if (inputObj.HasMember("unmodified_text") &&
-        inputObj["unmodified_text"].IsString() &&
-        inputObj["unmodified_text"].GetStringLength() > 0) {
-        unmodified_text.clear();
-        std::string tmp = inputObj["unmodified_text"].GetString();
-        for (auto& c : tmp) {
-         unmodified_text.push_back(c);
-         if (unmodified_text.size() >= 4)
-          break;
-        }
-       }
+              if (inputObj.HasMember("text") && inputObj["text"].IsString() &&
+               inputObj["text"].GetStringLength() > 0) {
+               text.clear();
+               std::string tmp = inputObj["text"].GetString();
+               for (auto& c : tmp) {
+                text.push_back(c);
+                if (text.size() >= 4)
+                 break;
+               }
+              }
+              if (inputObj.HasMember("unmodified_text") &&
+               inputObj["unmodified_text"].IsString() &&
+               inputObj["unmodified_text"].GetStringLength() > 0) {
+               unmodified_text.clear();
+               std::string tmp = inputObj["unmodified_text"].GetString();
+               for (auto& c : tmp) {
+                unmodified_text.push_back(c);
+                if (unmodified_text.size() >= 4)
+                 break;
+               }
+              }
 #endif
 
   } while (0);
@@ -1653,6 +1666,30 @@ inline IConfigure::Frame::Resolution::~Resolution() {
 inline void IConfigure::Frame::Resolution::operator=(const Resolution &rhs) {
   width = rhs.width;
   height = rhs.height;
+}
+inline IConfigure::Server::Server() {
+}
+inline IConfigure::Server::~Server() {
+}
+void IConfigure::Server::operator<<(const rapidjson::Value &serverObj) {
+  do {
+    if (!serverObj.IsObject())
+      break;
+    if (serverObj.HasMember("enable") && serverObj["enable"].IsBool())
+      enable = serverObj["enable"].GetBool();
+    if (serverObj.HasMember("pipe") && serverObj["pipe"].IsString() &&
+        serverObj["pipe"].GetStringLength() > 0) {
+      pipe = serverObj["pipe"].GetString();
+    }
+    if (serverObj.HasMember("tcp") && serverObj["tcp"].IsString() &&
+        serverObj["tcp"].GetStringLength() > 0) {
+      tcp = serverObj["tcp"].GetString();
+    }
+    if (serverObj.HasMember("udp") && serverObj["udp"].IsString() &&
+        serverObj["udp"].GetStringLength() > 0) {
+      udp = serverObj["udp"].GetString();
+    }
+  } while (0);
 }
 inline IConfigure::Proxy::Proxy() {
 }
@@ -2052,6 +2089,13 @@ inline void IConfigure::operator=(const std::string &protocol_buffer) {
       if (!doc["type"].IsUint())
         break;
       type = static_cast<Type>(doc["type"].GetUint());
+    } while (0);
+    do { //!@ .server
+      if (!doc.HasMember("server"))
+        break;
+      if (!doc["server"].IsObject())
+        break;
+      server << doc["server"];
     } while (0);
     do { //!@ .command
       if (!doc.HasMember("command"))
@@ -2918,6 +2962,19 @@ inline IConfigure::Fps::ThridParty::SpeechVoice::Voices::Voices() {
 }
 inline IConfigure::Fps::ThridParty::SpeechVoice::Voices::~Voices() {
 }
+inline IConfigure::Fps::ThridParty::SpeechVoice::Voices::Voices(
+    const Voices &obj) {
+  *this = obj;
+}
+inline void
+IConfigure::Fps::ThridParty::SpeechVoice::Voices::operator=(const Voices &obj) {
+  lang = obj.lang;
+  name = obj.name;
+  default_ = obj.default_;
+  voiceURI = obj.voiceURI;
+  localService = obj.localService;
+}
+
 inline IConfigure::Fps::ThridParty::SpeechVoice::SpeechVoice() {
 }
 inline IConfigure::Fps::ThridParty::SpeechVoice::~SpeechVoice() {
@@ -3191,7 +3248,7 @@ IConfigure::Fps::ThridParty::operator<<(const rapidjson::Value &obj) {
         mediaDevice.enabled = mediaDeviceObj["enabled"].GetBool();
     }
     if (obj.HasMember("speechVoice") && obj["speechVoice"].IsObject()) {
-      auto &speechVoiceObj = obj["speechVoice"];
+      // auto& speechVoiceObj = obj["speechVoice"];
     }
     result = true;
   } while (0);
@@ -3228,7 +3285,8 @@ inline void IConfigure::Final() {
       fps.screen.width = fps.thrid_party.windowWidth;
     }
     if (fps.thrid_party.colorDepth > 0) {
-      fps.screen.colorDepth = fps.thrid_party.colorDepth;
+      fps.screen.colorDepth = static_cast<decltype(fps.screen.colorDepth)>(
+          fps.thrid_party.colorDepth);
     }
     if (!fps.thrid_party.webglCustomConfig.webglVendor.empty()) {
       fps.webgl.parameters[37445] =

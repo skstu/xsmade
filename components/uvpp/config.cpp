@@ -61,6 +61,14 @@ void Config::SessionTimeoutMS(const unsigned long long &ms) {
   std::lock_guard<std::mutex> lock{*mtx_};
   m_SessionTimeoutMS.store(ms);
 }
+void Config::EnableSessionTimeout(const bool &enable) {
+  std::lock_guard<std::mutex> lock{*mtx_};
+  m_EnableSessionTimeout.store(enable);
+}
+bool Config::EnableSessionTimeout() const {
+  std::lock_guard<std::mutex> lock{*mtx_};
+  return m_EnableSessionTimeout.load();
+}
 unsigned long long Config::ClientReconnectionIntervalMS() const {
   std::lock_guard<std::mutex> lock{*mtx_};
   return m_ClientReconnectionIntervalMS.load();

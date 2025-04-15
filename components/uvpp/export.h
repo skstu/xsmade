@@ -236,6 +236,8 @@ public:
   virtual unsigned long GetServiceType() const = 0;
   virtual unsigned long long SessionTimeoutMS() const = 0;
   virtual void SessionTimeoutMS(const unsigned long long &) = 0;
+  virtual void EnableSessionTimeout(const bool &) = 0;
+  virtual bool EnableSessionTimeout() const = 0;
   virtual unsigned long long KeepAliveTimeMS() const = 0;
   virtual void KeepAliveTimeMS(const unsigned long long &) = 0;
   virtual unsigned long long ClientReconnectionIntervalMS() const = 0;

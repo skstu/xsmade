@@ -8,7 +8,6 @@ Server::~Server() {
 }
 void Server::Init() {
   do {
-#if ENABLE_UVPP
     uvpp_ = static_cast<IUvpp *>(IUvpp::Create(
         Conv::u16_to_u8(Config::GetOrCreate()->GetPath().libuvpp_path)
             .c_str()));
@@ -34,7 +33,7 @@ void Server::Init() {
         [](ISession *session, const IBuffer *buffer, IBuffer *) {});
     uvpp_config_->RegisterServerReadyCb([]() {
       LOG_INFO("module({}) ({})", "Server", "Service ready.");
-      std::cout << "Server readyed." << std::endl;
+      std::cout << "XS® Pipe Server readyed." << std::endl;
     });
     uvpp_config_->RegisterServerSessionReadyCb([](ISession *session) {
       session->Route(Server::GetOrCreate());
@@ -54,6 +53,12 @@ void Server::Init() {
     uvpp_config_->RegisterServerMessageReceiveReplyCb(
         [](const ISession *session, const CommandType &cmd, const IBuffer *msg,
            CommandType &repCmd, IBuffer *repMsg) {
+          if (cmd == CommandType::TESTMSG) {
+            std::cout << "Server recved test msg." << std::endl;
+            repCmd = CommandType::TESTMSG;
+            repMsg->SetData("Server test msg", strlen("Server test msg"));
+            return;
+          }
           const unsigned long long identify = session->GetIdentify();
           const browser_id_t brwid = stl::HighLowStorage(identify).High();
           const xs_process_id_t pid = stl::HighLowStorage(identify).Low();
@@ -118,7 +123,6 @@ void Server::Init() {
             break;
           }
         });
-#endif
 #if ENABLE_FFCODEC
     const std::string stream_path = R"(C:\Users\k34ub\Desktop\test.mp4)";
     stl::File::Remove(stream_path);
@@ -151,7 +155,6 @@ bool Server::Start(void) {
   do {
     if (!ready_.load() || open_.load())
       break;
-#if ENABLE_UVPP
     if (!uvpp_) {
       LOG_INFO("{} is empty pointer.", "uvpp_");
       std::cout << "uvpp_ is empty pointer." << std::endl;
@@ -165,9 +168,6 @@ bool Server::Start(void) {
     }
     open_.store(true);
     uvpp_service_->Start();
-#else
-    open_.store(true);
-#endif
     threads_.emplace_back([this]() { Process(); });
   } while (0);
   return open_.load();
@@ -181,9 +181,7 @@ void Server::Stop(void) {
       t.join();
     }
     threads_.clear();
-#if ENABLE_UVPP
     uvpp_service_->Stop();
-#endif
   } while (0);
 }
 IChromium *Server::GetBrowser(const policy_id_t &brwid, mp_errno_t &ret) const {

@@ -54,17 +54,17 @@ bool Protocol::UnMakeStream(const std::string &input_data, HEAD &head,
   output_data.clear();
   do {
     PHEAD pHead = (PHEAD)input_data.data();
-    if (!pHead->Verify())
+    if (!Protocol::HeadVerify(*pHead))
       break;
     memcpy((void *)&head, (void *)pHead, PACKET_HEAD_SIZE);
-    switch (ZipType(pHead->Zip())) {
+    switch (ZipType(pHead->zip_type)) {
     case ZipType::UNKNOWN: {
-      if (!pHead->DataSize())
+      if (!pHead->data_size)
         break;
-      output_data.append(pHead->data, pHead->DataSize());
+      output_data.append(pHead->data, pHead->data_size);
     } break;
     case ZipType::ZIP: {
-      Zipcc::zipUnCompress(pHead->data, pHead->OriginalSize(), output_data);
+      Zipcc::zipUnCompress(pHead->data, pHead->original_size, output_data);
     } break;
     case ZipType::GZIP: {
       Zipcc::gzipUnCompress(pHead->data, output_data);
@@ -314,6 +314,10 @@ void Protocol::uv_write_cb(uv_write_t *req, int status) {
   SK_DELETE_PTR(write_req);
 }
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
+bool Protocol::HeadVerify(const HEAD &head) {
+  return head.header_logo == 0xFAC9C2D0 && head.footer_logo == 0xB4B4AAC1;
+}
+#if 0
 tagPacketHeader::tagPacketHeader() {
   memset((void *)this, 0x00, sizeof(*this));
   header_logo = 0xFAC9C2D0;
@@ -348,7 +352,7 @@ unsigned long tagPacketHeader::OriginalSize() const {
 unsigned long tagPacketHeader::PacketSize() const {
   return packet_size;
 }
-
+#endif
 const std::uint64_t TIMEOUT_HEARBEAT_MS = 30000;
 const size_t PACKET_HEAD_SIZE = sizeof(HEAD);
 const size_t PACKET_COMPRESSION_STANDARD_SIZE = ((size_t) ~((size_t)0));

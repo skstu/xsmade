@@ -291,7 +291,9 @@ void Client::MainProcess(void *arg) {
         std::string read_data = pSession->Read();
         if (read_data.empty())
           break;
-        HEAD head;
+        HEAD head = {0};
+        head.header_logo = 0xFAC9C2D0;
+        head.footer_logo = 0xB4B4AAC1;
         std::string message;
         if (!Protocol::UnMakeStream(read_data, head, message)) {
           Buffer buf(read_data);
@@ -301,14 +303,16 @@ void Client::MainProcess(void *arg) {
           break;
         }
         Buffer msg(message);
-        Config::Get()->OnClientMessageCb(pSession, head.Command(),
+        Config::Get()->OnClientMessageCb(pSession,
+                                         uvpp::CommandType(head.command_code),
                                          dynamic_cast<IBuffer *>(&msg));
         {
           CommandType cmdReply = CommandType::UNKNOWN;
           Buffer *messageReply = new Buffer();
           Config::Get()->OnClientMessageReceiveReplyCb(
-              pSession, head.Command(), dynamic_cast<IBuffer *>(&msg),
-              &cmdReply, dynamic_cast<IBuffer *>(messageReply));
+              pSession, uvpp::CommandType(head.command_code),
+              dynamic_cast<IBuffer *>(&msg), &cmdReply,
+              dynamic_cast<IBuffer *>(messageReply));
           if (CommandType::UNKNOWN != cmdReply) {
             if (!pSession->Write(static_cast<unsigned long>(cmdReply),
                                  messageReply))
@@ -320,7 +324,7 @@ void Client::MainProcess(void *arg) {
 
         // LOG_OUTPUT(std::format("recv message({:X}:{})", static_cast<unsigned
         // long>(head.Command()), message));
-        switch (head.Command()) {
+        switch (uvpp::CommandType(head.command_code)) {
         case CommandType::WELCOME: {
           Buffer buffer(message);
           Buffer *replyWelcome = new Buffer();

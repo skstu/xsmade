@@ -43,11 +43,11 @@ bool Stream::operator<<(const std::string &input) {
         if (real_size_level_cache_2 < PACKET_HEAD_SIZE)
           break;
         pHead = reinterpret_cast<PHEAD>(m_LevelCache2.data());
-        if (!pHead->Verify()) {
+        if (!Protocol::HeadVerify(*pHead)) {
           result = false;
           break;
         }
-        const size_t total = pHead->PacketSize();
+        const size_t total = pHead->packet_size;
         if (real_size_level_cache_2 < total)
           break;
         m_LevelCache3.push(m_LevelCache2.substr(0, total));

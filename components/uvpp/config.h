@@ -51,6 +51,8 @@ public:
       const bool &) override final;
   bool EnableClientWaitForTheInitialConnectionAndReceiveResult()
       const override final;
+  void EnableSessionTimeout(const bool &) override final;
+  bool EnableSessionTimeout() const override final;
 
 private:
   std::atomic_ullong m_Identify = 0;
@@ -61,6 +63,7 @@ private:
   std::atomic_ullong m_ClientReconnectionIntervalMS;
   std::atomic_bool m_EnableClientWaitForTheInitialConnectionAndReceiveResult =
       false;
+  std::atomic_bool m_EnableSessionTimeout = false;
 
 protected:
   void RegisterServerReadyCb(const tfOnServerReadyCb &) override final;

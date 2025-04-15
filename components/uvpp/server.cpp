@@ -394,12 +394,14 @@ void Server::WorkProcess(uv_handle_t *client, void *arg) {
           }
         } while (0);
 
-        unsigned long long timeout_ms =
-            pSession->ActivationTime(current_time_ms);
-        if (timeout_ms >= Config::Get()->SessionTimeoutMS()) {
-          Config::Get()->OnServerSessionTimeout(pSession, timeout_ms);
-          pSession->ForceClose();
-          break;
+        if (Config::Get()->EnableSessionTimeout()) {
+          unsigned long long timeout_ms =
+              pSession->ActivationTime(current_time_ms);
+          if (timeout_ms >= Config::Get()->SessionTimeoutMS()) {
+            Config::Get()->OnServerSessionTimeout(pSession, timeout_ms);
+            pSession->ForceClose();
+            break;
+          }
         }
 
         do { //!@ write
@@ -428,7 +430,7 @@ void Server::WorkProcess(uv_handle_t *client, void *arg) {
           std::string data = pSession->Read();
           if (data.empty())
             break;
-          HEAD head;
+          HEAD head = {0};
           std::string message;
           if (!Protocol::UnMakeStream(data, head, message)) {
             Buffer buffer(data);
@@ -441,14 +443,16 @@ void Server::WorkProcess(uv_handle_t *client, void *arg) {
           dynamic_cast<ISession *>(pSession)->SetIdentify(head.server_identify);
 
           Buffer msg(message);
-          Config::Get()->OnServerMessage(pSession, head.Command(),
+          Config::Get()->OnServerMessage(pSession,
+                                         uvpp::CommandType(head.command_code),
                                          dynamic_cast<IBuffer *>(&msg));
 
           CommandType cmdReply = CommandType::UNKNOWN;
           Buffer messageReply;
 
           Config::Get()->OnServerMessageReceiveReply(
-              pSession, head.Command(), dynamic_cast<IBuffer *>(&msg), cmdReply,
+              pSession, uvpp::CommandType(head.command_code),
+              dynamic_cast<IBuffer *>(&msg), cmdReply,
               dynamic_cast<IBuffer *>(&messageReply));
 
           if (CommandType::UNKNOWN != cmdReply) {
@@ -458,7 +462,7 @@ void Server::WorkProcess(uv_handle_t *client, void *arg) {
               pSession->Status(SessionStatus::FORCECLOSE);
           }
 
-          switch (head.Command()) {
+          switch (uvpp::CommandType(head.command_code)) {
           case CommandType::KEEPALIVE: {
             Buffer msg(message);
             Buffer message_reply;

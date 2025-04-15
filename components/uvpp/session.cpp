@@ -162,7 +162,9 @@ bool Session::Write(const unsigned long &cmd, const IBuffer *pBuffer) {
 bool Session::Write(const unsigned long &cmd, const char *original_data,
                     const size_t &original_data_size) {
   std::lock_guard<std::mutex> lock{*m_Mutex};
-  HEAD head;
+  HEAD head = {0};
+  head.header_logo = 0xFAC9C2D0;
+  head.footer_logo = 0xB4B4AAC1;
   head.command_code = cmd;
   head.server_identify = identify_;
   return *m_pWriteStream << Protocol::MakeStream(
