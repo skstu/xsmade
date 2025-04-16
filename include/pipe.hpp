@@ -76,8 +76,8 @@ private:
   std::queue<std::string> write_queue_;
   std::queue<std::tuple<unsigned long, std::string>> read_queue_;
   std::shared_ptr<std::mutex> mtx_ = std::make_shared<std::mutex>();
-  std::shared_ptr<std::mutex> mtx_write_ = std::make_shared<std::mutex>();
-  std::shared_ptr<std::mutex> mtx_read_ = std::make_shared<std::mutex>();
+  std::shared_ptr<std::mutex> mtx_rw_ = std::make_shared<std::mutex>();
+  std::shared_ptr<std::mutex> mtx_rd_ = std::make_shared<std::mutex>();
   tfMessageCb message_cb_ = nullptr;
   tfErrorCb error_cb_ = nullptr;
   tfConnentedCb connented_cb_ = nullptr;
@@ -98,14 +98,11 @@ inline void Pipe::Init() {
   } while (0);
 }
 inline void Pipe::UnInit() {
-  do {
-    if (fd_.load() < 0)
-      break;
-    if (!ready_.load())
-      break;
+  if (fd_.load() > 0) {
     close(fd_.load());
     fd_.store(-1);
-  } while (0);
+  }
+  ready_.store(false);
 }
 inline void Pipe::Release() const {
   delete this;
@@ -210,7 +207,7 @@ inline void Pipe::RegisterMessageCb(const tfMessageCb &cb) {
 }
 inline bool Pipe::Write(const unsigned long &cmd, const std::string &in) {
   bool result = false;
-  std::unique_lock<std::mutex> lck(*mtx_write_, std::defer_lock);
+  std::unique_lock<std::mutex> lck(*mtx_rw_, std::defer_lock);
   lck.lock();
   do {
     std::string data;
@@ -228,7 +225,7 @@ inline void Pipe::Worker() {
     idle = false;
     do {
       std::tuple<unsigned long, std::string> data;
-      std::unique_lock<std::mutex> lck(*mtx_read_, std::defer_lock);
+      std::unique_lock<std::mutex> lck(*mtx_rd_, std::defer_lock);
       lck.lock();
       if (read_queue_.empty()) {
         idle = true;
@@ -258,16 +255,16 @@ inline void Pipe::Worker() {
   } while (true);
 }
 inline void Pipe::Process() {
-  struct pollfd pfd[2]; // 监听读和写
+  struct pollfd pfd[2];
   memset(pfd, 0, sizeof(pfd));
-  pfd[0].fd = fd_.load();  // 文件描述符
-  pfd[0].events = POLLIN;  // 监听读事件
-  pfd[1].fd = fd_.load();  // 文件描述符
-  pfd[1].events = POLLOUT; // 监听写事件
+  pfd[0].fd = fd_.load();
+  pfd[0].events = POLLIN;
+  pfd[1].fd = fd_.load();
+  pfd[1].events = POLLOUT;
 
   bool exit = false;
   do {
-    int ret = poll(pfd, 2, -1); // -1 表示无限期阻塞
+    int ret = poll(pfd, 2, -1);
     if (ret < 0) {
       OnError("poll error: ");
       // std::cerr << "poll error: " << strerror(errno) << std::endl;
@@ -287,7 +284,7 @@ inline void Pipe::Process() {
           exit = true;
           break;
         }
-        std::unique_lock<std::mutex> lck(*mtx_read_, std::defer_lock);
+        std::unique_lock<std::mutex> lck(*mtx_rd_, std::defer_lock);
         lck.lock();
         read_queue_.push(std::make_tuple(cmd, out));
         lck.unlock();
@@ -309,7 +306,7 @@ inline void Pipe::Process() {
       if (!(pfd[1].revents & POLLOUT))
         break;
       std::string data;
-      std::unique_lock<std::mutex> lck(*mtx_write_, std::defer_lock);
+      std::unique_lock<std::mutex> lck(*mtx_rw_, std::defer_lock);
       lck.lock();
       if (write_queue_.empty())
         break;
