@@ -12,7 +12,7 @@ void Config::Init() {
   std::string settings_buffer =
       stl::File::ReadFile(Conv::u16_to_u8(path_.settings_path));
   settings_ = new brwcfg::ISettings(settings_buffer);
-#if _DEBUG
+#if 0 //_DEBUG
   chromes_["230.0.6723.116"] = u"/home/ponyo/Desktop/projects/chromium_dev/"
                                u"130.0.6723.116/src/out/debug/chrome";
 #else

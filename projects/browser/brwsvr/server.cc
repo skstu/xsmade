@@ -55,6 +55,10 @@ void Server::Init() {
     uvpp_config_->RegisterServerMessageReceiveReplyCb(
         [](const ISession *session, const CommandType &cmd, const IBuffer *msg,
            CommandType &repCmd, IBuffer *repMsg) {
+          if (!msg->Empty()) {
+            std::cout << std::string(msg->GetData(), msg->GetDataSize())
+                      << std::endl;
+          }
           const unsigned long long identify = session->GetIdentify();
           const browser_id_t brwid = stl::HighLowStorage(identify).High();
           const xs_process_id_t pid = stl::HighLowStorage(identify).Low();

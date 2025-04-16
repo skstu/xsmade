@@ -334,7 +334,7 @@ inline void Pipe::Worker() {
       std::string reply;
       tfPipeCommandType replyCmd = 0;
       OnMessage(cmd, body, replyCmd, reply);
-      if (replyCmd != 0) {
+      if (replyCmd > 0) {
         Write(replyCmd, reply);
       }
     } while (0);
@@ -368,7 +368,7 @@ inline void Pipe::Process() {
         std::string request;
         tfPipeCommandType reqCmd = 0;
         OnConnented(reqCmd, request);
-        if (!request.empty()) {
+        if (reqCmd > 0) {
           Write(reqCmd, request);
         }
         OnReadyed();
