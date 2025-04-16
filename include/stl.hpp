@@ -193,7 +193,7 @@ public:
   }
 
 private:
-  const std::uint32_t Mask() const {
+  std::uint32_t Mask() const {
     std::uint32_t result = 0xFFFFFFFF;
     switch (source_size) {
     case 2:
@@ -489,9 +489,9 @@ public:
   static std::wstring U16PathToWPath(const std::u16string &);
   static std::u16string WPathToU16Path(const std::wstring &);
   static std::string Normal(const std::string &);
-  #if _STL_HAS_CXX20
+#if _STL_HAS_CXX20
   static std::u8string Normal(const std::u8string &);
-  #endif
+#endif
   static std::u16string Normal(const std::u16string &);
   static std::wstring Normal(const std::wstring &);
   static bool IsDirectoryPath(const std::string &input_path);

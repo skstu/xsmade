@@ -4,11 +4,27 @@ namespace brwcfg {
 class IConfigure final {
 public:
   enum class Type : unsigned int {
-    BrwCreate = 0,
-    BrwDestory = 1,
-    BrwInputEvent = 2,
-    BrwCommandEvent = 3,
+    BrwCreate = 0x0,
+    BrwDestory = 0x1,
+    BrwInputEvent = 0x2,
+    BrwCommandEvent = 0x3,
+    BrwRequest = 0xA,
+    BrwResponse = BrwRequest,
   };
+  typedef class Request final {
+  public:
+    inline Request();
+    inline ~Request();
+    inline Request(const Request &obj);
+    inline void operator<<(const rapidjson::Value &v);
+    inline void operator=(const Request &obj);
+
+  public:
+    //!@ browser id | browser process id
+    unsigned long long id = 0;
+    unsigned long command = 0;
+    bool enable = false;
+  } Response;
   class Server final {
   public:
     inline Server();
@@ -17,6 +33,7 @@ public:
       pipe = obj.pipe;
       tcp = obj.tcp;
       udp = obj.udp;
+      enable = obj.enable;
     }
     inline void operator<<(const rapidjson::Value &);
 
@@ -1332,6 +1349,7 @@ public:
   std::set<std::string> startup_urls;
   HomePage homepage;
   std::string search_engine;
+  Request request;
   bool fps_use3rd = false;
 };
 inline IConfigure::IConfigure() {
@@ -2069,6 +2087,14 @@ inline void IConfigure::operator=(const std::string &protocol_buffer) {
         break;
       enable = doc["enable"].GetBool();
     } while (0);
+    do { //!@ .rerquest
+      if (!doc.HasMember("request"))
+        break;
+      if (!doc["request"].IsObject())
+        break;
+      auto &requestObj = doc["request"];
+      request << requestObj;
+    } while (0);
     do { //!@ .fps_use3rd
       if (!doc.HasMember("fps_use3rd"))
         break;
@@ -2280,7 +2306,7 @@ inline void IConfigure::operator=(const std::string &protocol_buffer) {
             else
               break;
           } while (1);*/
-          std::transform(key.begin(), key.end(), key.begin(), ::tolower);
+          // std::transform(key.begin(), key.end(), key.begin(), ::tolower);
         }
         if (obj.HasMember("value") && obj["value"].IsString() &&
             obj["value"].GetStringLength() > 0) {
@@ -2314,7 +2340,7 @@ inline void IConfigure::operator=(const std::string &protocol_buffer) {
             else
               break;
           } while (1);*/
-          std::transform(key.begin(), key.end(), key.begin(), ::tolower);
+          // std::transform(key.begin(), key.end(), key.begin(), ::tolower);
         }
         if (obj.HasMember("value") && obj["value"].IsString() &&
             obj["value"].GetStringLength() > 0) {
@@ -3306,6 +3332,35 @@ inline void IConfigure::Final() {
           break;
         }
       }
+    }
+  } while (0);
+}
+///////////////////////////////////////////////////////////////////////////
+inline IConfigure::Request::Request() {
+}
+inline IConfigure::Request::Request(const Request &obj) {
+  *this = obj;
+}
+inline IConfigure::Request::~Request() {
+}
+inline void IConfigure::Request::operator=(const Request &obj) {
+  enable = obj.enable;
+  id = obj.id;
+  command = obj.command;
+  enable = obj.enable;
+}
+inline void IConfigure::Request::operator<<(const rapidjson::Value &reqObj) {
+  do {
+    if (!reqObj.IsObject())
+      break;
+    if (reqObj.HasMember("enable") && reqObj["enable"].IsBool()) {
+      enable = reqObj["enable"].GetBool();
+    }
+    if (reqObj.HasMember("id") && reqObj["id"].IsUint64()) {
+      id = reqObj["id"].GetUint64();
+    }
+    if (reqObj.HasMember("command") && reqObj["command"].IsUint()) {
+      command = reqObj["command"].GetUint();
     }
   } while (0);
 }

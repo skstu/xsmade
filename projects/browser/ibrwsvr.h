@@ -9,7 +9,6 @@ extern "C" {
 #define SHARED_API __attribute__((visibility("default")))
 #endif
 #endif
-
 typedef enum : unsigned long {
   LCT_UNKNOWN = 0x0000,
   LCT_CHROMIUM_GPU_PLEASEPREPARE = 0x20100,
@@ -20,8 +19,9 @@ typedef enum : unsigned long {
   LCT_SERVER_SERVERREADY = 0x20300,
   LCT_SERVER_REQINPUT = 0x20310,
   LCT_SERVER_REQCOMMAND = 0x20320,
+  //////////////////////////////////////////////
+  CMD_HELLO = 0x30100,
 } command_type_t;
-
 ////////////////////////////////////////////////////////////////////////////////
 typedef unsigned long long browser_id_t;
 typedef unsigned long long request_id_t;
