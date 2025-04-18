@@ -15,40 +15,41 @@ const xs_process_id_t &IChromiumProcess::GetProcessId() const {
   std::lock_guard<std::mutex> lck(*mtx_);
   return process_id_;
 }
-IChromium::IChromium(const std::string &cfg) : brwcfg_(cfg) {
+IChromiumHost::IChromiumHost(const std::string &cfg) : brwcfg_(cfg) {
 }
-IChromium::~IChromium() {
+IChromiumHost::~IChromiumHost() {
 }
-void IChromium::Release() const {
+void IChromiumHost::Release() const {
   delete this;
 }
-bool IChromium::ProcessReady(const ChromiumProcessType &type,
-                             const xs_process_id_t &pid,
-                             const uvpp::ISession *session) {
+bool IChromiumHost::ProcessReady(const chromium_process_type_t &type,
+                                 const xs_process_id_t &pid,
+                                 const uvpp::ISession *session) {
   bool result = false;
   std::lock_guard<std::mutex> lck(*mtx_);
+  IChromiumProcess *pChromiumProcess = nullptr;
   do {
-    auto f = processes_.search(type);
-    if (!f) {
-      std::cout << "Process already exists." << std::endl;
-      (*f)->Release();
-      processes_.pop(type);
-    }
     switch (type) {
-    case ChromiumProcessType::ChromiumProcess: {
-      auto p = new ChromiumMain(pid);
+    case chromium_process_type_t::CHROMIUM_PROCESS_TYPE_MAIN: {
+      pChromiumProcess = new ChromiumMain(pid);
 #if ENABLE_UVPP
-      p->SetSession(session);
+      pChromiumProcess->SetSession(session);
 #endif
-      processes_.push(type, p);
       result = true;
     } break;
-    case ChromiumProcessType::ChromiumGpuProcess: {
-      auto p = new ChromiumGpu(pid);
+    case chromium_process_type_t::CHROMIUM_PROCESS_TYPE_GPU: {
+      pChromiumProcess = new ChromiumGpu(pid);
 #if ENABLE_UVPP
-      p->SetSession(session);
+      pChromiumProcess->SetSession(session);
 #endif
-      processes_.push(type, p);
+      result = true;
+    } break;
+    case chromium_process_type_t::CHROMIUM_PROCESS_TYPE_RENDERER: {
+      pChromiumProcess = new ChromiumGpu(pid);
+#if ENABLE_UVPP
+      pChromiumProcess->SetSession(session);
+#endif
+
       result = true;
     } break;
     default:
@@ -56,11 +57,14 @@ bool IChromium::ProcessReady(const ChromiumProcessType &type,
       break;
     }
   } while (0);
+  if (result)
+    processes_.emplace(pid, pChromiumProcess);
   return result;
 }
-bool IChromium::Request(const command_type_t &cmd, const std::string &body,
-                        mp_errno_t &ret) const {
+bool IChromiumHost::Request(const command_type_t &cmd, const std::string &body,
+                            mp_errno_t &ret) const {
   bool result = false;
+#if 0
   ret = mp_errno_t::MP_EUNKN;
   std::lock_guard<std::mutex> lck(*mtx_);
   do {
@@ -81,13 +85,14 @@ bool IChromium::Request(const command_type_t &cmd, const std::string &body,
     result = true;
     ret = mp_errno_t::MP_OK;
   } while (0);
+#endif
   return result;
 }
-const browser_id_t &IChromium::GetBrowserId() const {
+const browser_id_t &IChromiumHost::GetBrowserId() const {
   std::lock_guard<std::mutex> lck(*mtx_);
-  return brwcfg_.policy.id;
+  return browser_id_;
 }
-bool IChromium::Open() {
+bool IChromiumHost::Open() {
   std::lock_guard<std::mutex> lck(*mtx_);
   do {
     if (open_.load())
@@ -142,35 +147,38 @@ bool IChromium::Open() {
         break;
       LOG_INFO("envs: {}", it);
     }
-    xs_base_spawn(&startup_args[0], &startup_envs[0], this,
-                  [](xs_process_id_t pid, xs_errno_t err, const void *route) {
-                    auto self =
-                        static_cast<IChromium *>(const_cast<void *>(route));
-                    self->main_pid_ = pid;
-                    self->processes_.push(ChromiumProcessType::ChromiumProcess,
-                                          new ChromiumMain(self->main_pid_));
-                  });
+    xs_base_spawn(
+        &startup_args[0], &startup_envs[0], this,
+        [](xs_process_id_t pid, xs_errno_t err, const void *route) {
+          auto self = static_cast<IChromiumHost *>(const_cast<void *>(route));
+          self->main_pid_ = pid;
+          self->processes_.emplace(pid, new ChromiumMain(self->main_pid_));
+        });
     open_.store(true);
   } while (0);
   return open_.load();
 }
-void IChromium::Close() {
+void IChromiumHost::Close() {
   std::lock_guard<std::mutex> lck(*mtx_);
   do {
     if (!open_.load())
       break;
-    processes_.iterate([&](const auto &, auto brw) {
-      xs_base_kill(brw->GetProcessId(), 9);
-      brw->Release();
-    });
+    for (auto &it : processes_) {
+      if (it.first == main_pid_)
+        continue;
+      it.second->Release();
+      xs_base_kill(it.first, 9);
+    }
     xs_base_kill(main_pid_, 9);
     main_pid_ = 0;
     processes_.clear();
     open_.store(false);
   } while (0);
 }
-IChromiumProcess *IChromium::GetProcess(const ChromiumProcessType &type) const {
+IChromiumProcess *
+IChromiumHost::GetProcess(const chromium_process_type_t &type) const {
   IChromiumProcess *result = nullptr;
+#if 0
   std::lock_guard<std::mutex> lck(*mtx_);
   do {
     auto f = processes_.search(type);
@@ -178,6 +186,7 @@ IChromiumProcess *IChromium::GetProcess(const ChromiumProcessType &type) const {
       break;
     result = *f;
   } while (0);
+#endif
   return result;
 }
 /////////////////////////////////////////////////////////////////////////////////

@@ -12,7 +12,7 @@ void Config::Init() {
   std::string settings_buffer =
       stl::File::ReadFile(Conv::u16_to_u8(path_.settings_path));
   settings_ = new brwcfg::ISettings(settings_buffer);
-#if 0 //_DEBUG
+#if ENABLE_DEVELOP_DEBUG
   chromes_["230.0.6723.116"] = u"/home/ponyo/Desktop/projects/chromium_dev/"
                                u"130.0.6723.116/src/out/debug/chrome";
 #else
@@ -34,6 +34,12 @@ void Config::Init() {
 #endif
 }
 void Config::UnInit() {
+  for (auto &it : brwenv_cfgs_) {
+    if (it.second) {
+      delete it.second;
+      it.second = nullptr;
+    }
+  }
   SK_DELETE_PTR(default_configure_);
   SK_DELETE_PTR(settings_);
 }
@@ -50,12 +56,11 @@ const Config::Path &Config::GetPath(void) const {
   return path_;
 }
 bool Config::CreateBrowserEnv(const browser_id_t &brwid,
-                              const std::string &buffer) const {
+                              const brwcfg::IConfigure &rBrwcfg) {
   bool result = false;
   std::lock_guard<std::mutex> lck(*mtx_);
   do {
-    if (buffer.empty())
-      break;
+    const std::string buffer = rBrwcfg.Serialization();
     const std::string hexPolicyIdString = fmt::format("{:x}", brwid);
     // C:\Users\k34ub\source\skstu\xsmade\bin\cache\90fa4b4b8d7ac982\MPUserEnv\configures
     const std::u16string cfgDir = path_.cache_dir + u"/" +
@@ -68,7 +73,13 @@ bool Config::CreateBrowserEnv(const browser_id_t &brwid,
         path_.temp_dir + u"/configure_path.route";
     stl::File::Remove(cfgPathRoutePath);
     stl::File::WriteFile(cfgPathRoutePath, Conv::u16_to_u8(cfgPath));
-
+    auto fExists = brwenv_cfgs_.find(brwid);
+    if (fExists != brwenv_cfgs_.end()) {
+      delete fExists->second;
+      fExists->second = nullptr;
+      brwenv_cfgs_.erase(fExists);
+    }
+    brwenv_cfgs_[brwid] = new brwcfg::IConfigure(buffer);
     result = true;
   } while (0);
 

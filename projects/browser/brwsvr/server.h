@@ -15,7 +15,7 @@ using namespace uvpp;
 #include "protocol.hpp"
 #include "config.h"
 #include "ffcodec.h"
-#include "chromium/chromium.h"
+#include "chromium/chromium_host.h"
 #include "brwmnr.h"
 class Server final {
 public:
@@ -40,12 +40,23 @@ public:
                            const size_t &) const;
 
 public:
-  IChromium *CreateBrowser(const brwcfg::IConfigure &, mp_errno_t &);
+  IChromiumHost *CreateBrowser(const brwcfg::IConfigure &, mp_errno_t &);
   bool DestroyBrowser(const browser_id_t &, mp_errno_t &);
-  IChromium *GetBrowser(const policy_id_t &, mp_errno_t &) const;
+  IChromiumHost *GetBrowser(const policy_id_t &, mp_errno_t &) const;
 
 private:
-  std::map<browser_id_t, IChromium *> chromiums_;
+  void OnChromiumMainMessage(const ISession *session, const CommandType &inCmd,
+                             const IBuffer *msg, CommandType &repCmd,
+                             IBuffer *repMsg);
+  void OnChromiumGpuMessage(const ISession *session, const CommandType &inCmd,
+                            const IBuffer *msg, CommandType &repCmd,
+                            IBuffer *repMsg);
+  void OnChromiumRendererMessage(const ISession *session,
+                                 const CommandType &inCmd, const IBuffer *msg,
+                                 CommandType &repCmd, IBuffer *repMsg);
+
+private:
+  std::map<browser_id_t, IChromiumHost *> chromium_host_;
   IUvpp *uvpp_ = nullptr;
   IService *uvpp_service_ = nullptr;
   IConfig *uvpp_config_ = nullptr;

@@ -1,6 +1,7 @@
 #if !defined(__236A1017_0AB0_494A_8A5E_A6F008502268__)
 #define __236A1017_0AB0_494A_8A5E_A6F008502268__
 
+#define ENABLE_DEVELOP_DEBUG 0
 #define ENABLE_UVPP 0
 
 extern "C" {
@@ -69,6 +70,54 @@ static const char *mp_strerror(int err) {
 }
 #undef MP_STRERROR_GEN
 } /// extern "C"
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////
+typedef int tfPipeStatusType;
+typedef tfPipeStatusType tfPipeErrornoType;
+typedef unsigned long tfPipeCommandType;
+typedef unsigned char tfChromiumProcessType;
+typedef enum : unsigned char {
+  CHROMIUM_PROCESS_TYPE_UNKNOWN = 0x0,
+  CHROMIUM_PROCESS_TYPE_MAIN = 0x1,
+  CHROMIUM_PROCESS_TYPE_RENDERER = 0x2,
+  CHROMIUM_PROCESS_TYPE_GPU = 0x3,
+  CHROMIUM_PROCESS_TYPE_UTILITY_NETWORK = 0x4,
+  CHROMIUM_PROCESS_TYPE_CRASHPAD_HANDLER = 0x5,
+  CHROMIUM_PROCESS_TYPE_UTILITY_STORAGE = 0x6,
+
+  CHROMIUM_PROCESS_TYPE_BASE = 0xF,
+} chromium_process_type_t;
+typedef enum : unsigned long {
+  CMD_UNKNOWN = 0x00000,
+  CMD_HELLO = 0x30100,
+  CMD_STREAM_GPU_VIZ_DRAWING_FRAME = 0x30200,
+  CMD_TESTS = 0x30F00,
+  CMD_BASE = 0xFFFFFFF0,
+} command_type_t;
+inline command_type_t
+operator|(const command_type_t &cmd,
+          const chromium_process_type_t &chromium_process_type) {
+  return static_cast<command_type_t>(
+      static_cast<unsigned long>(cmd) |
+      static_cast<unsigned long>(chromium_process_type));
+}
+inline command_type_t GetCommandType(const command_type_t &cmd) {
+  return static_cast<command_type_t>(
+      static_cast<unsigned long>(cmd) &
+      static_cast<unsigned long>(command_type_t::CMD_BASE));
+}
+inline chromium_process_type_t
+GetChromiumProcessType(const command_type_t &cmd) {
+  return static_cast<chromium_process_type_t>(
+      static_cast<unsigned long>(cmd) &
+      static_cast<unsigned long>(
+          chromium_process_type_t::CHROMIUM_PROCESS_TYPE_BASE));
+}
+//////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////
 
 enum class ChromiumProcessType : unsigned long {
   ChromiumUnknownProcess = 0,

@@ -42,7 +42,16 @@ protected:
   bool Request(const command_type_t &,
                const std::string &) const override final;
 };
+class ChromiumRenderer final : public IChromiumProcess {
+public:
+  ChromiumRenderer(const xs_process_id_t &);
+  virtual ~ChromiumRenderer();
+  void Release() const override final;
 
+protected:
+  bool Request(const command_type_t &,
+               const std::string &) const override final;
+};
 class Brwobj final {
 public:
   Brwobj(const browser_id_t &);
@@ -63,28 +72,27 @@ private:
   std::atomic_bool open_ = false;
 };
 
-class IChromium {
+class IChromiumHost {
 public:
-  IChromium(const std::string& cfg);
+  IChromiumHost(const std::string &cfg);
   void Release() const;
 
 public:
   bool Open();
   void Close();
   const browser_id_t &GetBrowserId() const;
-  IChromiumProcess *GetProcess(const ChromiumProcessType &) const;
-  bool ProcessReady(const ChromiumProcessType &, const xs_process_id_t &,
+  IChromiumProcess *GetProcess(const chromium_process_type_t &) const;
+  bool ProcessReady(const chromium_process_type_t &, const xs_process_id_t &,
                     const uvpp::ISession *);
   bool Request(const command_type_t &, const std::string &, mp_errno_t &) const;
 
 private:
-  ~IChromium();
+  ~IChromiumHost();
   const brwcfg::IConfigure brwcfg_;
-
-private:
+  browser_id_t browser_id_ = 0;
   std::atomic_bool open_ = false;
   xs_process_id_t main_pid_ = 0;
-  stl::container::map<ChromiumProcessType, IChromiumProcess *> processes_;
+  std::multimap<xs_process_id_t, IChromiumProcess *> processes_;
   std::shared_ptr<std::mutex> mtx_ = std::make_shared<std::mutex>();
 };
 /// /*_ Memade®（新生™） _**/

@@ -36,7 +36,8 @@ private:
   void UnInit();
 
 public:
-  bool CreateBrowserEnv(const browser_id_t &, const std::string &buffer) const;
+  const brwcfg::IConfigure &GetBrwcfg(const browser_id_t &brwid) const;
+  bool CreateBrowserEnv(const browser_id_t &, const brwcfg::IConfigure &);
   std::u16string GetChromiumUserDataDir(const browser_id_t &) const;
   std::u16string GetChromiumUserEnvDir(const browser_id_t &) const;
   const brwcfg::IConfigure &GetDefaultConfigure(void) const;
@@ -47,6 +48,7 @@ public:
 private:
   Path path_;
   std::map<std::string /*brwver*/, std::u16string /*brwexepath*/> chromes_;
+  std::map<browser_id_t, brwcfg::IConfigure *> brwenv_cfgs_;
   brwcfg::ISettings *settings_ = nullptr;
   brwcfg::IConfigure *default_configure_ = nullptr;
   std::shared_ptr<std::mutex> mtx_ = std::make_shared<std::mutex>();

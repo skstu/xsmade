@@ -25,7 +25,7 @@ Brwobj *Brwmnr::CreateBrowser(const brwcfg::IConfigure &cfg, mp_errno_t &ret) {
       ret = MP_EALREADY;
       break;
     }
-    if (!Config::GetOrCreate()->CreateBrowserEnv(brwid, cfg.Serialization())) {
+    if (!Config::GetOrCreate()->CreateBrowserEnv(brwid, cfg)) {
       ret = mp_errno_t::MP_EBRWENVCFG;
       break;
     }

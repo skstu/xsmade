@@ -345,7 +345,6 @@ void Server::SessionConnectionCb(uv_stream_t *server, int status) {
       break;
     if (pSession->Write(static_cast<unsigned long>(CommandType::WELCOME),
                         welcome.GetData(), welcome.GetDataSize())) {
-      std::cout << "Send welcome message to client." << std::endl;
       break;
     }
     pSession->ForceClose();

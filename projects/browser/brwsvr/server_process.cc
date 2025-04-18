@@ -1,5 +1,19 @@
 #include "server.h"
 //!@ Private
+void Server::OnChromiumMainMessage(const ISession *session,
+                                   const CommandType &inCmd, const IBuffer *msg,
+                                   CommandType &repCmd, IBuffer *repMsg) {
+}
+void Server::OnChromiumGpuMessage(const ISession *session,
+                                  const CommandType &inCmd, const IBuffer *msg,
+                                  CommandType &repCmd, IBuffer *repMsg) {
+}
+void Server::OnChromiumRendererMessage(const ISession *session,
+                                       const CommandType &inCmd,
+                                       const IBuffer *msg, CommandType &repCmd,
+                                       IBuffer *repMsg) {
+}
+
 void Server::Process(void) {
   const Config *config = Config::GetOrCreate();
   do {
@@ -19,7 +33,7 @@ void Server::Process(void) {
                  req->GetCfg().Serialization());
         switch (req->GetCfg().GetType()) {
         case brwcfg::IConfigure::Type::BrwCreate: {
-          IChromium *pChromium =
+          IChromiumHost *pChromium =
               CreateBrowser(req->GetCfg().Serialization(), ret);
           if (!pChromium)
             break;
@@ -29,24 +43,24 @@ void Server::Process(void) {
         } break;
         case brwcfg::IConfigure::Type::BrwCommandEvent:
           //[[fallthrough]];
-          {
-            IChromium *pChromium = GetBrowser(policy_id, ret);
-            if (!pChromium)
-              break;
-            if (!pChromium->Request(command_type_t::LCT_SERVER_REQCOMMAND,
-                                    req->GetCfg().Serialization(), ret))
-              break;
-            ret = MP_DONE;
-          }
+          // {
+          //   IChromium *pChromium = GetBrowser(policy_id, ret);
+          //   if (!pChromium)
+          //     break;
+          //   if (!pChromium->Request(command_type_t::LCT_SERVER_REQCOMMAND,
+          //                           req->GetCfg().Serialization(), ret))
+          //     break;
+          //   ret = MP_DONE;
+          // }
           break;
         case brwcfg::IConfigure::Type::BrwInputEvent: {
-          IChromium *pChromium = GetBrowser(policy_id, ret);
-          if (!pChromium)
-            break;
-          if (!pChromium->Request(command_type_t::LCT_SERVER_REQINPUT,
-                                  req->GetCfg().Serialization(), ret))
-            break;
-          ret = MP_DONE;
+          // IChromium *pChromium = GetBrowser(policy_id, ret);
+          // if (!pChromium)
+          //   break;
+          // if (!pChromium->Request(command_type_t::LCT_SERVER_REQINPUT,
+          //                         req->GetCfg().Serialization(), ret))
+          //   break;
+          // ret = MP_DONE;
         } break;
         default:
           break;
