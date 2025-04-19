@@ -90,26 +90,6 @@ void Server::Init() {
 #endif
         });
 #endif ///#if ENABLE_UVPP
-#if ENABLE_FFCODEC
-    const std::string stream_path = R"(C:\Users\k34ub\Desktop\test.mp4)";
-    stl::File::Remove(stream_path);
-    ffcodec_ = new FFCodec(stream_path);
-#if 0
-    const char* filename = "C:\\Users\\k34ub\\Desktop\\ffTests\\test.mp4";//"c:\\temp\\1.avi";
-    int width = 480;
-    int height = 360;
-    int fps = 60;
-    int bit_rate = 200000; // 200 kbps
-
-
-    ffcodec_->setUpEncoder(filename, width, height, fps, bit_rate);
-    //ffcodec_->encodeTestVideo();
-    ffcodec_->encodeFromFolder(R"(C:\Users\k34ub\source\skstu\xsmade\bin\tests\1742264407208686\)", "", 129);
-    //encoder.encodeFromFolder("T:\\Bastian\\Bilder\\Photon Tracer\\Videos\\", "frame_", 11);
-
-    ffcodec_->closeEncoder();
-#endif
-#endif
     ready_.store(true);
   } while (0);
 }

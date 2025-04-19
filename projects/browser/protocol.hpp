@@ -2,7 +2,8 @@
 #define __236A1017_0AB0_494A_8A5E_A6F008502268__
 
 #define ENABLE_DEVELOP_DEBUG 0
-#define ENABLE_UVPP 0
+#define ENABLE_DEVELOP_DEBUG_NOCHROME 1
+#define ENABLE_UVPP 1
 
 extern "C" {
 ////////////////////////////////////////////////////////////////////////////////

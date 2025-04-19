@@ -15,6 +15,8 @@ void Config::Init() {
 #if ENABLE_DEVELOP_DEBUG
   chromes_["230.0.6723.116"] = u"/home/ponyo/Desktop/projects/chromium_dev/"
                                u"130.0.6723.116/src/out/debug/chrome";
+#elif ENABLE_DEVELOP_DEBUG_NOCHROME
+  chromes_["230.0.6723.116"] = u"/mnt/c/users/k34ub/source/skstu/xsmade/bin/tests/test_poll";
 #else
   do {
     std::map<std::u16string, std::u16string> dirs, files;
