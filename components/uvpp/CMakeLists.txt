@@ -51,9 +51,10 @@ elseif(xsSYSTYPE_LINUX)
   target_link_libraries(
     ${PROJECT_NAME}
     fmt.a
-    libsys.a
-    libstl.a
-    libzipcc.a
+    ${xsOUTPUT_DIR}/base/sys/libsys.a
+    ${xsOUTPUT_DIR}/base/stl/libstl.a
+    ${xsOUTPUT_DIR}/base/base/libbase.a
+    ${xsOUTPUT_DIR}/base/zipcc/libzipcc.a
     libpthread.a
     libminizip.a
     libuv.a

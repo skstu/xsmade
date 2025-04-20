@@ -43,7 +43,7 @@ public:
   IChromiumHost *CreateBrowser(const brwcfg::IConfigure &, mp_errno_t &);
   bool DestroyBrowser(const browser_id_t &, mp_errno_t &);
   IChromiumHost *GetBrowser(const policy_id_t &, mp_errno_t &) const;
-
+  IChromiumHost *RecoveryCreation(const browser_id_t &, mp_errno_t &);
 private:
   void OnChromiumMainMessage(const ISession *session, const CommandType &inCmd,
                              const IBuffer *msg, CommandType &repCmd,

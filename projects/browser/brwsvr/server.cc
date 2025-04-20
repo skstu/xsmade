@@ -64,13 +64,21 @@ void Server::Init() {
           const xs_process_id_t pid = stl::HighLowStorage(identify).High();
           command_type_t cmd =
               GetCommandType(static_cast<command_type_t>(inCmd));
+
           chromium_process_type_t chromium_process_type =
               GetChromiumProcessType(static_cast<command_type_t>(inCmd));
+          std::string log = fmt::format(
+              "Server recved msg({:x}) brwid({}) pid({},chromiumProc({:x}))",
+              static_cast<unsigned long>(cmd), brwid, pid,
+              static_cast<unsigned char>(chromium_process_type));
+          LOG_INFO("module({}) ({})", "Server", log);
 
+          std::cout << log << std::endl;
           IChromiumHost *pChromiumHost =
               Server::GetOrCreate()->GetBrowser(brwid, ret);
           if (!pChromiumHost)
             return;
+
           pChromiumHost->ProcessReady(chromium_process_type, pid, session);
 #if 0
           switch (chromium_process_type) {
@@ -138,6 +146,19 @@ IChromiumHost *Server::GetBrowser(const policy_id_t &brwid,
                                   mp_errno_t &ret) const {
   IChromiumHost *result = nullptr;
   ret = mp_errno_t::MP_EUNKN;
+  std::lock_guard<std::mutex> lck(*mtx_);
+  do {
+    auto fExists = chromium_host_.find(brwid);
+    if (fExists == chromium_host_.end())
+      break;
+    result = fExists->second;
+    ret = MP_OK;
+  } while (0);
+  return result;
+}
+IChromiumHost *Server::RecoveryCreation(const browser_id_t &brwid,
+                                        mp_errno_t &ret) {
+  IChromiumHost *result = nullptr;
   std::lock_guard<std::mutex> lck(*mtx_);
   do {
     auto fExists = chromium_host_.find(brwid);

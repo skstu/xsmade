@@ -16,7 +16,8 @@ void Config::Init() {
   chromes_["230.0.6723.116"] = u"/home/ponyo/Desktop/projects/chromium_dev/"
                                u"130.0.6723.116/src/out/debug/chrome";
 #elif ENABLE_DEVELOP_DEBUG_NOCHROME
-  chromes_["230.0.6723.116"] = u"/mnt/c/users/k34ub/source/skstu/xsmade/bin/tests/test_poll";
+  chromes_["230.0.6723.116"] =
+      u"/mnt/c/users/k34ub/source/skstu/xsmade/bin/tests/test_poll";
 #else
   do {
     std::map<std::u16string, std::u16string> dirs, files;
@@ -27,9 +28,15 @@ void Config::Init() {
         continue;
       chromes_[Conv::u16_to_u8(node.first)] = node.second + u"/fanbrowser.exe";
 #elif defined(__OSLINUX__)
-      if (!stl::File::Exists(node.second + u"/chrome"))
+      std::u16string chrome_path = node.second + u"/chrome";
+      if (!stl::File::Exists(chrome_path))
         continue;
-      chromes_[Conv::u16_to_u8(node.first)] = node.second + u"/chrome";
+
+      std::string chrome_crashpad_handler_path =
+          Conv::u16_to_u8(node.second + u"/chrome_crashpad_handler");
+      xs_base_chmod(Conv::u16_to_u8(chrome_path).c_str(), 0755);
+      xs_base_chmod(chrome_crashpad_handler_path.c_str(), 0755);
+      chromes_[Conv::u16_to_u8(node.first)] = chrome_path;
 #endif
     }
   } while (0);

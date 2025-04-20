@@ -27,6 +27,11 @@ char *xs_base_malloc(size_t len) {
   } while (0);
   return result;
 }
+xs_errno_t xs_base_chmod(const char *path, int mode) {
+  xs_errno_t err = xs_errno_t::XS_NO;
+  err = static_cast<xs_errno_t>(chmod(path, mode));
+  return err;
+}
 xs_errno_t xs_base_kill(int pid, int signum) {
   xs_errno_t err = xs_errno_t::XS_NO;
   err = static_cast<xs_errno_t>(uv_kill(pid, signum));

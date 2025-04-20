@@ -15,6 +15,7 @@ XS_EXTERN xs_errno_t xs_base_spawn(const char *args[], const char *envs[],
 XS_EXTERN xs_errno_t xs_base_kill(int pid, int signum);
 typedef xs_errno_t (*tf_xs_base_task_v1)();
 XS_EXTERN xs_errno_t xs_base_add_task_v1(tf_xs_base_task_v1);
+XS_EXTERN xs_errno_t xs_base_chmod(const char *, int);
 // XS_EXTERN void AddTask_C_void(void (*func)(void), const char* message) {
 //   AddTask([func, message]() {
 //       func();  // 调用传入的 C 风格函数

@@ -1,0 +1,3 @@
+[47220:47220:0420/170504.219771:WARNING:chrome_main_delegate.cc(744)] This is Chrome version 130.0.6723.116 (not a warning)
+[47220:47220:0420/170504.355291:WARNING:startup_browser_creator.cc(425)] Incognito mode disabled by policy, launching a normal browser session.
+[47220:47220:0420/170504.355548:WARNING:startup_browser_creator.cc(425)] Incognito mode disabled by policy, launching a normal browser session.
