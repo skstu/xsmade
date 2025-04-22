@@ -1,4 +1,12 @@
 # xsmade
+# ssh -L 0.0.0.0:9223:localhost:9222 localhost -N
+
+
+zip -r /home/ponyo/Desktop/projects/xsmade/bin/brw[25421-1].zip /home/ponyo/Desktop/projects/xsmade/bin/ -x "/path/to/directory/exclude_this_folder/*"
+
+../build/scripts/linux/install-chrome.sh
+scp ../bin/brw[25418-3].zip panda@10.100.4.15:/home/panda/cppdev
+scp ../bin/brw[25418-3].zip panda@10.100.4.15:/home/panda/goprojects/wul-svc/cppdev
 
 cd 3rdparty/wxWidgets
 --git submodule update --init
@@ -11,7 +19,19 @@ cmake --build .
 
 /home/ponyo/Desktop/projects/chromium_dev/130.0.6723.116/src/third_party/llvm-build/Release+Asserts
 
-[670/672] python3 ../../build/gn_run_binary.py ./v8_context_snapshot_generator --output_file=v8_context_snapshot.bin
-[671/672] rm -f obj/headless/libheadless_non_renderer.a && "../../third_party/llvm-build/Release+Asserts/bin/llvm-ar" -T -r -c -s -D obj/headless/libheadless_non_renderer.a @"obj/headless/libheadless_non_renderer.a.rsp"
-[672/672] "python3" "../../build/toolchain/gcc_link_wrapper.py" --output="./chrome" -- ../../third_party/llvm-build/Release+Asserts/bin/clang++ -Wl,--version-script=../../build/linux/chrome.map -Werror -fuse-ld=lld -Wl,--fatal-warnings -Wl,--build-id=sha1 -fPIC -Wl,-z,noexecstack -Wl,-z,relro -Wl,-z,now -Wl,--icf=all -Wl,--color-diagnostics -Wl,-mllvm,-instcombine-lower-dbg-declare=0 -Wl,-mllvm,-split-threshold-for-reg-with-hint=0 -Wl,--thinlto-cache-dir=thinlto-cache -Wl,--thinlto-cache-policy=cache_size=10\%:cache_size_bytes=40g:cache_size_files=100000 -flto=thin -Wl,--thinlto-jobs=all -Wl,-mllvm,-import-instr-limit=30 -Wl,-mllvm,-disable-auto-upgrade-debug-info -Wl,-mllvm,-inlinehint-threshold=360 -fwhole-program-vtables -Wl,--undefined-version -Wl,--no-call-graph-profile-sort -m64 -no-canonical-prefixes -Wl,-O2 -Wl,--gc-sections -Wl,-z,defs -Wl,--as-needed -nostdlib++ --sysroot=../../build/linux/debian_bullseye_amd64-sysroot -fsanitize=cfi-vcall -fsanitize=cfi-icall -rdynamic -pie -Wl,--disable-new-dtags -Wl,--lto-O2 -o "./chrome" -Wl,--start-group @"./chrome.rsp" -Wl,--end-group   ../../third_party/llvm-build/Release+Asserts/lib/clang/20/lib/x86_64-unknown-linux-gnu/libclang_rt.builtins.a -ldl -lpthread -lrt -lgmodule-2.0 -lglib-2.0 -lgobject-2.0 -lgthread-2.0 -lnss3 -lnssutil3 -lsmime3 -lplds4 -lplc4 -lnspr4 -ldbus-1 -latk-1.0 -latk-bridge-2.0 -lcups -lgio-2.0 -ldrm -lresolv -lexpat -luuid -lxcb -lxkbcommon -lm -lz -lX11 -lXcomposite -lXdamage -lXext -lXfixes -lXrender -lXrandr -lXtst -lgbm -lEGL -lXi -lpci -lffi_pic -lpangocairo-1.0 -lpango-1.0 -lharfbuzz -lcairo -ludev -lasound -latspi -lstdc++ -lxshmfence -Wl,--start-group obj/third_party/rust/cxx/v1/lib/libcxx_lib.rlib local_rustc_sysroot/lib/rustlib/x86_64-unknown-linux-gnu/lib/libstd_std.rlib local_rustc_sysroot/lib/rustlib/x86_64-unknown-linux-gnu/lib/liballoc_alloc.rlib local_rustc_sysroot/lib/rustlib/x86_64-unknown-linux-gnu/lib/libcompiler_builtins_compiler_builtins.rlib local_rustc_sysroot/lib/rustlib/x86_64-unknown-linux-gnu/lib/librustc_std_workspace_core_rustc_std_workspace_core.rlib local_rustc_sysroot/lib/rustlib/x86_64-unknown-linux-gnu/lib/libcore_core.rlib local_rustc_sysroot/lib/rustlib/x86_64-unknown-linux-gnu/lib/libprofiler_builtins_profiler_builtins.rlib local_rustc_sysroot/lib/rustlib/x86_64-unknown-linux-gnu/lib/libcfg_if_cfg_if.rlib local_rustc_sysroot/lib/rustlib/x86_64-unknown-linux-gnu/lib/libhashbrown_hashbrown.rlib local_rustc_sysroot/lib/rustlib/x86_64-unknown-linux-gnu/lib/librustc_std_workspace_alloc_rustc_std_workspace_alloc.rlib local_rustc_sysroot/lib/rustlib/x86_64-unknown-linux-gnu/lib/libpanic_abort_panic_abort.rlib local_rustc_sysroot/lib/rustlib/x86_64-unknown-linux-gnu/lib/liblibc_libc.rlib local_rustc_sysroot/lib/rustlib/x86_64-unknown-linux-gnu/lib/libpanic_unwind_panic_unwind.rlib local_rustc_sysroot/lib/rustlib/x86_64-unknown-linux-gnu/lib/libunwind_unwind.rlib local_rustc_sysroot/lib/rustlib/x86_64-unknown-linux-gnu/lib/librustc_demangle_rustc_demangle.rlib local_rustc_sysroot/lib/rustlib/x86_64-unknown-linux-gnu/lib/libstd_detect_std_detect.rlib local_rustc_sysroot/lib/rustlib/x86_64-unknown-linux-gnu/lib/libaddr2line_addr2line.rlib local_rustc_sysroot/lib/rustlib/x86_64-unknown-linux-gnu/lib/libgimli_gimli.rlib local_rustc_sysroot/lib/rustlib/x86_64-unknown-linux-gnu/lib/libminiz_oxide_miniz_oxide.rlib local_rustc_sysroot/lib/rustlib/x86_64-unknown-linux-gnu/lib/libadler_adler.rlib local_rustc_sysroot/lib/rustlib/x86_64-unknown-linux-gnu/lib/libobject_object.rlib local_rustc_sysroot/lib/rustlib/x86_64-unknown-linux-gnu/lib/libmemchr_memchr.rlib local_rustc_sysroot/lib/rustlib/x86_64-unknown-linux-gnu/lib/libgetopts_getopts.rlib local_rustc_sysroot/lib/rustlib/x86_64-unknown-linux-gnu/lib/librustc_std_workspace_std_rustc_std_workspace_std.rlib local_rustc_sysroot/lib/rustlib/x86_64-unknown-linux-gnu/lib/libunicode_width_unicode_width.rlib local_rustc_sysroot/lib/rustlib/x86_64-unknown-linux-gnu/lib/libtest_test.rlib obj/third_party/rust/serde_json_lenient/v0_2/wrapper/libthird_uparty_srust_sserde_ujson_ulenient_sv0_u2_swrapper_cwrapper.rlib obj/third_party/rust/serde/v1/lib/libserde_lib.rlib obj/third_party/rust/serde_json_lenient/v0_2/lib/libserde_json_lenient_lib.rlib obj/third_party/rust/itoa/v1/lib/libitoa_lib.rlib obj/third_party/rust/ryu/v1/lib/libryu_lib.rlib obj/build/rust/chromium_prelude/libchromium.rlib obj/skia/libskia_cbridge_urust_uside.rlib obj/third_party/rust/font_types/v0_7/lib/libfont_types_lib.rlib obj/third_party/rust/bytemuck/v1/lib/libbytemuck_lib.rlib obj/third_party/rust/read_fonts/v0_22/lib/libread_fonts_lib.rlib obj/third_party/rust/skrifa/v0_22/lib/libskrifa_lib.rlib obj/third_party/blink/common/rust_crash/libthird_uparty_sblink_scommon_srust_ucrash_crs.rlib obj/third_party/crabbyavif/libthird_uparty_scrabbyavif_ccrabbyavif.rlib obj/third_party/crabbyavif/libdav1d_sys.rlib obj/third_party/crabbyavif/liblibyuv_sys.rlib obj/third_party/rust/libc/v0_2/lib/liblibc_lib.rlib obj/components/qr_code_generator/libcomponents_sqr_ucode_ugenerator_cqr_ucode_ugenerator_uffi_uglue.rlib obj/third_party/rust/qr_code/v2/lib/libqr_code_lib.rlib -Wl,--end-group 
+
+
+mouseEvent dispatch……
+/snapshot/chromeV/node_modules/puppeteer-core/lib/cjs/puppeteer/cdp/IsolatedWorld.js:73
+        const error = new Error('Execution context was destroyed');
+                      ^
+
+Error: Execution context was destroyed
+    at #waitForExecutionContext (/snapshot/chromeV/node_modules/puppeteer-core/lib/cjs/puppeteer/cdp/IsolatedWorld.js:73:23)
+    at IsolatedWorld.evaluate (/snapshot/chromeV/node_modules/puppeteer-core/lib/cjs/puppeteer/cdp/IsolatedWorld.js:98:58)
+    at CdpFrame.title (/snapshot/chromeV/node_modules/puppeteer-core/lib/cjs/puppeteer/api/Frame.js:888:47)
+    at CdpFrame.<anonymous> (/snapshot/chromeV/node_modules/puppeteer-core/lib/cjs/puppeteer/util/decorators.js:109:27)
+    at CdpPage.title (/snapshot/chromeV/node_modules/puppeteer-core/lib/cjs/puppeteer/api/Page.js:1092:43)
+    at TabManager.getAllPagesInfoByBrowserId (/snapshot/chromeV/testCore.js)
+    at async CloudManager.handleUpdateTabs (/snapshot/chromeV/testCore.js)
 

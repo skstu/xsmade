@@ -38,6 +38,7 @@ private:
 public:
   const brwcfg::IConfigure &GetBrwcfg(const browser_id_t &brwid) const;
   bool CreateBrowserEnv(const browser_id_t &, const brwcfg::IConfigure &);
+  bool GetBrowserEnvCfg(const browser_id_t &,brwcfg::IConfigure &) const;
   std::u16string GetChromiumUserDataDir(const browser_id_t &) const;
   std::u16string GetChromiumUserEnvDir(const browser_id_t &) const;
   const brwcfg::IConfigure &GetDefaultConfigure(void) const;

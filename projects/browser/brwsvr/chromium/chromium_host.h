@@ -78,7 +78,7 @@ public:
   void Release() const;
 
 public:
-  bool Open();
+  bool Open(const bool& bRecovery = false);
   void Close();
   const browser_id_t &GetBrowserId() const;
   IChromiumProcess *GetProcess(const chromium_process_type_t &) const;

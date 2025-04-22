@@ -43,17 +43,7 @@ public:
   IChromiumHost *CreateBrowser(const brwcfg::IConfigure &, mp_errno_t &);
   bool DestroyBrowser(const browser_id_t &, mp_errno_t &);
   IChromiumHost *GetBrowser(const policy_id_t &, mp_errno_t &) const;
-  IChromiumHost *RecoveryCreation(const browser_id_t &, mp_errno_t &);
-private:
-  void OnChromiumMainMessage(const ISession *session, const CommandType &inCmd,
-                             const IBuffer *msg, CommandType &repCmd,
-                             IBuffer *repMsg);
-  void OnChromiumGpuMessage(const ISession *session, const CommandType &inCmd,
-                            const IBuffer *msg, CommandType &repCmd,
-                            IBuffer *repMsg);
-  void OnChromiumRendererMessage(const ISession *session,
-                                 const CommandType &inCmd, const IBuffer *msg,
-                                 CommandType &repCmd, IBuffer *repMsg);
+  IChromiumHost *RecoveryCreation(const ISession *session,const CommandType&, mp_errno_t &);
 
 private:
   std::map<browser_id_t, IChromiumHost *> chromium_host_;

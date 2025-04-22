@@ -76,9 +76,13 @@ void Server::Init() {
           std::cout << log << std::endl;
           IChromiumHost *pChromiumHost =
               Server::GetOrCreate()->GetBrowser(brwid, ret);
-          if (!pChromiumHost)
+          if (!pChromiumHost) {
+            pChromiumHost =
+                Server::GetOrCreate()->RecoveryCreation(session, inCmd, ret);
+          }
+          if (!pChromiumHost) {
             return;
-
+          }
           pChromiumHost->ProcessReady(chromium_process_type, pid, session);
 #if 0
           switch (chromium_process_type) {
@@ -156,17 +160,34 @@ IChromiumHost *Server::GetBrowser(const policy_id_t &brwid,
   } while (0);
   return result;
 }
-IChromiumHost *Server::RecoveryCreation(const browser_id_t &brwid,
+IChromiumHost *Server::RecoveryCreation(const ISession *session,
+                                        const CommandType &inCmd,
                                         mp_errno_t &ret) {
   IChromiumHost *result = nullptr;
   std::lock_guard<std::mutex> lck(*mtx_);
-  do {
-    auto fExists = chromium_host_.find(brwid);
-    if (fExists == chromium_host_.end())
-      break;
-    result = fExists->second;
-    ret = MP_OK;
-  } while (0);
+
+  const unsigned long long identify = session->GetIdentify();
+  const browser_id_t brwid = stl::HighLowStorage(identify).Low();
+  const xs_process_id_t pid = stl::HighLowStorage(identify).High();
+  command_type_t cmd = GetCommandType(static_cast<command_type_t>(inCmd));
+
+  chromium_process_type_t chromium_process_type =
+      GetChromiumProcessType(static_cast<command_type_t>(inCmd));
+
+  brwcfg::IConfigure cfg;
+  if (!Config::GetOrCreate()->GetBrowserEnvCfg(brwid, cfg)) {
+    return nullptr;
+  }
+  auto fExists = chromium_host_.find(brwid);
+  if (fExists != chromium_host_.end()) {
+    fExists->second->Release();
+    chromium_host_.erase(fExists);
+  }
+  auto p = new IChromiumHost(cfg.Serialization());
+  p->Open(true);
+  p->ProcessReady(chromium_process_type, pid, session);
+  chromium_host_.emplace(brwid, p);
+  ret = MP_OK;
   return result;
 }
 IChromiumHost *Server::CreateBrowser(const brwcfg::IConfigure &cfg,

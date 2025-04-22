@@ -64,6 +64,26 @@ const Config::Path &Config::GetPath(void) const {
   std::lock_guard<std::mutex> lck(*mtx_);
   return path_;
 }
+bool Config::GetBrowserEnvCfg(const browser_id_t &brwid,
+                              brwcfg::IConfigure &cfg) const {
+  bool result = false;
+  std::lock_guard<std::mutex> lck(*mtx_);
+  do {
+    const std::string hexPolicyIdString = fmt::format("{:x}", brwid);
+    const std::u16string cfgDir = path_.cache_dir + u"/" +
+                                  Conv::u8_to_u16(hexPolicyIdString) +
+                                  u"/MPUserEnv/configures";
+    const std::u16string cfgPath = cfgDir + u"/configure.json";
+    if (!stl::File::Exists(cfgPath))
+      break;
+    std::string buffer = stl::File::ReadFile(cfgPath);
+    if (buffer.empty())
+      break;
+    cfg << buffer;
+    result = true;
+  } while (0);
+  return result;
+}
 bool Config::CreateBrowserEnv(const browser_id_t &brwid,
                               const brwcfg::IConfigure &rBrwcfg) {
   bool result = false;

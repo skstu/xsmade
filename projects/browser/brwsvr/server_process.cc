@@ -1,19 +1,4 @@
 #include "server.h"
-//!@ Private
-void Server::OnChromiumMainMessage(const ISession *session,
-                                   const CommandType &inCmd, const IBuffer *msg,
-                                   CommandType &repCmd, IBuffer *repMsg) {
-}
-void Server::OnChromiumGpuMessage(const ISession *session,
-                                  const CommandType &inCmd, const IBuffer *msg,
-                                  CommandType &repCmd, IBuffer *repMsg) {
-}
-void Server::OnChromiumRendererMessage(const ISession *session,
-                                       const CommandType &inCmd,
-                                       const IBuffer *msg, CommandType &repCmd,
-                                       IBuffer *repMsg) {
-}
-
 void Server::Process(void) {
   const Config *config = Config::GetOrCreate();
   do {

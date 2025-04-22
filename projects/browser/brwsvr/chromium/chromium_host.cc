@@ -31,6 +31,7 @@ bool IChromiumHost::ProcessReady(const chromium_process_type_t &type,
   do {
     switch (type) {
     case chromium_process_type_t::CHROMIUM_PROCESS_TYPE_MAIN: {
+      main_pid_ = pid;
       pChromiumProcess = new ChromiumMain(pid);
 #if ENABLE_UVPP
       pChromiumProcess->SetSession(session);
@@ -92,68 +93,72 @@ const browser_id_t &IChromiumHost::GetBrowserId() const {
   std::lock_guard<std::mutex> lck(*mtx_);
   return browser_id_;
 }
-bool IChromiumHost::Open() {
+bool IChromiumHost::Open(const bool &bRecovery) {
   std::lock_guard<std::mutex> lck(*mtx_);
   do {
     if (open_.load())
       break;
-    main_pid_ = 0;
-    const std::string u8path =
-        Conv::u16_to_u8(Config::GetOrCreate()->GetChrome(""));
-    LOG_INFO("current dir", u8path);
-    std::vector<std::string> startup_args_cache, startup_envs_cache;
-    for (const auto &it : brwcfg_.startup_args) {
-      if (it.first.empty())
-        continue;
-      std::string args = it.first;
-      if (!it.second.empty()) {
+    do {
+      if (bRecovery)
+        break;
+      main_pid_ = 0;
+      const std::string u8path =
+          Conv::u16_to_u8(Config::GetOrCreate()->GetChrome(""));
+      LOG_INFO("current dir", u8path);
+      std::vector<std::string> startup_args_cache, startup_envs_cache;
+      for (const auto &it : brwcfg_.startup_args) {
+        if (it.first.empty())
+          continue;
+        std::string args = it.first;
+        if (!it.second.empty()) {
+          args.append("=");
+          args.append(it.second);
+        }
+        startup_args_cache.push_back(args);
+      }
+      for (const auto &it : brwcfg_.startup_envs) {
+        if (it.first.empty() || it.second.empty())
+          continue;
+        std::string args = it.first;
         args.append("=");
         args.append(it.second);
+        startup_envs_cache.push_back(args);
       }
-      startup_args_cache.push_back(args);
-    }
-    for (const auto &it : brwcfg_.startup_envs) {
-      if (it.first.empty() || it.second.empty())
-        continue;
-      std::string args = it.first;
-      args.append("=");
-      args.append(it.second);
-      startup_envs_cache.push_back(args);
-    }
-    std::vector<const char *> startup_args{u8path.c_str()}, startup_envs;
-    for (const auto &it : startup_args_cache) {
-      startup_args.push_back(it.c_str());
-    }
-    for (const auto &it : startup_envs_cache) {
-      startup_envs.push_back(it.c_str());
-    }
+      std::vector<const char *> startup_args{u8path.c_str()}, startup_envs;
+      for (const auto &it : startup_args_cache) {
+        startup_args.push_back(it.c_str());
+      }
+      for (const auto &it : startup_envs_cache) {
+        startup_envs.push_back(it.c_str());
+      }
 
-    // // brwcfg_.startup_args
-    // const char *spawn_args[] = {u8path.c_str(), "--no-sandbox",
-    // "--disable-gpu",
-    //                             "--headless=new", nullptr};
-    // /*"DISPLAY=:0"*/
-    // const char *spawn_envs[] = {"", nullptr};
+      // // brwcfg_.startup_args
+      // const char *spawn_args[] = {u8path.c_str(), "--no-sandbox",
+      // "--disable-gpu",
+      //                             "--headless=new", nullptr};
+      // /*"DISPLAY=:0"*/
+      // const char *spawn_envs[] = {"", nullptr};
 
-    startup_args.push_back(nullptr);
-    startup_envs.push_back(nullptr);
-    for (const auto &it : startup_args) {
-      if (it == nullptr)
-        break;
-      LOG_INFO("args: {}", it);
-    }
-    for (const auto &it : startup_envs) {
-      if (it == nullptr)
-        break;
-      LOG_INFO("envs: {}", it);
-    }
-    xs_base_spawn(
-        &startup_args[0], &startup_envs[0], this,
-        [](xs_process_id_t pid, xs_errno_t err, const void *route) {
-          auto self = static_cast<IChromiumHost *>(const_cast<void *>(route));
-          self->main_pid_ = pid;
-          self->processes_.emplace(pid, new ChromiumMain(self->main_pid_));
-        });
+      startup_args.push_back(nullptr);
+      startup_envs.push_back(nullptr);
+      for (const auto &it : startup_args) {
+        if (it == nullptr)
+          break;
+        LOG_INFO("args: {}", it);
+      }
+      for (const auto &it : startup_envs) {
+        if (it == nullptr)
+          break;
+        LOG_INFO("envs: {}", it);
+      }
+      xs_base_spawn(
+          &startup_args[0], &startup_envs[0], this,
+          [](xs_process_id_t pid, xs_errno_t err, const void *route) {
+            auto self = static_cast<IChromiumHost *>(const_cast<void *>(route));
+            self->main_pid_ = pid;
+            self->processes_.emplace(pid, new ChromiumMain(self->main_pid_));
+          });
+    } while (0);
     open_.store(true);
   } while (0);
   return open_.load();
