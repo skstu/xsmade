@@ -4,15 +4,18 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
+
 XS_EXTERN xs_errno_t xs_base_startup(void);
 XS_EXTERN xs_errno_t xs_base_shutdown(void);
 XS_EXTERN xs_errno_t xs_base_free(void **p);
 XS_EXTERN char *xs_base_malloc(size_t len);
 XS_EXTERN xs_errno_t xs_base_spawn(const char *args[], const char *envs[],
                                    void *route,
-                                   void (*rescb)(xs_process_id_t, xs_errno_t,
+                                   void (*rescb)(xs_process_handle_t,
+                                                 xs_process_id_t, xs_errno_t,
                                                  const void *));
 XS_EXTERN xs_errno_t xs_base_kill(int pid, int signum);
+XS_EXTERN xs_errno_t xs_base_process_kill(xs_process_handle_t);
 typedef xs_errno_t (*tf_xs_base_task_v1)();
 XS_EXTERN xs_errno_t xs_base_add_task_v1(tf_xs_base_task_v1);
 XS_EXTERN xs_errno_t xs_base_chmod(const char *, int);

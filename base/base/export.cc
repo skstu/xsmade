@@ -35,11 +35,19 @@ xs_errno_t xs_base_chmod(const char *path, int mode) {
 xs_errno_t xs_base_kill(int pid, int signum) {
   xs_errno_t err = xs_errno_t::XS_NO;
   err = static_cast<xs_errno_t>(uv_kill(pid, signum));
+  // uv_process_kill(&child_req, SIGTERM);
+  return err;
+}
+xs_errno_t xs_base_process_kill(xs_process_handle_t handle) {
+  xs_errno_t err = xs_errno_t::XS_NO;
+  err = static_cast<xs_errno_t>(
+      uv_process_kill((uv_process_t *)handle, SIGTERM /*SIGKILL*/));
+  // uv_process_kill(&chromium_process, SIGKILL);
   return err;
 }
 xs_errno_t xs_base_spawn(const char *args[], const char *envs[], void *route,
-                         void (*rescb)(xs_process_id_t, xs_errno_t,
-                                       const void *)) {
+                         void (*rescb)(xs_process_handle_t, xs_process_id_t,
+                                       xs_errno_t, const void *)) {
   xs_errno_t err = xs_errno_t::XS_NO;
   std::vector<std::string> spawn_args, spawn_envs;
   if (args) {
@@ -56,10 +64,10 @@ xs_errno_t xs_base_spawn(const char *args[], const char *envs[], void *route,
       [spawn_args, spawn_envs, route, rescb]() -> xs_errno_t {
         xs_errno_t err = xs_errno_t::XS_NO;
         xs_process_id_t pid = 0;
+        uv_process_t *h = (uv_process_t *)malloc(sizeof(uv_process_t));
         do {
           auto loop = uv_default_loop();
           uv_process_options_t options;
-          uv_process_t h = {0};
           memset(&options, 0, sizeof(options));
           std::vector<const char *> args, envs;
           for (const auto &arg : spawn_args) {
@@ -72,18 +80,22 @@ xs_errno_t xs_base_spawn(const char *args[], const char *envs[], void *route,
           options.args =
               args.empty() ? nullptr : const_cast<char **>(args.data());
           options.file = args[0];
-          options.flags = UV_PROCESS_DETACHED;
+          // options.flags = UV_PROCESS_DETACHED;
+          options.flags = 0;
+          options.exit_cb = [](uv_process_t *req, int64_t status, int signal) {
+            uv_close((uv_handle_t *)req, NULL);
+          };
           options.env =
               spawn_envs.empty() ? nullptr : const_cast<char **>(envs.data());
-          err = static_cast<xs_errno_t>(uv_spawn(loop, &h, &options));
+          err = static_cast<xs_errno_t>(uv_spawn(loop, h, &options));
           if (err != xs_errno_t::XS_OK)
             break;
-          pid = h.pid;
-          uv_unref((uv_handle_t *)&h); // 使得进程不阻止事件循环
+          pid = h->pid;
+          uv_unref((uv_handle_t *)h);
           err = xs_errno_t::XS_OK;
         } while (0);
         if (rescb) {
-          rescb(pid, err, route);
+          rescb(h, pid, err, route);
         }
         return err;
       }));

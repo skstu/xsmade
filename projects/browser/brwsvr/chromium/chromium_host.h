@@ -92,6 +92,7 @@ private:
   browser_id_t browser_id_ = 0;
   std::atomic_bool open_ = false;
   xs_process_id_t main_pid_ = 0;
+  xs_process_handle_t main_process_handle_ = nullptr;
   std::multimap<xs_process_id_t, IChromiumProcess *> processes_;
   std::shared_ptr<std::mutex> mtx_ = std::make_shared<std::mutex>();
 };

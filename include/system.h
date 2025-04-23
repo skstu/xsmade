@@ -14,6 +14,7 @@ typedef pid_t xs_process_id_t;
 #elif defined(__OSLINUX__)
 typedef pid_t xs_process_id_t;
 #endif
+typedef void *xs_process_handle_t;
 
 typedef struct {
   long x;
@@ -68,7 +69,7 @@ XS_EXTERN int xs_sys_capturescreen(xs_position_t pos,
 XS_EXTERN int xs_sys_get_image_type(const char *buffer, size_t buffer_size,
                                     xs_image_type_t *output_image_type);
 XS_EXTERN xs_errno_t xs_sys_get_dll_path(xs_buffer_t **out_buffer,
-                                  void *static_dummy_variable);
+                                         void *static_dummy_variable);
 XS_EXTERN int xs_sys_shared_memory_create(const char *name, size_t size,
                                           void **base);
 XS_EXTERN int xs_sys_shared_memory_destroy(const char *name);

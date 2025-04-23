@@ -1,7 +1,10 @@
 # xsmade
+
+docker run --memory="8g" --cpus="4" --shm-size="1g" --mem_limit="4g" -p 9218:9218 -p 8888:8888 -it dev1
+
 # ssh -L 0.0.0.0:9223:localhost:9222 localhost -N
-
-
+docker run --memory="2g" --cpus="2" -p 9218:9218 -p 7778:7778 -it dev1 /bin/bash
+docker run -d --name chromium-container --memory="2g" --cpus="2" your-chromium-image
 zip -r /home/ponyo/Desktop/projects/xsmade/bin/brw[25421-1].zip /home/ponyo/Desktop/projects/xsmade/bin/ -x "/path/to/directory/exclude_this_folder/*"
 
 ../build/scripts/linux/install-chrome.sh
@@ -20,18 +23,48 @@ cmake --build .
 /home/ponyo/Desktop/projects/chromium_dev/130.0.6723.116/src/third_party/llvm-build/Release+Asserts
 
 
+无头浏览器启动命令
+```
+docker exec -it browser /bin/bash
 
-mouseEvent dispatch……
-/snapshot/chromeV/node_modules/puppeteer-core/lib/cjs/puppeteer/cdp/IsolatedWorld.js:73
-        const error = new Error('Execution context was destroyed');
-                      ^
+./fpbrowser/browser/chromium/130.0.6723.116/chrome --no-sandbox --remote-debugging-port=9222 --disable-gpu --headless=new --log-file=./chromium_log.log 
 
-Error: Execution context was destroyed
-    at #waitForExecutionContext (/snapshot/chromeV/node_modules/puppeteer-core/lib/cjs/puppeteer/cdp/IsolatedWorld.js:73:23)
-    at IsolatedWorld.evaluate (/snapshot/chromeV/node_modules/puppeteer-core/lib/cjs/puppeteer/cdp/IsolatedWorld.js:98:58)
-    at CdpFrame.title (/snapshot/chromeV/node_modules/puppeteer-core/lib/cjs/puppeteer/api/Frame.js:888:47)
-    at CdpFrame.<anonymous> (/snapshot/chromeV/node_modules/puppeteer-core/lib/cjs/puppeteer/util/decorators.js:109:27)
-    at CdpPage.title (/snapshot/chromeV/node_modules/puppeteer-core/lib/cjs/puppeteer/api/Page.js:1092:43)
-    at TabManager.getAllPagesInfoByBrowserId (/snapshot/chromeV/testCore.js)
-    at async CloudManager.handleUpdateTabs (/snapshot/chromeV/testCore.js)
+./fpbrowser/browser/chromium/130.0.6723.116/chrome --no-sandbox --remote-debugging-port=9222 --disable-gpu --headless=new --log-file=./chromium_log.log --remote-debugging-address=0.0.0.0
 
+```
+
+ppt应用去移动
+```
+./cloud-manager-linux.app --port=9292 --url=ws://127.0.0.1:9222/devtools/browser/069492a9-35be-4e13-9ba6-1b5b66babc7c
+```
+
+端口转发指令
+```
+ssh -L 0.0.0.0:9223:localhost:9222 localhost -N
+```
+
+
+安装工具
+```
+# ssh转发支持
+apt install ssh
+
+# netstat指令支持
+apt install net-tools
+
+# killall支持
+apt install psmisc
+```
+
+排查命令
+```
+docker exec -it browser /bin/bash
+
+curl http://127.0.0.1:9222/json
+curl http://127.0.0.1:9222/json/version
+
+# 9222端口是否支持0.0.0.0
+netstat -tuln | grep 9222
+
+#
+cat /app/logs/cloud-manager.log
