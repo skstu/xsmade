@@ -153,11 +153,9 @@ bool IChromiumHost::Open(const bool &bRecovery) {
       }
       xs_base_spawn(
           &startup_args[0], &startup_envs[0], this,
-          [](xs_process_handle_t h, xs_process_id_t pid, xs_errno_t err,
-             const void *route) {
+          [](xs_process_id_t pid, xs_errno_t err, const void *route) {
             auto self = static_cast<IChromiumHost *>(const_cast<void *>(route));
             self->main_pid_ = pid;
-            self->main_process_handle_ = h;
             self->processes_.emplace(pid, new ChromiumMain(self->main_pid_));
           });
     } while (0);
@@ -176,25 +174,23 @@ void IChromiumHost::Close() {
       it.second->Release();
       xs_base_kill(it.first, 9);
     }
+    xs_base_kill(main_pid_, 15);
     xs_base_kill(main_pid_, 9);
+ 
     main_pid_ = 0;
     processes_.clear();
-    xs_base_free(&main_process_handle_);
     open_.store(false);
   } while (0);
 }
-IChromiumProcess *
-IChromiumHost::GetProcess(const chromium_process_type_t &type) const {
+IChromiumProcess *IChromiumHost::GetProcess(const xs_process_id_t &pid) const {
   IChromiumProcess *result = nullptr;
-#if 0
   std::lock_guard<std::mutex> lck(*mtx_);
   do {
-    auto f = processes_.search(type);
-    if (!f)
+    auto f = processes_.find(pid);
+    if (f == processes_.end())
       break;
-    result = *f;
+    result = f->second;
   } while (0);
-#endif
   return result;
 }
 /////////////////////////////////////////////////////////////////////////////////
@@ -212,7 +208,7 @@ bool Brwobj::Open() {
     xs_process_id_t pid = 0;
     if (0 != xs_sys_process_spawn(
                  Conv::u16_to_u8(Config::GetOrCreate()->GetChrome("")).c_str(),
-                 nullptr, false, &pid))
+                 nullptr, nullptr, false, &pid))
       break;
     pid_ = static_cast<decltype(pid_)>(pid);
     open_.store(true);

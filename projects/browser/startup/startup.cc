@@ -52,7 +52,7 @@ bool OpenChromium() {
     std::vector<const char *> startup_args{nullptr};
     xs_process_id_t pid = 0;
     if (xs_sys_process_spawn(Conv::ws_to_u8(targetChromium).c_str(),
-                             &startup_args[0], 1, &pid))
+                             &startup_args[0], nullptr, 1, &pid))
       break;
     result = true;
   } while (0);

@@ -23,3 +23,7 @@ bool ChromiumMain::Request(const command_type_t &cmd,
   } while (0);
   return result;
 }
+void ChromiumMain::OnMessage(const CommandType &inCmd, const IBuffer *msg,
+                             CommandType &repCmd, IBuffer *repMsg) const {
+  return;
+}

@@ -10,6 +10,24 @@ extern "C" {
 #endif
 #include <base.hpp>
 using namespace xs::base;
+#ifdef __OSLINUX__
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <string.h>
+#include <sys/types.h>
+#include <sys/socket.h>
+#include <sys/wait.h>
+#include <netinet/in.h>
+#include <arpa/inet.h>
+#include <spawn.h>    // posix_spawn
+#include <signal.h>   // kill
+#include <sys/wait.h> // waitpid
+#include <fcntl.h>    // file locks
+#include <sys/file.h> // flock
+#include <pwd.h>      // getpwuid
+#include <dlfcn.h>
+#endif
 #include "task.h"
 
 class Base final {

@@ -7,6 +7,8 @@ public:
   ~IChromiumProcess();
   virtual void Release() const = 0;
   virtual bool Request(const command_type_t &, const std::string &) const = 0;
+  virtual void OnMessage(const CommandType &inCmd, const IBuffer *msg,
+                         CommandType &repCmd, IBuffer *repMsg) const = 0;
 
 public:
   const xs_process_id_t &GetProcessId() const;
@@ -31,6 +33,8 @@ public:
 protected:
   bool Request(const command_type_t &,
                const std::string &) const override final;
+  void OnMessage(const CommandType &inCmd, const IBuffer *msg,
+                 CommandType &repCmd, IBuffer *repMsg) const override final;
 };
 class ChromiumGpu final : public IChromiumProcess {
 public:
@@ -41,6 +45,8 @@ public:
 protected:
   bool Request(const command_type_t &,
                const std::string &) const override final;
+  void OnMessage(const CommandType &inCmd, const IBuffer *msg,
+                 CommandType &repCmd, IBuffer *repMsg) const override final;
 };
 class ChromiumRenderer final : public IChromiumProcess {
 public:
@@ -51,6 +57,8 @@ public:
 protected:
   bool Request(const command_type_t &,
                const std::string &) const override final;
+  void OnMessage(const CommandType &inCmd, const IBuffer *msg,
+                 CommandType &repCmd, IBuffer *repMsg) const override final;
 };
 class Brwobj final {
 public:
@@ -78,10 +86,10 @@ public:
   void Release() const;
 
 public:
-  bool Open(const bool& bRecovery = false);
+  bool Open(const bool &bRecovery = false);
   void Close();
   const browser_id_t &GetBrowserId() const;
-  IChromiumProcess *GetProcess(const chromium_process_type_t &) const;
+  IChromiumProcess *GetProcess(const xs_process_id_t &) const;
   bool ProcessReady(const chromium_process_type_t &, const xs_process_id_t &,
                     const uvpp::ISession *);
   bool Request(const command_type_t &, const std::string &, mp_errno_t &) const;
@@ -92,7 +100,6 @@ private:
   browser_id_t browser_id_ = 0;
   std::atomic_bool open_ = false;
   xs_process_id_t main_pid_ = 0;
-  xs_process_handle_t main_process_handle_ = nullptr;
   std::multimap<xs_process_id_t, IChromiumProcess *> processes_;
   std::shared_ptr<std::mutex> mtx_ = std::make_shared<std::mutex>();
 };

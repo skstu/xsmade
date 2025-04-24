@@ -26,12 +26,14 @@ XS_EXTERN xs_errno_t xs_sys_get_commandline(char **out, size_t *out_size) {
   return err;
 }
 XS_EXTERN int xs_sys_process_spawn(const char *proc, const char **args,
-                                   int show_flag, xs_process_id_t *out_pid) {
+                                   const char **envp, int show_flag,
+                                   xs_process_id_t *out_pid) {
   int r = -1;
   do {
     pid_t pid = 0;
     r = posix_spawn(&pid, proc, nullptr, nullptr,
-                    const_cast<char *const *>(args), nullptr);
+                    const_cast<char *const *>(args),
+                    const_cast<char *const *>(envp));
     if (r != 0)
       break;
     *out_pid = static_cast<xs_process_id_t>(pid);

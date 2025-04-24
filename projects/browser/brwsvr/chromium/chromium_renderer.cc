@@ -12,3 +12,7 @@ bool ChromiumRenderer::Request(const command_type_t &,
                                const std::string &) const {
   return false;
 }
+void ChromiumRenderer::OnMessage(const CommandType &inCmd, const IBuffer *msg,
+                                 CommandType &repCmd, IBuffer *repMsg) const {
+  return;
+}
