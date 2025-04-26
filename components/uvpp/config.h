@@ -6,13 +6,15 @@
 #ifndef __min
 #define __min(a, b) (((a) < (b)) ? (a) : (b))
 #endif
-
+#define USE_LIBZIP 0
 #include <macros.h>
 #include <stl.hpp>
 #include <uv.h>
 #include <fmt/format.h>
 #include <log.hpp>
+#if USE_LIBZIP
 #include <zipcc.h>
+#endif
 #include "version.h"
 #include "export.h"
 using namespace uvpp;

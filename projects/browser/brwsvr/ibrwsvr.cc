@@ -44,7 +44,6 @@ SHARED_API int startup(void) {
       result = MP_EALREADY;
       break;
     }
-    xs_base_startup();
     auto config = Config::GetOrCreate();
     LOG_INIT(config->GetPath().logs_path);
     auto server = Server::GetOrCreate();
@@ -59,7 +58,6 @@ SHARED_API void cleanup(void) {
   started = 0;
   Server::Destroy();
   Config::Destroy();
-  xs_base_shutdown();
   LOG_UNINIT;
 }
 } /// extern "C"

@@ -1,5 +1,12 @@
 #include "sys.h"
 XS_EXTERN void xs_sys_startup(void) {
+#if 0
+  struct sigaction arg;
+  arg.sa_handler = SIG_IGN;
+  arg.sa_flags = SA_NOCLDWAIT;
+  sigemptyset(&arg.sa_mask);
+  sigaction(SIGCHLD, &arg, NULL);
+#endif
 }
 XS_EXTERN void xs_sys_shutdown(void) {
 }

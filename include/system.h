@@ -54,7 +54,7 @@ XS_EXTERN unsigned short xs_sys_get_free_port(void);
 XS_EXTERN int xs_sys_process_spawn(const char *proc, const char **argv,
                                    const char **envp, int show_flag,
                                    xs_process_id_t *out_pid);
-XS_EXTERN xs_errno_t xs_sys_process_kill(xs_process_id_t pid);
+XS_EXTERN xs_errno_t xs_sys_process_kill(xs_process_id_t pid, int);
 //!@ exited == 0 and running  == !0
 XS_EXTERN int xs_sys_process_has_exit(xs_process_id_t pid);
 XS_EXTERN xs_errno_t xs_sys_process_getpath(char **, size_t *);

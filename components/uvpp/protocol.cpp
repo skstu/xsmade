@@ -28,8 +28,10 @@ std::string Protocol::MakeStream(const HEAD &input_head,
       if (pHead->original_size <= PACKET_COMPRESSION_STANDARD_SIZE)
         break;
       std::string zip;
+#if USE_LIBZIP
       if (!Zipcc::zipCompress(input_data, zip) || zip.empty())
         break;
+#endif
       pHead->zip_type = static_cast<decltype(pHead->zip_type)>(ZipType::ZIP);
       pHead->data_size = zip.size();
       result.pop_back();
@@ -64,10 +66,14 @@ bool Protocol::UnMakeStream(const std::string &input_data, HEAD &head,
       output_data.append(pHead->data, pHead->data_size);
     } break;
     case ZipType::ZIP: {
+#if USE_LIBZIP
       Zipcc::zipUnCompress(pHead->data, pHead->original_size, output_data);
+#endif
     } break;
     case ZipType::GZIP: {
+#if USE_LIBZIP
       Zipcc::gzipUnCompress(pHead->data, output_data);
+#endif
     } break;
     default:
       break;
@@ -355,4 +361,8 @@ unsigned long tagPacketHeader::PacketSize() const {
 #endif
 const std::uint64_t TIMEOUT_HEARBEAT_MS = 30000;
 const size_t PACKET_HEAD_SIZE = sizeof(HEAD);
+#if USE_LIBZIP
+const size_t PACKET_COMPRESSION_STANDARD_SIZE = 1024;
+#else
 const size_t PACKET_COMPRESSION_STANDARD_SIZE = ((size_t) ~((size_t)0));
+#endif

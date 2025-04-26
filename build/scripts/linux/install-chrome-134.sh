@@ -2,9 +2,12 @@
 # chmod +x ../build/scripts/linux/install-chrome.sh
 # cd /c/Users/k34ub/source/skstu/xsmade/build/scripts/ffmpeg-projects/win
 #CURRENT=$(pwd)
-BUILD_CHROME_DIR="/home/ponyo/Desktop/projects/chromium_dev/130.0.6723.116/src/out/release"
+
+#BUILD_CHROME_DIR="/home/ponyo/Desktop/projects/chromium_dev/130.0.6723.116/src/out/release"
+BUILD_CHROME_DIR="/home/ponyo/Desktop/projects/chromium/134.0.6998.165/src/out/release"
 CURRENT_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
-BIN_CHROMIUM_DIR="$CURRENT_DIR/../../../bin/browser/chromium/130.0.6723.116"
+BIN_CHROMIUM_DIR="$CURRENT_DIR/../../../bin/browser/chromium/134.0.6998.165"
+mkdir -p $BIN_CHROMIUM_DIR
 echo "Current directory: $CURRENT_DIR"
 echo "Chrome directory: $BUILD_CHROME_DIR"
 #mkdir -p $BIN_CHROMIUM_DIR/chrome && cp -f /src/* /dest

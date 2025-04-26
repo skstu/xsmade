@@ -71,7 +71,9 @@ xs_errno_t xs_base_spawn(const char *args[], const char *envs[], void *route,
         xs_errno_t err = xs_errno_t::XS_NO;
         xs_process_id_t pid = 0;
         do {
-          auto loop = uv_default_loop();
+          auto loop = Base::GetLoop();
+          if (!loop)
+            break;
           uv_process_t process_handle = {0};
           uv_process_options_t options;
           memset(&options, 0, sizeof(options));
@@ -101,8 +103,9 @@ xs_errno_t xs_base_spawn(const char *args[], const char *envs[], void *route,
               uv_spawn(loop, &process_handle, &options));
           if (err != xs_errno_t::XS_OK)
             break;
-          pid = process_handle.pid;
           uv_unref((uv_handle_t *)&process_handle);
+          pid = process_handle.pid;
+          //
           err = xs_errno_t::XS_OK;
         } while (0);
         if (rescb) {

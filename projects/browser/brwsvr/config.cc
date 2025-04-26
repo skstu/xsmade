@@ -13,16 +13,18 @@ void Config::Init() {
       stl::File::ReadFile(Conv::u16_to_u8(path_.settings_path));
   settings_ = new brwcfg::ISettings(settings_buffer);
 #if ENABLE_DEVELOP_DEBUG
-  chromes_["230.0.6723.116"] = u"/home/ponyo/Desktop/projects/chromium_dev/"
+  chromes_["130.0.6723.116"] = u"/home/ponyo/Desktop/projects/chromium_dev/"
                                u"130.0.6723.116/src/out/debug/chrome";
 #elif ENABLE_DEVELOP_DEBUG_NOCHROME
-  chromes_["230.0.6723.116"] =
+  chromes_["130.0.6723.116"] =
       u"/mnt/c/users/k34ub/source/skstu/xsmade/bin/tests/test_poll";
 #else
   do {
     std::map<std::u16string, std::u16string> dirs, files;
     stl::Directory::Enum(path_.chromium_dir, dirs, files, false);
     for (const auto &node : dirs) {
+      if (node.second.find(u"134.0.6998.165") == std::u16string::npos)
+        continue;
 #if defined(__OSWIN__)
       if (!stl::File::Exists(node.second + u"/fanbrowser.exe"))
         continue;

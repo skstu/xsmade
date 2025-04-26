@@ -100,7 +100,7 @@ void Server::UnInit() {
 #endif
 #if ENABLE_UVPP
   uvpp_->Stop();
-  IUvpp::Destroy((IComponent **)&uvpp_);
+  IUvpp::Destroy(&uvpp_);
   uvpp_ = nullptr;
 #endif
 }
@@ -137,7 +137,9 @@ void Server::Stop(void) {
       t.join();
     }
     threads_.clear();
+#if ENABLE_UVPP
     uvpp_service_->Stop();
+#endif
   } while (0);
 }
 IChromiumHost *Server::GetBrowser(const policy_id_t &brwid,

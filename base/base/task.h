@@ -27,6 +27,10 @@ private:
 };
 
 class Tasks {
+public:
+  Tasks() = default;
+  ~Tasks() = default;
+
 private:
   std::queue<std::shared_ptr<ITask>> task_queue;
   std::shared_ptr<std::mutex> mtx_ = std::make_shared<std::mutex>();

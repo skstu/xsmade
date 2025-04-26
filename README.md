@@ -1,4 +1,6 @@
 # xsmade
+cp /home/ponyo/Desktop/projects/xsmade/bin/browser.zip /home/docker/browserRpc/fpbrowser/
+cp /home/ponyo/Desktop/projects/xsmade/bin/components/libbrwsvr.so /home/docker/browserRpc/fpbrowser/components/libbrwsvr.so
 
 docker run --memory="8g" --cpus="4" --shm-size="1g" --mem_limit="4g" -p 9218:9218 -p 8888:8888 -it dev1
 

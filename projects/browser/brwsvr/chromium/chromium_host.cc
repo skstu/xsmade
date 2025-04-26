@@ -124,7 +124,7 @@ bool IChromiumHost::Open(const bool &bRecovery) {
         args.append(it.second);
         startup_envs_cache.push_back(args);
       }
-      std::vector<const char *> startup_args{u8path.c_str()}, startup_envs;
+      std::vector<const char *> startup_args /*{u8path.c_str()}*/, startup_envs;
       for (const auto &it : startup_args_cache) {
         startup_args.push_back(it.c_str());
       }
@@ -151,6 +151,7 @@ bool IChromiumHost::Open(const bool &bRecovery) {
           break;
         LOG_INFO("envs: {}", it);
       }
+#if 0
       xs_base_spawn(
           &startup_args[0], &startup_envs[0], this,
           [](xs_process_id_t pid, xs_errno_t err, const void *route) {
@@ -158,6 +159,10 @@ bool IChromiumHost::Open(const bool &bRecovery) {
             self->main_pid_ = pid;
             self->processes_.emplace(pid, new ChromiumMain(self->main_pid_));
           });
+#endif
+      xs_sys_process_spawn(u8path.c_str(), &startup_args[0], &startup_envs[0],
+                           0, &main_pid_);
+      processes_.emplace(main_pid_, new ChromiumMain(main_pid_));
     } while (0);
     open_.store(true);
   } while (0);
@@ -172,11 +177,13 @@ void IChromiumHost::Close() {
       if (it.first == main_pid_)
         continue;
       it.second->Release();
-      xs_base_kill(it.first, 9);
+      // xs_base_kill(it.first, 9);
+      xs_sys_process_kill(it.first, 9);
     }
-    xs_base_kill(main_pid_, 15);
-    xs_base_kill(main_pid_, 9);
- 
+    xs_sys_process_kill(main_pid_, 9);
+    // xs_base_kill(main_pid_, 15);
+    //  xs_base_kill(main_pid_, 9);
+
     main_pid_ = 0;
     processes_.clear();
     open_.store(false);
@@ -219,7 +226,7 @@ void Brwobj::Close() {
   do {
     if (!open_.load())
       break;
-    xs_sys_process_kill(pid_);
+    xs_sys_process_kill(pid_, 0);
     pid_ = 0;
   } while (0);
   open_.store(false);

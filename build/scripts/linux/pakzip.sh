@@ -11,7 +11,7 @@ echo "Current directory: $BIN_DIR"
 echo "Chrome directory: $PACKET_NAME"
 
 cd $BIN_DIR
-zip -r $PACKET_NAME * -x "$*.txt" "*.zip" "cache/*" "packets/*" "temp/*" "plugins/*"
+zip -r $PACKET_NAME * -x "$*.txt" "*.zip" "cache/*" "packets/*" "temp/*" "plugins/*" "cloud-manager-linux" "Dockerfile" "maindev.sh"
 
 rm -rf $COPY_TO_FILE
 

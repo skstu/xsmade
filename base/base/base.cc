@@ -1,6 +1,5 @@
 ﻿#include <base.h>
 
-static uv_loop_t *g_uv_default_loop = nullptr;
 Base::Base() {
   Init();
 }
@@ -8,11 +7,14 @@ Base::~Base() {
   UnInit();
 }
 void Base::Init() {
-  g_uv_default_loop = uv_default_loop();
+  loop_ = (uv_loop_t *)malloc(sizeof(uv_loop_t));
   ready_.store(true);
 }
 void Base::UnInit() {
-  uv_loop_close(g_uv_default_loop);
+  if (loop_) {
+    free(loop_);
+    loop_ = nullptr;
+  }
   ready_.store(false);
 }
 bool Base::Ready() const {
@@ -24,13 +26,7 @@ bool Base::Start() {
     if (!ready_.load() || open_.load())
       break;
     open_.store(true);
-    uv_thread_create(
-        &thread_,
-        [](void *arg) {
-          auto *self = static_cast<Base *>(arg);
-          self->Process();
-        },
-        this);
+    threads_.emplace_back([this]() { Process(); });
   } while (0);
   return open_.load();
 }
@@ -38,21 +34,46 @@ void Base::Stop() {
   do {
     if (!open_.load())
       break;
-    uv_stop(g_uv_default_loop);
     open_.store(false);
-    uv_thread_join(&thread_);
+    for (auto &t : threads_) {
+      t.join();
+    }
+    threads_.clear();
     uv_library_shutdown();
   } while (0);
 }
 void Base::Process() {
   do {
-    tasks_.execute();
-    uv_run(g_uv_default_loop, UV_RUN_NOWAIT);
-    if (!open_.load()) {
+    if (0 != uv_loop_init(loop_))
       break;
-    }
-    std::this_thread::sleep_for(std::chrono::milliseconds(10));
-  } while (1);
+    loop_->data = this;
+    do {
+      tasks_.execute();
+      uv_walk(
+          loop_,
+          [](uv_handle_t *handle, void *arg) { ///
+            Base *base = reinterpret_cast<Base *>(handle->loop->data);
+            auto sss = 0;
+          },
+          nullptr);
+      uv_run(loop_, UV_RUN_NOWAIT);
+      if (!open_.load()) {
+        uv_walk(
+            loop_,
+            [](uv_handle_t *handle, void *arg) {
+              if (!uv_is_closing(handle)) {
+                uv_close(handle, nullptr);
+              }
+            },
+            nullptr);
+        uv_run(loop_, uv_run_mode::UV_RUN_DEFAULT);
+        uv_loop_close(loop_);
+        break;
+      }
+      std::this_thread::sleep_for(std::chrono::milliseconds(10));
+    } while (1);
+
+  } while (0);
 }
 ////////////////////////////////////////////////////////////////////
 static Base *g_instance = nullptr;
@@ -68,4 +89,10 @@ void Base::Destroy() {
     delete g_instance;
     g_instance = nullptr;
   }
+}
+uv_loop_t *Base::GetLoop() {
+  if (g_instance) {
+    return g_instance->loop_;
+  }
+  return nullptr;
 }

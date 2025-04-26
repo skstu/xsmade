@@ -41,9 +41,12 @@ XS_EXTERN int xs_sys_process_spawn(const char *proc, const char **args,
   return r;
 }
 
-XS_EXTERN xs_errno_t xs_sys_process_kill(xs_process_id_t pid) {
+XS_EXTERN xs_errno_t xs_sys_process_kill(xs_process_id_t pid, int signum) {
   xs_errno_t err = xs_errno_t::XS_NO;
-  err = (xs_errno_t)kill(pid, 9);
+  if (signum <= 0) {
+    signum = SIGKILL;
+  }
+  err = (xs_errno_t)kill(pid, signum);
   return err;
 }
 // XS_EXTERN int xs_sys_process_has_exit(long long pid) {

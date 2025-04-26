@@ -34,6 +34,7 @@ class Base final {
 public:
   static Base *GetOrCreate();
   static void Destroy();
+  static uv_loop_t *GetLoop();
 
 public:
   bool Ready() const;
@@ -53,8 +54,9 @@ private:
 
 private:
   void Process();
+  uv_loop_t *loop_ = nullptr;
   Tasks tasks_;
-  uv_thread_t thread_;
+  stl::tfThreads threads_;
   std::atomic_bool open_ = false;
   std::atomic_bool ready_ = false;
   std::shared_ptr<std::mutex> mtx_ = std::make_shared<std::mutex>();

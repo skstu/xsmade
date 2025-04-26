@@ -3,7 +3,7 @@
 
 #define ENABLE_DEVELOP_DEBUG 0
 #define ENABLE_DEVELOP_DEBUG_NOCHROME 0
-#define ENABLE_UVPP 1
+#define ENABLE_UVPP 0
 
 extern "C" {
 ////////////////////////////////////////////////////////////////////////////////
