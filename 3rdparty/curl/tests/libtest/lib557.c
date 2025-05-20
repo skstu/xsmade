@@ -37,7 +37,7 @@
 
 #include "memdebug.h"
 
-#if defined(__GNUC__) || defined(__clang__)
+#if defined(CURL_GNUC_DIAG) || defined(__clang__)
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wformat"
 #pragma GCC diagnostic ignored "-Wformat-extra-args"
@@ -166,17 +166,18 @@ static int test_unsigned_short_formatting(void)
     if(memcmp(us_test[i].result,
                us_test[i].expected,
                strlen(us_test[i].expected))) {
-      printf("unsigned short test #%.2d: Failed (Expected: %s Got: %s)\n",
-             i, us_test[i].expected, us_test[i].result);
+      curl_mprintf("unsigned short test #%.2d: Failed "
+                   "(Expected: %s Got: %s)\n",
+                   i, us_test[i].expected, us_test[i].result);
       failed++;
     }
 
   }
 
   if(!failed)
-    printf("All curl_mprintf() unsigned short tests OK!\n");
+    curl_mprintf("All curl_mprintf() unsigned short tests OK!\n");
   else
-    printf("Some curl_mprintf() unsigned short tests Failed!\n");
+    curl_mprintf("Some curl_mprintf() unsigned short tests Failed!\n");
 
   return failed;
 }
@@ -240,7 +241,7 @@ static int test_signed_short_formatting(void)
     if(memcmp(ss_test[i].result,
               ss_test[i].expected,
               strlen(ss_test[i].expected))) {
-      printf("signed short test #%.2d: Failed (Expected: %s Got: %s)\n",
+      curl_mprintf("signed short test #%.2d: Failed (Expected: %s Got: %s)\n",
              i, ss_test[i].expected, ss_test[i].result);
       failed++;
     }
@@ -248,9 +249,9 @@ static int test_signed_short_formatting(void)
   }
 
   if(!failed)
-    printf("All curl_mprintf() signed short tests OK!\n");
+    curl_mprintf("All curl_mprintf() signed short tests OK!\n");
   else
-    printf("Some curl_mprintf() signed short tests Failed!\n");
+    curl_mprintf("Some curl_mprintf() signed short tests Failed!\n");
 
   return failed;
 }
@@ -390,7 +391,7 @@ static int test_unsigned_int_formatting(void)
     if(memcmp(ui_test[i].result,
                ui_test[i].expected,
                strlen(ui_test[i].expected))) {
-      printf("unsigned int test #%.2d: Failed (Expected: %s Got: %s)\n",
+      curl_mprintf("unsigned int test #%.2d: Failed (Expected: %s Got: %s)\n",
              i, ui_test[i].expected, ui_test[i].result);
       failed++;
     }
@@ -398,9 +399,9 @@ static int test_unsigned_int_formatting(void)
   }
 
   if(!failed)
-    printf("All curl_mprintf() unsigned int tests OK!\n");
+    curl_mprintf("All curl_mprintf() unsigned int tests OK!\n");
   else
-    printf("Some curl_mprintf() unsigned int tests Failed!\n");
+    curl_mprintf("Some curl_mprintf() unsigned int tests Failed!\n");
 
   return failed;
 }
@@ -618,7 +619,7 @@ static int test_signed_int_formatting(void)
     if(memcmp(si_test[i].result,
               si_test[i].expected,
               strlen(si_test[i].expected))) {
-      printf("signed int test #%.2d: Failed (Expected: %s Got: %s)\n",
+      curl_mprintf("signed int test #%.2d: Failed (Expected: %s Got: %s)\n",
              i, si_test[i].expected, si_test[i].result);
       failed++;
     }
@@ -626,9 +627,9 @@ static int test_signed_int_formatting(void)
   }
 
   if(!failed)
-    printf("All curl_mprintf() signed int tests OK!\n");
+    curl_mprintf("All curl_mprintf() signed int tests OK!\n");
   else
-    printf("Some curl_mprintf() signed int tests Failed!\n");
+    curl_mprintf("Some curl_mprintf() signed int tests Failed!\n");
 
   return failed;
 }
@@ -767,7 +768,7 @@ static int test_unsigned_long_formatting(void)
     if(memcmp(ul_test[i].result,
                ul_test[i].expected,
                strlen(ul_test[i].expected))) {
-      printf("unsigned long test #%.2d: Failed (Expected: %s Got: %s)\n",
+      curl_mprintf("unsigned long test #%.2d: Failed (Expected: %s Got: %s)\n",
              i, ul_test[i].expected, ul_test[i].result);
       failed++;
     }
@@ -775,9 +776,9 @@ static int test_unsigned_long_formatting(void)
   }
 
   if(!failed)
-    printf("All curl_mprintf() unsigned long tests OK!\n");
+    curl_mprintf("All curl_mprintf() unsigned long tests OK!\n");
   else
-    printf("Some curl_mprintf() unsigned long tests Failed!\n");
+    curl_mprintf("Some curl_mprintf() unsigned long tests Failed!\n");
 
   return failed;
 }
@@ -995,7 +996,7 @@ static int test_signed_long_formatting(void)
     if(memcmp(sl_test[i].result,
               sl_test[i].expected,
               strlen(sl_test[i].expected))) {
-      printf("signed long test #%.2d: Failed (Expected: %s Got: %s)\n",
+      curl_mprintf("signed long test #%.2d: Failed (Expected: %s Got: %s)\n",
              i, sl_test[i].expected, sl_test[i].result);
       failed++;
     }
@@ -1003,9 +1004,9 @@ static int test_signed_long_formatting(void)
   }
 
   if(!failed)
-    printf("All curl_mprintf() signed long tests OK!\n");
+    curl_mprintf("All curl_mprintf() signed long tests OK!\n");
   else
-    printf("Some curl_mprintf() signed long tests Failed!\n");
+    curl_mprintf("Some curl_mprintf() signed long tests Failed!\n");
 
   return failed;
 }
@@ -1110,7 +1111,7 @@ static int test_curl_off_t_formatting(void)
     if(memcmp(co_test[i].result,
               co_test[i].expected,
               strlen(co_test[i].expected))) {
-      printf("curl_off_t test #%.2d: Failed (Expected: %s Got: %s)\n",
+      curl_mprintf("curl_off_t test #%.2d: Failed (Expected: %s Got: %s)\n",
              i, co_test[i].expected, co_test[i].result);
       failed++;
     }
@@ -1118,9 +1119,9 @@ static int test_curl_off_t_formatting(void)
   }
 
   if(!failed)
-    printf("All curl_mprintf() curl_off_t tests OK!\n");
+    curl_mprintf("All curl_mprintf() curl_off_t tests OK!\n");
   else
-    printf("Some curl_mprintf() curl_off_t tests Failed!\n");
+    curl_mprintf("Some curl_mprintf() curl_off_t tests Failed!\n");
 
   return failed;
 }
@@ -1129,7 +1130,7 @@ static int _string_check(int linenumber, char *buf, const char *buf2)
 {
   if(strcmp(buf, buf2)) {
     /* they shouldn't differ */
-    printf("sprintf line %d failed:\nwe      '%s'\nsystem: '%s'\n",
+    curl_mprintf("sprintf line %d failed:\nwe      '%s'\nsystem: '%s'\n",
            linenumber, buf, buf2);
     return 1;
   }
@@ -1142,7 +1143,7 @@ static int _strlen_check(int linenumber, char *buf, size_t len)
   size_t buflen = strlen(buf);
   if(len != buflen) {
     /* they shouldn't differ */
-    printf("sprintf strlen:%d failed:\nwe '%zu'\nsystem: '%zu'\n",
+    curl_mprintf("sprintf strlen:%d failed:\nwe '%zu'\nsystem: '%zu'\n",
            linenumber, buflen, len);
     return 1;
   }
@@ -1181,9 +1182,9 @@ static int test_string_formatting(void)
   errors += string_check(buf, "foo       ");
 
   if(!errors)
-    printf("All curl_mprintf() strings tests OK!\n");
+    curl_mprintf("All curl_mprintf() strings tests OK!\n");
   else
-    printf("Some curl_mprintf() string tests Failed!\n");
+    curl_mprintf("Some curl_mprintf() string tests Failed!\n");
 
   return errors;
 }
@@ -1207,6 +1208,46 @@ static int test_pos_arguments(void)
   return errors;
 }
 
+static int test_width_precision(void)
+{
+  /* 325 is max precision (and width) for a double */
+  char larger[1024];
+#define SPACE60 "                                                            "
+#define SPACE300 SPACE60 SPACE60 SPACE60 SPACE60 SPACE60
+#define OK325 SPACE300 "                        0"
+
+  int rc;
+  int errors = 0;
+  rc = curl_msnprintf(larger, sizeof(larger), "%325.325f", 0.1);
+  if(rc != 325)
+    errors++;
+  errors += string_check(larger, OK325);
+
+  rc = curl_msnprintf(larger, sizeof(larger), "%326.326f", 0.1);
+  if(rc != 325)
+    errors++;
+  errors += string_check(larger, OK325);
+
+  rc = curl_msnprintf(larger, sizeof(larger), "%1000.1000f", 0.1);
+  if(rc != 325)
+    errors++;
+  errors += string_check(larger, OK325);
+
+  rc = curl_msnprintf(larger, sizeof(larger), "%324.324f", 0.1);
+  if(rc != 324)
+    errors++;
+  rc = curl_msnprintf(larger, sizeof(larger), "%324.0f", 0.1);
+  if(rc != 324)
+    errors++;
+  rc = curl_msnprintf(larger, sizeof(larger), "%0.324f", 0.1);
+  if(rc != 325)
+    errors++;
+
+  return errors;
+}
+
+
+
 static int test_weird_arguments(void)
 {
   int errors = 0;
@@ -1214,21 +1255,21 @@ static int test_weird_arguments(void)
   int rc;
 
   /* verify %% */
-  rc = curl_msnprintf(buf, sizeof(buf), "%-20d%% right? %%", 500);
+  (void)curl_msnprintf(buf, sizeof(buf), "%-20d%% right? %%", 500);
   errors += string_check(buf, "500                 % right? %");
 
   /* 100 x % */
-  rc = curl_msnprintf(buf, sizeof(buf), "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%"
-                      "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%"
-                      "%%%%%%%%%%%%%%%%%%%%%%");
+  (void)curl_msnprintf(buf, sizeof(buf), "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%"
+                       "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%"
+                       "%%%%%%%%%%%%%%%%%%%%%%");
   /* 50 x % */
   errors += string_check(buf, "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%"
                          "%%%%%%%%%%%%%%%");
 
-  rc = curl_msnprintf(buf, sizeof(buf), "%2 AA %d %K", 500, 501, 502);
+  (void)curl_msnprintf(buf, sizeof(buf), "%2 AA %d %K", 500, 501, 502);
   errors += string_check(buf, "%2 AA 500 %K");
 
-  rc = curl_msnprintf(buf, sizeof(buf), "%2 %d %K", 500, 501, 502);
+  (void)curl_msnprintf(buf, sizeof(buf), "%2 %d %K", 500, 501, 502);
   errors += string_check(buf, "%2 500 %K");
 
   /* MAX_PARAMETERS is 128, try exact 128! */
@@ -1262,7 +1303,7 @@ static int test_weird_arguments(void)
                       0, 1, 2, 3, 4, 5, 6, 7); /* 8 */
 
   if(rc != 128) {
-    printf("curl_mprintf() returned %d and not 128!\n", rc);
+    curl_mprintf("curl_mprintf() returned %d and not 128!\n", rc);
     errors++;
   }
 
@@ -1314,14 +1355,16 @@ static int test_weird_arguments(void)
                       0, 1, 2, 3, 4, 5, 6, 7, 8);   /* 9 */
 
   if(rc) {
-    printf("curl_mprintf() returned %d and not 0\n", rc);
+    curl_mprintf("curl_mprintf() returned %d and not 0\n", rc);
     errors++;
   }
 
   errors += string_check(buf, "");
 
+  errors += test_width_precision();
+
   if(errors)
-    printf("Some curl_mprintf() weird arguments tests failed!\n");
+    curl_mprintf("Some curl_mprintf() weird arguments tests failed!\n");
 
   return errors;
 }
@@ -1433,9 +1476,9 @@ static int test_float_formatting(void)
   errors += strlen_check(buf, 5);
 
   if(!errors)
-    printf("All float strings tests OK!\n");
+    curl_mprintf("All float strings tests OK!\n");
   else
-    printf("test_float_formatting Failed!\n");
+    curl_mprintf("test_float_formatting Failed!\n");
 
   return errors;
 }
@@ -1475,9 +1518,9 @@ static int test_oct_hex_formatting(void)
 #endif
 
   if(!errors)
-    printf("All curl_mprintf() octal & hexadecimal tests OK!\n");
+    curl_mprintf("All curl_mprintf() octal & hexadecimal tests OK!\n");
   else
-    printf("Some curl_mprintf() octal & hexadecimal tests Failed!\n");
+    curl_mprintf("Some curl_mprintf() octal & hexadecimal tests Failed!\n");
 
   return errors;
 }
@@ -1559,6 +1602,6 @@ CURLcode test(char *URL)
     return CURLE_OK;
 }
 
-#if defined(__GNUC__) || defined(__clang__)
+#if defined(CURL_GNUC_DIAG) || defined(__clang__)
 #pragma GCC diagnostic pop
 #endif

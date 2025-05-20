@@ -31,7 +31,7 @@ print <<HEAD
 #include "easyoptions.h"
 
 /* all easy setopt options listed in alphabetical order */
-struct curl_easyoption Curl_easyopts[] = {
+const struct curl_easyoption Curl_easyopts[] = {
 HEAD
     ;
 
@@ -109,7 +109,7 @@ while(<STDIN>) {
             $o =~ s/^CURLOPT_//;
             $n =~ s/^CURLOPT_//;
             $alias{$o} = $n;
-            push @names, $o,
+            push @names, $o;
         }
     }
 }
@@ -145,7 +145,7 @@ print <<FOOT
  */
 int Curl_easyopts_check(void)
 {
-  return ((CURLOPT_LASTENTRY%10000) != ($lastnum + 1));
+  return (CURLOPT_LASTENTRY % 10000) != ($lastnum + 1);
 }
 #endif
 FOOT

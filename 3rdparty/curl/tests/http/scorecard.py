@@ -113,11 +113,12 @@ class ScoreCard:
 
     def setup_resources(self, server_docs: str,
                         downloads: Optional[List[int]] = None):
-        for fsize in downloads:
-            label = self.fmt_size(fsize)
-            fname = f'score{label}.data'
-            self._make_docs_file(docs_dir=server_docs,
-                                 fname=fname, fsize=fsize)
+        if downloads is not None:
+            for fsize in downloads:
+                label = self.fmt_size(fsize)
+                fname = f'score{label}.data'
+                self._make_docs_file(docs_dir=server_docs,
+                                     fname=fname, fsize=fsize)
         self._make_docs_file(docs_dir=server_docs,
                              fname='reqs10.data', fsize=10*1024)
 
@@ -450,15 +451,14 @@ class ScoreCard:
             p['name'] = 'h2'
             if not self.env.have_h2_curl():
                 raise ScoreCardError('curl does not support HTTP/2')
-            for lib in ['nghttp2', 'hyper']:
+            for lib in ['nghttp2']:
                 if self.env.curl_uses_lib(lib):
                     p['implementation'] = lib
                     break
         elif self.protocol == 'h1' or self.protocol == 'http/1.1':
             proto = 'http/1.1'
             p['name'] = proto
-            p['implementation'] = 'hyper' if self.env.curl_uses_lib('hyper')\
-                else 'native'
+            p['implementation'] = 'native'
         else:
             raise ScoreCardError(f"unknown protocol: {self.protocol}")
 
@@ -776,11 +776,11 @@ def main():
                 f'httpd not found: {env.httpd}'
             httpd.clear_logs()
             server_docs = httpd.docs_dir
-            assert httpd.start()
+            assert httpd.initial_start()
             if protocol == 'h3':
                 nghttpx = NghttpxQuic(env=env)
                 nghttpx.clear_logs()
-                assert nghttpx.start()
+                assert nghttpx.initial_start()
                 server_descr = f'nghttpx: https:{env.h3_port} [backend httpd: {env.httpd_version()}, https:{env.https_port}]'
                 server_port = env.h3_port
             else:
@@ -803,10 +803,10 @@ def main():
                 assert httpd.exists(), \
                     f'httpd not found: {env.httpd}'
                 httpd.clear_logs()
-                assert httpd.start()
+                assert httpd.initial_start()
             caddy = Caddy(env=env)
             caddy.clear_logs()
-            assert caddy.start()
+            assert caddy.initial_start()
             server_descr = f'Caddy: {env.caddy_version()}, http:{env.caddy_http_port} https:{env.caddy_https_port}{backend}'
             server_port = caddy.port
             server_docs = caddy.docs_dir

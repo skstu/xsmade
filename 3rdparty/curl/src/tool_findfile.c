@@ -24,8 +24,9 @@
 #include "tool_setup.h"
 
 #ifdef HAVE_PWD_H
-#  undef __NO_NET_API /* required for building for AmigaOS */
-#  include <pwd.h>
+#undef __NO_NET_API /* required for AmigaOS to declare getpwuid() */
+#include <pwd.h>
+#define __NO_NET_API
 #endif
 
 #ifdef HAVE_SYS_STAT_H
@@ -38,8 +39,9 @@
 #include <curlx.h>
 
 #include "tool_findfile.h"
+#include "tool_cfgable.h"
 
-#include "memdebug.h" /* keep this as LAST include */
+#include <memdebug.h> /* keep this as LAST include */
 
 struct finder {
   const char *env;

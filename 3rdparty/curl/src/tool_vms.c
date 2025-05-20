@@ -30,12 +30,10 @@
 #include <unixlib.h>
 #endif
 
-#include "curlx.h"
-
+#include <curlx.h>
 #include "curlmsg_vms.h"
 #include "tool_vms.h"
-
-#include "memdebug.h" /* keep this as LAST include */
+#include <memdebug.h> /* keep this as LAST include */
 
 void decc$__posix_exit(int __status);
 void decc$exit(int __status);
@@ -84,7 +82,7 @@ int is_vms_shell(void)
  * feature macro settings, and one of the exit routines is hidden at compile
  * time.
  *
- * Since we want Curl to work properly under the VMS DCL shell and Unix
+ * Since we want curl to work properly under the VMS DCL shell and Unix
  * shells under VMS, this routine should compile correctly regardless of
  * the settings.
  */

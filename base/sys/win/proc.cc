@@ -1,7 +1,7 @@
 #include "sys.h"
 
-XS_EXTERN int xs_sys_get_commandline(char **out, size_t *out_size) {
-  int r = -1;
+XS_EXTERN xs_errno_t xs_sys_get_commandline(char **out, size_t *out_size) {
+  xs_errno_t r = xs_errno_t::XS_NO;
   do {
     auto pstrwCmdline = GetCommandLineW();
     if (!pstrwCmdline)
@@ -10,7 +10,7 @@ XS_EXTERN int xs_sys_get_commandline(char **out, size_t *out_size) {
     *out_size = u8.size();
     *out = (char *)malloc(*out_size);
     memcpy(*out, u8.data(), *out_size);
-    r = 0;
+    r = xs_errno_t::XS_OK;
   } while (0);
   return r;
 }
@@ -101,8 +101,8 @@ XS_EXTERN int xs_sys_process_has_exit(xs_process_id_t pid) {
   }
   return r;
 }
-XS_EXTERN int xs_sys_process_getpath(char **path, size_t *path_len) {
-  int r = -1;
+XS_EXTERN xs_errno_t xs_sys_process_getpath(char **path, size_t *path_len) {
+  xs_errno_t r = xs_errno_t::XS_NO;
   *path = NULL;
   *path_len = 0;
   do {
@@ -118,7 +118,7 @@ XS_EXTERN int xs_sys_process_getpath(char **path, size_t *path_len) {
     *path = (char *)malloc(*path_len + 1);
     memcpy(*path, u8.data(), *path_len);
     (*path)[*path_len] = 0;
-    r = 0;
+    r = xs_errno_t::XS_OK;
   } while (0);
   return r;
 }

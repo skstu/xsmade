@@ -28,11 +28,9 @@ CMAKE_DIST = CMakeLists.txt curl_config.h.cmake
 CHECKSRC_DIST = .checksrc vauth/.checksrc vquic/.checksrc vssh/.checksrc \
  vtls/.checksrc
 
-EXTRA_DIST = Makefile.mk config-win32.h config-win32ce.h config-plan9.h \
- config-riscos.h config-mac.h curl_config.h.in config-dos.h libcurl.rc  \
- config-amigaos.h config-win32ce.h config-os400.h setup-os400.h         \
- $(CMAKE_DIST) setup-win32.h Makefile.soname optiontable.pl libcurl.def \
- $(CHECKSRC_DIST)
+EXTRA_DIST = config-mac.h config-os400.h config-plan9.h config-riscos.h \
+ config-win32.h curl_config.h.in libcurl.rc libcurl.def                 \
+ $(CMAKE_DIST) Makefile.soname optiontable.pl $(CHECKSRC_DIST)
 
 lib_LTLIBRARIES = libcurl.la
 
@@ -52,11 +50,9 @@ CFLAGS += @CURL_CFLAG_EXTRAS@
 #
 # $(top_srcdir)/include is for libcurl's external include files
 # $(top_builddir)/lib is for libcurl's generated lib/curl_config.h file
-# $(top_srcdir)/lib for libcurl's lib/curl_setup.h and other "private" files
 
-AM_CPPFLAGS = -I$(top_srcdir)/include        \
-              -I$(top_builddir)/lib          \
-              -I$(top_srcdir)/lib
+AM_CPPFLAGS = -I$(top_srcdir)/include   \
+              -I$(top_builddir)/lib
 
 # Prevent LIBS from being used for all link targets
 LIBS = $(BLANK_AT_MAKETIME)
@@ -66,18 +62,37 @@ include Makefile.soname
 AM_CPPFLAGS += -DBUILDING_LIBCURL
 AM_LDFLAGS =
 AM_CFLAGS =
+if DEBUGBUILD
+AM_CPPFLAGS += -DDEBUGBUILD
+endif
+if CURLDEBUG
+AM_CPPFLAGS += -DCURLDEBUG
+endif
 
 # Makefile.inc provides the CSOURCES and HHEADERS defines
 include Makefile.inc
 
+if DOING_NATIVE_WINDOWS
+CSOURCES += dllmain.c
+else
+if DOING_CYGWIN
+CSOURCES += dllmain.c
+endif
+endif
+
 if USE_UNITY
 # Keep these separate to avoid duplicate definitions when linking libtests
 # in static mode.
-curl_EXCLUDE = curl_threads.c timediff.c warnless.c
-if DEBUGBUILD
-# We must compile these sources separately to avoid memdebug.h redefinitions
-# applying to them.
-curl_EXCLUDE += memdebug.c curl_multibyte.c
+curl_EXCLUDE = curl_threads.c curlx/timediff.c curlx/warnless.c
+if CURLDEBUG
+# We must compile this source separately to avoid memdebug.h redefinitions
+# applying to it.
+curl_EXCLUDE += memdebug.c
+endif
+# For Cygwin always compile dllmain.c as a separate unit since it
+# includes windows.h, which should not be included in other units.
+if DOING_CYGWIN
+curl_EXCLUDE += dllmain.c
 endif
 libcurl_unity.c: $(top_srcdir)/scripts/mk-unity.pl $(CSOURCES)
 	@PERL@ $(top_srcdir)/scripts/mk-unity.pl $(srcdir) $(CSOURCES) --exclude $(curl_EXCLUDE) > libcurl_unity.c
@@ -145,25 +160,30 @@ CS_1 =
 CS_ = $(CS_0)
 
 checksrc:
-	$(CHECKSRC)(@PERL@ $(top_srcdir)/scripts/checksrc.pl -D$(srcdir)    \
-	-W$(srcdir)/curl_config.h $(srcdir)/*.[ch] $(srcdir)/vauth/*.[ch]   \
-	$(srcdir)/vtls/*.[ch] $(srcdir)/vquic/*.[ch] $(srcdir)/vssh/*.[ch])
+	$(CHECKSRC)(@PERL@ $(top_srcdir)/scripts/checksrc.pl -D$(srcdir) \
+	$(CSOURCES) $(HHEADERS))
 
+if NOT_CURL_CI
 if DEBUGBUILD
 # for debug builds, we scan the sources on all regular make invokes
 all-local: checksrc
 endif
+endif
 
 # disable the tests that are mostly causing false positives
-TIDYFLAGS=-checks=-clang-analyzer-security.insecureAPI.strcpy,-clang-analyzer-optin.performance.Padding,-clang-analyzer-valist.Uninitialized,-clang-analyzer-core.NonNullParamChecker,-clang-analyzer-core.NullDereference -quiet
+TIDYFLAGS := -checks=-clang-analyzer-security.insecureAPI.strcpy,-clang-analyzer-optin.performance.Padding,-clang-analyzer-security.insecureAPI.DeprecatedOrUnsafeBufferHandling -quiet
+if CURL_WERROR
+TIDYFLAGS += --warnings-as-errors=*
+endif
 
-TIDY:=clang-tidy
+TIDY := clang-tidy
 
 tidy:
-	$(TIDY) $(CSOURCES) $(TIDYFLAGS) -- $(AM_CPPFLAGS) $(CPPFLAGS) -DHAVE_CONFIG_H
+	(_csources=`echo ' $(CSOURCES)' | sed -E -e 's/ +$$//' -e 's/ +/ /g' -e 's| | $(srcdir)/|g'`; \
+	$(TIDY) $$_csources $(TIDYFLAGS) $(CURL_CLANG_TIDYFLAGS) -- $(AM_CPPFLAGS) $(CPPFLAGS) -DHAVE_CONFIG_H)
 
 optiontable:
-	perl optiontable.pl < $(top_srcdir)/include/curl/curl.h > easyoptions.c
+	@PERL@ $(srcdir)/optiontable.pl < $(top_srcdir)/include/curl/curl.h > $(srcdir)/easyoptions.c
 
 if HAVE_WINDRES
 .rc.lo:

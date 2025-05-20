@@ -49,7 +49,7 @@ static void removeFd(struct Sockets *sockets, curl_socket_t fd, int mention)
   int i;
 
   if(mention)
-    fprintf(stderr, "Remove socket fd %d\n", (int) fd);
+    curl_mfprintf(stderr, "Remove socket fd %d\n", (int) fd);
 
   for(i = 0; i < sockets->count; ++i) {
     if(sockets->sockets[i] == fd) {
@@ -70,7 +70,7 @@ static void addFd(struct Sockets *sockets, curl_socket_t fd, const char *what)
    * To ensure we only have each file descriptor once, we remove it then add
    * it again.
    */
-  fprintf(stderr, "Add socket fd %d for %s\n", (int) fd, what);
+  curl_mfprintf(stderr, "Add socket fd %d for %s\n", (int) fd, what);
   removeFd(sockets, fd, 0);
   /*
    * Allocate array storage when required.
@@ -83,7 +83,7 @@ static void addFd(struct Sockets *sockets, curl_socket_t fd, const char *what)
   }
   else if(sockets->count >= sockets->max_count) {
     /* this can't happen in normal cases */
-    fprintf(stderr, "too many file handles error\n");
+    curl_mfprintf(stderr, "too many file handles error\n");
     exit(2);
   }
   /*
@@ -156,7 +156,7 @@ static int checkForCompletion(CURLM *curl, int *success)
         *success = 0;
     }
     else {
-      fprintf(stderr, "Got an unexpected message from curl: %i\n",
+      curl_mfprintf(stderr, "Got an unexpected message from curl: %i\n",
               (int)message->msg);
       result = 1;
       *success = 0;
@@ -186,7 +186,14 @@ static void updateFdSet(struct Sockets *sockets, fd_set* fdset,
 {
   int i;
   for(i = 0; i < sockets->count; ++i) {
+#if defined(__DJGPP__)
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Warith-conversion"
+#endif
     FD_SET(sockets->sockets[i], fdset);
+#if defined(__DJGPP__)
+#pragma GCC diagnostic pop
+#endif
     if(*maxFd < sockets->sockets[i] + 1) {
       *maxFd = sockets->sockets[i] + 1;
     }
@@ -199,7 +206,7 @@ static void notifyCurl(CURLM *curl, curl_socket_t s, int evBitmask,
   int numhandles = 0;
   CURLMcode result = curl_multi_socket_action(curl, s, evBitmask, &numhandles);
   if(result != CURLM_OK) {
-    fprintf(stderr, "Curl error on %s: %i (%s)\n",
+    curl_mfprintf(stderr, "Curl error on %s (%i) %s\n",
             info, result, curl_multi_strerror(result));
   }
 }
@@ -227,37 +234,42 @@ CURLcode test(char *URL)
   struct_stat file_info;
   CURLM *m = NULL;
   struct ReadWriteSockets sockets = {{NULL, 0, 0}, {NULL, 0, 0}};
-  struct timeval timeout = {-1, 0};
   int success = 0;
+  struct timeval timeout = {0};
+  timeout.tv_sec = (time_t)-1;
 
   assert(test_argc >= 5);
 
   start_test_timing();
 
   if(!libtest_arg3) {
-    fprintf(stderr, "Usage: lib582 [url] [filename] [username]\n");
+    curl_mfprintf(stderr, "Usage: lib582 [url] [filename] [username]\n");
     return TEST_ERR_USAGE;
   }
 
   hd_src = fopen(libtest_arg2, "rb");
   if(!hd_src) {
-    fprintf(stderr, "fopen() failed with error: %d (%s)\n",
+    curl_mfprintf(stderr, "fopen() failed with error (%d) %s\n",
             errno, strerror(errno));
-    fprintf(stderr, "Error opening file: (%s)\n", libtest_arg2);
+    curl_mfprintf(stderr, "Error opening file '%s'\n", libtest_arg2);
     return TEST_ERR_FOPEN;
   }
 
   /* get the file size of the local file */
+#ifdef UNDER_CE
+  hd = stat(libtest_arg2, &file_info);
+#else
   hd = fstat(fileno(hd_src), &file_info);
+#endif
   if(hd == -1) {
     /* can't open file, bail out */
-    fprintf(stderr, "fstat() failed with error: %d (%s)\n",
+    curl_mfprintf(stderr, "fstat() failed with error (%d) %s\n",
             errno, strerror(errno));
-    fprintf(stderr, "ERROR: cannot open file (%s)\n", libtest_arg2);
+    curl_mfprintf(stderr, "Error opening file '%s'\n", libtest_arg2);
     fclose(hd_src);
     return TEST_ERR_FSTAT;
   }
-  fprintf(stderr, "Set to upload %d bytes\n", (int)file_info.st_size);
+  curl_mfprintf(stderr, "Set to upload %d bytes\n", (int)file_info.st_size);
 
   res_global_init(CURL_GLOBAL_ALL);
   if(res) {
@@ -299,14 +311,15 @@ CURLcode test(char *URL)
   while(!checkForCompletion(m, &success)) {
     fd_set readSet, writeSet;
     curl_socket_t maxFd = 0;
-    struct timeval tv = {10, 0};
+    struct timeval tv = {0};
+    tv.tv_sec = 10;
 
     FD_ZERO(&readSet);
     FD_ZERO(&writeSet);
     updateFdSet(&sockets.read, &readSet, &maxFd);
     updateFdSet(&sockets.write, &writeSet, &maxFd);
 
-    if(timeout.tv_sec != -1) {
+    if(timeout.tv_sec != (time_t)-1) {
       int usTimeout = getMicroSecondTimeout(&timeout);
       tv.tv_sec = usTimeout / 1000000;
       tv.tv_usec = usTimeout % 1000000;
@@ -322,7 +335,7 @@ CURLcode test(char *URL)
     checkFdSet(m, &sockets.read, &readSet, CURL_CSELECT_IN, "read");
     checkFdSet(m, &sockets.write, &writeSet, CURL_CSELECT_OUT, "write");
 
-    if(timeout.tv_sec != -1 && getMicroSecondTimeout(&timeout) == 0) {
+    if(timeout.tv_sec != (time_t)-1 && getMicroSecondTimeout(&timeout) == 0) {
       /* Curl's timer has elapsed. */
       notifyCurl(m, CURL_SOCKET_TIMEOUT, 0, "timeout");
     }
@@ -331,7 +344,7 @@ CURLcode test(char *URL)
   }
 
   if(!success) {
-    fprintf(stderr, "Error uploading file.\n");
+    curl_mfprintf(stderr, "Error uploading file.\n");
     res = TEST_ERR_MAJOR_BAD;
   }
 

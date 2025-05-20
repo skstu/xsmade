@@ -55,9 +55,11 @@ To insert a sequence of bytes from a hex encoded string, use this syntax:
 
     %hex[ %XX-encoded data to decode ]hex%
 
+Other bytes within the brackets that not percent encoded are inserted as-is.
+
 For example, to insert the binary octets 0, 1 and 255 into the test file:
 
-    %hex[ %00%01%FF ]hex%
+    %hex[%00%01%FF]hex%
 
 ## Repeat content
 
@@ -73,6 +75,13 @@ string may contain `%HH` hexadecimal codes:
 For example, to insert the word hello 100 times:
 
     %repeat[100 x hello]%
+
+## Insert capped epoch days
+
+Mostly to test capped cookie expire dates: `%days[NUM]` inserts the number of
+seconds for the given number of days into the future, aligned to the nearest
+minute. That is the same calculation the cookie engine uses to cap expiration
+dates.
 
 ## Include file
 
@@ -153,9 +162,9 @@ Available substitute variables include:
 - `%NOLISTENPORT` - Port number where no service is listening
 - `%POP36PORT` - IPv6 port number of the POP3 server
 - `%POP3PORT` - Port number of the POP3 server
-- `%POSIX_PWD` - Current directory somewhat MinGW friendly
 - `%PROXYPORT` - Port number of the HTTP proxy
 - `%PWD` - Current directory
+- `%RESOLVE` - server/resolve command
 - `%RTSP6PORT` - IPv6 port number of the RTSP server
 - `%RTSPPORT` - Port number of the RTSP server
 - `%SMBPORT` - Port number of the SMB server
@@ -165,7 +174,8 @@ Available substitute variables include:
 - `%SOCKSPORT` - Port number of the SOCKS4/5 server
 - `%SOCKSUNIXPATH` - Path to the Unix socket of the SOCKS server
 - `%SRCDIR` - Full path to the source dir
-- `%SSH_PWD` - Current directory friendly for the SSH server
+- `%SCP_PWD` - Current directory friendly for the SSH server for the scp:// protocol
+- `%SFTP_PWD` - Current directory friendly for the SSH server for the sftp:// protocol
 - `%SSHPORT` - Port number of the SCP/SFTP server
 - `%SSHSRVMD5` - MD5 of SSH server's public key
 - `%SSHSRVSHA256` - SHA256 of SSH server's public key
@@ -208,9 +218,6 @@ together as a single identifier. Most keywords are only there to provide a way
 for users to skip certain classes of tests, if desired, but a few are treated
 specially by the test harness or build system.
 
-When using curl built with Hyper, the keywords must include `HTTP` or `HTTPS`
-for 'hyper mode' to kick in and make line ending checks work for tests.
-
 When running a unit test and the keywords include `unittest`, the `<tool>`
 section can be left empty to use the standard unit test tool name `unitN` where
 `N` is the test number.
@@ -221,9 +228,12 @@ Tests that have strict timing dependencies have the `timing-dependent` keyword.
 These are intended to eventually be treated specially on CI builds which are
 often run on overloaded machines with unpredictable timing.
 
+Tests using non-7-bit-ASCII characters must provide them with `%hex[]` or
+similar.
+
 ## `<reply>`
 
-### `<data [nocheck="yes"] [sendzero="yes"] [base64="yes"] [hex="yes"] [nonewline="yes"] [crlf="yes"]>`
+### `<data [nocheck="yes"] [sendzero="yes"] [hex="yes"] [nonewline="yes"] [crlf="yes"]>`
 
 data to be sent to the client on its request and later verified that it
 arrived safely. Set `nocheck="yes"` to prevent the test script from verifying
@@ -233,18 +243,17 @@ If the data contains `swsclose` anywhere within the start and end tag, and
 this is an HTTP test, then the connection is closed by the server after this
 response is sent. If not, the connection is kept persistent.
 
-If the data contains `swsbounce` anywhere within the start and end tag, the
-HTTP server detects if this is a second request using the same test and part
-number and then increases the part number with one. This is useful for auth
-tests and similar.
+If the data contains `swsbounce` anywhere within the start and end tag, then
+the HTTP server overrides the part number response returned for a subsequent
+request made by the same test to `previous part number + 1`. For example, if a
+test makes a request which causes the server to return `<data>` that contains
+keyword `swsbounce` then for the next response it ignores the requested part
+number and instead returns `<data1>`. And if `<data1>` contains keyword
+`swsbounce` then the next response is `<data2>` and so on. This is useful for
+auth tests and similar.
 
 `sendzero=yes` means that the (FTP) server "sends" the data even if the size
 is zero bytes. Used to verify curl's behavior on zero bytes transfers.
-
-`base64=yes` means that the data provided in the test-file is a chunk of data
-encoded with base64. It is the only way a test case can contain binary
-data. (This attribute can in fact be used on any section, but it does not make
-much sense for other sections than "data").
 
 `hex=yes` means that the data is a sequence of hex pairs. It gets decoded and
 used as "raw" data.
@@ -393,6 +402,7 @@ What server(s) this test case requires/uses. Available servers:
 - `http-proxy`
 - `https`
 - `https-proxy`
+- `https-mtls`
 - `httptls+srp`
 - `httptls+srp-ipv6`
 - `http-unix`
@@ -426,11 +436,14 @@ feature is NOT required. If the feature is present then the test is SKIPPED.
 
 Features testable here are:
 
+- `--libcurl`
 - `alt-svc`
+- `aws` - built with **aws-sigv4** support
 - `AppleIDN`
+- `asyn-rr` - c-ares is used for additional records only
 - `bearssl`
 - `brotli`
-- `c-ares`
+- `c-ares` - c-ares is used for (all) name resolves
 - `CharConv`
 - `codeset-utf8`. If the running codeset is UTF-8 capable.
 - `cookies`
@@ -447,12 +460,13 @@ Features testable here are:
 - `http/2`
 - `http/3`
 - `HTTPS-proxy`
-- `hyper`
+- `HTTPSRR`
 - `IDN`
 - `IPv6`
 - `Kerberos`
 - `Largefile`
 - `large-time` (time_t is larger than 32-bit)
+- `large-size` (size_t is larger than 32-bit)
 - `ld_preload`
 - `libssh2`
 - `libssh`
@@ -468,6 +482,7 @@ Features testable here are:
 - `NTLM`
 - `NTLM_WB`
 - `OpenSSL`
+- `override-dns` - this build can use a "fake" DNS server
 - `parsedate`
 - `proxy`
 - `PSL`
