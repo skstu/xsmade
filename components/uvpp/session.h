@@ -7,7 +7,9 @@ struct write_req_t {
   uv_buf_t buf;
 
   write_req_t() {
-    memset(this, 0x00, sizeof(*this));
+    handle = nullptr;
+    memset(&write, 0x00, sizeof(uv_write_t));
+    memset(&buf, 0x00, sizeof(uv_buf_t));
     write.data = this;
   }
   ~write_req_t() {

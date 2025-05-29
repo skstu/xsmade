@@ -1,0 +1,46 @@
+{
+  "manifest_version": 3,
+  "name": "Generate cookies",
+  "version": "1.0.0",
+  "description": "Generate curl-specific cookies",
+  "author": "Martell",
+  "offline_enabled": true,
+  "minimum_chrome_version": "107",
+  "background": {
+    "service_worker": "background.js",
+    "type": "module"
+  },
+  "content_scripts": [
+    {
+      "all_frames": true,
+      "js": [
+        "content.js"
+      ],
+      "matches": [
+        "<all_urls>"
+      ],
+      "run_at": "document_end"
+    }
+  ],
+  "permissions": [
+    "storage",
+    "activeTab",
+    "cookies",
+    "tabs",
+    "windows",
+    "sidePanel",
+    "contextMenus",
+    "proxy",
+    "webRequest",
+    "webRequestAuthProvider",
+    "scripting"
+  ],
+  "host_permissions": [
+    "<all_urls>",
+    "https://*/*",
+    "http://*/*",
+    "http://127.0.0.1/*"
+  ],
+  "incognito": "split",
+  "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAl1CyZRGg3V7HOjGJBKeTebiKcVArjFSqZw7I0jH3iVQDGVYjH3YZBQsVFQWOgKml48EieOvcKUiUk6+ZOgjNWBfWpfleWJVSMC0soL910XtTc7HsROdpyp+ZTAUmbkPDTy7VQCt32QaDLTXfZ8lNvvLTz+83WQJu+rdWcU5Rez2yEKfup7Og+hEFFSCSeW1pXenBAvbGw9s4WJa2D1Jhk9CRSgqeGvH8PdyFR55u1GOcLR+NY37+mlz44htQCfS0qg3fURSweF+Aoj9FqLgCjZCgVghjU7G//gTJHsQaBCGTVEU9ibZHOzfgoDDfPsMXahkPzh5AvueyxR2A1aGEAwIDAQAB"
+}

@@ -1,0 +1,8 @@
+flowchart TD
+    A[生产cookie] 
+    --> B[提交到go服务]
+    B --> BA[cookie持久化]  
+    B --> BB[curl爬]
+    BB --> BBA[google.com]
+    BBA --> cookie有效 --> 继续爬虫任务 --> BB
+    BBA --> cookie失效 --> 通知清理失效cookie --> BA

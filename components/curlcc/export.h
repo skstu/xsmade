@@ -8,6 +8,9 @@ class ICurl : public IComponent {
 public:
   virtual bool Start() = 0;
   virtual void Stop() = 0;
+  virtual bool Perform() {
+    return false;
+  }
   virtual bool Ready() const = 0;
 };
 } // namespace curl

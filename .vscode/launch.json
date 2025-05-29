@@ -5,8 +5,12 @@
       "name": "Windows Build With CMake Ninja",
       "type": "cppdbg",
       "request": "launch",
-      "program": "${workspaceFolder}/bin/tests/test_memade.exe",
+      // "program": "${workspaceFolder}/bin/tests/test_curlcc.exe",
+      // "args": [],
+      "program": "${workspaceFolder}/bin/tests/test_httpserver.exe",
       "args": [],
+      // "program": "${workspaceFolder}/bin/tests/test_memade.exe",
+      // "args": [],
       // "program": "${workspaceFolder}/bin/tests/test_brwsvr.exe",
       // "args": [
       // ],

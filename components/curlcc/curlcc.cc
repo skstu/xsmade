@@ -19,12 +19,40 @@ void Curl::UnInit() {
   curl_global_cleanup();
 }
 bool Curl::Start() {
-  return false;
+  do {
+    if (!ready_.load())
+      break;
+
+    open_.store(true);
+  } while (0);
+  return open_.load();
 }
 void Curl::Stop() {
+  do {
+    if (!open_.load())
+      break;
+    open_.store(false);
+  } while (0);
 }
 bool Curl::Ready() const {
   return ready_.load();
+}
+bool Curl::Perform() {
+  bool result = false;
+  do {
+    WebCrawler crawler(4);
+    crawler.setUserAgent(
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, "
+        "like Gecko) Chrome/136.0.0.0 Safari/537.36");
+    crawler.setCookieFile("my_cookies.txt");
+    crawler.addUrl("https://example.com");
+    crawler.addUrl("https://www.baidu.com");
+    crawler.addUrl("https://www.google.com/search?q=memade");
+
+    crawler.waitUntilDone(); // 自动等待所有任务完成
+    crawler.shutdown();      // 安全退出线程池
+  } while (0);
+  return result;
 }
 //////////////////////////////////////////////////////////////////////////////////////////
 static Curl *__gpCurl = nullptr;

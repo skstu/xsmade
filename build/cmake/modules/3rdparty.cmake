@@ -11,7 +11,7 @@ option(xsUSE_3RDPARTY_SPDLOG "Enable configure 3rdparty - spdlog" ON)
 option(xsUSE_3RDPARTY_JSONNET "Enable configure 3rdparty - jsonnet" ON)
 option(xsUSE_3RDPARTY_FMT "Enable configure 3rdparty - fmt" ON)
 if(xsSYSTYPE_WINDOWS)
-  option(xsUSE_3RDPARTY_CURL "Enable configure 3rdparty - curl" OFF)
+  option(xsUSE_3RDPARTY_CURL "Enable configure 3rdparty - curl" ON)
   option(xsUSE_3RDPARTY_NSISPLUGINAPI
          "Enable configure 3rdparty - nsis-pluginapi" OFF)
 endif()

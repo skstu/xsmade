@@ -16,6 +16,7 @@ target_include_directories(
 target_link_directories(${PROJECT_NAME} PRIVATE ${xsLIBS_DIR} ${xsLIBS_LIB_DIR}
                         ${xsBUILD_INSTALLED_LIB_DIR})
 
+
 if(WIN32)
   target_link_libraries(
     ${PROJECT_NAME}

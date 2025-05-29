@@ -68,7 +68,7 @@ elseif(APPLE)
     /opt/homebrew/Cellar/libuv/1.49.2/lib/libuv.a)
 endif()
 
-#xs_set_target_output_dir(${PROJECT_NAME})
+# xs_set_target_output_dir(${PROJECT_NAME})
 # target_compile_definitions(${PROJECT_NAME} PRIVATE wxUSE_GUI=0 wxUSE_BASE=1)
 
 add_custom_command(

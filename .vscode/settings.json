@@ -8,7 +8,8 @@
     "clangd.path": "clangd",
     "cmakeFormat.env": null,
     "cmakeFormat.mergeEnv": false,
-    "cmakeFormat.exePath": "/home/ponyo/.local/bin/cmake-format",
+    //"cmakeFormat.exePath": "/home/ponyo/.local/bin/cmake-format",
+    "cmakeFormat.exePath": "c:/Python/Python312/Scripts/cmake-format",
     "terminal.integrated.profiles.windows": {
         "PowerShell": {
             "path": "pwsh.exe"
