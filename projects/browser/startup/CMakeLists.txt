@@ -43,13 +43,14 @@ if(xsSYSTYPE_WINDOWS)
             Msimg32.lib
             # Oleacc.lib
             libfmt.a
-            libsys.a
-            libstl.a
-            libzipcc.a
             libpthread.a
             libhttp_parser.a
             libzlibstatic.a
             libtinyxml2.a
+            ${xsOUTPUT_DIR}/base/sys/libsys.a
+            ${xsOUTPUT_DIR}/base/stl/libstl.a
+            ${xsOUTPUT_DIR}/base/ssl/libssl.a
+            ${xsOUTPUT_DIR}/base/zipcc/libzipcc.a
             ${xsOPENSSL_LIBRARY})
 
   set_target_properties(${PROJECT_NAME} PROPERTIES LINK_FLAGS "-mwindows"

@@ -5,20 +5,20 @@
       "name": "Windows Build With CMake Ninja",
       "type": "cppdbg",
       "request": "launch",
-      // "program": "${workspaceFolder}/bin/tests/test_curlcc.exe",
+      // "program": "${workspaceFolder}/bin/main.exe",
       // "args": [],
-      "program": "${workspaceFolder}/bin/tests/test_httpserver.exe",
-      "args": [],
+      // "program": "${workspaceFolder}/bin/tests/test_httpserver.exe",
+      // "args": [],
       // "program": "${workspaceFolder}/bin/tests/test_memade.exe",
       // "args": [],
       // "program": "${workspaceFolder}/bin/tests/test_brwsvr.exe",
       // "args": [
       // ],
-      // "program": "${workspaceFolder}/bin/browser/chromium/134.0.6998.166/FanBrowser.exe",
-      // "args": [
-      //   //"--gpu-startup-dialog",
-      //   //"--renderer-startup-dialog"
-      // ],
+      "program": "${workspaceFolder}/bin/browser/chromium/136.0.7103.149/Chromium.exe",
+      "args": [
+        //"--gpu-startup-dialog",
+        //"--renderer-startup-dialog"
+      ],
       // "program": "${workspaceFolder}/bin/main.exe",
       // "args": [],
       // "program": "${workspaceFolder}/out/bin/test_curlcc.exe",

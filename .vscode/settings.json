@@ -12,7 +12,10 @@
     "cmakeFormat.exePath": "c:/Python/Python312/Scripts/cmake-format",
     "terminal.integrated.profiles.windows": {
         "PowerShell": {
-            "path": "pwsh.exe"
+            "path": "pwsh"
+        },
+        "Command Prompt": {
+            "path": "cmd.exe"
         }
     },
     "terminal.integrated.profiles.linux": {
@@ -25,7 +28,7 @@
             "path": "zsh"
         }
     },
-    "terminal.integrated.defaultProfile.windows": "PowerShell",
+    "terminal.integrated.defaultProfile.windows": "Command Prompt",
     "terminal.integrated.defaultProfile.linux": "bash",
     "terminal.integrated.defaultProfile.osx": "zsh",
     "files.exclude": {

@@ -7,15 +7,18 @@ gfn_find_ffmpeg(ffxINCLUDES ffxLIBS)
 
 add_definitions(-DSHARED_IMPLEMENTATION)
 add_library(${PROJECT_NAME} SHARED ${SOURCES})
-
+target_compile_options(${PROJECT_NAME} PRIVATE -Wno-deprecated-literal-operator)
 target_include_directories(
   ${PROJECT_NAME}
   PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}
           ${CMAKE_CURRENT_SOURCE_DIR}/..
+          ${CMAKE_CURRENT_SOURCE_DIR}/../../chromium/include
           ${xsROOT_DIR}
           ${xsINCLUDE_DIR}
           ${xsBUILD_INSTALLED_INCLUDE_DIR}
           ${xsBUILD_INSTALLED_INCLUDE_DIR}/utf8cpp
+          ${xsBUILD_INSTALLED_INCLUDE_DIR}/http-parser
+          ${xs3RDPARTY_DIR}/cpp-httplib
           ${xsOPENSSL_INCLUDE}
           ${wxINCLUDES})
 target_link_directories(${PROJECT_NAME} PRIVATE ${xsLIBS_DIR} ${xsLIBS_LIB_DIR}
@@ -55,6 +58,7 @@ elseif(xsSYSTYPE_LINUX)
     ${PROJECT_NAME}
     PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}
             ${CMAKE_CURRENT_SOURCE_DIR}/..
+            ${CMAKE_CURRENT_SOURCE_DIR}/../../chromium/include
             ${xsROOT_DIR}
             ${xsINCLUDE_DIR}
             ${xsBUILD_INSTALLED_INCLUDE_DIR}

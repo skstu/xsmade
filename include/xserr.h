@@ -11,6 +11,7 @@
 #define XS__EBASINIT (-10001)
 #define XS__EBASUNINIT (-10002)
 #define XS__EBASFREE (-10003)
+#define XS__WALREADYRUNNING (-20001)
 #define XS__EUNKN (-50000)
 #define XS__EOF (-65533)
 
@@ -21,6 +22,7 @@
   XX(EBASINIT, "base init error")                                              \
   XX(EBASUNINIT, "base uninit error")                                          \
   XX(EBASFREE, "base free error")                                              \
+  XX(WALREADYRUNNING, "AlreadyRunning")                                        \
   XX(EUNKN, "unknown error")
 
 typedef enum {

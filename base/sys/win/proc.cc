@@ -14,9 +14,10 @@ XS_EXTERN xs_errno_t xs_sys_get_commandline(char **out, size_t *out_size) {
   } while (0);
   return r;
 }
-XS_EXTERN int xs_sys_process_spawn(const char *proc_u8, const char **args,
-                                   int show_flag, xs_process_id_t *out_pid) {
-  int r = -1;
+xs_errno_t xs_sys_process_spawn(const char *proc, const char **args,
+                                const char **envp, int show_flag,
+                                xs_process_id_t *out_pid) {
+  xs_errno_t r = xs_errno_t::XS_NO;
   do {
     STARTUPINFOW si = {0};
     PROCESS_INFORMATION pi = {0};
@@ -33,7 +34,7 @@ XS_EXTERN int xs_sys_process_spawn(const char *proc_u8, const char **args,
         count++;
       }
     }
-    std::wstring proc_ws = Conv::u8_to_ws(proc_u8);
+    std::wstring proc_ws = Conv::u8_to_ws(proc);
     std::wstring cmdlines_ws = Conv::u8_to_ws(cmdlines);
     BOOL status = CreateProcessW(
         proc_ws.c_str(), // No module name (use command line)
@@ -51,11 +52,11 @@ XS_EXTERN int xs_sys_process_spawn(const char *proc_u8, const char **args,
     if (FALSE == status)
       break;
     *out_pid = pi.dwProcessId;
-    r = 0;
+    r = xs_errno_t::XS_OK;
   } while (0);
   return r;
 }
-XS_EXTERN xs_errno_t xs_sys_process_kill(xs_process_id_t pid) {
+XS_EXTERN xs_errno_t xs_sys_process_kill(xs_process_id_t pid, int /*signal*/) {
   xs_errno_t err = xs_errno_t::XS_NO;
   HANDLE hProcess = nullptr;
   do {

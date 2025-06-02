@@ -159,7 +159,7 @@ bool Components::ffxRecordStart(const wxui::IRecordingArgs *args) {
         {13, {"-pix_fmt", "yuv420p"}},
         {14, {"-preset:v", "veryfast"}},
         {15, {"-tune:v", "zerolatency"}},
-        {16, {"-xs-outfile", stl::Path::Normalize(outfile)}},
+        {16, {"-xs-outfile", outfile}},
     });
     // fComp->second->Create(ffxArgs.GetArgs(), false);
   } while (0);

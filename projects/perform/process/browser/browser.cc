@@ -30,8 +30,7 @@ void Browser::Init() {
     std::u16string brwver = Conv::u8_to_u16(brwcfg_->worker_.brwver);
     //!@ 浏览器目录
     std::u16string chromium_dir = config->PathGet().chromium_dir;
-    std::u16string chromium_user_data_dir =
-        stl::Path::Normalize(config->GetBrwUserDataDir(brwkey));
+    std::u16string chromium_user_data_dir = config->GetBrwUserDataDir(brwkey);
     stl::Directory::Create(chromium_user_data_dir);
 
     config->XSCacheClean(brwkey);
@@ -132,8 +131,8 @@ brw_startup_args_.emplace_back("about:blank");
                                                      brwcfg_->proxy_.port));
           if (brwcfg_->proxy_.traffic_forwarding)
             break;
-          auto dir = stl::Path::Normalize(config->GetXSCacheExtsDir(
-              brwkey, u"afgbmmdnakcefnkchckgelobigkbboci"));
+          auto dir = config->GetXSCacheExtsDir(
+              brwkey, u"afgbmmdnakcefnkchckgelobigkbboci");
           stl::Directory::Create(dir);
           stl::File::WriteFile(dir + u"/manifest.json",
                                brwcfg_->GetExtensionManifestAP());
@@ -156,8 +155,8 @@ brw_startup_args_.emplace_back("about:blank");
       do { //!@ fs
         if (!brwcfg_->fp_.Enable())
           break;
-        std::u16string dir = stl::Path::Normalize(config->GetXSCacheExtsDir(
-            brwkey, u"ebglcogbaklfalmoeccdjbmgfcacengf"));
+        std::u16string dir = config->GetXSCacheExtsDir(
+            brwkey, u"ebglcogbaklfalmoeccdjbmgfcacengf");
         stl::Directory::Create(dir);
         stl::File::WriteFile(dir + u"/manifest.json",
                              brwcfg_->GetExtensionManifestFPS());
@@ -172,17 +171,16 @@ brw_startup_args_.emplace_back("about:blank");
                            files, false);
       if (files.empty())
         break;
-      const std::u16string u16extdir =
-          stl::Path::Normalize(config->GetXSCacheExtsDir(brwkey));
+      const std::u16string u16extdir = config->GetXSCacheExtsDir(brwkey);
       for (const auto &f : files) {
-        auto u16path = stl::Path::Normalize(f.second);
+        auto u16path = f.second;
         Zipcc::zipUnCompress(u16path, u16extdir);
         do { //!@ 自动填充扩展补丁
           if (f.first.find(u"iopcliemaddhijhmjbecffinafojoofk") ==
               std::u16string::npos)
             break;
-          std::u16string content_js_path = stl::Path::Normalize(
-              u16extdir + u"/iopcliemaddhijhmjbecffinafojoofk/content.js");
+          std::u16string content_js_path =
+              u16extdir + u"/iopcliemaddhijhmjbecffinafojoofk/content.js";
           std::string content_js = stl::File::ReadFile(content_js_path);
           if (content_js.empty())
             break;
@@ -199,8 +197,8 @@ brw_startup_args_.emplace_back("about:blank");
           if (f.first.find(u"facgnnelgcipeopfbjcajpaibhhdjgcp") ==
               std::u16string::npos)
             break;
-          std::u16string background_js_path = stl::Path::Normalize(
-              u16extdir + u"/facgnnelgcipeopfbjcajpaibhhdjgcp/background.js");
+          std::u16string background_js_path =
+              u16extdir + u"/facgnnelgcipeopfbjcajpaibhhdjgcp/background.js";
           if (!stl::File::Exists(background_js_path))
             break;
 #if 0
@@ -243,9 +241,8 @@ brw_startup_args_.emplace_back("about:blank");
       if (chromium_user_data_dir.empty())
         break;
       std::string node;
-      node = fmt::format(
-          R"(--user-data-dir="{}")",
-          stl::Path::Normalize(Conv::u16_to_u8(chromium_user_data_dir)));
+      node = fmt::format(R"(--user-data-dir="{}")",
+                         Conv::u16_to_u8(chromium_user_data_dir));
       brw_startup_args_.emplace_back(node);
     } while (0);
 
@@ -290,7 +287,7 @@ bool Browser::Open() {
     startup_args.emplace_back(nullptr);
     int status =
         xs_sys_process_spawn(Conv::u16_to_u8(brw_module_pathname_).c_str(),
-                             &startup_args[0], 1, &pid_);
+                             nullptr, &startup_args[0], 1, &pid_);
     if (status != 0)
       break;
     open_.store(true);
@@ -301,7 +298,7 @@ void Browser::Close() {
   do {
     if (!open_.load())
       break;
-    xs_sys_process_kill(pid_);
+    xs_sys_process_kill(pid_, 0);
   } while (0);
   open_.store(false);
 }

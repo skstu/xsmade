@@ -39,13 +39,13 @@ private:
 
 public:
   const brwcfg::ISettings &GetSettings() const;
-  const brwcfg::IConfigure &GetConfigure() const;
+  const chromium::IConfigure &GetConfigure() const;
   const Path &GetPath() const;
 
 private:
   Path path_;
   brwcfg::ISettings *settings_ = nullptr;
-  IConfigure *configure_ = nullptr;
+  chromium::IConfigure *configure_ = nullptr;
   std::shared_ptr<std::mutex> mtx_ = std::make_shared<std::mutex>();
 };
 /// /*_ Memade®（新生™） _**/

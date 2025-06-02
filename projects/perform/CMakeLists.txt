@@ -43,13 +43,14 @@ if(WIN32)
             Msimg32.lib
             # Oleacc.lib
             libfmt.a
-            libsys.a
-            libstl.a
-            libzipcc.a
             libpthread.a
             libhttp_parser.a
             libzlibstatic.a
             libtinyxml2.a
+            ${xsOUTPUT_DIR}/base/sys/libsys.a
+            ${xsOUTPUT_DIR}/base/stl/libstl.a
+            ${xsOUTPUT_DIR}/base/ssl/libssl.a
+            ${xsOUTPUT_DIR}/base/zipcc/libzipcc.a
             ${xsOPENSSL_LIBRARY})
 
   set_target_properties(${PROJECT_NAME} PROPERTIES LINK_FLAGS "-mwindows"
@@ -90,4 +91,13 @@ elseif(APPLE)
     ${xsOPENSSL_LIBRARY})
 endif()
 
-xs_set_target_output_dir(${PROJECT_NAME})
+#xs_set_target_output_dir(${PROJECT_NAME})
+  add_custom_command(
+    TARGET ${PROJECT_NAME}
+    POST_BUILD
+    COMMAND echo "Output file: ${xsBIN_DIR}/perform.exe"
+    COMMAND
+      ${CMAKE_COMMAND} -E copy_if_different $<TARGET_FILE:${PROJECT_NAME}>
+      # ${xsOUTPUT_PLUGINS_DIR}/$<TARGET_FILE_NAME:${PROJECT_NAME}>
+      ${xsBIN_DIR}/perform.exe
+    COMMENT "Printing output file path and copying file")

@@ -4,6 +4,7 @@
 #define ENABLE_VMEM 0
 #include <dlfcn.h>
 #include <xs.h>
+#include <httplib.h>
 #if defined(__OSWIN__)
 #include <windows.h>
 #endif
@@ -16,8 +17,9 @@
 #include <ibrwcfg.h>
 using namespace brwcfg;
 #include "wxdeps.h"
+// #include "configure.hpp"
+#include <configure.hpp>
 #include "ibrwsvr.h"
-#include "configure.hpp"
 #include "protocol.hpp"
 #include "config.h"
 #if ENABLE_VMEM
@@ -43,6 +45,8 @@ private:
   virtual ~Brwcfg();
   void Init();
   void UnInit();
+
+  void Process();
 
 protected:
   bool Start() override final;
@@ -99,7 +103,13 @@ private:
 #if ENABLE_WXUI
   Wxui *wxui_ = nullptr;
 #endif
+  stl::tfThreads threads_;
   std::shared_ptr<std::mutex> mtx_ = std::make_shared<std::mutex>();
+
+public:
+  stl::container::queue<
+      std::tuple<std::string /*http.path*/, std::string /*content*/>>
+      chromium_cookies_notifys_;
 };
 
 /// /*_ Memade®（新生™） _**/

@@ -98,39 +98,6 @@ int APIENTRY WinMain(HINSTANCE hInst, HINSTANCE hInstPrev, PSTR cmdline,
 int main(int argc, char **argv) {
   std::string cmdline_ = stl::CmdLine::PackageCommandLine(argc, argv);
 #endif
-#if 0
-  std::vector<std::string> brw_startup_args_;
-  brw_startup_args_.emplace_back("--no-first-run");
-  brw_startup_args_.emplace_back("--disable-sync");
-  brw_startup_args_.emplace_back("--disable-gaia-services");
-  brw_startup_args_.emplace_back("--disable-account-consistency");
-  brw_startup_args_.emplace_back(
-      "--disable-features=ChromeSignin,AccountConsistency");
-  brw_startup_args_.emplace_back("--disable-background-mode");
-  brw_startup_args_.emplace_back("--no-default-browser-check");
-  // brw_startup_args_.emplace_back(R"(--user-data-dir=C:\Users\k34ub\AppData\Roaming\MarsProjects\userdata\525c36a14d4da77712db610af924c390)");
-
-  std::vector<const char *> startup_args;
-  for (const auto &node : brw_startup_args_)
-    startup_args.emplace_back(node.c_str());
-  startup_args.emplace_back(nullptr);
-
-  char *path = nullptr;
-  size_t path_size = 0;
-  xs_sys_get_appdata_path(&path, &path_size);
-
-  MessageBoxA(NULL, path, NULL, MB_TOPMOST);
-  
-  const char *chrome_path =
-      R"(C:\Users\k34ub\AppData\Roaming\MarsProjects\chromium\130.0.6723.59\chrome.exe)";
-  DWORD pid = 0;
-  xs_process_id_t pid_ = 0;
-  // ProcessCreateA(chrome_path, "", pid, true, true);
-  int status = xs_sys_process_spawn(chrome_path, &startup_args[0], 1, &pid_);
-#endif
-  int int_val = getRandomValue(-10, 0); // 返回一个在 1 和 10 之间的整数
-  double double_val =
-      getRandomValue(0-1.5, 0.0); // 返回一个在 0.5 和 1.5 之间的浮动值
 
   PerformCmdLine::Create(cmdline_);
   auto pTools = local::Components::Get();

@@ -4,7 +4,8 @@ project(sys)
 # set(SOURCES ${OUT_HEADER_S} ${OUT_SOURCE_S})
 
 set(common_srcs_ "${CMAKE_CURRENT_SOURCE_DIR}/sys.h"
-                 "${CMAKE_CURRENT_SOURCE_DIR}/sys.cc")
+                 "${CMAKE_CURRENT_SOURCE_DIR}/sys.cc"
+                 "${CMAKE_CURRENT_SOURCE_DIR}/common/impl.cc")
 
 if(xsSYSTYPE_WINDOWS)
   set(srcs_dir "win")

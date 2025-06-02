@@ -45,7 +45,7 @@ bool OpenChromium() {
     std::wstring wstrCurrentPath = Conv::u8_to_ws(strCurrentPath);
     wchar_t targetChromium[260];
     swprintf(targetChromium, 260,
-             L"%s\\browser\\chromium\\134.0.6998.166\\FanBrowser.exe",
+             L"%s\\browser\\chromium\\136.0.7103.149\\XSBrowser.exe",
              wstrCurrentPath.c_str());
     if (!stl::File::Exists(targetChromium))
       break;
@@ -54,6 +54,7 @@ bool OpenChromium() {
     if (xs_sys_process_spawn(Conv::ws_to_u8(targetChromium).c_str(),
                              &startup_args[0], nullptr, 1, &pid))
       break;
+
     result = true;
   } while (0);
   return result;
@@ -72,6 +73,7 @@ void Startup::Init() {
     xs_sys_process_getpath(&current_path, &current_path_size);
     current_dir.append(current_path, current_path_size);
     xs_sys_free((void **)&current_path);
+#if 0
     std::string libbrwsvr_path = current_dir + "/components/libbrwsvr.so";
     hLibbrwsvr = dlopen(libbrwsvr_path.c_str(), RTLD_NOW);
     if (!hLibbrwsvr)
@@ -86,21 +88,26 @@ void Startup::Init() {
     if (!brwsvr_startup || !brwsvr_shutdown || !brwsvr_request)
       break;
     ready_.store(brwsvr_startup() == 0);
+#endif
+    ready_.store(true);
   } while (0);
 }
 void Startup::UnInit() {
+#if 0
   if (brwsvr_shutdown)
     brwsvr_shutdown();
   if (hLibbrwsvr)
     dlclose(hLibbrwsvr);
   hLibbrwsvr = nullptr;
+#endif
   ready_.store(false);
 }
 void Startup::Run() const {
   do {
     if (!ready_.load())
       break;
-    OpenProcess();
+    // OpenProcess();
+    OpenChromium();
   } while (0);
 }
 static const std::string defaultCfg = R"(

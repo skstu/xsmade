@@ -1,9 +1,11 @@
 .DS_Store
 .cache
 *.mp4
+tmp
 clangd
 libs
 bin
+bin.new
 objs
 out
 compile_commands.json

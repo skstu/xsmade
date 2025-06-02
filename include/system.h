@@ -51,7 +51,7 @@ XS_EXTERN char *xs_sys_malloc(size_t len);
 XS_EXTERN void xs_sys_free(void **p);
 XS_EXTERN void xs_sys_free_buffer(xs_buffer_t **);
 XS_EXTERN unsigned short xs_sys_get_free_port(void);
-XS_EXTERN int xs_sys_process_spawn(const char *proc, const char **argv,
+XS_EXTERN xs_errno_t xs_sys_process_spawn(const char *proc, const char **argv,
                                    const char **envp, int show_flag,
                                    xs_process_id_t *out_pid);
 XS_EXTERN xs_errno_t xs_sys_process_kill(xs_process_id_t pid, int);
@@ -81,7 +81,7 @@ XS_EXTERN xs_errno_t xs_sys_get_home_path(char **, size_t *);
 XS_EXTERN xs_errno_t xs_sys_get_config_path(char **, size_t *);
 XS_EXTERN xs_errno_t xs_sys_get_cache_path(char **, size_t *);
 XS_EXTERN xs_errno_t xs_sys_get_local_share_path(char **, size_t *);
-
+XS_EXTERN xs_errno_t xs_sys_process_already_running(void);
 #ifdef __cplusplus
 }
 #endif

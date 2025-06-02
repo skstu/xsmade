@@ -148,7 +148,7 @@ public:
   inline request_id_t GetReqId() const {
     return cfg_.reqid;
   }
-  inline const brwcfg::IConfigure &GetCfg() const;
+  inline const chromium::IConfigure &GetCfg() const;
   inline std::string GetRes();
   inline const mp_errno_t &GetErrno() const {
     return errno_;
@@ -168,7 +168,7 @@ private:
 
 private:
   const std::string source_;
-  brwcfg::IConfigure cfg_;
+  chromium::IConfigure cfg_;
 };
 inline void IRequest::UnInit() {
   ready_.store(false);
@@ -193,7 +193,7 @@ inline void IRequest::Init() {
 inline bool IRequest::Ready() const {
   return ready_.load();
 }
-inline const brwcfg::IConfigure &IRequest::GetCfg() const {
+inline const chromium::IConfigure &IRequest::GetCfg() const {
   return cfg_;
 }
 inline std::string IRequest::GetRes() {

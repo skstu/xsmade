@@ -19,7 +19,7 @@ public:
   }
   virtual void OnChromiumInputEvent(
       const unsigned long long &reqid,
-      const brwcfg::IConfigure::Input::ResultCode &resultCode) const {
+      const chromium::IConfigure::Input::ResultCode &resultCode) const {
   }
 
 protected:
@@ -49,7 +49,7 @@ private:
 protected:
   void Release() const override final;
   void OnChromiumInputEvent(const unsigned long long &reqid,
-                            const brwcfg::IConfigure::Input::ResultCode
+                            const chromium::IConfigure::Input::ResultCode
                                 &resultCode) const override final;
 };
 

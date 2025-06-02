@@ -313,5 +313,11 @@ void Brwcfg::SetChromiumBrowserObj(IBrowser *chromium_browser) {
   std::unique_lock<std::mutex> lck(*mtx_, std::defer_lock);
   lck.lock();
   chromium_browser_object_ = chromium_browser;
+  chromium_browser_object_->RegisterCookieEventCb(
+      [](const char *json, size_t len) {
+        Brwcfg::GetOrCreate()->chromium_cookies_notifys_.push(
+            std::make_tuple<std::string, std::string>("/browser/cookies",
+                                                      std::string(json, len)));
+      });
   lck.unlock();
 }

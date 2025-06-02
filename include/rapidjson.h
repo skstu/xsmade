@@ -295,7 +295,7 @@ public:
   }
 
   static std::vector<std::string> StringSpilt(const std::string &input,
-                                         const std::string &delim) {
+                                              const std::string &delim) {
     std::vector<std::string> result;
     do {
       if (input.empty()) {
@@ -671,6 +671,41 @@ public:
                 << "Bool: " << (value.GetBool() ? "true" : "false") << "\n";
     } else if (value.IsNull()) {
       std::cout << std::string(depth, ' ') << "Null\n";
+    }
+  }
+
+public:
+  static void Sort(rapidjson::Value &value,
+                   rapidjson::Document::AllocatorType &allocator) {
+    if (value.IsObject()) {
+      std::vector<std::pair<std::string, rapidjson::Value>> members;
+      for (auto itr = value.MemberBegin(); itr != value.MemberEnd(); ++itr) {
+        rapidjson::Value &v = itr->value;
+        Sort(v, allocator);
+        if ((v.IsObject() && v.ObjectEmpty()) || (v.IsArray() && v.Empty())) {
+          continue;
+        }
+        members.emplace_back(itr->name.GetString(),
+                             rapidjson::Value(v, allocator));
+      }
+      std::sort(members.begin(), members.end(),
+                [](const auto &a, const auto &b) { return a.first < b.first; });
+
+      value.RemoveAllMembers();
+      for (auto &m : members) {
+        rapidjson::Value name(m.first.c_str(), allocator);
+        value.AddMember(name, m.second, allocator);
+      }
+    } else if (value.IsArray()) {
+      rapidjson::Value newArray(rapidjson::kArrayType);
+      for (auto &v : value.GetArray()) {
+        Sort(v, allocator);
+        if ((v.IsObject() && v.ObjectEmpty()) || (v.IsArray() && v.Empty())) {
+          continue;
+        }
+        newArray.PushBack(v, allocator);
+      }
+      value = std::move(newArray);
     }
   }
 };

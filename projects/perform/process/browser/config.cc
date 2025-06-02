@@ -161,8 +161,8 @@ BrowserConfig::GetXSCacheStatisDir(const std::u16string &brwKey) const {
 void BrowserConfig::XSCacheClean(const std::u16string &brwKey) const {
   std::lock_guard<std::mutex> lock{*mtx_};
   if (!brwKey.empty()) {
-    std::u16string path = stl::Path::Normalize(
-        paths_.chromium_user_data_dir + u"/" + brwKey + u"/Default/XSCache/");
+    std::u16string path =
+        paths_.chromium_user_data_dir + u"/" + brwKey + u"/Default/XSCache/";
     stl::Directory::RemoveAll(path);
   }
 }
@@ -305,7 +305,7 @@ xs_sys_free((void **)&path);
     xs_sys_process_getpath(&path, &path_len);
     paths_.root_dir = Conv::u8_to_u16(std::string(path, path_len));
     xs_sys_free((void **)&path);
-    paths_.root_dir = stl::Path::Normalize(paths_.root_dir);
+    paths_.root_dir = paths_.root_dir;
     paths_.logs_dir = paths_.root_dir + u"/logs";
     paths_.configure_dir = paths_.root_dir + u"/configure";
     paths_.plugins_dir = paths_.root_dir + u"/plugins";

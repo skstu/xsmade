@@ -1,122 +1,124 @@
 #if !defined(__7B07A640_1E04_4174_A41E_1C44EA560B44__)
 #define __7B07A640_1E04_4174_A41E_1C44EA560B44__
 #include <interface.hpp>
-#include "configure.hpp"
+#include <configure.hpp>
 namespace brwcfg {
 typedef void *(*tf_chromium_module_interface_init)(void *, unsigned long);
 typedef void (*tf_chromium_module_interface_uninit)(void);
 
 class IBrwcfg : public Interface<IBrwcfg> {
 public:
-  class IBrowser {
-  public:
-    typedef void (*tf_browser_input_event_cb)(unsigned long long reqid,
-                                              IConfigure::Input::ResultCode,
-                                              long long route);
-    virtual bool IForwardInputEvent(const char *, size_t) = 0;
-    virtual void IForwardInputEventCb(tf_browser_input_event_cb, long long) = 0;
-  };
-  class IBuffer {
-  public:
-    virtual const char *GetData() const = 0;
-    virtual size_t GetSize() const = 0;
-    virtual void Release() const = 0;
-  };
-  class IBufferArray {
-  public:
-    virtual void Push(IBuffer *) = 0;
-    virtual IBuffer *CreateBuffer(const char *, const size_t &) = 0;
-    virtual IBuffer *Next(const size_t &) const = 0;
-    virtual size_t Total() const = 0;
-    virtual void Release() const = 0;
-  };
-  class IPosition {
-  public:
-    virtual int GetX() const = 0;
-    virtual int GetY() const = 0;
-    virtual void SetX(int) = 0;
-    virtual void SetY(int) = 0;
-    virtual void Release() const = 0;
-  };
-  class ISize {
-  public:
-    virtual int GetWidth() const = 0;
-    virtual int GetHeight() const = 0;
-    virtual void SetWidth(int) = 0;
-    virtual void SetHeight(int) = 0;
-    virtual void Release() const = 0;
-  };
-  class IRectangle {
-  public:
-    virtual int GetX() const = 0;
-    virtual int GetY() const = 0;
-    virtual int GetWidth() const = 0;
-    virtual int GetHeight() const = 0;
-    virtual void SetX(int) = 0;
-    virtual void SetY(int) = 0;
-    virtual void SetWidth(int) = 0;
-    virtual void SetHeight(int) = 0;
-    virtual void Release() const = 0;
-  };
-  class IArgs {
-  public:
-    virtual bool IsPath() const = 0;
-    virtual IBuffer *GetKey() const = 0;
-    virtual IBuffer *GetValue() const = 0;
-    virtual void Release() const = 0;
-  };
-  class IArgsArray {
-  public:
-    virtual size_t Total() const = 0;
-    virtual IArgs *Next(const size_t &) const = 0;
-    virtual void Release() const = 0;
-  };
-  class IExtension {
-  public:
-    virtual bool IsReload() const = 0;
-    virtual const IBuffer *Manifest() const = 0;
-    virtual const IBuffer *Root() const = 0;
-    virtual void Release() const = 0;
-  };
-  class IExtensionArray {
-  public:
-    virtual size_t Total() const = 0;
-    virtual IExtension *Next(const size_t &) const = 0;
-    virtual void Release() const = 0;
-  };
+	class IBrowser {
+	public:
+		typedef void (*tf_browser_input_event_cb)(unsigned long long reqid,
+			chromium::IConfigure::Input::ResultCode,
+			long long route);
+		typedef void (*tf_browser_cookie_event_cb)(const char* data, size_t size);
+		virtual bool IForwardInputEvent(const char*, size_t) = 0;
+		virtual void IForwardInputEventCb(tf_browser_input_event_cb, long long) = 0;
+		virtual void RegisterCookieEventCb(tf_browser_cookie_event_cb) = 0;
+	};
+	class IBuffer {
+	public:
+		virtual const char* GetData() const = 0;
+		virtual size_t GetSize() const = 0;
+		virtual void Release() const = 0;
+	};
+	class IBufferArray {
+	public:
+		virtual void Push(IBuffer*) = 0;
+		virtual IBuffer* CreateBuffer(const char*, const size_t&) = 0;
+		virtual IBuffer* Next(const size_t&) const = 0;
+		virtual size_t Total() const = 0;
+		virtual void Release() const = 0;
+	};
+	class IPosition {
+	public:
+		virtual int GetX() const = 0;
+		virtual int GetY() const = 0;
+		virtual void SetX(int) = 0;
+		virtual void SetY(int) = 0;
+		virtual void Release() const = 0;
+	};
+	class ISize {
+	public:
+		virtual int GetWidth() const = 0;
+		virtual int GetHeight() const = 0;
+		virtual void SetWidth(int) = 0;
+		virtual void SetHeight(int) = 0;
+		virtual void Release() const = 0;
+	};
+	class IRectangle {
+	public:
+		virtual int GetX() const = 0;
+		virtual int GetY() const = 0;
+		virtual int GetWidth() const = 0;
+		virtual int GetHeight() const = 0;
+		virtual void SetX(int) = 0;
+		virtual void SetY(int) = 0;
+		virtual void SetWidth(int) = 0;
+		virtual void SetHeight(int) = 0;
+		virtual void Release() const = 0;
+	};
+	class IArgs {
+	public:
+		virtual bool IsPath() const = 0;
+		virtual IBuffer* GetKey() const = 0;
+		virtual IBuffer* GetValue() const = 0;
+		virtual void Release() const = 0;
+	};
+	class IArgsArray {
+	public:
+		virtual size_t Total() const = 0;
+		virtual IArgs* Next(const size_t&) const = 0;
+		virtual void Release() const = 0;
+	};
+	class IExtension {
+	public:
+		virtual bool IsReload() const = 0;
+		virtual const IBuffer* Manifest() const = 0;
+		virtual const IBuffer* Root() const = 0;
+		virtual void Release() const = 0;
+	};
+	class IExtensionArray {
+	public:
+		virtual size_t Total() const = 0;
+		virtual IExtension* Next(const size_t&) const = 0;
+		virtual void Release() const = 0;
+	};
 
 public:
-  virtual bool Start() = 0;
-  virtual void Stop() = 0;
-  virtual void FreeS(void **) const = 0;
-  virtual void *MallocS(const size_t &) const = 0;
-  virtual IBuffer *CreateBuffer(const char *, const size_t &) const = 0;
-  virtual IPosition *CreatePosition() const = 0;
-  virtual ISize *CreateSize() const = 0;
-  virtual IRectangle *CreateRectangle() const = 0;
-  virtual void OnAppendArgs(IArgsArray **) const = 0;
-  virtual bool OnExtensionMessage(const char *extid, const IBuffer *req,
-                                  IBuffer **res) const = 0;
-  virtual void OnExtensionsInstall(const IBuffer *,
-                                   IExtensionArray **) const = 0;
-  virtual void OnGetUserDataDirectory(IBuffer **) const = 0;
-  virtual bool OnExtensionAllowlisted(const char *extid) const = 0;
-  virtual bool EnableBadFlagsSecurityWarnings(void) const = 0;
-  virtual bool EnableSessionCrashedBubbleViewShow(void) const = 0;
-  virtual void OnBrowserStarted(void) const = 0;
-  virtual void OnBrowserClosing(void) const = 0;
-  virtual void OnBrowserReadyed(void) const = 0;
-  virtual void OnCreateWindowExBefore(void **parent, unsigned long *style,
-                                      unsigned long *exstyle) const = 0;
-  virtual void OnCreateWindowExAfter(void *hwnd) const = 0;
-  virtual void OnChildProcessAppendArgs(IArgsArray **) const = 0;
-  virtual const char *IConfigureGet() const = 0;
-  virtual bool EnableNonClientHitTest(void) const = 0;
-  virtual bool EnableBrowserCaptionButtonContainer(void) const = 0;
-  virtual void OnGpuScreenshotImageStream(const IBuffer *) const = 0;
-  virtual bool OnGpuCanvasFrameGetResolution(int *width, int *height) const = 0;
-  virtual void SetChromiumBrowserObj(IBrowser *) = 0;
-  virtual IBrowser *GetChromiumBrowserObj() const = 0;
+	virtual bool Start() = 0;
+	virtual void Stop() = 0;
+	virtual void FreeS(void**) const = 0;
+	virtual void* MallocS(const size_t&) const = 0;
+	virtual IBuffer* CreateBuffer(const char*, const size_t&) const = 0;
+	virtual IPosition* CreatePosition() const = 0;
+	virtual ISize* CreateSize() const = 0;
+	virtual IRectangle* CreateRectangle() const = 0;
+	virtual void OnAppendArgs(IArgsArray**) const = 0;
+	virtual bool OnExtensionMessage(const char* extid, const IBuffer* req,
+		IBuffer** res) const = 0;
+	virtual void OnExtensionsInstall(const IBuffer*,
+		IExtensionArray**) const = 0;
+	virtual void OnGetUserDataDirectory(IBuffer**) const = 0;
+	virtual bool OnExtensionAllowlisted(const char* extid) const = 0;
+	virtual bool EnableBadFlagsSecurityWarnings(void) const = 0;
+	virtual bool EnableSessionCrashedBubbleViewShow(void) const = 0;
+	virtual void OnBrowserStarted(void) const = 0;
+	virtual void OnBrowserClosing(void) const = 0;
+	virtual void OnBrowserReadyed(void) const = 0;
+	virtual void OnCreateWindowExBefore(void** parent, unsigned long* style,
+		unsigned long* exstyle) const = 0;
+	virtual void OnCreateWindowExAfter(void* hwnd) const = 0;
+	virtual void OnChildProcessAppendArgs(IArgsArray**) const = 0;
+	virtual const char* IConfigureGet() const = 0;
+	virtual bool EnableNonClientHitTest(void) const = 0;
+	virtual bool EnableBrowserCaptionButtonContainer(void) const = 0;
+	virtual void OnGpuScreenshotImageStream(const IBuffer*) const = 0;
+	virtual bool OnGpuCanvasFrameGetResolution(int* width, int* height) const = 0;
+	virtual void SetChromiumBrowserObj(IBrowser*) = 0;
+	virtual IBrowser* GetChromiumBrowserObj() const = 0;
 };
 } // namespace brwcfg
 
