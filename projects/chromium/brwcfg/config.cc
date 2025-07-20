@@ -27,7 +27,7 @@ void Config::Init() {
         stl::Path::PathnameToPath(Conv::u8_to_u16(u8Dllpath)));
     path_.temp_dir = path_.root + u"/" + chromium::project_dirname_tmp;
     path_.chromium_envpath_route_path =
-        path_.temp_dir + u"/configure_path.route";
+        path_.temp_dir + u"/" + chromium::project_filename_tmpcfgpath;
 
     path_.configure_path = path_.root + u"/" +
                            chromium::project_dirname_configures + u"/" +
@@ -46,6 +46,7 @@ void Config::Init() {
         break;
       std::string cfgPath =
           stl::File::ReadFile(path_.chromium_envpath_route_path);
+      stl::File::Remove(path_.chromium_envpath_route_path);
       if (!stl::File::Exists(cfgPath))
         break;
       path_.configure_path = Conv::u8_to_u16(cfgPath);
@@ -68,8 +69,10 @@ void Config::Init() {
     stl::Directory::Create(path_.configure_cache_dir);
     path_.configure_cache_path =
         path_.configure_cache_dir + u"/" + chromium::project_filename_configure;
-    stl::File::WriteFile(path_.configure_cache_path,
-                         configure_->Serialization());
+    if (!stl::File::Exists(path_.configure_cache_path)) {
+      stl::File::WriteFile(path_.configure_cache_path,
+                           configure_->Serialization());
+    }
   } while (0);
   xs_sys_free_buffer(&dllpath);
 }

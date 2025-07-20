@@ -55,4 +55,3 @@ void Launch::Perform() {
 #endif
   } while (0);
 }
-

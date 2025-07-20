@@ -9,7 +9,7 @@ public:
   void operator delete(void *) = delete;
   IRequest(const std::string &reqBody, const std::string &project_root_dir) {
     body = reqBody;
-    configure_ = std::make_unique<chromium::IConfigure>(body);
+    configure_ = std::make_unique<chromium::cfg::IConfigure>(body);
     SuperMAC();
   }
   ~IRequest() = default;
@@ -17,7 +17,7 @@ public:
   inline void operator>>(std::string &output) const;
 
 public:
-  const chromium::IConfigure &GetConfigure() const {
+  const chromium::cfg::IConfigure &GetConfigure() const {
     return *configure_;
   }
 
@@ -31,7 +31,7 @@ private:
   std::string hash;
   inline void SuperMAC();
   ErrorCode code = ErrorCode::UnknownError;
-  std::unique_ptr<chromium::IConfigure> configure_;
+  std::unique_ptr<chromium::cfg::IConfigure> configure_;
 };
 inline void IRequest::operator>>(std::string &output) const {
   rapidjson::Document doc(rapidjson::Type::kObjectType);
@@ -45,8 +45,7 @@ inline void IRequest::operator>>(std::string &output) const {
       allocator);
   if (code == ErrorCode::Success || code == ErrorCode::AlreadyRunning) {
     doc.AddMember(rapidjson::Value().SetString("id", allocator).Move(),
-                  rapidjson::Value().SetUint(configure_->GetPolicyId()).Move(),
-                  allocator);
+                  rapidjson::Value().SetUint(configure_->id).Move(), allocator);
     doc.AddMember(rapidjson::Value().SetString("hash", allocator).Move(),
                   rapidjson::Value()
                       .SetString(hash.empty() ? "" : hash.c_str(), allocator)

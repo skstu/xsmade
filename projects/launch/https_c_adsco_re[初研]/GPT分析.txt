@@ -1,0 +1,141 @@
+这个 sadf.html（目标网站的检测脚本）做了非常全面的反自动化/反爬虫/反指纹检测，主要检测点如下：
+
+这个 sadf.html（目标网站的检测脚本）做了非常**全面的反自动化/反爬虫/反指纹检测**，主要检测点如下：
+
+---
+
+## 1. **浏览器特征与指纹**
+
+- **User-Agent、navigator、window.clientInformation**  
+  检查浏览器的 UA、平台、厂商、版本、userAgentData、brands 等。
+- **navigator.plugins / navigator.mimeTypes**  
+  检查插件和 MIME 类型，判断是否为真实浏览器。
+- **window.chrome、window.chrome.csi、window.chrome.loadTimes**  
+  检查 Chrome 专有对象和方法。
+- **window.external**  
+  检查 IE/Edge 特有对象。
+- **window对象属性、原型链**  
+  检查原型链是否被篡改（如 Selenium、Puppeteer 会有特征）。
+- **Intl.DateTimeFormat().resolvedOptions().locale/timeZone**  
+  检查国际化 API 的 locale 和时区。
+- **navigator.languages、navigator.language**  
+  检查语言设置。
+- **window.isSecureContext**  
+  检查是否在安全上下文。
+- **window.WebAssembly、window.BarcodeDetector 等新特性**  
+  检查新 API 是否存在。
+
+---
+
+## 2. **自动化/爬虫环境检测**
+
+- **webdriver、domAutomation、_phantom、callPhantom、emit、spawn 等**  
+  检查 Selenium、PhantomJS、Nightmare、Puppeteer 等自动化环境特征。
+- **window.document.documentElement.getAttribute("webdriver")**  
+  检查 WebDriver 标志。
+- **window._Selenium_IDE_Recorder、__webdriver_script_fn、__fxdriver_evaluate 等**  
+  检查 Selenium/Firefox 驱动特征。
+- **window.external.toString() 包含 Sequentum**  
+  检查 Sequentum 爬虫。
+- **window.chrome.csi、window.chrome.loadTimes**  
+  检查 Chrome 旧版特征。
+- **window.navigator.webdriver**  
+  检查 WebDriver 标志。
+
+---
+
+## 3. **硬件与环境特征**
+
+- **navigator.hardwareConcurrency、navigator.deviceMemory**  
+  检查 CPU 核心数、内存大小。
+- **window.screen、window.devicePixelRatio**  
+  检查屏幕分辨率、像素比。
+- **window.performance.memory.jsHeapSizeLimit**  
+  检查 JS 堆大小。
+- **window.openDatabase、window.localStorage、window.indexedDB**  
+  检查本地存储能力。
+- **window.battery.level、window.battery.charging**  
+  检查电池信息。
+- **navigator.connection**  
+  检查网络连接类型。
+
+---
+
+## 4. **Canvas/WebGL/字体/图形指纹**
+
+- **Canvas 指纹**  
+  绘制图形并获取 toDataURL，检测渲染差异。
+- **WebGL 指纹**  
+  获取 WebGL 渲染器、厂商、支持的扩展、精度等。
+- **字体检测**  
+  检查系统字体渲染差异。
+- **屏幕尺寸、颜色深度、DPI**  
+  检查显示设备特征。
+
+---
+
+## 5. **行为与性能检测**
+
+- **performance.now()、performance.timing**  
+  检查页面加载、渲染、响应等性能指标。
+- **console.debug、console.log、eval、alert、animate 等**  
+  检查 JS 环境和原生方法。
+- **事件监听（mousemove、touchstart、deviceorientation、devicemotion）**  
+  检查用户交互和传感器事件。
+
+---
+
+## 6. **网络与请求特征**
+
+- **XMLHttpRequest、sendBeacon、fetch**  
+  检查网络请求能力和行为。
+- **跨域、CORS、referrer**  
+  检查请求头和跳转行为。
+- **STUN/ICE WebRTC**  
+  检查本地 IP 泄露和 P2P 能力。
+
+---
+
+## 7. **Cookie、localStorage、sessionStorage 检查**
+
+- **读写 Cookie、localStorage**  
+  检查是否可用，是否被禁用。
+
+---
+
+## 8. **其它反自动化特征**
+
+- **检测页面是否在 iframe、top==window**  
+  检查是否被嵌套。
+- **检测 window.opener、window.parent**  
+  检查窗口关系。
+- **检测 window.google、window.brave、window.close、window.InstallTrigger**  
+  检查特定浏览器或环境特征。
+- **检测 window.ScriptEngineMajorVersion 等**  
+  检查 IE 特有特征。
+
+---
+
+## 9. **自定义脚本和异常处理**
+
+- **try-catch 大量包裹**  
+  防止脚本报错影响检测流程。
+- **检测异常堆栈**  
+  检查异常信息是否被自动化环境篡改。
+
+---
+
+## 10. **动态加载和异步检测**
+
+- **大量 setTimeout、异步回调**  
+  检查异步环境和响应能力。
+
+---
+
+## 结论
+
+**这是一个极其全面的反自动化/反指纹检测脚本，涵盖了浏览器指纹、自动化环境、硬件特征、行为检测、网络能力、存储能力、图形指纹等多个维度。**
+
+- 只要有一项与真实浏览器不符（如 UA、WebGL、Canvas、语言、插件、性能、API 支持、webdriver 标志等），就可能被判定为机器人或自动化环境。
+- 这类脚本对自编译 Chromium、自动化浏览器、无头浏览器、指纹伪造等都有极强的检测能力。
+

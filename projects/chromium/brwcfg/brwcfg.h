@@ -17,6 +17,9 @@
 using namespace chromium;
 #include <settings.hpp>
 #include <ibrwcfg.h>
+#include "extensions_request.h"
+#include "client.h"
+#include "server.h"
 #include "wxdeps.h"
 #include "protocol.hpp"
 #include "config.h"
@@ -43,8 +46,6 @@ private:
   virtual ~Brwcfg();
   void Init();
   void UnInit();
-
-  void Process();
 
 protected:
   bool Start() override final;
@@ -103,11 +104,6 @@ private:
 #endif
   stl::tfThreads threads_;
   std::shared_ptr<std::mutex> mtx_ = std::make_shared<std::mutex>();
-
-public:
-  stl::container::queue<
-      std::tuple<std::string /*http.path*/, std::string /*content*/>>
-      chromium_cookies_notifys_;
 };
 
 /// /*_ Memade®（新生™） _**/

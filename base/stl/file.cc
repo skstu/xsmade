@@ -86,9 +86,10 @@ bool File::Exists(const std::wstring &input_pathname) {
     do {
       if (input_pathname.empty())
         break;
-      if (!std::filesystem::exists(input_pathname))
+      fs::path file_path = input_pathname;
+      if (!std::filesystem::exists(file_path))
         break;
-      if (!std::filesystem::is_regular_file(input_pathname))
+      if (!std::filesystem::is_regular_file(file_path))
         break;
       result = true;
     } while (0);
@@ -106,9 +107,10 @@ bool File::Exists(const std::string &input_pathname) {
     do {
       if (input_pathname.empty())
         break;
-      if (!std::filesystem::exists(input_pathname))
+      fs::path file_path = input_pathname;
+      if (!std::filesystem::exists(file_path))
         break;
-      if (!std::filesystem::is_regular_file(input_pathname))
+      if (!std::filesystem::is_regular_file(file_path))
         break;
       result = true;
     } while (0);
@@ -126,9 +128,10 @@ size_t File::Size(const std::u16string &input_pathname) {
     do {
       if (input_pathname.empty())
         break;
-      if (!std::filesystem::exists(input_pathname))
+      fs::path file_path = input_pathname;
+      if (!std::filesystem::exists(file_path))
         break;
-      result = static_cast<size_t>(std::filesystem::file_size(input_pathname));
+      result = static_cast<size_t>(std::filesystem::file_size(file_path));
     } while (0);
 #endif
   } catch (const std::filesystem::filesystem_error &e) {
@@ -144,9 +147,10 @@ bool File::Exists(const std::u16string &input_pathname) {
     do {
       if (input_pathname.empty())
         break;
-      if (!std::filesystem::exists(input_pathname))
+      fs::path file_path = input_pathname;
+      if (!std::filesystem::exists(file_path))
         break;
-      if (!std::filesystem::is_regular_file(input_pathname))
+      if (!std::filesystem::is_regular_file(file_path))
         break;
       result = true;
     } while (0);

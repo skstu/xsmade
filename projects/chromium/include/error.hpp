@@ -12,6 +12,7 @@ enum class ErrorCode : int {
   InvalidBrowserID = -8,
   CreateBrowserEnvFailed = -9,
   BrwProcessOpenFailed = -10,
+  InvalidConfigureData = -11,
   UnknownError = -9999,
   Success = 0,
   Done = 1,

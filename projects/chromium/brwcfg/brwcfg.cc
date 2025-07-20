@@ -15,6 +15,8 @@ bool Brwcfg::Start() {
   do {
     if (open_.load())
       break;
+    Client::GetOrCreate()->Start();
+    Server::GetOrCreate()->Start();
     char *cmdline_ = nullptr;
     size_t cmdline_len_ = 0;
     xs_sys_get_commandline(&cmdline_, &cmdline_len_);
@@ -47,7 +49,6 @@ bool Brwcfg::Start() {
     if (chromium_)
       chromium_->Start();
     open_.store(true);
-    threads_.emplace_back([this]() { Process(); });
   } while (0);
   return open_.load();
 }
@@ -55,6 +56,8 @@ void Brwcfg::Stop() {
   do {
     if (!open_.load())
       break;
+    Server::GetOrCreate()->Stop();
+    Client::GetOrCreate()->Stop();
 #if ENABLE_WXUI
     if (wxui_)
       wxui_->Stop();
@@ -73,34 +76,6 @@ void Brwcfg::Stop() {
     threads_.clear();
     LOG_UNINIT;
   } while (0);
-}
-void Brwcfg::Process() {
-  do {
-    do {
-      if (chromium_cookies_notifys_.empty())
-        break;
-      rapidjson::Document doc(rapidjson::Type::kArrayType);
-      auto msgs = chromium_cookies_notifys_.pops();
-      for (const auto &msg : msgs) {
-        std::string path = std::get<0>(msg);
-        std::string content = std::get<1>(msg);
-        rapidjson::Document itemDoc;
-        if (itemDoc.Parse(content.data(), content.size()).HasParseError())
-          continue;
-        if (!itemDoc.IsObject())
-          continue;
-        doc.PushBack(itemDoc, doc.GetAllocator());
-      }
-      std::string content = Json::toString(doc);
-      httplib::Client cli("127.0.0.1", 65535);
-      httplib::Headers heads = {{"content-type", "application/json"}};
-      auto postRes = cli.Post("/browser/cookies", heads, content.data(),
-                              content.size(), "application/json");
-    } while (0);
-    std::this_thread::sleep_for(std::chrono::seconds(3));
-    if (!open_.load())
-      break;
-  } while (1);
 }
 void Brwcfg::OnGpuScreenshotImageStream(const IBuffer *stream) const {
   do {

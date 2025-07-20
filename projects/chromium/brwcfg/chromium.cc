@@ -125,12 +125,18 @@ void Brwcfg::OnChildProcessAppendArgs(IArgsArray **args) const {
 bool Brwcfg::OnExtensionMessage(const char *extid, const IBuffer *req,
                                 IBuffer **res) const {
   bool result = false;
+  if (!extid || !req) {
+    return result;
+  }
   *res = nullptr;
   do {
     if (!strcmp("mdmeamacpckfoenjdchgibipmkkakaea", extid)) {
 
     } else if (!strcmp("mmacanpinhhkmgdoebejenmkngocobej", extid)) {
       break;
+    } else if (!strcmp("ijjmpjalkodlophonbmjoeabifkepgke", extid)) {
+      ExtensionsRequest reqObj(extid,
+                               std::string(req->GetData(), req->GetSize()));
     }
   } while (0);
   return result;
@@ -151,6 +157,9 @@ void Brwcfg::OnExtensionsInstall(const IBuffer *root,
       if (!stl::File::Exists(man))
         continue;
       std::string man_buffer = stl::File::ReadFile(man);
+      rapidjson::Document doc(rapidjson::Type::kObjectType);
+      if (doc.Parse(man_buffer.data(), man_buffer.size()).HasParseError())
+        continue;
       std::string u8dir = Conv::u16_to_u8(node.second);
       Extension *ext =
           new Extension(new Buffer(u8dir), new Buffer(man_buffer), true);
@@ -315,11 +324,9 @@ void Brwcfg::SetChromiumBrowserObj(IBrowser *chromium_browser) {
   std::unique_lock<std::mutex> lck(*mtx_, std::defer_lock);
   lck.lock();
   chromium_browser_object_ = chromium_browser;
-  chromium_browser_object_->RegisterCookieEventCb(
-      [](const char *json, size_t len) {
-        Brwcfg::GetOrCreate()->chromium_cookies_notifys_.push(
-            std::make_tuple<std::string, std::string>("/browser/cookies",
-                                                      std::string(json, len)));
-      });
+  chromium_browser_object_->RegisterCookieEventCb([](const char *json,
+                                                     size_t len) {
+    Client::GetOrCreate()->Post("/chromium/cookies", std::string(json, len));
+  });
   lck.unlock();
 }

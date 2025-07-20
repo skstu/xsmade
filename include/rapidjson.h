@@ -8,6 +8,45 @@
 #include "../3rdparty/rapidjson/include/rapidjson/stringbuffer.h"
 #include "../3rdparty/rapidjson/include/rapidjson/writer.h"
 
+#define RAPIDJSON_ADDMEMBER_STRING(obj, key, value, allocator)                 \
+  obj.AddMember(rapidjson::Value()                                             \
+                    .SetString(key.empty() ? "" : key.c_str(), allocator)      \
+                    .Move(),                                                   \
+                rapidjson::Value()                                             \
+                    .SetString(value.empty() ? "" : value.c_str(), allocator)  \
+                    .Move(),                                                   \
+                allocator);
+
+#define RAPIDJSON_ADDMEMBER_OBJECT(obj, key, value, allocator)                 \
+  obj.AddMember(rapidjson::Value()                                             \
+                    .SetString(key.empty() ? "" : key.c_str(), allocator)      \
+                    .Move(),                                                   \
+                value, allocator);
+
+#define RAPIDJSON_ADDMEMBER_BOOL(obj, key, value, allocator)                   \
+  obj.AddMember(rapidjson::Value()                                             \
+                    .SetString(key.empty() ? "" : key.c_str(), allocator)      \
+                    .Move(),                                                   \
+                rapidjson::Value().SetBool(value).Move(), allocator);
+
+#define RAPIDJSON_ADDMEMBER_INT(obj, key, value, allocator)                    \
+  obj.AddMember(rapidjson::Value()                                             \
+                    .SetString(key.empty() ? "" : key.c_str(), allocator)      \
+                    .Move(),                                                   \
+                rapidjson::Value().SetInt(value).Move(), allocator);
+
+#define RAPIDJSON_ADDMEMBER_UINT(obj, key, value, allocator)                   \
+  obj.AddMember(rapidjson::Value()                                             \
+                    .SetString(key.empty() ? "" : key.c_str(), allocator)      \
+                    .Move(),                                                   \
+                rapidjson::Value().SetUint(value).Move(), allocator);
+
+#define RAPIDJSON_ADDMEMBER_DOUBLE(obj, key, value, allocator)                 \
+  obj.AddMember(rapidjson::Value()                                             \
+                    .SetString(key.empty() ? "" : key.c_str(), allocator)      \
+                    .Move(),                                                   \
+                rapidjson::Value().SetDouble(value).Move(), allocator);
+
 #define JSON_VALUE_TO_STRING(in, out)                                          \
   if (in.IsInt())                                                              \
     out = std::to_string(in.GetInt());                                         \

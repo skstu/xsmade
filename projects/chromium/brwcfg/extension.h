@@ -3,7 +3,8 @@
 
 class Extension final : public IBrwcfg::IExtension {
 public:
-  Extension(const Buffer *root, const Buffer *manifest,const bool& reload = false);
+  Extension(const Buffer *root, const Buffer *manifest,
+            const bool &reload = false);
   virtual ~Extension();
   void Release() const override final;
 
