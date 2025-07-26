@@ -17,14 +17,15 @@
 
 #include "error.hpp"
 #include "settings.hpp"
-#include "configure.hpp"
+#include <components/curlcc/export.h>
 #include "yunlogin/yunlogin_config.hpp"
 using namespace chromium;
-#include "request.hpp"
 #include "chromium.h"
 #include "browser.h"
 #include "server.h"
+#include "model.h"
 #include "startup.h"
+
 class Config final {
 public:
   static Config *CreateOrGet();
@@ -41,19 +42,22 @@ private:
 
 public:
   const std::string &GetCurrentDir() const;
-  std::string GetChromiumProcess(const std::string &version = "") const;
-  std::string GetChromiumRuntimeDirectory(const chromium::cfg::id_type_t &) const;
-  std::string GetChromiumRoutingCfgfilePath() const;
-  const std::string &GetLogsDir() const;
+  const std::string &GetProjectLogsDir() const;
+  const std::string &GetProjectTmpDir() const;
+  const std::string &GetChromiumProcessPath() const;
+  const std::string &GetProjectModelPartsDir() const;
+  const std::string &GetProjectModelDir() const;
 
 public:
   ISettings *settings_ = nullptr;
   std::string current_dir_;
-  std::string configures_dir_;
-  std::string configure_path_;
-  std::string settings_path_;
-  std::string cache_dir_;
-  std::string logs_dir_;
+  std::string project_settings_path_;
+  std::string project_cache_dir_;
+  std::string project_logs_dir_;
+  std::string project_tmp_dir_;
+  std::string chromium_process_path_;
+  std::string project_model_parts_dir_;
+  std::string project_model_dir_;
   std::shared_ptr<std::mutex> mtx_ = std::make_shared<std::mutex>();
   std::map<std::string, std::string> chromium_startup_process_;
 };

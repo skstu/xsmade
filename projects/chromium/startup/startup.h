@@ -21,7 +21,6 @@ private:
   void Init();
   void UnInit();
   bool OpenChrome();
-
 private:
   std::atomic_bool ready_ = false;
   Server *server_ = nullptr;

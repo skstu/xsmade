@@ -52,9 +52,11 @@ XS_EXTERN void xs_sys_free(void **p);
 XS_EXTERN void xs_sys_free_buffer(xs_buffer_t **);
 XS_EXTERN unsigned short xs_sys_get_free_port(void);
 XS_EXTERN xs_errno_t xs_sys_process_spawn(const char *proc, const char **argv,
-                                   const char **envp, int show_flag,
-                                   xs_process_id_t *out_pid);
+                                          const char **envp, int show_flag,
+                                          xs_process_id_t *out_pid);
 XS_EXTERN xs_errno_t xs_sys_process_kill(xs_process_id_t pid, int);
+XS_EXTERN xs_errno_t xs_sys_process_kill_name(const char *name,
+                                              xs_process_id_t *out_pid);
 //!@ exited == 0 and running  == !0
 XS_EXTERN int xs_sys_process_has_exit(xs_process_id_t pid);
 XS_EXTERN xs_errno_t xs_sys_process_getpath(char **, size_t *);

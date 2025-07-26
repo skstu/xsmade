@@ -18,6 +18,7 @@ namespace chromium {
 namespace yunlogin {
 constexpr const char kDirectoryExtensions[] = "fbp";
 constexpr const char kFilenameConfig[] = "cfg.dat";
+constexpr const char kFilenameUdd[] = ".udd";
 constexpr const char kSwitchIpinfoio[] = "ipinfoio";
 constexpr const char kSwitchMyipyunlogincom[] = "myipyunlogincom";
 constexpr const char kSwitchBaseData[] = "base-data";
@@ -1531,7 +1532,10 @@ public:
     std::lock_guard<std::mutex> lock(*mtx_);
     if (!xsiumio.myipyunlogincom.GetIP().empty())
       return xsiumio.myipyunlogincom.GetIP();
-    return finger.timezone;
+    return finger.webrtcPublicIp;
+  }
+  inline const std::string &GetLocalIP() const {
+    return finger.webrtcInnerIp;
   }
   inline void Update_myipyunlogincom(const std::string &json_data) {
     std::lock_guard<std::mutex> lock(*mtx_);
@@ -1596,9 +1600,42 @@ public:
   inline const xsiumio::IXSiumio &GetXSiumio() const {
     return xsiumio;
   }
+  inline void operator<<(const std::string &);
+
+  inline std::string GetProxyAuthUrl() const {
+    std::string result;
+    if (xsiumio.proxy.enable && !xsiumio.proxy.credentials_url.empty()) {
+      result = xsiumio.proxy.credentials_url;
+    }
+    if (!result.empty())
+      return result;
+
+    if (proxyInfo.IsUseBridge()) {
+      result.append(proxyInfo.bridge.protocol)
+          .append("://")
+          .append(proxyInfo.bridge.username)
+          .append(":")
+          .append(proxyInfo.bridge.password)
+          .append("@")
+          .append(proxyInfo.bridge.server)
+          .append(":")
+          .append(std::to_string(proxyInfo.bridge.port));
+    } else if (proxyInfo.IsUseOutbound()) {
+      result.append(proxyInfo.outbound.protocol)
+          .append("://")
+          .append(proxyInfo.outbound.username)
+          .append(":")
+          .append(proxyInfo.outbound.password)
+          .append("@")
+          .append(proxyInfo.outbound.server)
+          .append(":")
+          .append(std::to_string(proxyInfo.outbound.port));
+    }
+
+    return result;
+  }
 
 private:
-  inline void operator<<(const std::string &);
   std::string shop_id;
   std::string browser_id;
 

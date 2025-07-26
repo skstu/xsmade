@@ -5,8 +5,18 @@
       "name": "Windows Build With CMake Ninja",
       "type": "cppdbg",
       "request": "launch",
-      "program": "${workspaceFolder}/bin/YunBrowser.exe",
-      "args": [],
+      "program": "${workspaceFolder}/bin/main.exe",
+      "args": [
+        " ",
+        "--mode=release",
+        " ",
+      ],
+      // "program": "${workspaceFolder}/bin/tests/test_curlcc.exe",
+      // "args": [
+      //   "--proxy-string=socks5h://1AmYtA10414086127A40151:YYysdtk6BiOR@104.140.86.127:40151",
+      //   "--urls=https://myip.yunlogin.com,",
+      //   "--response-file=C:\\Users\\k34ub\\source\\skstu\\xsmade\\bin\\curl_response.data"
+      // ],
       // "program": "${workspaceFolder}/bin/tests/test_httpserver.exe",
       // "args": [],
       // "program": "${workspaceFolder}/bin/tests/test_memade.exe",
@@ -20,8 +30,6 @@
       //   //"--renderer-startup-dialog"
       // ],
       // "program": "${workspaceFolder}/bin/main.exe",
-      // "args": [],
-      // "program": "${workspaceFolder}/out/bin/test_curlcc.exe",
       // "args": [],
       // "program": "${workspaceFolder}/out/bin/MediaStreamServer.exe",
       // "args": [],

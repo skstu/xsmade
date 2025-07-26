@@ -32,7 +32,7 @@ std::string Common::toLower(const std::string &input) {
   }
   return result;
 }
-std::vector<std::string> Common::StringSpilt(const std::string &input,
+std::vector<std::string> Common::StringSplit(const std::string &input,
                                              const std::string &delim) {
   std::vector<std::string> result;
   do {

@@ -15,6 +15,7 @@
 #include <shlobj.h>
 #include <objbase.h>
 #include <gdiplus.h>
+#include <tlhelp32.h>
 #pragma comment(lib, "gdiplus.lib")
 #elif defined(__OSLINUX__)
 #include <stdio.h>

@@ -23,7 +23,13 @@ public:
     }
     queue_cv_.notify_one();
   }
-
+  void setSocks5Proxy(const std::string &proxy, const std::string &user = "",
+                      const std::string &pwd = "") {
+    std::lock_guard<std::mutex> lock(proxy_mutex_);
+    socks5_proxy_ = proxy;
+    socks5_user_ = user;
+    socks5_pwd_ = pwd;
+  }
   void waitUntilDone() {
     std::unique_lock<std::mutex> lock(done_mutex_);
     done_cv_.wait(lock, [this] {
@@ -73,6 +79,11 @@ public:
   }
 
 private:
+  std::string socks5_proxy_;
+  std::string socks5_user_;
+  std::string socks5_pwd_;
+  std::mutex proxy_mutex_;
+
   std::vector<std::thread> workers_;
   std::queue<std::string> urls_;
   std::mutex queue_mutex_;
@@ -98,82 +109,7 @@ private:
     return size * nmemb;
   }
 
-  void worker() {
-    int task_id = 0;
-    while (true) {
-      std::string url;
-      {
-        std::unique_lock<std::mutex> lock(queue_mutex_);
-        queue_cv_.wait(lock, [this] { return stop_ || !urls_.empty(); });
-        if (stop_ && urls_.empty())
-          return;
-        url = urls_.front();
-        urls_.pop();
-        ++active_tasks_;
-      }
-
-      std::string response;
-      CURL *curl = curl_easy_init();
-      if (curl) {
-        curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
-        curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, writeCallback);
-        curl_easy_setopt(curl, CURLOPT_WRITEDATA, &response);
-        curl_easy_setopt(curl, CURLOPT_SSL_VERIFYPEER, 0L);
-        curl_easy_setopt(curl, CURLOPT_SSL_VERIFYHOST, 0L);
-
-        if (follow_redirects_) {
-          curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, 1L);
-        }
-
-        if (!user_agent_.empty()) {
-          curl_easy_setopt(curl, CURLOPT_USERAGENT, user_agent_.c_str());
-        }
-
-        if (!referer_.empty()) {
-          curl_easy_setopt(curl, CURLOPT_REFERER, referer_.c_str());
-        }
-
-        if (!cookie_file_.empty()) {
-          curl_easy_setopt(curl, CURLOPT_COOKIEFILE, cookie_file_.c_str());
-          curl_easy_setopt(curl, CURLOPT_COOKIEJAR, cookie_file_.c_str());
-        }
-
-        struct curl_slist *header_list = nullptr;
-        {
-          std::lock_guard<std::mutex> lock(header_mutex_);
-          for (const auto &h : extra_headers_) {
-            header_list = curl_slist_append(header_list, h.c_str());
-          }
-        }
-        if (header_list) {
-          curl_easy_setopt(curl, CURLOPT_HTTPHEADER, header_list);
-        }
-
-        CURLcode res = curl_easy_perform(curl);
-        if (res == CURLE_OK) {
-          std::string filename =
-              output_dir_ + "/page_" + std::to_string(task_id++) + ".html";
-          std::ofstream fout(filename);
-          fout << response;
-          fout.close();
-          std::cout << "Saved: " << filename << "\n";
-        } else {
-          std::cerr << "Error fetching " << url << ": "
-                    << curl_easy_strerror(res) << "\n";
-        }
-
-        if (header_list)
-          curl_slist_free_all(header_list);
-        curl_easy_cleanup(curl);
-      }
-
-      {
-        std::lock_guard<std::mutex> lock(done_mutex_);
-        --active_tasks_;
-      }
-      done_cv_.notify_one();
-    }
-  }
+  void worker();
 };
 
 /// /*_ Memade®（新生™） _**/

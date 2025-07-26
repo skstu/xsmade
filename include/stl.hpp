@@ -158,7 +158,8 @@ public:
 public:
   static std::string PackageCommandLine(const int &argc, char **argv);
   static std::string PackageCommandLine(const char **args);
-  static tfCommandLines ParserCommandLines(const std::string &input);
+  static tfCommandLines ParserCommandLines(const std::string &input,
+                                           const bool &remove_key_flag);
 
 protected:
   tfCommandLines source_;
@@ -216,7 +217,7 @@ private:
 
 class Common {
 public:
-  static std::vector<std::string> StringSpilt(const std::string &input,
+  static std::vector<std::string> StringSplit(const std::string &input,
                                               const std::string &delim);
   static std::string toLower(const std::string &input);
   static bool strIcmp(const std::string &str1, const std::string &str2);
@@ -233,13 +234,56 @@ public:
   static std::u16string U32StringToU16String(const std::u32string &);
 };
 #endif
+class Random {
+public:
+  template <typename T> static T GetRandomValue(const T &a, const T &b) {
+    std::random_device rd;
+    std::mt19937 gen(rd());
+    if constexpr (std::is_floating_point<T>::value) {
+      std::uniform_real_distribution<> dis(static_cast<double>(a),
+                                           static_cast<double>(b));
+      return static_cast<T>(dis(gen));
+    } else if constexpr (std::is_integral<T>::value) {
+      std::uniform_int_distribution<T> dis(static_cast<T>(a),
+                                           static_cast<T>(b));
+      return dis(gen);
+    }
+    return T();
+  }
+  template <typename T>
+  static T GetRandomValueSeed64(const T &a, const T &b, uint64_t seed) {
+    std::mt19937_64 gen(seed);
+    if constexpr (std::is_floating_point<T>::value) {
+      std::uniform_real_distribution<double> dis(static_cast<double>(a),
+                                                 static_cast<double>(b));
+      return static_cast<T>(dis(gen));
+    } else if constexpr (std::is_integral<T>::value) {
+      std::uniform_int_distribution<T> dis(a, b);
+      return dis(gen);
+    }
+    return T();
+  }
+  template <typename T>
+  static T GetRandomValueSeed32(const T &a, const T &b, uint32_t seed) {
+    std::mt19937 gen(seed);
+    if constexpr (std::is_floating_point<T>::value) {
+      std::uniform_real_distribution<double> dis(static_cast<double>(a),
+                                                 static_cast<double>(b));
+      return static_cast<T>(dis(gen));
+    } else if constexpr (std::is_integral<T>::value) {
+      std::uniform_int_distribution<T> dis(a, b);
+      return dis(gen);
+    }
+    return T();
+  }
+};
 class Time {
 public:
   template <typename T = std::chrono::seconds>
 #if _STL_HAS_CXX20
   requires std::is_convertible_v<T, std::chrono::milliseconds> ||
-      std::is_convertible_v<T, std::chrono::minutes> ||
-      std::is_convertible_v<T, std::chrono::microseconds>
+           std::is_convertible_v<T, std::chrono::minutes> ||
+           std::is_convertible_v<T, std::chrono::microseconds>
 #endif
   static time_t TimeStamp() {
     return std::chrono::duration_cast<T>(
@@ -247,6 +291,7 @@ public:
                    .time_since_epoch())
         .count();
   }
+  static std::string GetLogTimeCN();
   static std::string GetLocalTimezoneOffset();
   static std::string CurrentDateA();
   static std::wstring CurrentDateW();
@@ -264,9 +309,9 @@ public:
   requires(std::is_same_v<T, std::chrono::milliseconds> ||
            std::is_same_v<T, std::chrono::seconds>)
 #endif
-      static std::string
-      TimestampToISO8601(std::uint64_t timestamp,
-                         const bool &local = true /*or UTC == false*/) {
+  static std::string
+  TimestampToISO8601(std::uint64_t timestamp,
+                     const bool &local = true /*or UTC == false*/) {
     std::ostringstream os;
     auto ms = T(timestamp);
     auto tp = std::chrono::time_point<std::chrono::system_clock, T>(ms);
@@ -286,7 +331,7 @@ public:
   requires(std::is_same_v<T, std::chrono::milliseconds> ||
            std::is_same_v<T, std::chrono::seconds>)
 #endif
-      static std::time_t TimeStampUTC() {
+  static std::time_t TimeStampUTC() {
     return std::chrono::duration_cast<T>(
                std::chrono::time_point_cast<T>(std::chrono::system_clock::now())
                    .time_since_epoch())
@@ -415,7 +460,7 @@ public:
   }
   static std::string BinaryToHexString(const std::string &s);
   static std::string HexStringToBinary(const std::string &s);
-  static std::vector<std::string> StringSpilt(const std::string &,
+  static std::vector<std::string> StringSplit(const std::string &,
                                               const std::string &);
   static std::vector<std::wstring> WStringSplit(const std::wstring &,
                                                 const std::wstring &);
@@ -437,6 +482,9 @@ public:
   static bool Create(const std::string &);
   static bool Create(const std::u16string &);
   static bool Create(const std::wstring &);
+  static bool Empty(const std::string &);
+  static bool Empty(const std::u16string &);
+  static bool Empty(const std::wstring &);
   static bool RemoveAll(const std::string &);
   static bool RemoveAll(const std::u16string &);
   static bool RemoveAll(const std::wstring &);

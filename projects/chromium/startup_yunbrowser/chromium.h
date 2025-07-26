@@ -8,11 +8,13 @@ private:
   IChromium();
   virtual ~IChromium();
   void Release() const;
+
 private:
   bool Open();
   void Close();
 
 private:
+  std::atomic<xs_process_id_t> chromium_main_pid_;
   std::shared_ptr<std::mutex> mtx_ = std::make_shared<std::mutex>();
 };
 

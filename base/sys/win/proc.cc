@@ -56,6 +56,44 @@ xs_errno_t xs_sys_process_spawn(const char *proc, const char **args,
   } while (0);
   return r;
 }
+XS_EXTERN xs_errno_t xs_sys_process_kill_name(const char *name,
+                                              xs_process_id_t *out_pid) {
+  xs_errno_t err = xs_errno_t::XS_NO;
+  *out_pid = 0;
+  do {
+    if (!name)
+      break;
+
+    HANDLE hSnap = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
+    if (hSnap == INVALID_HANDLE_VALUE)
+      break;
+
+    PROCESSENTRY32 pe;
+    pe.dwSize = sizeof(PROCESSENTRY32);
+    BOOL found = FALSE;
+    if (Process32First(hSnap, &pe)) {
+      do {
+        std::string exe_name = Conv::ws_to_u8(pe.szExeFile);
+        if (stl::String::Lower(exe_name) == stl::String::Lower(name)) {
+          HANDLE hProc =
+              OpenProcess(PROCESS_TERMINATE, FALSE, pe.th32ProcessID);
+          if (hProc) {
+            if (TerminateProcess(hProc, 3762)) {
+              *out_pid = pe.th32ProcessID;
+              err = xs_errno_t::XS_OK;
+              CloseHandle(hProc);
+              found = TRUE;
+              break;
+            }
+            CloseHandle(hProc);
+          }
+        }
+      } while (Process32Next(hSnap, &pe));
+    }
+    CloseHandle(hSnap);
+  } while (0);
+  return err;
+}
 XS_EXTERN xs_errno_t xs_sys_process_kill(xs_process_id_t pid, int /*signal*/) {
   xs_errno_t err = xs_errno_t::XS_NO;
   HANDLE hProcess = nullptr;

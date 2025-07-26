@@ -107,7 +107,7 @@ string String::HexStringToBinary(const string &s) {
   return result;
 }
 
-vector<string> String::StringSpilt(const string &input, const string &delim) {
+vector<string> String::StringSplit(const string &input, const string &delim) {
   vector<string> result;
   do {
     if (input.empty()) {

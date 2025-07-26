@@ -11,8 +11,8 @@ private:
   ~Browser();
 
 public:
-  bool CreateChromium(IRequest &req);
-  void DestroyChromium(IRequest &req);
+  bool CreateChromium(void);
+  void DestroyChromium(void);
 
 private:
   void Init();

@@ -13,10 +13,14 @@ if(WIN32)
                             ${xs3RDPARTY_DIR}/utfcpp/source/)
   target_link_libraries(
     ${PROJECT_NAME}
-    wldap32.lib
+    libz.a
     libfmt.a
-    libsys.a
-    libstl.a
+    libpthread.a
+    libhttp_parser.a
+    ${xsOUTPUT_DIR}/base/sys/libsys.a
+    ${xsOUTPUT_DIR}/base/stl/libstl.a
+    ${xsOUTPUT_DIR}/base/base/libbase.a
+    ${xsOUTPUT_DIR}/base/zipcc/libzipcc.a
     ${MSYS2_CLANG64_DIR}/lib/libdl.a
     ${MSYS2_CLANG64_DIR}/lib/libc++.a
     ${MSYS2_CLANG64_DIR}/lib/libfmt.a)

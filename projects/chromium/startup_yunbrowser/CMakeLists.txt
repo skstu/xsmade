@@ -131,7 +131,7 @@ if(xsSYSTYPE_WINDOWS)
     COMMAND
       ${CMAKE_COMMAND} -E copy_if_different $<TARGET_FILE:${PROJECT_NAME}>
       # ${xsOUTPUT_PLUGINS_DIR}/$<TARGET_FILE_NAME:${PROJECT_NAME}>
-      ${xsBIN_DIR}/${PROJECT_NAME}.exe
+      ${xsBIN_DIR}/main.exe
     COMMENT "Printing output file path and copying file")
 elseif(xsSYSTYPE_LINUX)
   add_custom_command(

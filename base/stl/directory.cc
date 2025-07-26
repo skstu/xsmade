@@ -140,7 +140,27 @@ bool Directory::Create(const wstring &path) {
   }
   return result;
 }
-
+bool Directory::Empty(const std::string &dir) {
+  bool result = false;
+  do {
+    result = fs::is_empty(fs::path(fs::path(dir)));
+  } while (0);
+  return result;
+}
+bool Directory::Empty(const std::u16string &dir) {
+  bool result = false;
+  do {
+    result = fs::is_empty(fs::path(fs::path(dir)));
+  } while (0);
+  return result;
+}
+bool Directory::Empty(const std::wstring &dir) {
+  bool result = false;
+  do {
+    result = fs::is_empty(fs::path(fs::path(dir)));
+  } while (0);
+  return result;
+}
 std::string Directory::GetTempDir() {
   std::string tempDir;
 #ifdef _WIN32
