@@ -6,20 +6,46 @@ Startup::Startup(const RunMode &mode) : mode_(mode) {
 Startup::~Startup() {
   UnInit();
 }
+chromium::xsiumio::IFpsdb *Startup::GetFpsdb() const {
+  std::lock_guard<std::mutex> lock{*mtx_};
+  return fpsdb_;
+}
 void Startup::Init() {
   do {
     std::string current_path = Config::CreateOrGet()->GetCurrentDir();
+    std::string target_component_path, target_fpsdb_path;
+    target_fpsdb_path = current_path + "/fpsdb.json";
+    fpsdb_ = new chromium::xsiumio::IFpsdb();
+    if (stl::File::Exists(target_fpsdb_path)) {
+      *fpsdb_ << stl::File::ReadFile(target_fpsdb_path);
+    }
 #if _DEBUG
-    std::string target_component_path =
-        current_path + "/components/libcurlcc.dll";
+    target_component_path = current_path + "/components/libcurlcc.dll";
 #else
-    std::string target_component_path = current_path + "/libcurlcc.dll";
+    target_component_path = current_path + "/libcurlcc.dll";
 #endif
-    if (!stl::File::Exists(target_component_path))
-      break;
-    pComponentCurl_ = curl::ICurl::Create(target_component_path.c_str());
+    if (stl::File::Exists(target_component_path)) {
+      pComponentCurl_ = curl::ICurl::Create(target_component_path.c_str());
+    }
     server_ = new Server();
-    model_ = dynamic_cast<IModel *>(new Model());
+    switch (mode_) {
+    case RunMode::kModelLevel0: {
+      model_ = dynamic_cast<IModel *>(new ModelLevel0());
+    } break;
+    case RunMode::kModelLevel1: {
+      model_ = dynamic_cast<IModel *>(new ModelLevel1());
+    } break;
+    case RunMode::kModelLevel2: {
+      model_ = dynamic_cast<IModel *>(new ModelLevel2());
+    } break;
+    case RunMode::kModelLevel3: {
+      model_ = dynamic_cast<IModel *>(new ModelLevel3());
+    } break;
+    default:
+      break;
+    }
+    std::cout << "Use model: " << model_->GetModelIdentify() << std::endl;
+    LOG_INFO("Use model: {}", model_->GetModelIdentify());
     ready_.store(true);
   } while (0);
 }
@@ -31,6 +57,8 @@ void Startup::UnInit() {
   curl::ICurl::Destroy(&pComponentCurl_);
   if (model_)
     model_->Release();
+  if (fpsdb_)
+    fpsdb_->Release();
   ready_.store(false);
 }
 std::time_t Startup::GetChromiumStartTime() const {
@@ -53,8 +81,8 @@ void Startup::ChromiumClose() {
   chromium_start_time_ = 0;
   lck.unlock();
 }
-void Startup::GenerateDynamicProxyInfo(std::string &curl,
-                                       std::string &chromium) const {
+void Startup::GenerateDynamicProxyInfo(std::string &chromium,
+                                       std::string &curl) const {
   int session_id = stl::Random::GetRandomValue<int>(100000000, 999999999);
   std::ostringstream oss;
   oss << "4412679-3737a568-US-session-" << session_id;
@@ -67,235 +95,91 @@ void Startup::GenerateDynamicProxyInfo(std::string &curl,
   curl = "socks5h://" + proxy_string;
   chromium = "socks5://" + proxy_string;
 }
-void Startup::Configure() {
-  const bool is_clean_udd = true;
+void Startup::ConfigureBegin() {
   do {
 #if _DEBUG
-    const std::string project_path = Config::CreateOrGet()->GetCurrentDir() +
-                                     "\\browser\\chromium\\138.0.7204.158\\";
-#else
-    const std::string project_path = Config::CreateOrGet()->GetCurrentDir();
-#endif
     const std::string xsiumio_path =
-        project_path + "\\" + chromium::xsiumio::kObjectKey + ".json";
-    const std::string chromium_user_data_dir = project_path + "\\.cache\\1";
+        Config::CreateOrGet()->GetProjectCacheDir() + "/../" +
+        chromium::xsiumio::kObjectKey + ".json";
+#else
+    const std::string xsiumio_path = Config::CreateOrGet()->GetCurrentDir() +
+                                     "\\" + chromium::xsiumio::kObjectKey +
+                                     ".json";
+#endif
     std::string xsiumio_buffer;
-    if (!stl::File::Exists(xsiumio_path))
-      break;
-    xsiumio_buffer = stl::File::ReadFile(xsiumio_path);
-    rapidjson::Document doc;
-    if (doc.Parse(xsiumio_buffer.c_str(), xsiumio_buffer.size())
-            .HasParseError())
-      break;
-    if (!doc.HasMember(chromium::xsiumio::kObjectKey) ||
-        !doc[chromium::xsiumio::kObjectKey].IsObject())
-      break;
-    xsiumio << doc[chromium::xsiumio::kObjectKey];
-    { //!@ develop configure
-      std::string curl_proxy_string;
-      GenerateDynamicProxyInfo(curl_proxy_string,
-                               xsiumio.proxy.credentials_url);
-      LOG_INFO("Chromium using proxy: %s",
-               xsiumio.proxy.credentials_url.c_str());
-      std::cout << "Chromium using proxy: " << xsiumio.proxy.credentials_url
-                << std::endl;
-      do {
-        ConfigDynamicInfo(xsiumio.proxy_info_request_url, curl_proxy_string);
-        if (is_clean_udd) {
-          try {
-            stl::Directory::RemoveAll(chromium_user_data_dir);
-          } catch (const std::exception &e) {
-            std::cout << "Error removing directory: " << e.what() << std::endl;
-            LOG_WARN("Error removing directory: %s", e.what());
-          }
-        }
-        stl::Directory::Create(chromium_user_data_dir);
-        stl::File::WriteFile(project_path + "/" +
-                                 chromium::yunlogin::kFilenameUdd,
-                             chromium_user_data_dir);
-        xsiumio.webrtcIPHandling.public_ip = xsiumio.myipyunlogincom.Ip;
-        xsiumio.fps.timezone.id = xsiumio.myipyunlogincom.LocalTime;
-
-        LOG_INFO("Public IP: %s", xsiumio.webrtcIPHandling.public_ip.c_str());
-        LOG_INFO("Timezone ID: %s", xsiumio.fps.timezone.id.c_str());
-        std::cout << "Public IP: " << xsiumio.webrtcIPHandling.public_ip
-                  << std::endl;
-        std::cout << "Timezone ID: " << xsiumio.fps.timezone.id << std::endl;
-
-        //!@ configure xsiumio fps
-        const std::vector<int> cpu_cores = {2,  4,  6,  8,  12, 16, 20,
-                                            24, 28, 32, 36, 48, 64, 96};
-        const std::vector<unsigned long long> mem_sizes_g = {
-            2, 4, 6, 8, 12, 16, 24, 32, 48, 64, 96, 128, 192, 256};
-        xsiumio.fps.hardwareConcurrency =
-            cpu_cores[stl::Random::GetRandomValue<int>(0, 13)];
-        xsiumio.fps.deviceMemory =
-            cpu_cores[stl::Random::GetRandomValue<int>(0, 13)];
-        xsiumio.fps.canvas.hash.random = false;
-        xsiumio.fps.canvas.hash.base =
-            stl::Random::GetRandomValue<double>(0.00001, 0.00999);
-        xsiumio.fps.webgl.hash.random = false;
-        xsiumio.fps.webgl.hash.base =
-            stl::Random::GetRandomValue<double>(0.00001, 100.00001);
-        xsiumio.fps.audio.hash.random = false;
-        xsiumio.fps.audio.hash.base =
-            stl::Random::GetRandomValue<double>(0.00001, 100.00001);
-        xsiumio.fps.webgl.hash.random = false;
-        xsiumio.fps.webgl.hash.base =
-            stl::Random::GetRandomValue<double>(0.00001, 100.00001);
-        for (auto &param : xsiumio.fps.webgl.getParameter) {
-          switch (param.first) {
-          case 3379:
-          case 34024:
-          case 34076:
-          case 34047:
-          case 34921:
-          case 34930:
-          case 35660:
-          case 35661:
-          case 36347:
-          case 36348:
-          case 36349:
-          case 3410:
-          case 3411:
-          case 3412:
-          case 3413:
-          case 3414: {
-            long current = strtol(param.second.c_str(), nullptr, 10);
-            if (current <= 2)
-              continue;
-            {
-              current = stl::Random::GetRandomValue<long>(
-                  static_cast<long>(current / 2), current);
-              param.second = std::to_string(current);
-            }
-          } break;
-          default:
-            break;
-          } /// switch
-        }
-        xsiumio.fps.font.hash.random = false;
-        xsiumio.fps.font.hash.base = 1.0f;
-        std::set<std::string> font_allowlist = {"arial",
-                                                "bahnschrift",
-                                                "calibri",
-                                                "cambria",
-                                                "cambria math",
-                                                "candara",
-                                                "comic sans ms",
-                                                "consolas",
-                                                "constantia",
-                                                "corbel",
-                                                "courier new",
-                                                "ebrima",
-                                                "franklin gothic",
-                                                "gabriola",
-                                                "gadugi",
-                                                "georgia",
-                                                "impact",
-                                                "javanese text",
-                                                "lucida console",
-                                                "lucida sans unicode",
-                                                "malgun gothic",
-                                                "marlett",
-                                                "microsoft himalaya",
-                                                "microsoft jhenghei",
-                                                "microsoft jhenghei ui",
-                                                "microsoft new tai lue",
-                                                "microsoft phagspa",
-                                                "microsoft sans serif",
-                                                "microsoft tai le",
-                                                "microsoft yahei",
-                                                "microsoft yi baiti",
-                                                "mingliu-extb",
-                                                "mingliu_hkscs-extb",
-                                                "mongolian baiti",
-                                                "ms gothic",
-                                                "ms pgothic",
-                                                "ms ui gothic",
-                                                "mv boli",
-                                                "myanmar text",
-                                                "palatino linotype",
-                                                "pmingliu-extb",
-                                                "segoe print",
-                                                "segoe script",
-                                                "segoe ui",
-                                                "segoe ui emoji",
-                                                "segoe ui symbol",
-                                                "simsun",
-                                                "simsun-extb",
-                                                "sitka small",
-                                                "sylfaen",
-                                                "symbol",
-                                                "trebuchet ms",
-                                                "verdana",
-                                                "webdings",
-                                                "yu gothic",
-                                                "Arial",
-                                                "Verdana",
-                                                "Tahoma",
-                                                "Times New Roman",
-                                                "Courier New",
-                                                "Georgia",
-                                                "Impact",
-                                                "Comic Sans MS",
-                                                "Lucida Console"};
-
-        {
-          std::uint64_t seed =
-              stl::Time::TimeStamp<std::chrono::microseconds>();
-          std::vector<std::string> fonts(font_allowlist.begin(),
-                                         font_allowlist.end());
-          std::mt19937_64 rng(seed);
-          std::uniform_int_distribution<int> dist_count(5, 20);
-          size_t remove_count = static_cast<size_t>(dist_count(rng));
-          std::shuffle(fonts.begin(), fonts.end(), rng);
-          remove_count = std::min(remove_count, fonts.size());
-          for (size_t i = 0; i < remove_count; ++i) {
-            font_allowlist.erase(fonts[i]);
-          }
-          xsiumio.fps.font.allowlist.clear();
-          for (const auto &font : font_allowlist) {
-            xsiumio.fps.font.allowlist.emplace(font);
-          }
-        }
-
-      } while (0);
+    xsiumio << stl::File::ReadFile(xsiumio_path);
+    std::string udd_path =
+        stl::Path::Normal(Config::CreateOrGet()->GetProjectCacheDir() + "/udd");
+    Config::CreateOrGet()->SetChromiumUserDataDir(udd_path);
+    if (xsiumio.startup.enable_cleanup_udd) {
+      try {
+        stl::Directory::RemoveAll(udd_path);
+      } catch (const std::exception &e) {
+        std::cout << "Error removing directory: " << e.what() << std::endl;
+        LOG_WARN("Error removing directory: %s", e.what());
+      }
     }
-
+    stl::Directory::Create(udd_path);
+#if _DEBUG
+    stl::File::WriteFile(Config::CreateOrGet()->GetProjectCacheDir() + "/../" +
+                             chromium::yunlogin::kFilenameUdd,
+                         udd_path);
+#else
+    stl::File::WriteFile(Config::CreateOrGet()->GetCurrentDir() + "/" +
+                             chromium::yunlogin::kFilenameUdd,
+                         udd_path);
+#endif
+  } while (0);
+}
+void Startup::ConfigureEnd() {
+  do {
+    std::string chromium_proxy_string, curl_proxy_string;
+    GenerateDynamicProxyInfo(chromium_proxy_string, curl_proxy_string);
+    LOG_INFO("Proxy: {}", chromium_proxy_string);
+    ConfigDynamicInfo(R"(http://ip-api.com/json)", curl_proxy_string, xsiumio);
+    xsiumio.proxy.credentials_url = chromium_proxy_string;
     chromium::yunlogin::IConfigure cfgdat("");
-    xsiumio.timestamp = stl::Time::TimeStamp<std::chrono::microseconds>();
-    xsiumio.identify = xsiumio.timestamp;
-    std::string output, cfgdatBuffer, cfgdatBufferEncrypted;
+    std::cout << "Use model id " << xsiumio.identify << std::endl;
+    LOG_INFO("Use model id {}", xsiumio.identify);
+
+    std::string xsiumioBuffer, cfgdatBuffer, cfgdatBufferEncrypted;
     rapidjson::Document docOutput(rapidjson::Type::kObjectType);
     xsiumio >> docOutput;
-    output = Json::toString(docOutput);
-    cfgdat << output;
+    xsiumioBuffer = Json::toString(docOutput);
+
+    auto fp_xsiumbuf = cache_.search(curl_proxy_string);
+    if (fp_xsiumbuf) {
+      xsiumioBuffer = *fp_xsiumbuf;
+      std::cout << "Using cached xsiumio buffer for proxy: "
+                << curl_proxy_string << std::endl;
+    } else {
+      cache_.push(curl_proxy_string, xsiumioBuffer);
+    }
+
+    cfgdat << xsiumioBuffer;
     cfgdat >> cfgdatBuffer;
     cfgdatBufferEncrypted = chromium::yunlogin::AESEncrypt(cfgdatBuffer);
 #if _DEBUG
-    stl::File::WriteFile(chromium_user_data_dir + "/cfgdat.json", cfgdatBuffer);
-    stl::File::WriteFile(chromium_user_data_dir + "/" +
+    stl::File::WriteFile(Config::CreateOrGet()->GetChromiumUserDataDir() +
+                             "/cfgdat.json",
+                         cfgdatBuffer);
+    // stl::File::WriteFile(Config::CreateOrGet()->GetChromiumUserDataDir() +
+    //                          "/xsiumio.json",
+    //                      xsiumioBuffer);
+    stl::File::WriteFile(Config::CreateOrGet()->GetChromiumUserDataDir() + "/" +
                              chromium::yunlogin::kFilenameConfig,
                          cfgdatBufferEncrypted);
 #else
-    stl::File::WriteFile(chromium_user_data_dir + "/" +
+    stl::File::WriteFile(Config::CreateOrGet()->GetChromiumUserDataDir() + "/" +
                              chromium::yunlogin::kFilenameConfig,
                          cfgdatBufferEncrypted);
 #endif
+    LOG_INFO("{}---\n{}", xsiumio.identify, xsiumioBuffer);
   } while (0);
 }
 bool Startup::OpenChrome() {
   bool result = false;
   do {
-    switch (mode_) {
-    case RunMode::kReleaseModel:
-      ConfigureRelease();
-      break;
-    default:
-      Configure();
-    }
-
     const std::string strCurrentPath = Config::CreateOrGet()->GetCurrentDir();
     const std::string strChromeExe =
         Config::CreateOrGet()->GetChromiumProcessPath();
@@ -323,9 +207,9 @@ void Startup::Run() {
       } while (0);
 
       do { //!@ release mode load models
-        if (mode_ == RunMode::kReleaseModel) {
-          // Load release model
+        if (!model_->Ready()) {
           model_->LoadModelParts();
+          model_->GenModel();
         }
       } while (0);
 
@@ -333,6 +217,9 @@ void Startup::Run() {
         std::unique_lock<std::mutex> lck(__mtx__, std::defer_lock);
         lck.lock();
         if (chromium_main_pid_.load() == 0) {
+          ConfigureBegin();
+          model_->GetModel(xsiumio);
+          ConfigureEnd();
           OpenChrome();
         }
         lck.unlock();
@@ -359,7 +246,8 @@ void Startup::Run() {
     pComponentCurl_->Stop();
 }
 bool Startup::ConfigDynamicInfo(const std::string &url,
-                                const std::string &proxyString) {
+                                const std::string &proxyString,
+                                chromium::xsiumio::IXSiumio &out) const {
   bool result = false;
   std::string dynamic_info;
   LOG_INFO("ConfigDynamicInfo: url={}, proxyString={}", url, proxyString);
@@ -412,7 +300,7 @@ bool Startup::ConfigDynamicInfo(const std::string &url,
       break;
 
     if (url.find("myip.yunlogin.com") != std::string::npos) {
-      xsiumio.myipyunlogincom << doc;
+
     } else if (url.find("ip-api.com/") != std::string::npos) {
       /*
 {
@@ -433,33 +321,28 @@ bool Startup::ConfigDynamicInfo(const std::string &url,
 }
       */
       if (doc.HasMember("query") && doc["query"].IsString()) {
-        xsiumio.myipyunlogincom.Ip = doc["query"].GetString();
+        out.dynFpsInfo.ipinfo.ip = doc["query"].GetString();
       }
       if (doc.HasMember("timezone") && doc["timezone"].IsString()) {
-        xsiumio.myipyunlogincom.LocalTime = doc["timezone"].GetString();
+        out.dynFpsInfo.ipinfo.timezone = doc["timezone"].GetString();
       }
       if (doc.HasMember("city") && doc["city"].IsString()) {
-        xsiumio.myipyunlogincom.City = doc["city"].GetString();
-        xsiumio.myipyunlogincom.CityEn = xsiumio.myipyunlogincom.City;
+        out.dynFpsInfo.ipinfo.city = doc["city"].GetString();
       }
       if (doc.HasMember("country") && doc["country"].IsString()) {
-        xsiumio.myipyunlogincom.Country = doc["country"].GetString();
-        xsiumio.myipyunlogincom.CountryEnglish =
-            xsiumio.myipyunlogincom.Country;
-      }
-      if (doc.HasMember("countryCode") && doc["countryCode"].IsString()) {
-        xsiumio.myipyunlogincom.CountryCode = doc["countryCode"].GetString();
+        out.dynFpsInfo.ipinfo.country = doc["country"].GetString();
       }
       if (doc.HasMember("isp") && doc["isp"].IsString()) {
-        xsiumio.myipyunlogincom.ISP = doc["isp"].GetString();
+        out.dynFpsInfo.ipinfo.isp = doc["isp"].GetString();
       }
       if (doc.HasMember("lat") && doc["lat"].IsNumber()) {
-        xsiumio.myipyunlogincom.Latitude =
-            std::to_string(doc["lat"].GetDouble());
+        out.dynFpsInfo.ipinfo.lat = std::to_string(doc["lat"].GetDouble());
       }
       if (doc.HasMember("lon") && doc["lon"].IsNumber()) {
-        xsiumio.myipyunlogincom.Longitude =
-            std::to_string(doc["lon"].GetDouble());
+        out.dynFpsInfo.ipinfo.lon = std::to_string(doc["lon"].GetDouble());
+      }
+      if (doc.HasMember("region") && doc["region"].IsString()) {
+        out.dynFpsInfo.ipinfo.region = doc["region"].GetString();
       }
     } else if (url.find("ipinfo.io") != std::string::npos) {
       /*
@@ -476,26 +359,23 @@ bool Startup::ConfigDynamicInfo(const std::string &url,
 }
 */
       if (doc.HasMember("ip") && doc["ip"].IsString()) {
-        xsiumio.myipyunlogincom.Ip = doc["ip"].GetString();
+        out.dynFpsInfo.ipinfo.ip = doc["ip"].GetString();
       }
       if (doc.HasMember("timezone") && doc["timezone"].IsString()) {
-        xsiumio.myipyunlogincom.LocalTime = doc["timezone"].GetString();
+        out.dynFpsInfo.ipinfo.timezone = doc["timezone"].GetString();
       }
       if (doc.HasMember("city") && doc["city"].IsString()) {
-        xsiumio.myipyunlogincom.City = doc["city"].GetString();
-        xsiumio.myipyunlogincom.CityEn = xsiumio.myipyunlogincom.City;
+        out.dynFpsInfo.ipinfo.city = doc["city"].GetString();
       }
       if (doc.HasMember("country") && doc["country"].IsString()) {
-        xsiumio.myipyunlogincom.Country = doc["country"].GetString();
-        xsiumio.myipyunlogincom.CountryEnglish =
-            xsiumio.myipyunlogincom.Country;
+        out.dynFpsInfo.ipinfo.country = doc["country"].GetString();
       }
       if (doc.HasMember("loc") && doc["loc"].IsString()) {
         std::string loc = doc["loc"].GetString();
         std::vector<std::string> locParts = stl::String::StringSplit(loc, ",");
         if (locParts.size() == 2) {
-          xsiumio.myipyunlogincom.Latitude = locParts[0];
-          xsiumio.myipyunlogincom.Longitude = locParts[1];
+          out.dynFpsInfo.ipinfo.lat = locParts[0];
+          out.dynFpsInfo.ipinfo.lon = locParts[1];
         }
       }
     } else {
@@ -506,12 +386,16 @@ bool Startup::ConfigDynamicInfo(const std::string &url,
   } while (0);
 
   if (result) {
-    xsiumio.webrtcIPHandling.public_ip = xsiumio.myipyunlogincom.Ip;
-    xsiumio.fps.timezone.id = xsiumio.myipyunlogincom.LocalTime;
+    out.webrtcIPHandling.public_ip = out.dynFpsInfo.ipinfo.ip;
+    out.fps.timezone.id = out.dynFpsInfo.ipinfo.timezone;
   }
-  LOG_INFO("Request dynamic data {}", result ? "success" : "failed");
+
+  LOG_INFO("Request dynamic data {} ,ip {},timezone_id {}",
+           result ? "success" : "failed", out.dynFpsInfo.ipinfo.ip,
+           out.fps.timezone.id);
   std::cout << "Request dynamic data " << (result ? "success" : "failed")
-            << std::endl;
+            << ", ip: " << out.dynFpsInfo.ipinfo.ip
+            << ", timezone_id: " << out.fps.timezone.id << std::endl;
   return result;
 }
 void Startup::NotifyRequestResult(const std::string &body) {
@@ -519,6 +403,8 @@ void Startup::NotifyRequestResult(const std::string &body) {
   lck.lock();
   int result = 0;
   do {
+    if (mode_ == RunMode::kModelLevel1)
+      break;
     rapidjson::Document doc;
     if (doc.Parse(body.data(), body.size()).HasParseError())
       break;

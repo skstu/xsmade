@@ -8,7 +8,7 @@
       "program": "${workspaceFolder}/bin/main.exe",
       "args": [
         " ",
-        "--mode=release",
+        "--mode=model_level_3",
         " ",
       ],
       // "program": "${workspaceFolder}/bin/tests/test_curlcc.exe",

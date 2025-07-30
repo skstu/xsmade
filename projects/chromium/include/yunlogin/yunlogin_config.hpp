@@ -1524,25 +1524,13 @@ public:
   }
   inline const std::string &GetTimeZoneID() const {
     std::lock_guard<std::mutex> lock(*mtx_);
-    if (!xsiumio.myipyunlogincom.GetTimeZoneID().empty())
-      return xsiumio.myipyunlogincom.GetTimeZoneID();
     return finger.timezone;
   }
   inline const std::string &GetPublicIP() const {
-    std::lock_guard<std::mutex> lock(*mtx_);
-    if (!xsiumio.myipyunlogincom.GetIP().empty())
-      return xsiumio.myipyunlogincom.GetIP();
     return finger.webrtcPublicIp;
   }
   inline const std::string &GetLocalIP() const {
     return finger.webrtcInnerIp;
-  }
-  inline void Update_myipyunlogincom(const std::string &json_data) {
-    std::lock_guard<std::mutex> lock(*mtx_);
-    rapidjson::Document doc;
-    if (!doc.Parse(json_data.data(), json_data.size()).HasParseError()) {
-      xsiumio.myipyunlogincom << doc;
-    }
   }
   inline void SetMainSwitchState(const bool &enable) {
     std::lock_guard<std::mutex> lock(*mtx_);

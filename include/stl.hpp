@@ -217,6 +217,28 @@ private:
 
 class Common {
 public:
+  static std::string DoubleToString(const double &value, int precision = 16) {
+    std::ostringstream oss;
+    oss << std::fixed << std::setprecision(precision) << value;
+    return oss.str();
+  }
+  template <typename K, typename V>
+  static const V *GetMapValueByKey(const std::map<K, V> &m,
+                                   const size_t &index) {
+    if (index >= m.size())
+      return nullptr;
+    auto it = m.begin();
+    std::advance(it, index);
+    return &(it->second);
+  }
+  template <typename K, typename V>
+  static V *GetMapValueByKey(std::map<K, V> &m, size_t &index) {
+    if (index >= m.size())
+      return nullptr;
+    auto it = m.begin();
+    std::advance(it, index);
+    return &(it->second);
+  }
   static std::vector<std::string> StringSplit(const std::string &input,
                                               const std::string &delim);
   static std::string toLower(const std::string &input);
@@ -236,6 +258,12 @@ public:
 #endif
 class Random {
 public:
+  static bool GetRandomBool() {
+    std::random_device rd;
+    std::mt19937 gen(rd());
+    std::uniform_int_distribution<> dis(0, 1);
+    return dis(gen) == 1;
+  }
   template <typename T> static T GetRandomValue(const T &a, const T &b) {
     std::random_device rd;
     std::mt19937 gen(rd());

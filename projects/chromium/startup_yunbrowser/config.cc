@@ -28,19 +28,30 @@ void Config::Init() {
 
     project_model_dir_ = current_dir_ + "/model";
     stl::Directory::Create(project_model_dir_);
+
 #if _DEBUG
+    project_cache_dir_ =
+        current_dir_ + "/browser/chromium/138.0.7204.158/cache";
     chromium_process_path_ =
         current_dir_ + "/browser/chromium/138.0.7204.158/YunBrowser.exe";
+    project_root_dir_ = current_dir_ + "/browser/chromium/138.0.7204.158";
 #else
+    project_cache_dir_ = current_dir_ + "/cache";
     chromium_process_path_ = current_dir_ + "/YunBrowser.exe";
+    project_root_dir_ = current_dir_;
 #endif
+
+    stl::Directory::Create(project_cache_dir_);
   } while (0);
 }
 
 void Config::UnInit() {
   LOG_UNINIT;
 }
-
+const std::string &Config::GetProjectRootDir() const {
+  std::lock_guard<std::mutex> lock(*mtx_);
+  return project_root_dir_;
+}
 const std::string &Config::GetCurrentDir() const {
   std::lock_guard<std::mutex> lock(*mtx_);
   return current_dir_;
@@ -64,6 +75,18 @@ const std::string &Config::GetProjectModelPartsDir() const {
 const std::string &Config::GetProjectModelDir() const {
   std::lock_guard<std::mutex> lock(*mtx_);
   return project_model_dir_;
+}
+const std::string &Config::GetProjectCacheDir() const {
+  std::lock_guard<std::mutex> lock(*mtx_);
+  return project_cache_dir_;
+}
+void Config::SetChromiumUserDataDir(const std::string &dir) {
+  std::lock_guard<std::mutex> lock(*mtx_);
+  chromium_user_data_dir_ = dir;
+}
+const std::string &Config::GetChromiumUserDataDir() const {
+  std::lock_guard<std::mutex> lock(*mtx_);
+  return chromium_user_data_dir_;
 }
 ////////////////////////////////////////////////////////////////////////////
 static Config *__gpConfig = nullptr;

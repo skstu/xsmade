@@ -383,136 +383,6 @@ public:
     }
   };
 
-  struct MyIp_yunlogin_com {
-    inline MyIp_yunlogin_com();
-    inline ~MyIp_yunlogin_com();
-
-    std::string Continent;
-    std::string ContinentEn;
-    std::string Country;
-    std::string CountryEnglish;
-    std::string CountryCode;
-    std::string Province;
-    std::string ProvinceEn;
-    std::string City;
-    std::string CityEn;
-    std::string District;
-    std::string AreaCode;
-    std::string ISP;
-    std::string Longitude;
-    std::string Latitude;
-    std::string LocalTime;
-    std::string Elevation;
-    std::string WeatherStation;
-    std::string ZipCode;
-    std::string CityCode;
-    std::string Asn;
-    std::string Ip;
-    std::string db;
-
-    inline const std::string &GetTimeZoneID() const {
-      return LocalTime;
-    }
-    inline const std::string &GetIP() const {
-      return Ip;
-    }
-    inline void operator>>(rapidjson::Document &doc) const {
-      if (!doc.IsObject())
-        return;
-      rapidjson::Document::AllocatorType &allocator = doc.GetAllocator();
-      rapidjson::Value obj(rapidjson::Type::kObjectType);
-      RAPIDJSON_ADDMEMBER_STRING(obj, std::string("Continent"), Continent,
-                                 allocator);
-      RAPIDJSON_ADDMEMBER_STRING(obj, std::string("ContinentEn"), ContinentEn,
-                                 allocator);
-      RAPIDJSON_ADDMEMBER_STRING(obj, std::string("Country"), Country,
-                                 allocator);
-      RAPIDJSON_ADDMEMBER_STRING(obj, std::string("CountryEnglish"),
-                                 CountryEnglish, allocator);
-      RAPIDJSON_ADDMEMBER_STRING(obj, std::string("CountryCode"), CountryCode,
-                                 allocator);
-      RAPIDJSON_ADDMEMBER_STRING(obj, std::string("Province"), Province,
-                                 allocator);
-      RAPIDJSON_ADDMEMBER_STRING(obj, std::string("ProvinceEn"), ProvinceEn,
-                                 allocator);
-      RAPIDJSON_ADDMEMBER_STRING(obj, std::string("City"), City, allocator);
-      RAPIDJSON_ADDMEMBER_STRING(obj, std::string("CityEn"), CityEn, allocator);
-      RAPIDJSON_ADDMEMBER_STRING(obj, std::string("District"), District,
-                                 allocator);
-      RAPIDJSON_ADDMEMBER_STRING(obj, std::string("AreaCode"), AreaCode,
-                                 allocator);
-      RAPIDJSON_ADDMEMBER_STRING(obj, std::string("ISP"), ISP, allocator);
-      RAPIDJSON_ADDMEMBER_STRING(obj, std::string("Longitude"), Longitude,
-                                 allocator);
-      RAPIDJSON_ADDMEMBER_STRING(obj, std::string("Latitude"), Latitude,
-                                 allocator);
-      RAPIDJSON_ADDMEMBER_STRING(obj, std::string("LocalTime"), LocalTime,
-                                 allocator);
-      RAPIDJSON_ADDMEMBER_STRING(obj, std::string("Elevation"), Elevation,
-                                 allocator);
-      RAPIDJSON_ADDMEMBER_STRING(obj, std::string("WeatherStation"),
-                                 WeatherStation, allocator);
-      RAPIDJSON_ADDMEMBER_STRING(obj, std::string("ZipCode"), ZipCode,
-                                 allocator);
-      RAPIDJSON_ADDMEMBER_STRING(obj, std::string("CityCode"), CityCode,
-                                 allocator);
-      RAPIDJSON_ADDMEMBER_STRING(obj, std::string("Asn"), Asn, allocator);
-      RAPIDJSON_ADDMEMBER_STRING(obj, std::string("Ip"), Ip, allocator);
-      RAPIDJSON_ADDMEMBER_STRING(obj, std::string("db"), db, allocator);
-      doc.AddMember("myipyunlogincom", obj, allocator);
-    }
-    void operator<<(const rapidjson::Value &v) {
-      do {
-        if (!v.IsObject())
-          break;
-        if (v.HasMember("Continent") && v["Continent"].IsString())
-          Continent = v["Continent"].GetString();
-        if (v.HasMember("ContinentEn") && v["ContinentEn"].IsString())
-          ContinentEn = v["ContinentEn"].GetString();
-        if (v.HasMember("Country") && v["Country"].IsString())
-          Country = v["Country"].GetString();
-        if (v.HasMember("CountryEnglish") && v["CountryEnglish"].IsString())
-          CountryEnglish = v["CountryEnglish"].GetString();
-        if (v.HasMember("CountryCode") && v["CountryCode"].IsString())
-          CountryCode = v["CountryCode"].GetString();
-        if (v.HasMember("Province") && v["Province"].IsString())
-          Province = v["Province"].GetString();
-        if (v.HasMember("ProvinceEn") && v["ProvinceEn"].IsString())
-          ProvinceEn = v["ProvinceEn"].GetString();
-        if (v.HasMember("City") && v["City"].IsString())
-          City = v["City"].GetString();
-        if (v.HasMember("CityEn") && v["CityEn"].IsString())
-          CityEn = v["CityEn"].GetString();
-        if (v.HasMember("District") && v["District"].IsString())
-          District = v["District"].GetString();
-        if (v.HasMember("AreaCode") && v["AreaCode"].IsString())
-          AreaCode = v["AreaCode"].GetString();
-        if (v.HasMember("ISP") && v["ISP"].IsString())
-          ISP = v["ISP"].GetString();
-        if (v.HasMember("Longitude") && v["Longitude"].IsString())
-          Longitude = v["Longitude"].GetString();
-        if (v.HasMember("Latitude") && v["Latitude"].IsString())
-          Latitude = v["Latitude"].GetString();
-        if (v.HasMember("LocalTime") && v["LocalTime"].IsString())
-          LocalTime = v["LocalTime"].GetString();
-        if (v.HasMember("Elevation") && v["Elevation"].IsString())
-          Elevation = v["Elevation"].GetString();
-        if (v.HasMember("WeatherStation") && v["WeatherStation"].IsString())
-          WeatherStation = v["WeatherStation"].GetString();
-        if (v.HasMember("ZipCode") && v["ZipCode"].IsString())
-          ZipCode = v["ZipCode"].GetString();
-        if (v.HasMember("CityCode") && v["CityCode"].IsString())
-          CityCode = v["CityCode"].GetString();
-        if (v.HasMember("Asn") && v["Asn"].IsString())
-          Asn = v["Asn"].GetString();
-        if (v.HasMember("Ip") && v["Ip"].IsString())
-          Ip = v["Ip"].GetString();
-        if (v.HasMember("db") && v["db"].IsString())
-          db = v["db"].GetString();
-      } while (0);
-    }
-  };
-
   struct WebRTCIPHandling {
     inline WebRTCIPHandling();
     inline ~WebRTCIPHandling();
@@ -820,11 +690,491 @@ public:
       }
     };
     struct Webgl {
+      struct ContextAttributes {
+        inline ContextAttributes();
+        inline ~ContextAttributes();
+        bool enable = false;
+        bool alpha = true;
+        bool antialias = true;
+        bool depth = true;
+        bool desynchronized = false;
+        bool failIfMajorPerformanceCaveat = false;
+        std::string powerPreference =
+            "default"; //"default", "low-power", "high-performance"
+        bool premultipliedAlpha = true;
+        bool preserveDrawingBuffer = false;
+        bool stencil = false;
+        bool xrCompatible = false;
+        inline void operator>>(rapidjson::Document &doc) const {
+          if (!doc.IsObject())
+            return;
+          rapidjson::Document tmpDoc(rapidjson::Type::kObjectType);
+          auto &allocHash = tmpDoc.GetAllocator();
+          RAPIDJSON_ADDMEMBER_BOOL(tmpDoc, std::string("alpha"), alpha,
+                                   allocHash);
+          RAPIDJSON_ADDMEMBER_BOOL(tmpDoc, std::string("antialias"), antialias,
+                                   allocHash);
+          RAPIDJSON_ADDMEMBER_BOOL(tmpDoc, std::string("depth"), depth,
+                                   allocHash);
+          RAPIDJSON_ADDMEMBER_BOOL(tmpDoc, std::string("desynchronized"),
+                                   desynchronized, allocHash);
+          RAPIDJSON_ADDMEMBER_BOOL(tmpDoc,
+                                   std::string("failIfMajorPerformanceCaveat"),
+                                   failIfMajorPerformanceCaveat, allocHash);
+          RAPIDJSON_ADDMEMBER_STRING(tmpDoc, std::string("powerPreference"),
+                                     powerPreference, allocHash);
+          RAPIDJSON_ADDMEMBER_BOOL(tmpDoc, std::string("premultipliedAlpha"),
+                                   premultipliedAlpha, allocHash);
+          RAPIDJSON_ADDMEMBER_BOOL(tmpDoc, std::string("preserveDrawingBuffer"),
+                                   preserveDrawingBuffer, allocHash);
+          RAPIDJSON_ADDMEMBER_BOOL(tmpDoc, std::string("stencil"), stencil,
+                                   allocHash);
+          RAPIDJSON_ADDMEMBER_BOOL(tmpDoc, std::string("xrCompatible"),
+                                   xrCompatible, allocHash);
+          RAPIDJSON_ADDMEMBER_BOOL(tmpDoc, std::string("enable"), enable,
+                                   allocHash);
+          rapidjson::Value tmpValue(tmpDoc, doc.GetAllocator());
+          doc.AddMember(
+              rapidjson::Value("contextAttributes", doc.GetAllocator()).Move(),
+              tmpValue, doc.GetAllocator());
+        }
+        inline void operator<<(const rapidjson::Value &v) {
+          if (!v.IsObject())
+            return;
+          if (v.HasMember("enable") && v["enable"].IsBool()) {
+            enable = v["enable"].GetBool();
+          }
+          if (v.HasMember("alpha") && v["alpha"].IsBool()) {
+            alpha = v["alpha"].GetBool();
+          }
+          if (v.HasMember("antialias") && v["antialias"].IsBool()) {
+            antialias = v["antialias"].GetBool();
+          }
+          if (v.HasMember("depth") && v["depth"].IsBool()) {
+            depth = v["depth"].GetBool();
+          }
+          if (v.HasMember("desynchronized") && v["desynchronized"].IsBool()) {
+            desynchronized = v["desynchronized"].GetBool();
+          }
+          if (v.HasMember("failIfMajorPerformanceCaveat") &&
+              v["failIfMajorPerformanceCaveat"].IsBool()) {
+            failIfMajorPerformanceCaveat =
+                v["failIfMajorPerformanceCaveat"].GetBool();
+          }
+          if (v.HasMember("powerPreference") &&
+              v["powerPreference"].IsString()) {
+            powerPreference = v["powerPreference"].GetString();
+          }
+          if (v.HasMember("premultipliedAlpha") &&
+              v["premultipliedAlpha"].IsBool()) {
+            premultipliedAlpha = v["premultipliedAlpha"].GetBool();
+          }
+          if (v.HasMember("preserveDrawingBuffer") &&
+              v["preserveDrawingBuffer"].IsBool()) {
+            preserveDrawingBuffer = v["preserveDrawingBuffer"].GetBool();
+          }
+          if (v.HasMember("stencil") && v["stencil"].IsBool()) {
+            stencil = v["stencil"].GetBool();
+          }
+          if (v.HasMember("xrCompatible") && v["xrCompatible"].IsBool()) {
+            xrCompatible = v["xrCompatible"].GetBool();
+          }
+        }
+      };
+      struct ShaderPrecisionFormat {
+        struct _8DF_ {
+          inline _8DF_();
+          inline ~_8DF_();
+          int rangeMin = 0;
+          int rangeMax = 0;
+          int precision = 0;
+        };
+        struct _8B30_ {
+          inline _8B30_();
+          inline ~_8B30_();
+          _8DF_ _8DF0;
+          _8DF_ _8DF1;
+          _8DF_ _8DF2;
+          _8DF_ _8DF3;
+          _8DF_ _8DF4;
+          _8DF_ _8DF5;
+          void operator>>(rapidjson::Document &doc) const {
+            if (!doc.IsObject())
+              return;
+            rapidjson::Document tmpDoc(rapidjson::Type::kObjectType);
+            auto &allocHash = tmpDoc.GetAllocator();
+            rapidjson::Value _8DF0Obj(rapidjson::Type::kObjectType);
+            RAPIDJSON_ADDMEMBER_INT(_8DF0Obj, std::string("rangeMin"),
+                                    _8DF0.rangeMin, allocHash);
+            RAPIDJSON_ADDMEMBER_INT(_8DF0Obj, std::string("rangeMax"),
+                                    _8DF0.rangeMax, allocHash);
+            RAPIDJSON_ADDMEMBER_INT(_8DF0Obj, std::string("precision"),
+                                    _8DF0.precision, allocHash);
+            tmpDoc.AddMember(rapidjson::Value("8DF0", allocHash).Move(),
+                             _8DF0Obj, allocHash);
+            rapidjson::Value _8DF1Obj(rapidjson::Type::kObjectType);
+            RAPIDJSON_ADDMEMBER_INT(_8DF1Obj, std::string("rangeMin"),
+                                    _8DF1.rangeMin, allocHash);
+            RAPIDJSON_ADDMEMBER_INT(_8DF1Obj, std::string("rangeMax"),
+                                    _8DF1.rangeMax, allocHash);
+            RAPIDJSON_ADDMEMBER_INT(_8DF1Obj, std::string("precision"),
+                                    _8DF1.precision, allocHash);
+            tmpDoc.AddMember(rapidjson::Value("8DF1", allocHash).Move(),
+                             _8DF1Obj, allocHash);
+            rapidjson::Value _8DF2obj(rapidjson::Type::kObjectType);
+            RAPIDJSON_ADDMEMBER_INT(_8DF2obj, std::string("rangeMin"),
+                                    _8DF2.rangeMin, allocHash);
+            RAPIDJSON_ADDMEMBER_INT(_8DF2obj, std::string("rangeMax"),
+                                    _8DF2.rangeMax, allocHash);
+            RAPIDJSON_ADDMEMBER_INT(_8DF2obj, std::string("precision"),
+                                    _8DF2.precision, allocHash);
+            tmpDoc.AddMember(rapidjson::Value("8DF2", allocHash).Move(),
+                             _8DF2obj, allocHash);
+            rapidjson::Value _8DF3Obj(rapidjson::Type::kObjectType);
+            RAPIDJSON_ADDMEMBER_INT(_8DF3Obj, std::string("rangeMin"),
+                                    _8DF3.rangeMin, allocHash);
+            RAPIDJSON_ADDMEMBER_INT(_8DF3Obj, std::string("rangeMax"),
+                                    _8DF3.rangeMax, allocHash);
+            RAPIDJSON_ADDMEMBER_INT(_8DF3Obj, std::string("precision"),
+                                    _8DF3.precision, allocHash);
+            tmpDoc.AddMember(rapidjson::Value("8DF3", allocHash).Move(),
+                             _8DF3Obj, allocHash);
+            rapidjson::Value _8DF4obj(rapidjson::Type::kObjectType);
+            RAPIDJSON_ADDMEMBER_INT(_8DF4obj, std::string("rangeMin"),
+                                    _8DF4.rangeMin, allocHash);
+            RAPIDJSON_ADDMEMBER_INT(_8DF4obj, std::string("rangeMax"),
+                                    _8DF4.rangeMax, allocHash);
+            RAPIDJSON_ADDMEMBER_INT(_8DF4obj, std::string("precision"),
+                                    _8DF4.precision, allocHash);
+            tmpDoc.AddMember(rapidjson::Value("8DF4", allocHash).Move(),
+                             _8DF4obj, allocHash);
+            rapidjson::Value _8DF5obj(rapidjson::Type::kObjectType);
+            RAPIDJSON_ADDMEMBER_INT(_8DF5obj, std::string("rangeMin"),
+                                    _8DF5.rangeMin, allocHash);
+            RAPIDJSON_ADDMEMBER_INT(_8DF5obj, std::string("rangeMax"),
+                                    _8DF5.rangeMax, allocHash);
+            RAPIDJSON_ADDMEMBER_INT(_8DF5obj, std::string("precision"),
+                                    _8DF5.precision, allocHash);
+            tmpDoc.AddMember(rapidjson::Value("8DF5", allocHash).Move(),
+                             _8DF5obj, allocHash);
+
+            rapidjson::Value tmpValue(tmpDoc, doc.GetAllocator());
+            doc.AddMember(rapidjson::Value("8B30", doc.GetAllocator()).Move(),
+                          tmpValue, doc.GetAllocator());
+          }
+          void operator<<(const rapidjson::Value &v) {
+            do {
+              if (!v.IsObject())
+                break;
+              if (v.HasMember("8DF0") && v["8DF0"].IsObject()) {
+                const rapidjson::Value &refObj = v["8DF0"];
+                if (refObj.HasMember("rangeMin") &&
+                    refObj["rangeMin"].IsInt()) {
+                  _8DF0.rangeMin = refObj["rangeMin"].GetInt();
+                }
+                if (refObj.HasMember("rangeMax") &&
+                    refObj["rangeMax"].IsInt()) {
+                  _8DF0.rangeMax = refObj["rangeMax"].GetInt();
+                }
+                if (refObj.HasMember("precision") &&
+                    refObj["precision"].IsInt()) {
+                  _8DF0.precision = refObj["precision"].GetInt();
+                }
+              }
+              if (v.HasMember("8DF1") && v["8DF1"].IsObject()) {
+                const rapidjson::Value &refObj = v["8DF1"];
+                if (refObj.HasMember("rangeMin") &&
+                    refObj["rangeMin"].IsInt()) {
+                  _8DF1.rangeMin = refObj["rangeMin"].GetInt();
+                }
+                if (refObj.HasMember("rangeMax") &&
+                    refObj["rangeMax"].IsInt()) {
+                  _8DF1.rangeMax = refObj["rangeMax"].GetInt();
+                }
+                if (refObj.HasMember("precision") &&
+                    refObj["precision"].IsInt()) {
+                  _8DF1.precision = refObj["precision"].GetInt();
+                }
+              }
+              if (v.HasMember("8DF2") && v["8DF2"].IsObject()) {
+                const rapidjson::Value &refObj = v["8DF2"];
+                if (refObj.HasMember("rangeMin") &&
+                    refObj["rangeMin"].IsInt()) {
+                  _8DF2.rangeMin = refObj["rangeMin"].GetInt();
+                }
+                if (refObj.HasMember("rangeMax") &&
+                    refObj["rangeMax"].IsInt()) {
+                  _8DF2.rangeMax = refObj["rangeMax"].GetInt();
+                }
+                if (refObj.HasMember("precision") &&
+                    refObj["precision"].IsInt()) {
+                  _8DF2.precision = refObj["precision"].GetInt();
+                }
+              }
+              if (v.HasMember("8DF3") && v["8DF3"].IsObject()) {
+                const rapidjson::Value &refObj = v["8DF3"];
+                if (refObj.HasMember("rangeMin") &&
+                    refObj["rangeMin"].IsInt()) {
+                  _8DF3.rangeMin = refObj["rangeMin"].GetInt();
+                }
+                if (refObj.HasMember("rangeMax") &&
+                    refObj["rangeMax"].IsInt()) {
+                  _8DF3.rangeMax = refObj["rangeMax"].GetInt();
+                }
+                if (refObj.HasMember("precision") &&
+                    refObj["precision"].IsInt()) {
+                  _8DF3.precision = refObj["precision"].GetInt();
+                }
+              }
+              if (v.HasMember("8DF4") && v["8DF4"].IsObject()) {
+                const rapidjson::Value &refObj = v["8DF4"];
+                if (refObj.HasMember("rangeMin") &&
+                    refObj["rangeMin"].IsInt()) {
+                  _8DF4.rangeMin = refObj["rangeMin"].GetInt();
+                }
+                if (refObj.HasMember("rangeMax") &&
+                    refObj["rangeMax"].IsInt()) {
+                  _8DF4.rangeMax = refObj["rangeMax"].GetInt();
+                }
+                if (refObj.HasMember("precision") &&
+                    refObj["precision"].IsInt()) {
+                  _8DF4.precision = refObj["precision"].GetInt();
+                }
+              }
+              if (v.HasMember("8DF5") && v["8DF5"].IsObject()) {
+                const rapidjson::Value &refObj = v["8DF5"];
+                if (refObj.HasMember("rangeMin") &&
+                    refObj["rangeMin"].IsInt()) {
+                  _8DF5.rangeMin = refObj["rangeMin"].GetInt();
+                }
+                if (refObj.HasMember("rangeMax") &&
+                    refObj["rangeMax"].IsInt()) {
+                  _8DF5.rangeMax = refObj["rangeMax"].GetInt();
+                }
+                if (refObj.HasMember("precision") &&
+                    refObj["precision"].IsInt()) {
+                  _8DF5.precision = refObj["precision"].GetInt();
+                }
+              }
+            } while (0);
+          }
+        };
+        struct _8B31_ {
+          inline _8B31_();
+          inline ~_8B31_();
+          _8DF_ _8DF0;
+          _8DF_ _8DF1;
+          _8DF_ _8DF2;
+          _8DF_ _8DF3;
+          _8DF_ _8DF4;
+          _8DF_ _8DF5;
+          void operator>>(rapidjson::Document &doc) const {
+            if (!doc.IsObject())
+              return;
+            rapidjson::Document tmpDoc(rapidjson::Type::kObjectType);
+            auto &allocHash = tmpDoc.GetAllocator();
+            rapidjson::Value _8DF0Obj(rapidjson::Type::kObjectType);
+            RAPIDJSON_ADDMEMBER_INT(_8DF0Obj, std::string("rangeMin"),
+                                    _8DF0.rangeMin, allocHash);
+            RAPIDJSON_ADDMEMBER_INT(_8DF0Obj, std::string("rangeMax"),
+                                    _8DF0.rangeMax, allocHash);
+            RAPIDJSON_ADDMEMBER_INT(_8DF0Obj, std::string("precision"),
+                                    _8DF0.precision, allocHash);
+            tmpDoc.AddMember(rapidjson::Value("8DF0", allocHash).Move(),
+                             _8DF0Obj, allocHash);
+            rapidjson::Value _8DF1Obj(rapidjson::Type::kObjectType);
+            RAPIDJSON_ADDMEMBER_INT(_8DF1Obj, std::string("rangeMin"),
+                                    _8DF1.rangeMin, allocHash);
+            RAPIDJSON_ADDMEMBER_INT(_8DF1Obj, std::string("rangeMax"),
+                                    _8DF1.rangeMax, allocHash);
+            RAPIDJSON_ADDMEMBER_INT(_8DF1Obj, std::string("precision"),
+                                    _8DF1.precision, allocHash);
+            tmpDoc.AddMember(rapidjson::Value("8DF1", allocHash).Move(),
+                             _8DF1Obj, allocHash);
+            rapidjson::Value _8DF2obj(rapidjson::Type::kObjectType);
+            RAPIDJSON_ADDMEMBER_INT(_8DF2obj, std::string("rangeMin"),
+                                    _8DF2.rangeMin, allocHash);
+            RAPIDJSON_ADDMEMBER_INT(_8DF2obj, std::string("rangeMax"),
+                                    _8DF2.rangeMax, allocHash);
+            RAPIDJSON_ADDMEMBER_INT(_8DF2obj, std::string("precision"),
+                                    _8DF2.precision, allocHash);
+            tmpDoc.AddMember(rapidjson::Value("8DF2", allocHash).Move(),
+                             _8DF2obj, allocHash);
+            rapidjson::Value _8DF3Obj(rapidjson::Type::kObjectType);
+            RAPIDJSON_ADDMEMBER_INT(_8DF3Obj, std::string("rangeMin"),
+                                    _8DF3.rangeMin, allocHash);
+            RAPIDJSON_ADDMEMBER_INT(_8DF3Obj, std::string("rangeMax"),
+                                    _8DF3.rangeMax, allocHash);
+            RAPIDJSON_ADDMEMBER_INT(_8DF3Obj, std::string("precision"),
+                                    _8DF3.precision, allocHash);
+            tmpDoc.AddMember(rapidjson::Value("8DF3", allocHash).Move(),
+                             _8DF3Obj, allocHash);
+            rapidjson::Value _8DF4obj(rapidjson::Type::kObjectType);
+            RAPIDJSON_ADDMEMBER_INT(_8DF4obj, std::string("rangeMin"),
+                                    _8DF4.rangeMin, allocHash);
+            RAPIDJSON_ADDMEMBER_INT(_8DF4obj, std::string("rangeMax"),
+                                    _8DF4.rangeMax, allocHash);
+            RAPIDJSON_ADDMEMBER_INT(_8DF4obj, std::string("precision"),
+                                    _8DF4.precision, allocHash);
+            tmpDoc.AddMember(rapidjson::Value("8DF4", allocHash).Move(),
+                             _8DF4obj, allocHash);
+            rapidjson::Value _8DF5obj(rapidjson::Type::kObjectType);
+            RAPIDJSON_ADDMEMBER_INT(_8DF5obj, std::string("rangeMin"),
+                                    _8DF5.rangeMin, allocHash);
+            RAPIDJSON_ADDMEMBER_INT(_8DF5obj, std::string("rangeMax"),
+                                    _8DF5.rangeMax, allocHash);
+            RAPIDJSON_ADDMEMBER_INT(_8DF5obj, std::string("precision"),
+                                    _8DF5.precision, allocHash);
+            tmpDoc.AddMember(rapidjson::Value("8DF5", allocHash).Move(),
+                             _8DF5obj, allocHash);
+            rapidjson::Value tmpValue(tmpDoc, doc.GetAllocator());
+            doc.AddMember(rapidjson::Value("8B31", doc.GetAllocator()).Move(),
+                          tmpValue, doc.GetAllocator());
+          }
+          void operator<<(const rapidjson::Value &v) {
+            do {
+              if (!v.IsObject())
+                break;
+              if (v.HasMember("8DF0") && v["8DF0"].IsObject()) {
+                const rapidjson::Value &refObj = v["8DF0"];
+                if (refObj.HasMember("rangeMin") &&
+                    refObj["rangeMin"].IsInt()) {
+                  _8DF0.rangeMin = refObj["rangeMin"].GetInt();
+                }
+                if (refObj.HasMember("rangeMax") &&
+                    refObj["rangeMax"].IsInt()) {
+                  _8DF0.rangeMax = refObj["rangeMax"].GetInt();
+                }
+                if (refObj.HasMember("precision") &&
+                    refObj["precision"].IsInt()) {
+                  _8DF0.precision = refObj["precision"].GetInt();
+                }
+              }
+              if (v.HasMember("8DF1") && v["8DF1"].IsObject()) {
+                const rapidjson::Value &refObj = v["8DF1"];
+                if (refObj.HasMember("rangeMin") &&
+                    refObj["rangeMin"].IsInt()) {
+                  _8DF1.rangeMin = refObj["rangeMin"].GetInt();
+                }
+                if (refObj.HasMember("rangeMax") &&
+                    refObj["rangeMax"].IsInt()) {
+                  _8DF1.rangeMax = refObj["rangeMax"].GetInt();
+                }
+                if (refObj.HasMember("precision") &&
+                    refObj["precision"].IsInt()) {
+                  _8DF1.precision = refObj["precision"].GetInt();
+                }
+              }
+              if (v.HasMember("8DF2") && v["8DF2"].IsObject()) {
+                const rapidjson::Value &refObj = v["8DF2"];
+                if (refObj.HasMember("rangeMin") &&
+                    refObj["rangeMin"].IsInt()) {
+                  _8DF2.rangeMin = refObj["rangeMin"].GetInt();
+                }
+                if (refObj.HasMember("rangeMax") &&
+                    refObj["rangeMax"].IsInt()) {
+                  _8DF2.rangeMax = refObj["rangeMax"].GetInt();
+                }
+                if (refObj.HasMember("precision") &&
+                    refObj["precision"].IsInt()) {
+                  _8DF2.precision = refObj["precision"].GetInt();
+                }
+              }
+              if (v.HasMember("8DF3") && v["8DF3"].IsObject()) {
+                const rapidjson::Value &refObj = v["8DF3"];
+                if (refObj.HasMember("rangeMin") &&
+                    refObj["rangeMin"].IsInt()) {
+                  _8DF3.rangeMin = refObj["rangeMin"].GetInt();
+                }
+                if (refObj.HasMember("rangeMax") &&
+                    refObj["rangeMax"].IsInt()) {
+                  _8DF3.rangeMax = refObj["rangeMax"].GetInt();
+                }
+                if (refObj.HasMember("precision") &&
+                    refObj["precision"].IsInt()) {
+                  _8DF3.precision = refObj["precision"].GetInt();
+                }
+              }
+              if (v.HasMember("8DF4") && v["8DF4"].IsObject()) {
+                const rapidjson::Value &refObj = v["8DF4"];
+                if (refObj.HasMember("rangeMin") &&
+                    refObj["rangeMin"].IsInt()) {
+                  _8DF4.rangeMin = refObj["rangeMin"].GetInt();
+                }
+                if (refObj.HasMember("rangeMax") &&
+                    refObj["rangeMax"].IsInt()) {
+                  _8DF4.rangeMax = refObj["rangeMax"].GetInt();
+                }
+                if (refObj.HasMember("precision") &&
+                    refObj["precision"].IsInt()) {
+                  _8DF4.precision = refObj["precision"].GetInt();
+                }
+              }
+              if (v.HasMember("8DF5") && v["8DF5"].IsObject()) {
+                const rapidjson::Value &refObj = v["8DF5"];
+                if (refObj.HasMember("rangeMin") &&
+                    refObj["rangeMin"].IsInt()) {
+                  _8DF5.rangeMin = refObj["rangeMin"].GetInt();
+                }
+                if (refObj.HasMember("rangeMax") &&
+                    refObj["rangeMax"].IsInt()) {
+                  _8DF5.rangeMax = refObj["rangeMax"].GetInt();
+                }
+                if (refObj.HasMember("precision") &&
+                    refObj["precision"].IsInt()) {
+                  _8DF5.precision = refObj["precision"].GetInt();
+                }
+              }
+            } while (0);
+          }
+        };
+
+        inline ShaderPrecisionFormat();
+        inline ~ShaderPrecisionFormat();
+
+        bool enable = false;
+        _8B30_ _8B30;
+        _8B31_ _8B31;
+
+        void operator>>(rapidjson::Document &doc) const {
+          if (!doc.IsObject())
+            return;
+          rapidjson::Document tmpDoc(rapidjson::Type::kObjectType);
+
+          _8B30 >> tmpDoc;
+          _8B31 >> tmpDoc;
+          auto &allocHash = tmpDoc.GetAllocator();
+          RAPIDJSON_ADDMEMBER_BOOL(tmpDoc, std::string("enable"), enable,
+                                   allocHash);
+          rapidjson::Value tmpValue(tmpDoc, doc.GetAllocator());
+          doc.AddMember(
+              rapidjson::Value("shaderPrecisionFormat", doc.GetAllocator())
+                  .Move(),
+              tmpValue, doc.GetAllocator());
+        }
+        void operator<<(const rapidjson::Value &value) {
+          do {
+            if (!value.IsObject())
+              break;
+            if (value.HasMember("enable") && value["enable"].IsBool()) {
+              enable = value["enable"].GetBool();
+            }
+            if (!value.HasMember("8B30") || !value["8B30"].IsObject() ||
+                !value.HasMember("8B31") || !value["8B31"].IsObject()) {
+              break;
+            }
+            _8B30 << value["8B30"];
+            _8B31 << value["8B31"];
+          } while (0);
+        }
+      };
       inline Webgl();
       inline ~Webgl();
 
       bool enable = false;
       Hash hash;
+      ContextAttributes contextAttributes;
+      ShaderPrecisionFormat shaderPrecisionFormat;
       std::map<int, std::string> getParameter;
       inline void operator>>(rapidjson::Document &doc) const {
         if (!doc.IsObject())
@@ -852,6 +1202,8 @@ public:
         }
         RAPIDJSON_ADDMEMBER_OBJECT(tmpDoc, std::string("getParameter"),
                                    getParameterObj, allocHash);
+        contextAttributes >> tmpDoc;
+        shaderPrecisionFormat >> tmpDoc;
         rapidjson::Value tmpValue(tmpDoc, doc.GetAllocator());
         doc.AddMember(rapidjson::Value("webgl", doc.GetAllocator()).Move(),
                       tmpValue, doc.GetAllocator());
@@ -877,9 +1229,306 @@ public:
             getParameter[key] = value;
           }
         }
+        if (v.HasMember("contextAttributes") &&
+            v["contextAttributes"].IsObject()) {
+          contextAttributes << v["contextAttributes"];
+        }
+        if (v.HasMember("shaderPrecisionFormat") &&
+            v["shaderPrecisionFormat"].IsObject()) {
+          shaderPrecisionFormat << v["shaderPrecisionFormat"];
+        }
       }
     };
 
+    struct Disk {
+      inline Disk();
+      inline ~Disk();
+
+      bool enable = false;
+      Hash hash;
+      int64_t quota = 0;
+      int64_t usage = 0;
+      inline void operator>>(rapidjson::Document &doc) const {
+        if (!doc.IsObject())
+          return;
+        rapidjson::Document tmpDoc(rapidjson::Type::kObjectType);
+        auto &allocHash = tmpDoc.GetAllocator();
+        RAPIDJSON_ADDMEMBER_BOOL(tmpDoc, std::string("enable"), enable,
+                                 allocHash);
+        hash >> tmpDoc;
+        RAPIDJSON_ADDMEMBER_INT64(tmpDoc, std::string("quota"), quota,
+                                  allocHash);
+        RAPIDJSON_ADDMEMBER_INT64(tmpDoc, std::string("usage"), usage,
+                                  allocHash);
+        rapidjson::Value tmpValue(tmpDoc, doc.GetAllocator());
+        doc.AddMember(rapidjson::Value("disk", doc.GetAllocator()).Move(),
+                      tmpValue, doc.GetAllocator());
+      }
+      inline void operator<<(const rapidjson::Value &v) {
+        if (!v.IsObject())
+          return;
+        if (v.HasMember("enable") && v["enable"].IsBool()) {
+          enable = v["enable"].GetBool();
+        }
+        if (v.HasMember("hash") && v["hash"].IsObject()) {
+          hash << v["hash"];
+        }
+        if (v.HasMember("quota") && v["quota"].IsInt64()) {
+          quota = v["quota"].GetInt64();
+        }
+        if (v.HasMember("usage") && v["usage"].IsInt64()) {
+          usage = v["usage"].GetInt64();
+        }
+      }
+    };
+    struct Voice {
+      struct Data {
+        inline Data();
+        inline ~Data();
+
+        std::string lang;
+        std::string name;
+      };
+      inline Voice();
+      inline ~Voice();
+
+      bool enable = false;
+      std::vector<Data> datas;
+      void operator>>(rapidjson::Document &doc) const {
+        if (!doc.IsObject())
+          return;
+        rapidjson::Document tmpDoc(rapidjson::Type::kObjectType);
+        auto &allocHash = tmpDoc.GetAllocator();
+        RAPIDJSON_ADDMEMBER_BOOL(tmpDoc, std::string("enable"), enable,
+                                 allocHash);
+        rapidjson::Value datasArray(rapidjson::Type::kArrayType);
+        for (const auto &item : datas) {
+          rapidjson::Value itemObj(rapidjson::Type::kObjectType);
+          RAPIDJSON_ADDMEMBER_STRING(itemObj, std::string("lang"), item.lang,
+                                     allocHash);
+          RAPIDJSON_ADDMEMBER_STRING(itemObj, std::string("name"), item.name,
+                                     allocHash);
+          datasArray.PushBack(itemObj, allocHash);
+        }
+        RAPIDJSON_ADDMEMBER_OBJECT(tmpDoc, std::string("datas"), datasArray,
+                                   allocHash);
+        rapidjson::Value tmpValue(tmpDoc, doc.GetAllocator());
+        doc.AddMember(rapidjson::Value("voice", doc.GetAllocator()).Move(),
+                      tmpValue, doc.GetAllocator());
+      }
+      void operator<<(const rapidjson::Value &v) {
+        if (!v.IsObject())
+          return;
+        if (v.HasMember("enable") && v["enable"].IsBool()) {
+          enable = v["enable"].GetBool();
+        }
+        datas.clear();
+        if (v.HasMember("datas") && v["datas"].IsArray()) {
+          const rapidjson::Value &refObj = v["datas"];
+          for (rapidjson::SizeType i = 0; i < refObj.Size(); ++i) {
+            if (!refObj[i].IsObject())
+              break;
+            Data item;
+            if (refObj[i].HasMember("lang") && refObj[i]["lang"].IsString()) {
+              item.lang = refObj[i]["lang"].GetString();
+            }
+            if (refObj[i].HasMember("name") && refObj[i]["name"].IsString()) {
+              item.name = refObj[i]["name"].GetString();
+            }
+            datas.emplace_back(item);
+          }
+        }
+      }
+    };
+    struct UserAgentMetadata {
+      struct Brand_version {
+        inline Brand_version();
+        inline ~Brand_version();
+        std::string brand;
+        std::string version;
+      };
+      struct Brand_full_version {
+        inline Brand_full_version();
+        inline ~Brand_full_version();
+        std::string brand;
+        std::string version;
+      };
+      inline UserAgentMetadata();
+      inline ~UserAgentMetadata();
+
+      bool enable = false;
+      std::vector<Brand_version> brand_version_list;
+      //{"Not)A;Brand", "8"}, {"Chromium", "138"}, {"Google Chrome", "138"}};
+      std::vector<Brand_full_version> brand_full_version_list;
+      // {
+      // {"Not)A;Brand", "8.0.0.0"},
+      // {"Chromium", "138.0.7204.158"},
+      // {"Google Chrome", "138.0.7204.158"}
+      // };
+      std::string full_version = "138.0.7204.158";
+      std::string platform = "Windows";
+      std::string platform_version = "11.0.0";
+      std::string architecture = "x86_64";
+      std::string model = "";
+      bool mobile = false;
+      std::string bitness = "64";
+      bool wow64 = false;
+      std::vector<std::string> form_factors = {"Desktop"};
+
+      void operator<<(const rapidjson::Value &value) {
+        do {
+          if (!value.IsObject())
+            break;
+          if (value.HasMember("enable") && value["enable"].IsBool()) {
+            enable = value["enable"].GetBool();
+          }
+          brand_version_list.clear();
+          if (value.HasMember("brand_version_list") &&
+              value["brand_version_list"].IsArray()) {
+            const rapidjson::Value &refObj = value["brand_version_list"];
+            for (rapidjson::SizeType i = 0; i < refObj.Size(); ++i) {
+              if (!refObj[i].IsObject())
+                break;
+              if (!refObj[i].HasMember("brand") ||
+                  !refObj[i]["brand"].IsString() ||
+                  !refObj[i].HasMember("version") ||
+                  !refObj[i]["version"].IsString())
+                break;
+              Brand_version item;
+              item.brand = refObj[i]["brand"].GetString();
+              item.version = refObj[i]["version"].GetString();
+              brand_version_list.emplace_back(item);
+            }
+          }
+          brand_full_version_list.clear();
+          if (value.HasMember("brand_full_version_list") &&
+              value["brand_full_version_list"].IsArray()) {
+            const rapidjson::Value &refObj = value["brand_full_version_list"];
+            for (rapidjson::SizeType i = 0; i < refObj.Size(); ++i) {
+              if (!refObj[i].IsObject())
+                break;
+              if (!refObj[i].HasMember("brand") ||
+                  !refObj[i]["brand"].IsString() ||
+                  !refObj[i].HasMember("version") ||
+                  !refObj[i]["version"].IsString())
+                break;
+              Brand_full_version item;
+              item.brand = refObj[i]["brand"].GetString();
+              item.version = refObj[i]["version"].GetString();
+              brand_full_version_list.emplace_back(item);
+            }
+          }
+          if (value.HasMember("full_version") &&
+              value["full_version"].IsString()) {
+            full_version = value["full_version"].GetString();
+          }
+          if (value.HasMember("platform") && value["platform"].IsString()) {
+            platform = value["platform"].GetString();
+          }
+          if (value.HasMember("platform_version") &&
+              value["platform_version"].IsString()) {
+            platform_version = value["platform_version"].GetString();
+          }
+          if (value.HasMember("architecture") &&
+              value["architecture"].IsString()) {
+            architecture = value["architecture"].GetString();
+          }
+          if (value.HasMember("model") && value["model"].IsString()) {
+            model = value["model"].GetString();
+          }
+          if (value.HasMember("mobile") && value["mobile"].IsBool()) {
+            mobile = value["mobile"].GetBool();
+          }
+          if (value.HasMember("bitness") && value["bitness"].IsString()) {
+            bitness = value["bitness"].GetString();
+          }
+          if (value.HasMember("wow64") && value["wow64"].IsBool()) {
+            wow64 = value["wow64"].GetBool();
+          }
+          form_factors.clear();
+          if (value.HasMember("form_factors") &&
+              value["form_factors"].IsArray()) {
+            const rapidjson::Value &refObj = value["form_factors"];
+            for (rapidjson::SizeType i = 0; i < refObj.Size(); ++i) {
+              if (!refObj[i].IsString())
+                break;
+              std::string tmp(refObj[i].GetString());
+              if (tmp.empty())
+                continue;
+              // std::transform(tmp.begin(), tmp.end(), tmp.begin(),
+              // ::tolower);
+              form_factors.emplace_back(tmp);
+            }
+          }
+        } while (0);
+      }
+      void operator>>(rapidjson::Document &output) const {
+        if (!output.IsObject())
+          return;
+        rapidjson::Document tmpDoc(rapidjson::Type::kObjectType);
+        auto &allocHash = tmpDoc.GetAllocator();
+        RAPIDJSON_ADDMEMBER_BOOL(tmpDoc, std::string("enable"), enable,
+                                 allocHash);
+
+        rapidjson::Value brandVersionArray(rapidjson::Type::kArrayType);
+        for (const auto &item : brand_version_list) {
+          rapidjson::Value itemObj(rapidjson::Type::kObjectType);
+          RAPIDJSON_ADDMEMBER_STRING(itemObj, std::string("brand"), item.brand,
+                                     allocHash);
+          RAPIDJSON_ADDMEMBER_STRING(itemObj, std::string("version"),
+                                     item.version, allocHash);
+          brandVersionArray.PushBack(itemObj, allocHash);
+        }
+        RAPIDJSON_ADDMEMBER_OBJECT(tmpDoc, std::string("brand_version_list"),
+                                   brandVersionArray, allocHash);
+
+        rapidjson::Value brandFullVersionArray(rapidjson::Type::kArrayType);
+        for (const auto &item : brand_full_version_list) {
+          rapidjson::Value itemObj(rapidjson::Type::kObjectType);
+          RAPIDJSON_ADDMEMBER_STRING(itemObj, std::string("brand"), item.brand,
+                                     allocHash);
+          RAPIDJSON_ADDMEMBER_STRING(itemObj, std::string("version"),
+                                     item.version, allocHash);
+          brandFullVersionArray.PushBack(itemObj, allocHash);
+        }
+        RAPIDJSON_ADDMEMBER_OBJECT(tmpDoc,
+                                   std::string("brand_full_version_list"),
+                                   brandFullVersionArray, allocHash);
+
+        RAPIDJSON_ADDMEMBER_STRING(tmpDoc, std::string("full_version"),
+                                   full_version, allocHash);
+        RAPIDJSON_ADDMEMBER_STRING(tmpDoc, std::string("platform"), platform,
+                                   allocHash);
+        RAPIDJSON_ADDMEMBER_STRING(tmpDoc, std::string("platform_version"),
+                                   platform_version, allocHash);
+        RAPIDJSON_ADDMEMBER_STRING(tmpDoc, std::string("architecture"),
+                                   architecture, allocHash);
+        RAPIDJSON_ADDMEMBER_STRING(tmpDoc, std::string("model"), model,
+                                   allocHash);
+        RAPIDJSON_ADDMEMBER_BOOL(tmpDoc, std::string("mobile"), mobile,
+                                 allocHash);
+        RAPIDJSON_ADDMEMBER_STRING(tmpDoc, std::string("bitness"), bitness,
+                                   allocHash);
+        RAPIDJSON_ADDMEMBER_BOOL(tmpDoc, std::string("wow64"), wow64,
+                                 allocHash);
+        rapidjson::Value formFactorsArray(rapidjson::Type::kArrayType);
+        for (const auto &item : form_factors) {
+          if (item.empty())
+            continue;
+          rapidjson::Value itemValue(rapidjson::Type::kStringType);
+          itemValue.SetString(item.c_str(),
+                              static_cast<rapidjson::SizeType>(item.size()),
+                              allocHash);
+          formFactorsArray.PushBack(itemValue, allocHash);
+        }
+        RAPIDJSON_ADDMEMBER_OBJECT(tmpDoc, std::string("form_factors"),
+                                   formFactorsArray, allocHash);
+        rapidjson::Value tmpValue(tmpDoc, output.GetAllocator());
+        output.AddMember(
+            rapidjson::Value("userAgentMetadata", output.GetAllocator()).Move(),
+            tmpValue, output.GetAllocator());
+      }
+    };
     struct Font {
       inline Font();
       inline ~Font();
@@ -939,14 +1588,16 @@ public:
     inline ~Fingerprint();
 
     bool enable = false;
-
     std::string do_not_track = "1";
     std::string platform = "Win32";
+    unsigned int rtt = 0; //!@ Round-trip time in milliseconds, default is 0
+    bool netDnsAllowFallbackToSystemtask =
+        true; //!@ Allow fallback to system task for DNS resolution
     int hardwareConcurrency = 8;
     int deviceMemory = 16;
-    std::string userAgent =
-        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, "
-        "like Gecko) Chrome/138.0.0.0 Safari/537.36";
+    std::string userAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
+                            "AppleWebKit/537.36 (KHTML, "
+                            "like Gecko) Chrome/138.0.0.0 Safari/537.36";
     std::vector<std::string> languages = {
         "en-US", "en"}; //!@ Language list, default is ["en-US", "en"]
     std::string acceptLanguage =
@@ -958,6 +1609,9 @@ public:
     Font font;
     Screen screen;
     TimeZone timezone;
+    Disk disk;
+    UserAgentMetadata userAgentMetadata;
+    Voice voice;
     inline void operator>>(rapidjson::Document &doc) const {
       if (!doc.IsObject())
         return;
@@ -975,6 +1629,26 @@ public:
                               fpsAllocator);
       RAPIDJSON_ADDMEMBER_STRING(fpsDoc, std::string("userAgent"), userAgent,
                                  fpsAllocator);
+      RAPIDJSON_ADDMEMBER_UINT(fpsDoc, std::string("rtt"), rtt, fpsAllocator);
+      RAPIDJSON_ADDMEMBER_BOOL(fpsDoc,
+                               std::string("netDnsAllowFallbackToSystemtask"),
+                               netDnsAllowFallbackToSystemtask, fpsAllocator);
+      rapidjson::Value languagesArray(rapidjson::Type::kArrayType);
+      for (const auto &lang : languages) {
+        if (lang.empty())
+          continue;
+        rapidjson::Value langValue(rapidjson::Type::kStringType);
+        langValue.SetString(lang.c_str(),
+                            static_cast<rapidjson::SizeType>(lang.size()),
+                            fpsAllocator);
+        languagesArray.PushBack(langValue, fpsAllocator);
+      }
+      RAPIDJSON_ADDMEMBER_OBJECT(fpsDoc, std::string("languages"),
+                                 languagesArray, fpsAllocator);
+      RAPIDJSON_ADDMEMBER_STRING(fpsDoc, std::string("acceptLanguage"),
+                                 acceptLanguage, fpsAllocator);
+      userAgentMetadata >> fpsDoc;
+      voice >> fpsDoc;
       canvas >> fpsDoc;
       webgl >> fpsDoc;
       audio >> fpsDoc;
@@ -982,6 +1656,7 @@ public:
       font >> fpsDoc;
       timezone >> fpsDoc;
       screen >> fpsDoc;
+      disk >> fpsDoc;
       rapidjson::Value fpsValue(fpsDoc, doc.GetAllocator());
       doc.AddMember(rapidjson::Value("fingerprint", doc.GetAllocator()).Move(),
                     fpsValue, doc.GetAllocator());
@@ -994,6 +1669,24 @@ public:
       }
       if (v.HasMember("do_not_track") && v["do_not_track"].IsString()) {
         do_not_track = v["do_not_track"].GetString();
+      }
+      if (v.HasMember("rtt") && v["rtt"].IsUint()) {
+        rtt = v["rtt"].GetUint();
+      }
+      if (v.HasMember("disk") && v["disk"].IsObject()) {
+        disk << v["disk"];
+      }
+      if (v.HasMember("netDnsAllowFallbackToSystemtask") &&
+          v["netDnsAllowFallbackToSystemtask"].IsBool()) {
+        netDnsAllowFallbackToSystemtask =
+            v["netDnsAllowFallbackToSystemtask"].GetBool();
+      }
+      if (v.HasMember("userAgentMetadata") &&
+          v["userAgentMetadata"].IsObject()) {
+        userAgentMetadata << v["userAgentMetadata"];
+      }
+      if (v.HasMember("voice") && v["voice"].IsObject()) {
+        voice << v["voice"];
       }
       if (v.HasMember("platform") && v["platform"].IsString()) {
         platform = v["platform"].GetString();
@@ -1043,6 +1736,99 @@ public:
       }
       if (v.HasMember("timezone") && v["timezone"].IsObject()) {
         timezone << v["timezone"];
+      }
+    }
+  };
+  struct DynamicFpsInfo {
+    struct Ipinfo {
+      inline Ipinfo();
+      inline ~Ipinfo();
+
+      std::string ip;
+      std::string country;
+      std::string region;
+      std::string city;
+      std::string zip;
+      std::string lat;
+      std::string lon;
+      std::string timezone;
+      std::string isp;
+
+      void operator>>(rapidjson::Document &doc) const {
+        if (!doc.IsObject())
+          return;
+        rapidjson::Document tmpDoc(rapidjson::Type::kObjectType);
+        auto &allocator = tmpDoc.GetAllocator();
+        RAPIDJSON_ADDMEMBER_STRING(tmpDoc, std::string("ip"), ip, allocator);
+        RAPIDJSON_ADDMEMBER_STRING(tmpDoc, std::string("country"), country,
+                                   allocator);
+        RAPIDJSON_ADDMEMBER_STRING(tmpDoc, std::string("region"), region,
+                                   allocator);
+        RAPIDJSON_ADDMEMBER_STRING(tmpDoc, std::string("city"), city,
+                                   allocator);
+        RAPIDJSON_ADDMEMBER_STRING(tmpDoc, std::string("zip"), zip, allocator);
+        RAPIDJSON_ADDMEMBER_STRING(tmpDoc, std::string("lat"), lat, allocator);
+        RAPIDJSON_ADDMEMBER_STRING(tmpDoc, std::string("lon"), lon, allocator);
+        RAPIDJSON_ADDMEMBER_STRING(tmpDoc, std::string("timezone"), timezone,
+                                   allocator);
+        rapidjson::Value tmpValue(tmpDoc, doc.GetAllocator());
+        doc.AddMember(rapidjson::Value("ipinfo", doc.GetAllocator()).Move(),
+                      tmpValue, doc.GetAllocator());
+      }
+      void operator<<(const rapidjson::Value &v) {
+        if (!v.IsObject())
+          return;
+        if (v.HasMember("ip") && v["ip"].IsString()) {
+          ip = v["ip"].GetString();
+        }
+        if (v.HasMember("country") && v["country"].IsString()) {
+          country = v["country"].GetString();
+        }
+        if (v.HasMember("region") && v["region"].IsString()) {
+          region = v["region"].GetString();
+        }
+        if (v.HasMember("city") && v["city"].IsString()) {
+          city = v["city"].GetString();
+        }
+        if (v.HasMember("zip") && v["zip"].IsString()) {
+          zip = v["zip"].GetString();
+        }
+        if (v.HasMember("lat") && v["lat"].IsString()) {
+          lat = v["lat"].GetString();
+        }
+        if (v.HasMember("lon") && v["lon"].IsString()) {
+          lon = v["lon"].GetString();
+        }
+        if (v.HasMember("timezone") && v["timezone"].IsString()) {
+          timezone = v["timezone"].GetString();
+        }
+      }
+    };
+    inline DynamicFpsInfo();
+    inline ~DynamicFpsInfo();
+
+    bool enable = false; //!@ Enable dynamic FPS, default is false
+    Ipinfo ipinfo;       //!@ IP information, default is empty
+    void operator>>(rapidjson::Document &doc) const {
+      if (!doc.IsObject())
+        return;
+      rapidjson::Document tmpDoc(rapidjson::Type::kObjectType);
+      auto &allocator = tmpDoc.GetAllocator();
+      RAPIDJSON_ADDMEMBER_BOOL(tmpDoc, std::string("enable"), enable,
+                               allocator);
+      ipinfo >> tmpDoc;
+      rapidjson::Value tmpValue(tmpDoc, doc.GetAllocator());
+      doc.AddMember(rapidjson::Value("dynFpsInfo", doc.GetAllocator()).Move(),
+                    tmpValue, doc.GetAllocator());
+    }
+    void operator<<(const rapidjson::Value &v) {
+      if (!v.IsObject())
+        return;
+      if (v.HasMember("enable") && v["enable"].IsBool()) {
+        enable = v["enable"].GetBool();
+      }
+      if (v.HasMember("ipinfo") && v["ipinfo"].IsObject()) {
+        ipinfo << v["ipinfo"];
       }
     }
   };
@@ -1100,6 +1886,20 @@ public:
 public:
   inline void operator>>(rapidjson::Document &doc) const;
   inline void operator<<(const rapidjson::Value &v);
+  inline void operator<<(const std::string &json) {
+    do {
+      rapidjson::Document doc;
+      if (doc.Parse(json.data(), json.size()).HasParseError())
+        break;
+      if (!doc.IsObject())
+        break;
+      if (doc.HasMember(kObjectKey)) {
+        *this << doc[kObjectKey];
+      } else {
+        *this << doc;
+      }
+    } while (0);
+  }
 
 public:
   inline IXSiumio();
@@ -1124,7 +1924,7 @@ public:
   Fingerprint fps; //!@ Fingerprint settings, default is empty
   Proxy proxy;     //!@ Proxy information, default is empty
   WebRTCIPHandling webrtcIPHandling;
-  MyIp_yunlogin_com myipyunlogincom;
+  DynamicFpsInfo dynFpsInfo; //!@ Dynamic FPS information, default is empty
 };
 inline IXSiumio::IXSiumio() {
 }
@@ -1142,8 +1942,8 @@ inline void IXSiumio::operator<<(const rapidjson::Value &v) {
   if (v.HasMember("identify") && v["identify"].IsUint64()) {
     identify = v["identify"].GetUint64();
   }
-  if (v.HasMember("myipyunlogincom") && v["myipyunlogincom"].IsObject()) {
-    myipyunlogincom << v["myipyunlogincom"];
+  if (v.HasMember("dynFpsInfo") && v["dynFpsInfo"].IsObject()) {
+    dynFpsInfo << v["dynFpsInfo"];
   }
   if (v.HasMember("cookies") && v["cookies"].IsObject()) {
     cookies << v["cookies"];
@@ -1209,7 +2009,7 @@ inline void IXSiumio::operator>>(rapidjson::Document &doc) const {
   fps >> xsiumioDoc;
   extensions >> xsiumioDoc;
   webrtcIPHandling >> xsiumioDoc;
-  myipyunlogincom >> xsiumioDoc;
+  dynFpsInfo >> xsiumioDoc;
   RAPIDJSON_ADDMEMBER_STRING(xsiumioDoc, std::string("proxy_info_request_url"),
                              proxy_info_request_url, xsiumioAllocator);
   yunlogin >> xsiumioDoc;
@@ -1217,8 +2017,6 @@ inline void IXSiumio::operator>>(rapidjson::Document &doc) const {
   doc.AddMember(rapidjson::Value(kObjectKey, allocator).Move(), xsiumioValue,
                 allocator);
 }
-inline IXSiumio::MyIp_yunlogin_com::MyIp_yunlogin_com() = default;
-inline IXSiumio::MyIp_yunlogin_com::~MyIp_yunlogin_com() = default;
 inline IXSiumio::Cookies::Cookies() = default;
 inline IXSiumio::Cookies::~Cookies() = default;
 inline IXSiumio::Storage::Storage() = default;
@@ -1247,12 +2045,52 @@ inline IXSiumio::Fingerprint::Audio::Audio() = default;
 inline IXSiumio::Fingerprint::Audio::~Audio() = default;
 inline IXSiumio::Fingerprint::Webgl::Webgl() = default;
 inline IXSiumio::Fingerprint::Webgl::~Webgl() = default;
+inline IXSiumio::Fingerprint::Webgl::ContextAttributes::ContextAttributes() =
+    default;
+inline IXSiumio::Fingerprint::Webgl::ContextAttributes::~ContextAttributes() =
+    default;
+inline IXSiumio::Fingerprint::Webgl::ShaderPrecisionFormat::
+    ShaderPrecisionFormat() = default;
+inline IXSiumio::Fingerprint::Webgl::ShaderPrecisionFormat::
+    ~ShaderPrecisionFormat() = default;
+inline IXSiumio::Fingerprint::Webgl::ShaderPrecisionFormat::_8DF_::_8DF_() =
+    default;
+inline IXSiumio::Fingerprint::Webgl::ShaderPrecisionFormat::_8DF_::~_8DF_() =
+    default;
+inline IXSiumio::Fingerprint::Webgl::ShaderPrecisionFormat::_8B30_::_8B30_() =
+    default;
+inline IXSiumio::Fingerprint::Webgl::ShaderPrecisionFormat::_8B30_::~_8B30_() =
+    default;
+inline IXSiumio::Fingerprint::Webgl::ShaderPrecisionFormat::_8B31_::_8B31_() =
+    default;
+inline IXSiumio::Fingerprint::Webgl::ShaderPrecisionFormat::_8B31_::~_8B31_() =
+    default;
 inline IXSiumio::Fingerprint::Font::Font() = default;
 inline IXSiumio::Fingerprint::Font::~Font() = default;
 inline IXSiumio::Fingerprint::TimeZone::TimeZone() = default;
 inline IXSiumio::Fingerprint::TimeZone::~TimeZone() = default;
 inline IXSiumio::Fingerprint::Screen::Screen() = default;
 inline IXSiumio::Fingerprint::Screen::~Screen() = default;
+inline IXSiumio::Fingerprint::Disk::Disk() = default;
+inline IXSiumio::Fingerprint::Disk::~Disk() = default;
+inline IXSiumio::Fingerprint::UserAgentMetadata::UserAgentMetadata() = default;
+inline IXSiumio::Fingerprint::UserAgentMetadata::~UserAgentMetadata() = default;
+inline IXSiumio::Fingerprint::UserAgentMetadata::Brand_version::
+    Brand_version() = default;
+inline IXSiumio::Fingerprint::UserAgentMetadata::Brand_version::
+    ~Brand_version() = default;
+inline IXSiumio::Fingerprint::UserAgentMetadata::Brand_full_version::
+    Brand_full_version() = default;
+inline IXSiumio::Fingerprint::UserAgentMetadata::Brand_full_version::
+    ~Brand_full_version() = default;
+inline IXSiumio::Fingerprint::Voice::Voice() = default;
+inline IXSiumio::Fingerprint::Voice::~Voice() = default;
+inline IXSiumio::Fingerprint::Voice::Data::Data() = default;
+inline IXSiumio::Fingerprint::Voice::Data::~Data() = default;
+inline IXSiumio::DynamicFpsInfo::DynamicFpsInfo() = default;
+inline IXSiumio::DynamicFpsInfo::~DynamicFpsInfo() = default;
+inline IXSiumio::DynamicFpsInfo::Ipinfo::Ipinfo() = default;
+inline IXSiumio::DynamicFpsInfo::Ipinfo::~Ipinfo() = default;
 } // namespace xsiumio
 } // namespace chromium
 /// /*_ Memade®（新生™） _**/

@@ -2,6 +2,8 @@
 .cache
 *.mp4
 tmp
+debug
+release
 clangd
 libs
 bin

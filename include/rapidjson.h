@@ -41,6 +41,12 @@
                     .Move(),                                                   \
                 rapidjson::Value().SetUint(value).Move(), allocator);
 
+#define RAPIDJSON_ADDMEMBER_INT64(obj, key, value, allocator)                  \
+  obj.AddMember(rapidjson::Value()                                             \
+                    .SetString(key.empty() ? "" : key.c_str(), allocator)      \
+                    .Move(),                                                   \
+                rapidjson::Value().SetInt64(value).Move(), allocator);
+
 #define RAPIDJSON_ADDMEMBER_UINT64(obj, key, value, allocator)                 \
   obj.AddMember(rapidjson::Value()                                             \
                     .SetString(key.empty() ? "" : key.c_str(), allocator)      \
