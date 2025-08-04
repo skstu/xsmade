@@ -1,0 +1,608 @@
+[
+    "1749925872",
+    "QrtNBAAAAAAAxXV2ACa43iGJNv_7naZD0or7r-g",
+    "dev001",
+    "3",
+    "",
+    "AAK11aRn20f9AaC1MPiTdddA07ybIsMSsKPQdftMoGr1eUYW5uuIIZ8-9OIf2xECn677V-9Cs921egKZh-B9fIbfSMToKXEFljPZsOmXN7tCvA",
+    "",
+    "0",
+    "0",
+    "0",
+    "qq0MDr3u2U0v",
+    [
+        "webgl2",
+        22,
+        0
+    ],
+    [],
+    "0",
+    [
+        1754014298820,
+        null,
+        213.324,
+        15
+    ],
+    [
+        1754014298.832,
+        "unknown",
+        0,
+        0,
+        0,
+        0,
+        "Other",
+        "",
+        1754014298.82,
+        1754014298.82,
+        false,
+        false,
+        false
+    ],
+    "0.7",
+    "10000",
+    "0",
+    "TypeError: Cannot read properties of null (reading '0')\n    at file:///C:/Users/Administrator/Desktop/fkCheck/adscore.html:601:19\n    at Ob (file:///C:/Users/Administrator/Desktop/fkCheck/adscore.html:606:13)\n    at yb (file:///C:/Users/Administrator/Desktop/fkCheck/adscore.html:2299:11)\n    at AdscoreInit (file:///C:/Users/Administrator/Desktop/fkCheck/adscore.html:4632:25)\n    at file:///C:/Users/Administrator/Desktop/fkCheck/adscore.html:4840:14",
+    "0",
+    "1",
+    "bb767a8da406a7545bbf9c12489f9fc2",
+    [
+        952,
+        1000,
+        870,
+        952,
+        1000,
+        870,
+        1000,
+        952,
+        19
+    ],
+    "1.5",
+    "",
+    "1969/12/31 18:00:00",
+    [
+        "7394,143",
+        "7394,143",
+        "7394,143",
+        "7394,143",
+        "7394,143",
+        "7394,143",
+        "7394,143",
+        "7394,143",
+        "7394,143",
+        "7394,143",
+        "7394,143",
+        "7394,143"
+    ],
+    "ac064f9c91e7925c8439c28e07195866",
+    [
+        10,
+        10,
+        345,
+        345,
+        2,
+        2,
+        3,
+        2,
+        5
+    ],
+    [],
+    "1",
+    [
+        "file:///C:/Users/Administrator/Desktop/fkCheck/adscore.html",
+        "",
+        0,
+        0,
+        "navigate",
+        300,
+        0,
+        12.800000004470348,
+        12.800000004470348,
+        12.800000004470348,
+        12.800000004470348,
+        0,
+        12.800000004470348,
+        0,
+        12.800000004470348,
+        0
+    ],
+    [],
+    "1",
+    [
+        [
+            "window.SecurityPolicyViolationEvent",
+            "function SecurityPolicyViolationEvent() { [native code] }"
+        ],
+        [
+            "window.SVGFESpecularLightingElement",
+            "function SVGFESpecularLightingElement() { [native code] }"
+        ],
+        [
+            "window.ReadableByteStreamController",
+            "function ReadableByteStreamController() { [native code] }"
+        ],
+        [
+            "window.PerformanceObserverEntryList",
+            "function PerformanceObserverEntryList() { [native code] }"
+        ],
+        [
+            "window.FileSystemWritableFileStream",
+            "function FileSystemWritableFileStream() { [native code] }"
+        ],
+        [
+            "window.IntegrityViolationReportBody",
+            "function IntegrityViolationReportBody() { [native code] }"
+        ],
+        [
+            "window.webkitSpeechRecognitionError",
+            "function SpeechRecognitionErrorEvent() { [native code] }"
+        ],
+        [
+            "window.webkitSpeechRecognitionEvent",
+            "function SpeechRecognitionEvent() { [native code] }"
+        ]
+    ],
+    "1",
+    "undefined",
+    "object",
+    "object",
+    "object",
+    "function",
+    "file:///C:/Users/Administrator/Desktop/fkCheck/adscore.html",
+    "0",
+    "visible",
+    "0",
+    "1",
+    "1",
+    "1",
+    "1",
+    "1",
+    "1",
+    "object",
+    "",
+    "#47",
+    "",
+    "0",
+    "1",
+    "0",
+    "0",
+    "",
+    "",
+    "",
+    "",
+    "606",
+    "373",
+    "-54",
+    "49",
+    "616",
+    "496",
+    "606",
+    "373",
+    "1",
+    "function hasFocus() { [native code] }",
+    "1",
+    "",
+    "2330000000",
+    "portrait-primary",
+    "",
+    "",
+    "0",
+    "0",
+    "345",
+    "345",
+    "345",
+    "167",
+    "24",
+    "24",
+    "",
+    "",
+    "2.549999952316284",
+    "Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Mobile Safari/537.36",
+    "5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Mobile Safari/537.36",
+    "Mozilla",
+    "",
+    "Gecko",
+    "20030107",
+    "Google Inc.",
+    "",
+    "",
+    "Linux armv81",
+    "",
+    "",
+    "8",
+    "10",
+    "",
+    "en-US",
+    "en-US,zh-CN,zh,en-CN,en",
+    "",
+    "",
+    "",
+    "1",
+    "8",
+    "1",
+    "",
+    "1",
+    "",
+    "",
+    "0",
+    "0",
+    "1",
+    "",
+    "",
+    "",
+    "",
+    "",
+    "",
+    "",
+    "",
+    "1754014298993",
+    "300",
+    "",
+    "3g",
+    "",
+    "0.35",
+    "250",
+    "0",
+    "",
+    "",
+    "",
+    "0",
+    "1754014298832",
+    "1754014298832",
+    "1754014298832",
+    "1754014298832",
+    "1754014298832",
+    "0",
+    "1754014298832",
+    "1754014298832",
+    "0",
+    "undefined",
+    "undefined",
+    "number",
+    "#36",
+    "#14",
+    "#14",
+    [],
+    "#46",
+    "function animate() { [native code] }",
+    "[object Screen]",
+    "function open() { [native code] }",
+    "",
+    "#49",
+    "",
+    "0",
+    "#45",
+    "#0",
+    "#0",
+    "#0",
+    "",
+    "",
+    "#22",
+    "#27",
+    "1",
+    "string",
+    "#13",
+    "#41",
+    "adsco.re",
+    "",
+    "#5",
+    "",
+    "#5",
+    "#18",
+    "America/Chicago",
+    "zh-CN",
+    "1",
+    "",
+    "",
+    "",
+    "",
+    "",
+    [
+        0.8993314980630148,
+        0.16003384164715617,
+        0.08481488911529489,
+        0.048677944213758484,
+        0.2641987029397761
+    ],
+    "0",
+    [
+        1,
+        "Android",
+        [
+            [
+                "Not)A;Brand",
+                "8"
+            ],
+            [
+                "Chromium",
+                "138"
+            ],
+            [
+                "Google Chrome",
+                "138"
+            ]
+        ]
+    ],
+    "N6xNiOs6oeHB7QwNSNfUXqToLEzchbhZ",
+    [
+        "0",
+        "0",
+        "606.2745361328125",
+        "7.996323585510254",
+        "0",
+        "0"
+    ],
+    [
+        "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+        "#15",
+        "WebKit",
+        "WebKit WebGL",
+        "ANGLE (ARM, Mali-G72, OpenGL ES 3.2)",
+        "Google Inc. (ARM)",
+        1
+    ],
+    [
+        "ae8b6d4f",
+        "70546564764ac50fc2921e3cf290ac46",
+        "32fa11ddfbc0a34af35cb61eba6931e1"
+    ],
+    [
+        "f1db0a06a624adb62b0774ad9e67cc41",
+        "fcef5cf9ea654b55e809b9bc2734ea74"
+    ],
+    [
+        "AddSearchProvider",
+        "IsSearchProviderInstalled"
+    ],
+    [
+        "100",
+        "1"
+    ],
+    "-2",
+    [
+        [
+            "org.w3.clearkey",
+            "video/mp4; codecs=\"avc1.42E01E\"",
+            ""
+        ],
+        [
+            "com.widevine.alpha",
+            "video/mp4; codecs=\"avc1.42E01E\"",
+            "SW_SECURE_CRYPTO"
+        ],
+        [
+            "com.widevine.alpha",
+            "video/mp4; codecs=\"avc1.42E01E\"",
+            "SW_SECURE_DECODE"
+        ],
+        [
+            "org.w3.clearkey",
+            "video/mp4; codecs=\"avc1.42c00d\"",
+            ""
+        ],
+        [
+            "com.widevine.alpha",
+            "video/mp4; codecs=\"avc1.42c00d\"",
+            "SW_SECURE_CRYPTO"
+        ],
+        [
+            "com.widevine.alpha",
+            "video/mp4; codecs=\"avc1.42c00d\"",
+            "SW_SECURE_DECODE"
+        ]
+    ],
+    "1",
+    "0",
+    "100",
+    [
+        -1,
+        692.8000000044703,
+        1218.1000000014901
+    ],
+    [
+        -1,
+        694.6000000014901,
+        1218.3000000044703
+    ],
+    [
+        -1,
+        695.4000000059605,
+        1218.5
+    ],
+    [
+        -1,
+        696.1000000014901,
+        1218.7000000029802
+    ],
+    "0",
+    [
+        "3def4aa0a9c75007b028a8bcc554cabe",
+        "3def4aa0a9c75007b028a8bcc554cabe",
+        "",
+        2,
+        1
+    ],
+    [
+        null,
+        null,
+        null
+    ],
+    [
+        null,
+        null,
+        null,
+        16
+    ],
+    [
+        334,
+        327,
+        383,
+        159
+    ],
+    [
+        "#0.5257755090857673\r\n",
+        701.7000000029802,
+        null,
+        772.6000000014901
+    ],
+    [
+        [
+            "zh-CN",
+            "Microsoft Huihui - Chinese (Simplified, PRC)",
+            "Microsoft Huihui - Chinese (Simplified, PRC)"
+        ],
+        [
+            "zh-CN",
+            "Microsoft Kangkang - Chinese (Simplified, PRC)",
+            "Microsoft Kangkang - Chinese (Simplified, PRC)"
+        ],
+        [
+            "zh-CN",
+            "Microsoft Yaoyao - Chinese (Simplified, PRC)",
+            "Microsoft Yaoyao - Chinese (Simplified, PRC)"
+        ],
+        [
+            "de-DE",
+            "Google Deutsch",
+            "Google Deutsch"
+        ],
+        [
+            "en-US",
+            "Google US English",
+            "Google US English"
+        ],
+        [
+            "en-GB",
+            "Google UK English Female",
+            "Google UK English Female"
+        ],
+        [
+            "en-GB",
+            "Google UK English Male",
+            "Google UK English Male"
+        ],
+        [
+            "es-ES",
+            "Google español",
+            "Google español"
+        ],
+        [
+            "es-US",
+            "Google español de Estados Unidos",
+            "Google español de Estados Unidos"
+        ],
+        [
+            "fr-FR",
+            "Google français",
+            "Google français"
+        ],
+        [
+            "hi-IN",
+            "Google हिन्दी",
+            "Google हिन्दी"
+        ],
+        [
+            "id-ID",
+            "Google Bahasa Indonesia",
+            "Google Bahasa Indonesia"
+        ],
+        [
+            "it-IT",
+            "Google italiano",
+            "Google italiano"
+        ],
+        [
+            "ja-JP",
+            "Google 日本語",
+            "Google 日本語"
+        ],
+        [
+            "ko-KR",
+            "Google 한국의",
+            "Google 한국의"
+        ],
+        [
+            "nl-NL",
+            "Google Nederlands",
+            "Google Nederlands"
+        ],
+        [
+            "pl-PL",
+            "Google polski",
+            "Google polski"
+        ],
+        [
+            "pt-BR",
+            "Google português do Brasil",
+            "Google português do Brasil"
+        ],
+        [
+            "ru-RU",
+            "Google русский",
+            "Google русский"
+        ],
+        [
+            "zh-CN",
+            "Google 普通话（中国大陆）",
+            "Google 普通话（中国大陆）"
+        ],
+        [
+            "zh-HK",
+            "Google 粤語（香港）",
+            "Google 粤語（香港）"
+        ],
+        [
+            "zh-TW",
+            "Google 國語（臺灣）",
+            "Google 國語（臺灣）"
+        ]
+    ],
+    [
+        1038983624294,
+        7297
+    ],
+    "-1",
+    [
+        "",
+        "64",
+        [
+            [
+                "Not)A;Brand",
+                "8"
+            ],
+            [
+                "Chromium",
+                "138"
+            ],
+            [
+                "Google Chrome",
+                "138"
+            ]
+        ],
+        [
+            [
+                "Not)A;Brand",
+                "8.0.0.0"
+            ],
+            [
+                "Chromium",
+                "138.0.7204.158"
+            ],
+            [
+                "Google Chrome",
+                "138.0.7204.158"
+            ]
+        ],
+        "1",
+        "Pixel 7 Pro",
+        "Android",
+        "14"
+    ],
+    "-1",
+    "-1",
+    "1141.1999999955297",
+    [
+        "0.7000000029802322",
+        "473"
+    ],
+    []
+]

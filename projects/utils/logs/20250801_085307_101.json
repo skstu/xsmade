@@ -1,0 +1,556 @@
+[
+    "1749925872",
+    "QrtNBAAAAAAAxXV2ACa43iGJNv_7naZD0or7r-g",
+    "dev001",
+    "3",
+    "",
+    "AAK11aRn20f9AaC1MPiTdddA07ybIsMSsKPQdftMoGr1eUYW5uuIIZ8-9OIf2xECn677V-9Cs921egKZh-B9fIbfSMToKXEFljPZsOmXN7tCvA",
+    "",
+    "0",
+    "0",
+    "0",
+    "zgmaLqIrJQWX",
+    [
+        "webgl2",
+        18,
+        0
+    ],
+    [],
+    "0",
+    [
+        1754009450254,
+        null,
+        90.397,
+        16
+    ],
+    [
+        1754009450.262,
+        "http/1.0",
+        0,
+        0,
+        0,
+        0,
+        "Reload",
+        "",
+        1754009450.254,
+        1754009450.254,
+        false,
+        false,
+        false
+    ],
+    "0.5",
+    "10000",
+    "1",
+    "TypeError: Cannot read properties of null (reading '0')\n    at http://192.168.3.25:8080/adscore.html:588:21\n    at Ob (http://192.168.3.25:8080/adscore.html:593:15)\n    at yb (http://192.168.3.25:8080/adscore.html:2286:13)\n    at AdscoreInit (http://192.168.3.25:8080/adscore.html:4628:27)\n    at http://192.168.3.25:8080/adscore.html:4836:16",
+    "0",
+    "1",
+    "0b094c8f7d891491ef500a2298ade7d9",
+    [
+        7143,
+        3182,
+        4348,
+        4286,
+        2857,
+        3182,
+        3333,
+        3182,
+        18
+    ],
+    "1.5",
+    "",
+    "1970/1/1 08:00:00",
+    [
+        "7922,185",
+        "7922,185",
+        "7922,185",
+        "7922,185",
+        "7922,185",
+        "7922,185",
+        "7922,185",
+        "7922,185",
+        "7922,185",
+        "7922,185",
+        "7922,185",
+        "7922,185"
+    ],
+    "#40",
+    [
+        40,
+        26,
+        1504,
+        1003,
+        2,
+        2,
+        3,
+        2,
+        5
+    ],
+    [
+        [
+            "application/pdf",
+            "#1"
+        ],
+        [
+            "text/pdf",
+            "#1"
+        ]
+    ],
+    "1",
+    [
+        "http://192.168.3.25:8080/adscore.html",
+        "",
+        190056,
+        190056,
+        "reload",
+        300,
+        0,
+        1.4000000059604645,
+        1.4000000059604645,
+        1.4000000059604645,
+        1.4000000059604645,
+        0,
+        5.200000017881393,
+        10.300000011920929,
+        7.200000017881393,
+        0
+    ],
+    [
+        [
+            "PDF Viewer",
+            "#7",
+            "#1"
+        ],
+        [
+            "Chrome PDF Viewer",
+            "#7",
+            "#1"
+        ],
+        [
+            "Chromium PDF Viewer",
+            "#7",
+            "#1"
+        ],
+        [
+            "Microsoft Edge PDF Viewer",
+            "#7",
+            "#1"
+        ],
+        [
+            "WebKit built-in PDF",
+            "#7",
+            "#1"
+        ]
+    ],
+    "1",
+    [
+        [
+            "window.SecurityPolicyViolationEvent",
+            "function SecurityPolicyViolationEvent() { [native code] }"
+        ],
+        [
+            "window.SVGFESpecularLightingElement",
+            "function SVGFESpecularLightingElement() { [native code] }"
+        ],
+        [
+            "window.ReadableByteStreamController",
+            "function ReadableByteStreamController() { [native code] }"
+        ],
+        [
+            "window.PerformanceObserverEntryList",
+            "function PerformanceObserverEntryList() { [native code] }"
+        ],
+        [
+            "window.IntegrityViolationReportBody",
+            "function IntegrityViolationReportBody() { [native code] }"
+        ],
+        [
+            "window.webkitSpeechRecognitionError",
+            "function SpeechRecognitionErrorEvent() { [native code] }"
+        ],
+        [
+            "window.webkitSpeechRecognitionEvent",
+            "function SpeechRecognitionEvent() { [native code] }"
+        ]
+    ],
+    "0",
+    "undefined",
+    "undefined",
+    "object",
+    "object",
+    "function",
+    "http://192.168.3.25:8080/adscore.html",
+    "0",
+    "visible",
+    "0",
+    "1",
+    "1",
+    "1",
+    "1",
+    "1",
+    "1",
+    "object",
+    "",
+    "",
+    "",
+    "0",
+    "2",
+    "0",
+    "",
+    "",
+    "",
+    "",
+    "",
+    "850",
+    "640",
+    "434",
+    "74",
+    "865",
+    "769",
+    "850",
+    "640",
+    "1",
+    "function hasFocus() { [native code] }",
+    "1",
+    "",
+    "4294705152",
+    "landscape-primary",
+    "",
+    "",
+    "0",
+    "0",
+    "1504",
+    "1003",
+    "1504",
+    "955",
+    "24",
+    "24",
+    "",
+    "",
+    "1.5",
+    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36",
+    "5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36",
+    "Mozilla",
+    "",
+    "Gecko",
+    "20030107",
+    "Google Inc.",
+    "",
+    "",
+    "Win32",
+    "",
+    "",
+    "8",
+    "10",
+    "",
+    "zh-CN",
+    "zh-CN,en-US,zh",
+    "",
+    "",
+    "",
+    "1",
+    "",
+    "1",
+    "",
+    "1",
+    "",
+    "",
+    "1",
+    "0",
+    "1",
+    "",
+    "",
+    "",
+    "",
+    "",
+    "",
+    "",
+    "",
+    "1754009450324",
+    "-480",
+    "",
+    "4g",
+    "",
+    "1.75",
+    "200",
+    "0",
+    "",
+    "",
+    "",
+    "0",
+    "1754009450256",
+    "1754009450256",
+    "1754009450256",
+    "1754009450256",
+    "1754009450256",
+    "0",
+    "1754009450260",
+    "1754009450262",
+    "1754009450265",
+    "undefined",
+    "undefined",
+    "number",
+    "#36",
+    "#14",
+    "#14",
+    "[object PluginArray]",
+    "#46",
+    "function animate() { [native code] }",
+    "[object Screen]",
+    "function open() { [native code] }",
+    "",
+    "#49",
+    "",
+    "0",
+    "#45",
+    "#0",
+    "#0",
+    "#0",
+    "",
+    "",
+    "#22",
+    "#27",
+    "0",
+    "string",
+    "#13",
+    "#41",
+    "adsco.re",
+    "",
+    "#5",
+    "",
+    "#5",
+    "#18",
+    "Asia/Shanghai",
+    "zh-CN",
+    "1",
+    "",
+    "",
+    "",
+    "",
+    "",
+    [
+        0.8950883249700509,
+        0.6374318101277664,
+        0.3890178378728023,
+        0.4519344209867189,
+        0.2833186800722811
+    ],
+    "0",
+    [
+        -1,
+        -1,
+        -1
+    ],
+    "EtMRQX3qWnLyE31lhaTZGgMUmQRtyU7Q",
+    [
+        "0",
+        "0",
+        "850",
+        "8",
+        "0",
+        "0"
+    ],
+    [
+        "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+        "#15",
+        "WebKit",
+        "WebKit WebGL",
+        "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+        "Google Inc. (Google)",
+        3
+    ],
+    [
+        "3d5f5443",
+        "d173297388a242abdd867fb66a369d3f",
+        "70d36328dfafb3ba8b4666efc00383fd"
+    ],
+    [
+        "2bd5c27724f4d22e6e5c5c051f4eebd4",
+        "3bc48fa030b4db10f72ee998b2e5b5a4"
+    ],
+    [
+        "AddSearchProvider",
+        "IsSearchProviderInstalled"
+    ],
+    "-3",
+    "8",
+    "-1",
+    "0",
+    "0",
+    "100",
+    [
+        "36.27.118.240,a08cc63e9197d110865e7c03475db9e2",
+        199.40000000596046,
+        209.90000000596046
+    ],
+    [
+        "36.27.118.240,a08cc63e9197d110865e7c03475db9e2",
+        199.7000000178814,
+        213
+    ],
+    [
+        "36.27.118.240,a08cc63e9197d110865e7c03475db9e2",
+        199.80000001192093,
+        227.10000002384186
+    ],
+    [
+        "36.27.118.240,a08cc63e9197d110865e7c03475db9e2",
+        199.90000000596046,
+        227.5
+    ],
+    "0",
+    "-1",
+    "-1",
+    "-1",
+    "-1",
+    [
+        "#0.9850158296636957\r\ncontent-length: 190056\r\ncontent-type: text/html\r\ndate: Fri, 01 Aug 2025 00:50:50 GMT\r\nlast-modified: Fri, 01 Aug 2025 00:36:25 GMT\r\nserver: SimpleHTTP/0.6 Python/3.12.3\r\n",
+        200.40000000596046,
+        null,
+        215.40000000596046
+    ],
+    [
+        [
+            "zh-CN",
+            "Microsoft Huihui - Chinese (Simplified, PRC)",
+            "Microsoft Huihui - Chinese (Simplified, PRC)"
+        ],
+        [
+            "en-US",
+            "Microsoft Mark - English (United States)",
+            "Microsoft Mark - English (United States)"
+        ],
+        [
+            "en-US",
+            "Microsoft Zira - English (United States)",
+            "Microsoft Zira - English (United States)"
+        ],
+        [
+            "en-US",
+            "Microsoft David - English (United States)",
+            "Microsoft David - English (United States)"
+        ],
+        [
+            "zh-CN",
+            "Microsoft Kangkang - Chinese (Simplified, PRC)",
+            "Microsoft Kangkang - Chinese (Simplified, PRC)"
+        ],
+        [
+            "zh-CN",
+            "Microsoft Yaoyao - Chinese (Simplified, PRC)",
+            "Microsoft Yaoyao - Chinese (Simplified, PRC)"
+        ],
+        [
+            "de-DE",
+            "Google Deutsch",
+            "Google Deutsch"
+        ],
+        [
+            "en-US",
+            "Google US English",
+            "Google US English"
+        ],
+        [
+            "en-GB",
+            "Google UK English Female",
+            "Google UK English Female"
+        ],
+        [
+            "en-GB",
+            "Google UK English Male",
+            "Google UK English Male"
+        ],
+        [
+            "es-ES",
+            "Google español",
+            "Google español"
+        ],
+        [
+            "es-US",
+            "Google español de Estados Unidos",
+            "Google español de Estados Unidos"
+        ],
+        [
+            "fr-FR",
+            "Google français",
+            "Google français"
+        ],
+        [
+            "hi-IN",
+            "Google हिन्दी",
+            "Google हिन्दी"
+        ],
+        [
+            "id-ID",
+            "Google Bahasa Indonesia",
+            "Google Bahasa Indonesia"
+        ],
+        [
+            "it-IT",
+            "Google italiano",
+            "Google italiano"
+        ],
+        [
+            "ja-JP",
+            "Google 日本語",
+            "Google 日本語"
+        ],
+        [
+            "ko-KR",
+            "Google 한국의",
+            "Google 한국의"
+        ],
+        [
+            "nl-NL",
+            "Google Nederlands",
+            "Google Nederlands"
+        ],
+        [
+            "pl-PL",
+            "Google polski",
+            "Google polski"
+        ],
+        [
+            "pt-BR",
+            "Google português do Brasil",
+            "Google português do Brasil"
+        ],
+        [
+            "ru-RU",
+            "Google русский",
+            "Google русский"
+        ],
+        [
+            "zh-CN",
+            "Google 普通话（中国大陆）",
+            "Google 普通话（中国大陆）"
+        ],
+        [
+            "zh-HK",
+            "Google 粤語（香港）",
+            "Google 粤語（香港）"
+        ],
+        [
+            "zh-TW",
+            "Google 國語（臺灣）",
+            "Google 國語（臺灣）"
+        ]
+    ],
+    [
+        152716913049,
+        4427
+    ],
+    "-1",
+    "-1",
+    [
+        "candidate:3882480324 1 udp 2113937151 72e0cfe1-69f7-44a3-876c-f7926d73a10d.local 62652 typ host generation 0 ufrag bg3Z network-cost 999"
+    ],
+    [
+        "candidate:2794668435 1 udp 2113937151 72e0cfe1-69f7-44a3-876c-f7926d73a10d.local 62654 typ host generation 0 ufrag lte3 network-cost 999"
+    ],
+    "548.3000000119209",
+    [
+        "0.09999999403953552",
+        "120.5"
+    ],
+    []
+]

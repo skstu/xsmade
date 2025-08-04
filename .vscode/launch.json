@@ -5,12 +5,14 @@
       "name": "Windows Build With CMake Ninja",
       "type": "cppdbg",
       "request": "launch",
-      "program": "${workspaceFolder}/bin/main.exe",
-      "args": [
-        " ",
-        "--mode=model_level_3",
-        " ",
-      ],
+      // "program": "${workspaceFolder}/bin/main.exe",
+      // "args": [
+      //   " ",
+      //   "--mode=model_level_0",
+      //   " ",
+      // ],
+      "program": "${workspaceFolder}/bin/tests/test_cceng.exe",
+      "args": [],
       // "program": "${workspaceFolder}/bin/tests/test_curlcc.exe",
       // "args": [
       //   "--proxy-string=socks5h://1AmYtA10414086127A40151:YYysdtk6BiOR@104.140.86.127:40151",

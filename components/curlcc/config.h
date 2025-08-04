@@ -1,6 +1,8 @@
 #if !defined(__1DEAAA9E_B38C_431E_945C_B8BF2A69DF0F__)
 #define __1DEAAA9E_B38C_431E_945C_B8BF2A69DF0F__
 
+#define CURLCC_USE_SOCKS5 0
+
 #include <xs.h>
 #include <stl.hpp>
 #include <curl/curl.h>

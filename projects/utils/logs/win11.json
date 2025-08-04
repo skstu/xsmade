@@ -1,0 +1,662 @@
+[
+    "1749925872",
+    "QrtNBAAAAAAAxXV2ACa43iGJNv_7naZD0or7r-g",
+    "dev001",
+    "3",
+    "",
+    "AAK11aRn20f9AaC1MPiTdddA07ybIsMSsKPQdftMoGr1eUYW5uuIIZ8-9OIf2xECn677V-9Cs921egKZh-B9fIbfSMToKXEFljPZsOmXN7tCvA",
+    "",
+    "0",
+    "0",
+    "0",
+    "8mUXlgVMagDc",
+    [
+        "webgl2",
+        15,
+        0
+    ],
+    [],
+    "0",
+    [
+        1754016258480,
+        null,
+        120.963,
+        15
+    ],
+    [
+        1754016258.491,
+        "unknown",
+        0,
+        0,
+        0,
+        0,
+        "Other",
+        "",
+        1754016258.48,
+        1754016258.48,
+        false,
+        false,
+        false
+    ],
+    "0.9",
+    "10000",
+    "1",
+    "TypeError: Cannot read properties of null (reading '0')\n    at file:///C:/Users/k34ub/Desktop/AdsModes/adscore.html:600:21\n    at Ob (file:///C:/Users/k34ub/Desktop/AdsModes/adscore.html:605:15)\n    at yb (file:///C:/Users/k34ub/Desktop/AdsModes/adscore.html:2298:13)\n    at AdscoreInit (file:///C:/Users/k34ub/Desktop/AdsModes/adscore.html:4631:27)\n    at file:///C:/Users/k34ub/Desktop/AdsModes/adscore.html:4839:16",
+    "0",
+    "1",
+    "d2993a2c71e4738fc5bb3c5e6d9ee3e5",
+    [
+        5000,
+        2727,
+        5500,
+        6667,
+        7000,
+        5000,
+        5500,
+        8000,
+        17
+    ],
+    "1.5",
+    "",
+    "1970/1/1 08:00:00",
+    [
+        "7922,185",
+        "7922,185",
+        "7922,185",
+        "7922,185",
+        "7922,185",
+        "7922,185",
+        "7922,185",
+        "7922,185",
+        "7922,185",
+        "7922,185",
+        "7922,185",
+        "7922,185"
+    ],
+    "#40",
+    [
+        40,
+        26,
+        1504,
+        1003,
+        2,
+        2,
+        3,
+        2,
+        5
+    ],
+    [
+        [
+            "application/pdf",
+            "#1"
+        ],
+        [
+            "text/pdf",
+            "#1"
+        ]
+    ],
+    "1",
+    [
+        "file:///C:/Users/k34ub/Desktop/AdsModes/adscore.html",
+        "",
+        190066,
+        190066,
+        "navigate",
+        190366,
+        0,
+        11.099999994039536,
+        11.099999994039536,
+        11.099999994039536,
+        11.099999994039536,
+        0,
+        11.099999994039536,
+        66.5,
+        11.099999994039536,
+        0
+    ],
+    [
+        [
+            "PDF Viewer",
+            "#7",
+            "#1"
+        ],
+        [
+            "Chrome PDF Viewer",
+            "#7",
+            "#1"
+        ],
+        [
+            "Chromium PDF Viewer",
+            "#7",
+            "#1"
+        ],
+        [
+            "Microsoft Edge PDF Viewer",
+            "#7",
+            "#1"
+        ],
+        [
+            "WebKit built-in PDF",
+            "#7",
+            "#1"
+        ]
+    ],
+    "1",
+    [
+        [
+            "window.SecurityPolicyViolationEvent",
+            "function SecurityPolicyViolationEvent() { [native code] }"
+        ],
+        [
+            "window.SVGFESpecularLightingElement",
+            "function SVGFESpecularLightingElement() { [native code] }"
+        ],
+        [
+            "window.ReadableByteStreamController",
+            "function ReadableByteStreamController() { [native code] }"
+        ],
+        [
+            "window.PerformanceObserverEntryList",
+            "function PerformanceObserverEntryList() { [native code] }"
+        ],
+        [
+            "window.FileSystemWritableFileStream",
+            "function FileSystemWritableFileStream() { [native code] }"
+        ],
+        [
+            "window.IntegrityViolationReportBody",
+            "function IntegrityViolationReportBody() { [native code] }"
+        ],
+        [
+            "window.webkitSpeechRecognitionError",
+            "function SpeechRecognitionErrorEvent() { [native code] }"
+        ],
+        [
+            "window.webkitSpeechRecognitionEvent",
+            "function SpeechRecognitionEvent() { [native code] }"
+        ]
+    ],
+    "0",
+    "undefined",
+    "object",
+    "object",
+    "object",
+    "function",
+    "file:///C:/Users/k34ub/Desktop/AdsModes/adscore.html",
+    "0",
+    "visible",
+    "0",
+    "1",
+    "1",
+    "1",
+    "1",
+    "1",
+    "1",
+    "object",
+    "",
+    "#47",
+    "",
+    "0",
+    "1",
+    "0",
+    "0",
+    "",
+    "",
+    "",
+    "",
+    "851",
+    "641",
+    "580",
+    "169",
+    "866",
+    "770",
+    "851",
+    "641",
+    "1",
+    "function hasFocus() { [native code] }",
+    "1",
+    "",
+    "3760000000",
+    "landscape-primary",
+    "",
+    "",
+    "0",
+    "0",
+    "1504",
+    "1003",
+    "1504",
+    "955",
+    "24",
+    "24",
+    "",
+    "",
+    "1.5",
+    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36",
+    "5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36",
+    "Mozilla",
+    "",
+    "Gecko",
+    "20030107",
+    "Google Inc.",
+    "",
+    "",
+    "Win32",
+    "",
+    "",
+    "8",
+    "10",
+    "",
+    "zh-CN",
+    "zh-CN,en-US,zh",
+    "",
+    "",
+    "",
+    "1",
+    "8",
+    "1",
+    "",
+    "1",
+    "",
+    "",
+    "0",
+    "0",
+    "1",
+    "",
+    "",
+    "",
+    "",
+    "",
+    "",
+    "",
+    "",
+    "1754016258580",
+    "-480",
+    "",
+    "4g",
+    "",
+    "1.5",
+    "100",
+    "0",
+    "",
+    "",
+    "",
+    "0",
+    "1754016258491",
+    "1754016258491",
+    "1754016258491",
+    "1754016258491",
+    "1754016258491",
+    "0",
+    "1754016258491",
+    "1754016258491",
+    "1754016258546",
+    "undefined",
+    "undefined",
+    "number",
+    "#36",
+    "#14",
+    "#14",
+    "[object PluginArray]",
+    "#46",
+    "function animate() { [native code] }",
+    "[object Screen]",
+    "function open() { [native code] }",
+    "",
+    "#49",
+    "",
+    "0",
+    "#45",
+    "#0",
+    "#0",
+    "#0",
+    "",
+    "",
+    "#22",
+    "#27",
+    "1",
+    "string",
+    "#13",
+    "#41",
+    "adsco.re",
+    "",
+    "#5",
+    "",
+    "#5",
+    "#18",
+    "Asia/Shanghai",
+    "zh-CN",
+    "1",
+    "",
+    "",
+    "",
+    "",
+    "",
+    [
+        0.31427366399930456,
+        0.3313756116042017,
+        0.8927742094636996,
+        0.9606837358857618,
+        0.08064914018703317
+    ],
+    "0",
+    [
+        0,
+        "Windows",
+        [
+            [
+                "Not)A;Brand",
+                "8"
+            ],
+            [
+                "Chromium",
+                "138"
+            ],
+            [
+                "Google Chrome",
+                "138"
+            ]
+        ]
+    ],
+    "ikxQaZt9GC7eeslWeT5Txo9UrnKpBK6m",
+    [
+        "0",
+        "0",
+        "851.3333740234375",
+        "8",
+        "0",
+        "0"
+    ],
+    [
+        "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+        "#15",
+        "WebKit",
+        "WebKit WebGL",
+        "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+        "Google Inc. (Google)",
+        10
+    ],
+    [
+        "3d5f5443",
+        "d173297388a242abdd867fb66a369d3f",
+        "70d36328dfafb3ba8b4666efc00383fd"
+    ],
+    [
+        "2bd5c27724f4d22e6e5c5c051f4eebd4",
+        "3bc48fa030b4db10f72ee998b2e5b5a4"
+    ],
+    [
+        "AddSearchProvider",
+        "IsSearchProviderInstalled"
+    ],
+    [
+        "100",
+        "1"
+    ],
+    "8",
+    [
+        [
+            "org.w3.clearkey",
+            "video/mp4; codecs=\"avc1.42E01E\"",
+            ""
+        ],
+        [
+            "com.widevine.alpha",
+            "video/mp4; codecs=\"avc1.42E01E\"",
+            "SW_SECURE_CRYPTO"
+        ],
+        [
+            "com.widevine.alpha",
+            "video/mp4; codecs=\"avc1.42E01E\"",
+            "SW_SECURE_DECODE"
+        ],
+        [
+            "org.w3.clearkey",
+            "video/mp4; codecs=\"avc1.42c00d\"",
+            ""
+        ],
+        [
+            "com.widevine.alpha",
+            "video/mp4; codecs=\"avc1.42c00d\"",
+            "SW_SECURE_CRYPTO"
+        ],
+        [
+            "com.widevine.alpha",
+            "video/mp4; codecs=\"avc1.42c00d\"",
+            "SW_SECURE_DECODE"
+        ]
+    ],
+    "1",
+    "0",
+    "100",
+    [
+        -1,
+        375.5,
+        884.0999999940395
+    ],
+    [
+        -1,
+        376,
+        884.0999999940395
+    ],
+    [
+        -1,
+        376.19999998807907,
+        884.1999999880791
+    ],
+    [
+        -1,
+        376.19999998807907,
+        884.1999999880791
+    ],
+    "0",
+    [
+        "#25",
+        "#25",
+        "",
+        7,
+        3
+    ],
+    [
+        null,
+        null,
+        null
+    ],
+    [
+        null,
+        null,
+        null,
+        16
+    ],
+    [
+        1055,
+        292,
+        468,
+        2
+    ],
+    [
+        "#0.8208394908179127\r\n",
+        377.09999999403954,
+        null,
+        413.2999999821186
+    ],
+    [
+        [
+            "zh-CN",
+            "Microsoft Huihui - Chinese (Simplified, PRC)",
+            "Microsoft Huihui - Chinese (Simplified, PRC)"
+        ],
+        [
+            "en-US",
+            "Microsoft Mark - English (United States)",
+            "Microsoft Mark - English (United States)"
+        ],
+        [
+            "en-US",
+            "Microsoft Zira - English (United States)",
+            "Microsoft Zira - English (United States)"
+        ],
+        [
+            "en-US",
+            "Microsoft David - English (United States)",
+            "Microsoft David - English (United States)"
+        ],
+        [
+            "zh-CN",
+            "Microsoft Kangkang - Chinese (Simplified, PRC)",
+            "Microsoft Kangkang - Chinese (Simplified, PRC)"
+        ],
+        [
+            "zh-CN",
+            "Microsoft Yaoyao - Chinese (Simplified, PRC)",
+            "Microsoft Yaoyao - Chinese (Simplified, PRC)"
+        ],
+        [
+            "de-DE",
+            "Google Deutsch",
+            "Google Deutsch"
+        ],
+        [
+            "en-US",
+            "Google US English",
+            "Google US English"
+        ],
+        [
+            "en-GB",
+            "Google UK English Female",
+            "Google UK English Female"
+        ],
+        [
+            "en-GB",
+            "Google UK English Male",
+            "Google UK English Male"
+        ],
+        [
+            "es-ES",
+            "Google español",
+            "Google español"
+        ],
+        [
+            "es-US",
+            "Google español de Estados Unidos",
+            "Google español de Estados Unidos"
+        ],
+        [
+            "fr-FR",
+            "Google français",
+            "Google français"
+        ],
+        [
+            "hi-IN",
+            "Google हिन्दी",
+            "Google हिन्दी"
+        ],
+        [
+            "id-ID",
+            "Google Bahasa Indonesia",
+            "Google Bahasa Indonesia"
+        ],
+        [
+            "it-IT",
+            "Google italiano",
+            "Google italiano"
+        ],
+        [
+            "ja-JP",
+            "Google 日本語",
+            "Google 日本語"
+        ],
+        [
+            "ko-KR",
+            "Google 한국의",
+            "Google 한국의"
+        ],
+        [
+            "nl-NL",
+            "Google Nederlands",
+            "Google Nederlands"
+        ],
+        [
+            "pl-PL",
+            "Google polski",
+            "Google polski"
+        ],
+        [
+            "pt-BR",
+            "Google português do Brasil",
+            "Google português do Brasil"
+        ],
+        [
+            "ru-RU",
+            "Google русский",
+            "Google русский"
+        ],
+        [
+            "zh-CN",
+            "Google 普通话（中国大陆）",
+            "Google 普通话（中国大陆）"
+        ],
+        [
+            "zh-HK",
+            "Google 粤語（香港）",
+            "Google 粤語（香港）"
+        ],
+        [
+            "zh-TW",
+            "Google 國語（臺灣）",
+            "Google 國語（臺灣）"
+        ]
+    ],
+    [
+        152716913049,
+        0
+    ],
+    "-1",
+    [
+        "x86",
+        "64",
+        [
+            [
+                "Not)A;Brand",
+                "8"
+            ],
+            [
+                "Chromium",
+                "138"
+            ],
+            [
+                "Google Chrome",
+                "138"
+            ]
+        ],
+        [
+            [
+                "Not)A;Brand",
+                "8.0.0.0"
+            ],
+            [
+                "Chromium",
+                "138.0.7204.170"
+            ],
+            [
+                "Google Chrome",
+                "138.0.7204.170"
+            ]
+        ],
+        "0",
+        "",
+        "Windows",
+        "19.0.0"
+    ],
+    [
+        "candidate:1696782419 1 udp 2113937151 d2454e34-b5fa-4f7d-b9ba-c43a225fd690.local 56495 typ host generation 0 ufrag UuXl network-cost 999"
+    ],
+    [
+        "candidate:299456892 1 udp 2113937151 d2454e34-b5fa-4f7d-b9ba-c43a225fd690.local 56497 typ host generation 0 ufrag MxZx network-cost 999"
+    ],
+    "804.7000000178814",
+    [
+        "0.19999998807907104",
+        "263"
+    ],
+    []
+]

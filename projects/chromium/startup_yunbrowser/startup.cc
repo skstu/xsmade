@@ -92,7 +92,11 @@ void Startup::GenerateDynamicProxyInfo(std::string &chromium,
   const int port = 16586;
   const std::string proxy_string =
       username + ":" + password + "@" + host + ":" + std::to_string(port);
+#if CURLCC_USE_SOCKS5
   curl = "socks5h://" + proxy_string;
+#else
+  curl = "http://" + proxy_string;
+#endif
   chromium = "socks5://" + proxy_string;
 }
 void Startup::ConfigureBegin() {
@@ -133,11 +137,36 @@ void Startup::ConfigureBegin() {
 }
 void Startup::ConfigureEnd() {
   do {
-    std::string chromium_proxy_string, curl_proxy_string;
-    GenerateDynamicProxyInfo(chromium_proxy_string, curl_proxy_string);
-    LOG_INFO("Proxy: {}", chromium_proxy_string);
-    ConfigDynamicInfo(R"(http://ip-api.com/json)", curl_proxy_string, xsiumio);
-    xsiumio.proxy.credentials_url = chromium_proxy_string;
+    if (!model_succes_.empty()) {
+      chromium::xsiumio::IXSiumio tmp;
+      std::string chromium_proxy_string, curl_proxy_string;
+      GenerateDynamicProxyInfo(chromium_proxy_string, curl_proxy_string);
+      LOG_INFO("Proxy: {}", chromium_proxy_string);
+      ConfigDynamicInfo(R"(http://ip-api.com/json)",
+                        xsiumio.proxy.enable ? curl_proxy_string : "", tmp);
+
+      xsiumio << model_succes_;
+      xsiumio.dynFpsInfo.ipinfo.city = tmp.dynFpsInfo.ipinfo.city;
+      xsiumio.dynFpsInfo.ipinfo.country = tmp.dynFpsInfo.ipinfo.country;
+      xsiumio.dynFpsInfo.ipinfo.region = tmp.dynFpsInfo.ipinfo.region;
+      xsiumio.dynFpsInfo.ipinfo.timezone = tmp.dynFpsInfo.ipinfo.timezone;
+      xsiumio.dynFpsInfo.ipinfo.lat = tmp.dynFpsInfo.ipinfo.lat;
+      xsiumio.dynFpsInfo.ipinfo.lon = tmp.dynFpsInfo.ipinfo.lon;
+      xsiumio.dynFpsInfo.ipinfo.isp = tmp.dynFpsInfo.ipinfo.isp;
+      xsiumio.dynFpsInfo.ipinfo.ip = tmp.dynFpsInfo.ipinfo.ip;
+      is_first_run_.store(false);
+    } else {
+      if (!is_first_run_.load()) {
+        std::this_thread::sleep_for(std::chrono::milliseconds(
+            stl::Random::GetRandomValue<int>(1000 * 3, 1000 * 18)));
+      }
+      std::string chromium_proxy_string, curl_proxy_string;
+      GenerateDynamicProxyInfo(chromium_proxy_string, curl_proxy_string);
+      LOG_INFO("Proxy: {}", chromium_proxy_string);
+      ConfigDynamicInfo(R"(http://ip-api.com/json)",
+                        xsiumio.proxy.enable ? curl_proxy_string : "", xsiumio);
+      xsiumio.proxy.credentials_url = chromium_proxy_string;
+    }
     chromium::yunlogin::IConfigure cfgdat("");
     std::cout << "Use model id " << xsiumio.identify << std::endl;
     LOG_INFO("Use model id {}", xsiumio.identify);
@@ -147,14 +176,14 @@ void Startup::ConfigureEnd() {
     xsiumio >> docOutput;
     xsiumioBuffer = Json::toString(docOutput);
 
-    auto fp_xsiumbuf = cache_.search(curl_proxy_string);
-    if (fp_xsiumbuf) {
-      xsiumioBuffer = *fp_xsiumbuf;
-      std::cout << "Using cached xsiumio buffer for proxy: "
-                << curl_proxy_string << std::endl;
-    } else {
-      cache_.push(curl_proxy_string, xsiumioBuffer);
-    }
+    // auto fp_xsiumbuf = cache_.search(curl_proxy_string);
+    // if (fp_xsiumbuf) {
+    //   xsiumioBuffer = *fp_xsiumbuf;
+    //   std::cout << "Using cached xsiumio buffer for proxy: "
+    //             << curl_proxy_string << std::endl;
+    // } else {
+    //   cache_.push(curl_proxy_string, xsiumioBuffer);
+    // }
 
     cfgdat << xsiumioBuffer;
     cfgdat >> cfgdatBuffer;
@@ -166,14 +195,14 @@ void Startup::ConfigureEnd() {
     // stl::File::WriteFile(Config::CreateOrGet()->GetChromiumUserDataDir() +
     //                          "/xsiumio.json",
     //                      xsiumioBuffer);
-    stl::File::WriteFile(Config::CreateOrGet()->GetChromiumUserDataDir() + "/" +
-                             chromium::yunlogin::kFilenameConfig,
-                         cfgdatBufferEncrypted);
 #else
+#endif
+    stl::File::WriteFile(Config::CreateOrGet()->GetCurrentDir() +
+                             "/xsiumio.json",
+                         xsiumioBuffer);
     stl::File::WriteFile(Config::CreateOrGet()->GetChromiumUserDataDir() + "/" +
                              chromium::yunlogin::kFilenameConfig,
                          cfgdatBufferEncrypted);
-#endif
     LOG_INFO("{}---\n{}", xsiumio.identify, xsiumioBuffer);
   } while (0);
 }
@@ -264,7 +293,9 @@ bool Startup::ConfigDynamicInfo(const std::string &url,
     auto reqArray = pCurl->CreateRequestArray();
     auto reqMyip = pCurl->CreateRequest();
     reqMyip->SetUrl(url.c_str());
-    reqMyip->SetProxyString(proxyString.c_str());
+    if (!proxyString.empty()) {
+      reqMyip->SetProxyString(proxyString.c_str());
+    }
     reqArray->Push(reqMyip);
     curl::ICurl::IRequestArray *resArrsy = pCurl->Perform(reqArray);
     for (size_t i = 0; i < resArrsy->Total(); ++i) {
@@ -419,18 +450,21 @@ void Startup::NotifyRequestResult(const std::string &body) {
         }
       }
     }
-    if (!result)
+    if (!result) {
+      model_succes_.clear();
       break;
+    }
     std::string mode_filename =
         std::to_string(stl::Time::TimeStamp<std::chrono::microseconds>()) +
         ".mode";
     std::string mode_data;
     rapidjson::Document modeDoc(rapidjson::Type::kObjectType);
     xsiumio >> modeDoc;
-    mode_data = Json::toString(modeDoc);
+    model_succes_ = Json::toString(modeDoc);
     stl::File::WriteFile(Config::CreateOrGet()->GetProjectModelPartsDir() +
                              "/" + mode_filename,
-                         mode_data);
+                         model_succes_);
+
   } while (0);
   lck.unlock();
 }

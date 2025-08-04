@@ -72,7 +72,6 @@ void Request::SetProxyString(const char *in_proxy_string) {
   }
 }
 
-
 const std::string &Request::GetMethod() const {
   std::lock_guard<std::mutex> lock(*mtx_);
   return method_;
@@ -95,6 +94,9 @@ void Request::SetResponseCode(const int &code) {
 }
 const std::string Request::GetProxyAddress() const {
   std::lock_guard<std::mutex> lock(*mtx_);
+  if (proxy_info_.host.empty() || proxy_info_.port.empty()) {
+    return "";
+  }
   return proxy_info_.host + ":" + proxy_info_.port;
 }
 const std::string &Request::GetProxyUsername() const {

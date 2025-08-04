@@ -17,6 +17,8 @@ constexpr char kProjectDirnameDefaultUserData[] = "chromium";
 constexpr char kProjectDirnameComponents[] = "components";
 constexpr char kProjectDirnameExtensions[] = "extensions";
 constexpr char kProjectDirnameRoute[] = "route";
+constexpr char kProjectDirnameFpsdb[] = "fpsdb";
+constexpr char kProjectDirnameDeviceOutput[] = "devices";
 constexpr char kProjectDirnameTmp[] = "tmp";
 constexpr char kProjectDirnameCache[] = "cache";
 constexpr char kProjectDirnameLogs[] = "logs";
@@ -493,6 +495,35 @@ public:
       }
     };
     struct Screen {
+      struct Dpi {
+        inline Dpi();
+        inline ~Dpi();
+
+        int x = 96; //!@ Default DPI for X axis
+        int y = 96; //!@ Default DPI for Y axis
+
+        void operator>>(rapidjson::Document &doc) const {
+          if (!doc.IsObject())
+            return;
+          rapidjson::Document tmpDoc(rapidjson::Type::kObjectType);
+          auto &allocHash = tmpDoc.GetAllocator();
+          RAPIDJSON_ADDMEMBER_INT(tmpDoc, std::string("x"), x, allocHash);
+          RAPIDJSON_ADDMEMBER_INT(tmpDoc, std::string("y"), y, allocHash);
+          rapidjson::Value tmpValue(tmpDoc, doc.GetAllocator());
+          doc.AddMember(rapidjson::Value("dpi", doc.GetAllocator()).Move(),
+                        tmpValue, doc.GetAllocator());
+        }
+        void operator<<(const rapidjson::Value &v) {
+          if (!v.IsObject())
+            return;
+          if (v.HasMember("x") && v["x"].IsInt()) {
+            x = v["x"].GetInt();
+          }
+          if (v.HasMember("y") && v["y"].IsInt()) {
+            y = v["y"].GetInt();
+          }
+        }
+      };
       inline Screen();
       inline ~Screen();
 
@@ -505,6 +536,7 @@ public:
       int availHeight = 0;
       int availWidth = 0;
       double devicePixelRatio = 1.0;
+      Dpi dpi; //!@ Default DPI for screen, usually 96x96
       bool enable = false;
 
       void operator>>(rapidjson::Document &doc) const {
@@ -531,7 +563,7 @@ public:
                                 allocHash);
         RAPIDJSON_ADDMEMBER_DOUBLE(tmpDoc, std::string("devicePixelRatio"),
                                    devicePixelRatio, allocHash);
-
+        dpi >> tmpDoc;
         rapidjson::Value tmpValue(tmpDoc, doc.GetAllocator());
         doc.AddMember(rapidjson::Value("screen", doc.GetAllocator()).Move(),
                       tmpValue, doc.GetAllocator());
@@ -569,6 +601,9 @@ public:
         }
         if (v.HasMember("enable") && v["enable"].IsBool()) {
           enable = v["enable"].GetBool();
+        }
+        if (v.HasMember("dpi") && v["dpi"].IsObject()) {
+          dpi << v["dpi"];
         }
       }
     };
@@ -738,6 +773,12 @@ public:
               rapidjson::Value("contextAttributes", doc.GetAllocator()).Move(),
               tmpValue, doc.GetAllocator());
         }
+        inline void operator<<(const std::string &str) {
+          rapidjson::Document doc(rapidjson::Type::kObjectType);
+          if (doc.Parse(str.data(), str.size()).HasParseError())
+            return;
+          operator<<(doc);
+        }
         inline void operator<<(const rapidjson::Value &v) {
           if (!v.IsObject())
             return;
@@ -861,6 +902,12 @@ public:
             rapidjson::Value tmpValue(tmpDoc, doc.GetAllocator());
             doc.AddMember(rapidjson::Value("8B30", doc.GetAllocator()).Move(),
                           tmpValue, doc.GetAllocator());
+          }
+          void operator<<(const std::string &str) {
+            rapidjson::Document doc(rapidjson::Type::kObjectType);
+            if (doc.Parse(str.data(), str.size()).HasParseError())
+              return;
+            operator<<(doc);
           }
           void operator<<(const rapidjson::Value &v) {
             do {
@@ -1358,13 +1405,7 @@ public:
 
       bool enable = false;
       std::vector<Brand_version> brand_version_list;
-      //{"Not)A;Brand", "8"}, {"Chromium", "138"}, {"Google Chrome", "138"}};
       std::vector<Brand_full_version> brand_full_version_list;
-      // {
-      // {"Not)A;Brand", "8.0.0.0"},
-      // {"Chromium", "138.0.7204.158"},
-      // {"Google Chrome", "138.0.7204.158"}
-      // };
       std::string full_version = "138.0.7204.158";
       std::string platform = "Windows";
       std::string platform_version = "11.0.0";
@@ -1588,6 +1629,7 @@ public:
     inline ~Fingerprint();
 
     bool enable = false;
+    bool real_fingerprint_output = false;
     std::string do_not_track = "1";
     std::string platform = "Win32";
     unsigned int rtt = 0; //!@ Round-trip time in milliseconds, default is 0
@@ -1619,6 +1661,8 @@ public:
       auto &fpsAllocator = fpsDoc.GetAllocator();
       RAPIDJSON_ADDMEMBER_BOOL(fpsDoc, std::string("enable"), enable,
                                fpsAllocator);
+      RAPIDJSON_ADDMEMBER_BOOL(fpsDoc, std::string("real_fingerprint_output"),
+                               real_fingerprint_output, fpsAllocator);
       RAPIDJSON_ADDMEMBER_STRING(fpsDoc, std::string("do_not_track"),
                                  do_not_track, fpsAllocator);
       RAPIDJSON_ADDMEMBER_STRING(fpsDoc, std::string("platform"), platform,
@@ -1666,6 +1710,10 @@ public:
         return;
       if (v.HasMember("enable") && v["enable"].IsBool()) {
         enable = v["enable"].GetBool();
+      }
+      if (v.HasMember("real_fingerprint_output") &&
+          v["real_fingerprint_output"].IsBool()) {
+        real_fingerprint_output = v["real_fingerprint_output"].GetBool();
       }
       if (v.HasMember("do_not_track") && v["do_not_track"].IsString()) {
         do_not_track = v["do_not_track"].GetString();
@@ -2071,6 +2119,8 @@ inline IXSiumio::Fingerprint::TimeZone::TimeZone() = default;
 inline IXSiumio::Fingerprint::TimeZone::~TimeZone() = default;
 inline IXSiumio::Fingerprint::Screen::Screen() = default;
 inline IXSiumio::Fingerprint::Screen::~Screen() = default;
+inline IXSiumio::Fingerprint::Screen::Dpi::Dpi() = default;
+inline IXSiumio::Fingerprint::Screen::Dpi::~Dpi() = default;
 inline IXSiumio::Fingerprint::Disk::Disk() = default;
 inline IXSiumio::Fingerprint::Disk::~Disk() = default;
 inline IXSiumio::Fingerprint::UserAgentMetadata::UserAgentMetadata() = default;

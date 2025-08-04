@@ -46,13 +46,15 @@ private:
   Server *server_ = nullptr;
   std::atomic<xs_process_id_t> chromium_main_pid_ = 0;
   std::time_t chromium_start_time_ = 0;
-  const std::time_t chromium_timeout_ = 60; //!@ seconds
+  const std::time_t chromium_timeout_ = 70; //!@ seconds
   IComponent *pComponentCurl_ = nullptr;
   chromium::xsiumio::IXSiumio xsiumio;
   std::unique_ptr<std::mutex> mtx_ = std::make_unique<std::mutex>();
   IModel *model_ = nullptr;
   chromium::xsiumio::IFpsdb *fpsdb_ = nullptr;
   stl::container::map<std::string /*ip*/, std::string /*xsiumioBuffer*/> cache_;
+  std::string model_succes_;
+  std::atomic_bool is_first_run_ = true;
 };
 /// /*_ Memade®（新生™） _**/
 /// /*_ Fri, 30 May 2025 00:05:44 GMT _**/
