@@ -1,7 +1,16 @@
 #include "stl.hpp"
 using namespace stl;
 using namespace std;
-
+unsigned long long Time::GoogleTimestamp() {
+  const unsigned long long EPOCH_DIFF_US =
+      11644473600000000ULL; // 1601->1970 in µs
+  auto now = std::chrono::system_clock::now();
+  auto us =
+      std::chrono::duration_cast<std::chrono::microseconds>(now.time_since_epoch()).count();
+  unsigned long long micros_since_1601 =
+      static_cast<unsigned long long>(us) + EPOCH_DIFF_US;
+  return micros_since_1601;
+}
 std::string Time::GetLogTimeCN() {
   auto now = std::chrono::system_clock::now();
   std::time_t now_c = std::chrono::system_clock::to_time_t(now);

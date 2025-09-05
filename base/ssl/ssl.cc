@@ -59,7 +59,7 @@ std::string OpenSSL::Base64Encode(const std::string &src,
     b64 = BIO_new(BIO_f_base64());
     if (!b64)
       break;
-    if (multiline)
+    if (!multiline)
       BIO_set_flags(b64, BIO_FLAGS_BASE64_NO_NL);
     bmem = BIO_new(BIO_s_mem());
     if (!bmem)

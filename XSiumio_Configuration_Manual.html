@@ -1,0 +1,918 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chromium(dev) 指纹浏览器配置说明书</title>
+    <style>
+        body {
+            font-family: 'Microsoft YaHei', Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            border-bottom: 3px solid #3498db;
+            padding-bottom: 10px;
+        }
+        h2 {
+            color: #34495e;
+            border-left: 4px solid #3498db;
+            padding-left: 15px;
+            margin-top: 30px;
+        }
+        h3 {
+            color: #7f8c8d;
+            margin-top: 25px;
+        }
+        .config-section {
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 5px;
+            padding: 20px;
+            margin: 15px 0;
+        }
+        .algorithm-note {
+            background: #e8f4fd;
+            border-left: 4px solid #3498db;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 0 5px 5px 0;
+        }
+        .warning {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 0 5px 5px 0;
+        }
+        .danger {
+            background: #f8d7da;
+            border-left: 4px solid #dc3545;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 0 5px 5px 0;
+        }
+        .code {
+            background: #f4f4f4;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 10px;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            overflow-x: auto;
+        }
+        .param-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+        }
+        .param-table th, .param-table td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+        .param-table th {
+            background-color: #f2f2f2;
+            font-weight: bold;
+        }
+        .param-table tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        .bool-value {
+            color: #28a745;
+            font-weight: bold;
+        }
+        .string-value {
+            color: #dc3545;
+            font-weight: bold;
+        }
+        .number-value {
+            color: #007bff;
+            font-weight: bold;
+        }
+        .toc {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 5px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        .toc ul {
+            list-style: none;
+            padding-left: 0;
+        }
+        .toc li {
+            margin: 5px 0;
+        }
+        .toc a {
+            text-decoration: none;
+            color: #3498db;
+        }
+        .toc a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔒 Chromium(dev) 指纹浏览器配置说明书</h1>
+        
+        <div class="toc">
+            <h3>📋 目录</h3>
+            <ul>
+                <li><a href="#overview">1. 概述</a></li>
+                <li><a href="#adscore-analysis">2. ADSCORE检测策略分析</a></li>
+                <li><a href="#core-config">3. 核心配置</a></li>
+                <li><a href="#proxy">4. 代理配置</a></li>
+                <li><a href="#cookies-storage">5. Cookie和存储配置</a></li>
+                <li><a href="#javascript">6. JavaScript注入</a></li>
+                <li><a href="#startup">7. 启动配置</a></li>
+                <li><a href="#fingerprint">8. 指纹伪装配置</a></li>
+                <li><a href="#extensions">9. 扩展配置</a></li>
+                <li><a href="#webrtc">10. WebRTC配置</a></li>
+                <li><a href="#yunlogin">11. 云登录配置</a></li>
+            </ul>
+        </div>
+
+        <section id="overview">
+            <h2>🎯 1. 概述</h2>
+            <p>Chromium(dev)是基于Chromium内核的专业指纹浏览器，通过<code>model_level_1.cc</code>算法实现智能指纹伪装和反检测。配置文件<code>xsiumio.json</code>控制所有指纹参数的生成策略。</p>
+            
+            <div class="algorithm-note">
+                <strong>🧠 核心特性：</strong>Model-Level-1算法采用多层随机化策略：
+                <ul>
+                    <li>时间戳种子随机数生成</li>
+                    <li>WebGL参数科学扰动（12%特殊值采样）</li>
+                    <li>Canvas局部小块扰动（极小概率hash微抖动）</li>
+                    <li>语音、字体、屏幕参数智能随机化</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="adscore-analysis">
+            <h2>🎯 2. ADSCORE检测策略分析</h2>
+            <p>基于实际分析，ADSCORE采用多层检测机制来识别自动化行为和虚假流量。理解这些检测策略对于配置有效的反检测参数至关重要。</p>
+            
+            <div class="config-section">
+                <h3>🔍 C. 指纹一致性与多样性检测</h3>
+                
+                <h4>参数一致性检测</h4>
+                <div class="danger">
+                    <strong>🚨 核心检测点：</strong>ADSCORE会检查以下参数是否真实一致：
+                    <ul>
+                        <li><strong>UA vs Platform：</strong>User-Agent与navigator.platform的匹配度</li>
+                        <li><strong>Screen vs WebGL：</strong>屏幕分辨率与WebGL viewport的一致性</li>
+                        <li><strong>Canvas vs Audio：</strong>渲染指纹与音频指纹的硬件关联性</li>
+                        <li><strong>Font vs Language：</strong>字体列表与系统语言的地区匹配</li>
+                        <li><strong>Timezone vs IP：</strong>时区设置与IP地理位置的一致性</li>
+                    </ul>
+                </div>
+
+                <h4>多样性检测机制</h4>
+                <div class="algorithm-note">
+                    <strong>📊 流量分析逻辑：</strong>
+                    <ol>
+                        <li><strong>指纹参数分布检查：</strong>检查流量中指纹参数的分布是否符合真实用户的多样性</li>
+                        <li><strong>异常值识别：</strong>如果发现大量流量参数高度相似或伪造痕迹明显，会被判为Bot</li>
+                        <li><strong>统计学分析：</strong>使用统计模型分析参数组合的真实概率</li>
+                    </ol>
+                </div>
+
+                <div class="warning">
+                    <strong>⚠️ Chromium(dev)应对策略：</strong>
+                    <ul>
+                        <li><code>ConfigLanguages()</code>确保语言与地区一致性</li>
+                        <li><code>ConfigWebglDevice()</code>科学化扰动，避免异常值</li>
+                        <li>时间戳种子确保参数组合的合理性</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="config-section">
+                <h3>🤖 D. 机器学习/自适应模型</h3>
+                
+                <h4>动态学习机制</h4>
+                <div class="algorithm-note">
+                    <strong>🧠 ADSCORE智能检测：</strong>
+                    <ul>
+                        <li><strong>历史流量学习：</strong>根据历史流量表现，动态调整判定值和检测规则</li>
+                        <li><strong>Zone级别分析：</strong>某个Zone被判定为异常风险后，后续流量直接进入黑名单</li>
+                        <li><strong>实时模式调整：</strong>检测模型会根据实时数据调整参数权重</li>
+                    </ul>
+                </div>
+
+                <h4>自适应风险评估</h4>
+                <div class="danger">
+                    <strong>🎯 关键风险点：</strong>
+                    <ol>
+                        <li><strong>指纹重复率：</strong>相同指纹在短时间内多次出现</li>
+                        <li><strong>行为模式：</strong>访问路径、停留时间、交互模式的异常</li>
+                        <li><strong>环境一致性：</strong>IP、时区、语言、字体等环境参数的逻辑一致性</li>
+                        <li><strong>技术指纹：</strong>WebGL、Canvas、音频指纹的硬件真实性</li>
+                    </ol>
+                </div>
+
+                <div class="algorithm-note">
+                    <strong>🛡️ Chromium(dev)智能应对：</strong>
+                    <ul>
+                        <li><code>timestamp</code>唯一种子，确保每次生成不同指纹</li>
+                        <li>WebGL特殊值采样（12%概率）模拟真实硬件差异</li>
+                        <li>Canvas局部小块扰动，极小概率触发</li>
+                        <li>Math.sin扰动针对c.adsco.re域名反制</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="config-section">
+                <h3>🚫 E. 黑名单与速率限制</h3>
+                
+                <h4>自动黑名单机制</h4>
+                <div class="danger">
+                    <strong>⚡ 触发条件：</strong>
+                    <ul>
+                        <li><strong>指纹异常：</strong>UA、SubID、referrer、cookie、session等被判定为异常后</li>
+                        <li><strong>流量直接拉黑：</strong>后续流量直接进入黑名单，无需再次检测</li>
+                        <li><strong>关联拉黑：</strong>相似指纹或同源IP可能被关联拉黑</li>
+                    </ul>
+                </div>
+
+                <h4>速率/阈值限制</h4>
+                <div class="warning">
+                    <strong>📈 限制策略：</strong>
+                    <ul>
+                        <li><strong>访问频率：</strong>超过一定访问量或速率，Zone会被自动禁用或流量全部判为Bot</li>
+                        <li><strong>时间窗口：</strong>在特定时间窗口内的流量密度分析</li>
+                        <li><strong>IP段限制：</strong>某些IP段可能被整体限制或重点监控</li>
+                    </ul>
+                </div>
+
+                <div class="algorithm-note">
+                    <strong>🔧 Chromium(dev)流控策略：</strong>
+                    <ul>
+                        <li><code>GetProxyInfo()</code>多代理轮换，分散IP风险</li>
+                        <li><code>random session ID</code>避免session重复</li>
+                        <li><code>blocklist</code>阻止风控域名数据收集</li>
+                        <li>随机延迟（1-10秒）模拟真实访问节奏</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="config-section">
+                <h3>🎯 针对ADSCORE的配置建议</h3>
+                
+                <table class="param-table">
+                    <tr>
+                        <th>检测维度</th>
+                        <th>推荐配置</th>
+                        <th>Chromium(dev)对应算法</th>
+                    </tr>
+                    <tr>
+                        <td>指纹一致性</td>
+                        <td>确保UA/Platform/Language/Timezone联动</td>
+                        <td><code>ConfigBrowser() + ConfigLanguages()</code></td>
+                    </tr>
+                    <tr>
+                        <td>参数多样性</td>
+                        <td>启用所有扰动模块，使用真实分布</td>
+                        <td><code>特殊值采样12% + 科学化扰动</code></td>
+                    </tr>
+                    <tr>
+                        <td>WebGL真实性</td>
+                        <td>使用主流硬件参数范围</td>
+                        <td><code>PERTURB_F/I宏 + 真实区间限制</code></td>
+                    </tr>
+                    <tr>
+                        <td>Canvas检测</td>
+                        <td>极小概率局部扰动</td>
+                        <td><code>8x8像素块微调 + hash抖动</code></td>
+                    </tr>
+                    <tr>
+                        <td>JS环境检测</td>
+                        <td>针对adsco.re的Math.sin扰动</td>
+                        <td><code>frameImplDidClearWindowObject注入</code></td>
+                    </tr>
+                    <tr>
+                        <td>流量分散</td>
+                        <td>多IP代理 + 随机延迟</td>
+                        <td><code>代理池轮换 + 随机session</code></td>
+                    </tr>
+                    <tr>
+                        <td>数据隔离</td>
+                        <td>阻止风控域名数据收集</td>
+                        <td><code>blocklist: ["c.adsco.re"]</code></td>
+                    </tr>
+                </table>
+
+                <div class="danger">
+                    <strong>🚨 关键防护要点：</strong>
+                    <ol>
+                        <li><strong>避免批量相同指纹：</strong>每次启动使用不同timestamp种子</li>
+                        <li><strong>保持环境一致性：</strong>IP地理位置与timezone/language匹配</li>
+                        <li><strong>控制访问频率：</strong>避免短时间大量请求同一Zone</li>
+                        <li><strong>监控黑名单状态：</strong>及时更换被标记的代理IP</li>
+                        <li><strong>渐进式测试：</strong>新配置先小流量测试，确认通过率</li>
+                    </ol>
+                </div>
+            </div>
+        </section>
+
+        <section id="core-config">
+            <h2>⚙️ 3. 核心配置</h2>
+            <div class="config-section">
+                <h3>基础设置</h3>
+                <table class="param-table">
+                    <tr>
+                        <th>参数</th>
+                        <th>类型</th>
+                        <th>说明</th>
+                        <th>算法影响</th>
+                    </tr>
+                    <tr>
+                        <td><code>enable</code></td>
+                        <td class="bool-value">boolean</td>
+                        <td>是否启用Chromium(dev)</td>
+                        <td>控制整个指纹伪装系统</td>
+                    </tr>
+                    <tr>
+                        <td><code>rootDir</code></td>
+                        <td class="string-value">string</td>
+                        <td>根目录路径</td>
+                        <td>指定用户数据存储位置</td>
+                    </tr>
+                    <tr>
+                        <td><code>navigatorWebdriver</code></td>
+                        <td class="bool-value">boolean</td>
+                        <td>是否伪装webdriver属性</td>
+                        <td>反自动化检测关键参数</td>
+                    </tr>
+                    <tr>
+                        <td><code>enable_proxy_info_sync</code></td>
+                        <td class="bool-value">boolean</td>
+                        <td>是否同步代理信息</td>
+                        <td>与IP地理位置信息联动</td>
+                    </tr>
+                    <tr>
+                        <td><code>timestamp</code></td>
+                        <td class="number-value">number</td>
+                        <td>时间戳标识</td>
+                        <td>算法随机种子基础，影响所有随机化</td>
+                    </tr>
+                    <tr>
+                        <td><code>identify</code></td>
+                        <td class="number-value">number</td>
+                        <td>唯一标识符</td>
+                        <td>模型实例标识，通常与timestamp相同</td>
+                    </tr>
+                </table>
+            </div>
+        </section>
+
+        <section id="proxy">
+            <h2>🌐 4. 代理配置</h2>
+            <div class="config-section">
+                <h3>proxy 节点</h3>
+                <table class="param-table">
+                    <tr>
+                        <th>参数</th>
+                        <th>类型</th>
+                        <th>说明</th>
+                        <th>算法影响</th>
+                    </tr>
+                    <tr>
+                        <td><code>enable</code></td>
+                        <td class="bool-value">boolean</td>
+                        <td>是否启用代理</td>
+                        <td>影响GetProxyInfo()函数调用</td>
+                    </tr>
+                    <tr>
+                        <td><code>credentials_url</code></td>
+                        <td class="string-value">string</td>
+                        <td>代理认证URL</td>
+                        <td>算法会随机选择代理或使用默认代理</td>
+                    </tr>
+                </table>
+                
+                <div class="algorithm-note">
+                    <strong>🔄 算法逻辑：</strong><code>GetProxyInfo()</code>函数会：
+                    <ol>
+                        <li>优先从配置的代理池中随机选择</li>
+                        <li>如果代理池为空，使用默认kkoip代理</li>
+                        <li>自动生成随机session ID (100000000-999999999)</li>
+                        <li>支持SOCKS5和HTTP代理协议转换</li>
+                    </ol>
+                </div>
+            </div>
+        </section>
+
+        <section id="cookies-storage">
+            <h2>🍪 5. Cookie和存储配置</h2>
+            <div class="config-section">
+                <h3>cookies 和 storage 节点</h3>
+                <table class="param-table">
+                    <tr>
+                        <th>参数</th>
+                        <th>类型</th>
+                        <th>说明</th>
+                        <th>反检测作用</th>
+                    </tr>
+                    <tr>
+                        <td><code>enable</code></td>
+                        <td class="bool-value">boolean</td>
+                        <td>是否启用Cookie/存储管理</td>
+                        <td>控制数据隔离和持久化</td>
+                    </tr>
+                    <tr>
+                        <td><code>blocklist</code></td>
+                        <td class="string-value">array</td>
+                        <td>阻止存储的域名列表</td>
+                        <td>防止风控域名追踪用户</td>
+                    </tr>
+                </table>
+                
+                <div class="warning">
+                    <strong>⚠️ 重要：</strong>建议将已知的风控域名（如c.adsco.re）添加到blocklist中，防止被追踪。
+                </div>
+            </div>
+        </section>
+
+        <section id="javascript">
+            <h2>💻 6. JavaScript注入</h2>
+            <div class="config-section">
+                <h3>jss 节点</h3>
+                <table class="param-table">
+                    <tr>
+                        <th>参数</th>
+                        <th>类型</th>
+                        <th>说明</th>
+                        <th>反检测作用</th>
+                    </tr>
+                    <tr>
+                        <td><code>enable</code></td>
+                        <td class="bool-value">boolean</td>
+                        <td>是否启用JS注入</td>
+                        <td>控制客户端JavaScript反检测</td>
+                    </tr>
+                    <tr>
+                        <td><code>frameImplDidClearWindowObject</code></td>
+                        <td class="string-value">string</td>
+                        <td>Base64编码的JS代码</td>
+                        <td>在页面加载时注入反检测代码</td>
+                    </tr>
+                </table>
+                
+                <div class="algorithm-note">
+                    <strong>🔍 注入的JS功能：</strong>
+                    <ul>
+                        <li><strong>Math.sin扰动：</strong>对特定值（1.0, π, π/2）进行微小扰动</li>
+                        <li><strong>随机化扰动：</strong>12%概率使用随机扰动</li>
+                        <li><strong>针对adscore：</strong>专门针对c.adsco.re域名的反检测</li>
+                        <li><strong>函数属性保护：</strong>保持原函数的length和name属性</li>
+                    </ul>
+                </div>
+
+                <div class="code">
+// 解码后的JS代码示例
+if (location.hostname === "c.adsco.re") {
+    const originalSin = Math.sin;
+    Math.sin = function(x) {
+        let result = originalSin.call(this, x);
+        if (typeof x === "number") {
+            let perturb = 0.0000001;
+            if (ENABLE_RANDOM_PERTURB) {
+                perturb = (Math.random() - 0.5) * 2e-7;
+            }
+            // 对特殊值进行扰动
+            if (Math.abs(x - 1.0) < 1e-15) result += perturb;
+            else if (Math.abs(x - 3.141592653589793) < 1e-15) result += perturb;
+            else if (Math.abs(x - 1.5707963267948966) < 1e-15) result += perturb;
+        }
+        return result;
+    };
+}
+                </div>
+            </div>
+        </section>
+
+        <section id="startup">
+            <h2>🚀 7. 启动配置</h2>
+            <div class="config-section">
+                <h3>startup 节点</h3>
+                <table class="param-table">
+                    <tr>
+                        <th>参数</th>
+                        <th>类型</th>
+                        <th>说明</th>
+                        <th>算法影响</th>
+                    </tr>
+                    <tr>
+                        <td><code>enable</code></td>
+                        <td class="bool-value">boolean</td>
+                        <td>是否启用自定义启动</td>
+                        <td>控制浏览器启动行为</td>
+                    </tr>
+                    <tr>
+                        <td><code>enable_cleanup_udd</code></td>
+                        <td class="bool-value">boolean</td>
+                        <td>是否清理用户数据目录</td>
+                        <td>影响数据持久化策略</td>
+                    </tr>
+                    <tr>
+                        <td><code>homepage</code></td>
+                        <td class="string-value">string</td>
+                        <td>启动主页</td>
+                        <td>设置默认打开页面</td>
+                    </tr>
+                    <tr>
+                        <td><code>args</code></td>
+                        <td class="string-value">array</td>
+                        <td>Chromium启动参数</td>
+                        <td>关键反检测参数配置</td>
+                    </tr>
+                </table>
+                
+                <div class="danger">
+                    <strong>🔥 关键启动参数解析：</strong>
+                    <ul>
+                        <li><code>--no-sandbox</code>：禁用沙箱，提高兼容性</li>
+                        <li><code>--disable-web-security</code>：禁用Web安全策略</li>
+                        <li><code>--no-first-run</code>：跳过首次运行向导</li>
+                        <li><code>--disable-sync</code>：禁用同步服务</li>
+                        <li><code>disable-features=ChromeSignin,AccountConsistency</code>：禁用登录相关功能</li>
+                        <li><code>ThirdPartyCookieDeprecationTrial</code>：禁用第三方Cookie试验</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <section id="fingerprint">
+            <h2>🔍 8. 指纹伪装配置（核心）</h2>
+            <div class="config-section">
+                <h3>fingerprint 节点 - 基础信息</h3>
+                <table class="param-table">
+                    <tr>
+                        <th>参数</th>
+                        <th>类型</th>
+                        <th>算法生成策略</th>
+                    </tr>
+                    <tr>
+                        <td><code>platform</code></td>
+                        <td class="string-value">string</td>
+                        <td><code>ConfigBrowser()</code>从数据库随机选择</td>
+                    </tr>
+                    <tr>
+                        <td><code>hardwareConcurrency</code></td>
+                        <td class="number-value">number</td>
+                        <td>从数据库CPU核心数随机选择</td>
+                    </tr>
+                    <tr>
+                        <td><code>deviceMemory</code></td>
+                        <td class="number-value">number</td>
+                        <td>从数据库内存大小随机选择</td>
+                    </tr>
+                    <tr>
+                        <td><code>userAgent</code></td>
+                        <td class="string-value">string</td>
+                        <td>与平台联动随机生成</td>
+                    </tr>
+                    <tr>
+                        <td><code>rtt</code></td>
+                        <td class="number-value">number</td>
+                        <td>随机生成30-300ms网络延迟</td>
+                    </tr>
+                </table>
+            </div>
+
+            <div class="config-section">
+                <h3>语言配置 - languages</h3>
+                <div class="algorithm-note">
+                    <strong>🌍 ConfigLanguages()：</strong>从语言数据库随机选择一个语言组合，同时设置<code>languages</code>数组和<code>acceptLanguage</code>字符串，确保语言设置一致性。
+                </div>
+            </div>
+
+            <div class="config-section">
+                <h3>语音配置 - voice</h3>
+                <div class="algorithm-note">
+                    <strong>🎤 ConfigVoice()：</strong>使用时间戳作为随机种子打乱语音列表，随机选择5-20个语音合成器，模拟真实浏览器语音支持。
+                </div>
+            </div>
+
+            <div class="config-section">
+                <h3>Canvas指纹 - canvas</h3>
+                <div class="algorithm-note">
+                    <strong>🎨 Canvas扰动算法：</strong>
+                    <ul>
+                        <li><strong>局部小块扰动：</strong>针对左上角8x8像素块进行微调</li>
+                        <li><strong>极小概率扰动：</strong>hash值基础上进行微小抖动</li>
+                        <li><strong>基于随机数：</strong>使用1-99的随机基础值</li>
+                        <li><strong>反adscore优化：</strong>扰动幅度极小，难以检测</li>
+                    </ul>
+                </div>
+                <table class="param-table">
+                    <tr>
+                        <th>参数</th>
+                        <th>算法作用</th>
+                    </tr>
+                    <tr>
+                        <td><code>hash.random</code></td>
+                        <td>固定为false，使用确定性hash</td>
+                    </tr>
+                    <tr>
+                        <td><code>hash.base</code></td>
+                        <td>随机生成1-99的基础hash值</td>
+                    </tr>
+                    <tr>
+                        <td><code>hash.from/to</code></td>
+                        <td>扰动范围控制参数</td>
+                    </tr>
+                </table>
+            </div>
+
+            <div class="config-section">
+                <h3>WebGL指纹 - webgl（最复杂）</h3>
+                <div class="algorithm-note">
+                    <strong>🎯 ConfigWebglDevice()核心算法：</strong>
+                    <ol>
+                        <li><strong>参数随机化：</strong>从预定义值列表中随机选择WebGL参数</li>
+                        <li><strong>ShaderPrecisionFormat扰动：</strong>
+                            <ul>
+                                <li>Float类型：rangeMin(120-127), rangeMax(127-255), precision(10-23)</li>
+                                <li>Int类型：rangeMin(120-127), rangeMax(127-255), precision(0-8)</li>
+                                <li>特殊值采样：12%概率使用特殊值[120,127,128,255]</li>
+                                <li>微调扰动：±2到±3的随机偏移</li>
+                            </ul>
+                        </li>
+                        <li><strong>科学化扰动：</strong>兼容主流硬件分布，避免异常值</li>
+                    </ol>
+                </div>
+
+                <h4>shaderPrecisionFormat 详解</h4>
+                <table class="param-table">
+                    <tr>
+                        <th>Shader类型</th>
+                        <th>精度类型</th>
+                        <th>扰动策略</th>
+                    </tr>
+                    <tr>
+                        <td>8B30 (VERTEX_SHADER)</td>
+                        <td>8DF0-8DF5 (FLOAT精度)</td>
+                        <td>使用PERTURB_F宏，支持特殊值采样</td>
+                    </tr>
+                    <tr>
+                        <td>8B31 (FRAGMENT_SHADER)</td>
+                        <td>8DF0-8DF5 (INT精度)</td>
+                        <td>使用PERTURB_I宏，更保守的扰动</td>
+                    </tr>
+                </table>
+
+                <div class="code">
+// 扰动宏定义（来自model_level_1.cc）
+#define PERTURB_F(v, r) SampleWithSpecials((v), (r), specialsF, special_prob, 3)
+#define PERTURB_I(v, r) SampleWithSpecials((v), (r), specialsI, special_prob, 2)
+
+// 特殊值定义
+const std::vector&lt;int&gt; specialsF = {120, 127, 128, 255};
+const std::vector&lt;int&gt; specialsI = {30, 31, 32, 127, 128, 255};
+double special_prob = 0.12; // 12%概率采样特殊值
+                </div>
+            </div>
+
+            <div class="config-section">
+                <h3>字体配置 - font</h3>
+                <div class="algorithm-note">
+                    <strong>🔤 ConfigFont()：</strong>从完整字体列表中随机移除1到一半的字体，使用时间戳种子确保可重现性，模拟不同用户的字体安装情况。
+                </div>
+            </div>
+
+            <div class="config-section">
+                <h3>屏幕配置 - screen</h3>
+                <div class="algorithm-note">
+                    <strong>🖥️ ConfigScreen()：</strong>从屏幕分辨率数据库中随机选择配置，包括主屏幕尺寸、可用区域、颜色深度和DPI设置。
+                </div>
+            </div>
+
+            <div class="config-section">
+                <h3>其他指纹模块</h3>
+                <table class="param-table">
+                    <tr>
+                        <th>模块</th>
+                        <th>base值生成策略</th>
+                        <th>用途</th>
+                    </tr>
+                    <tr>
+                        <td>audio</td>
+                        <td>从数据库随机选择</td>
+                        <td>音频上下文指纹</td>
+                    </tr>
+                    <tr>
+                        <td>math</td>
+                        <td>随机生成1e-6到1e-8</td>
+                        <td>数学运算精度指纹</td>
+                    </tr>
+                    <tr>
+                        <td>v8</td>
+                        <td>使用当前时间戳</td>
+                        <td>V8引擎指纹</td>
+                    </tr>
+                    <tr>
+                        <td>disk</td>
+                        <td>随机生成磁盘配额和使用量</td>
+                        <td>存储API指纹</td>
+                    </tr>
+                </table>
+            </div>
+        </section>
+
+        <section id="extensions">
+            <h2>🧩 9. 扩展配置</h2>
+            <div class="config-section">
+                <h3>extensions 节点</h3>
+                <table class="param-table">
+                    <tr>
+                        <th>参数</th>
+                        <th>类型</th>
+                        <th>说明</th>
+                    </tr>
+                    <tr>
+                        <td><code>enable</code></td>
+                        <td class="bool-value">boolean</td>
+                        <td>是否启用扩展管理</td>
+                    </tr>
+                    <tr>
+                        <td><code>allowlist</code></td>
+                        <td class="string-value">array</td>
+                        <td>允许的扩展ID列表</td>
+                    </tr>
+                </table>
+                
+                <div class="warning">
+                    <strong>⚠️ 扩展安全：</strong>只有在allowlist中的扩展才能被加载，防止恶意扩展。
+                </div>
+            </div>
+        </section>
+
+        <section id="webrtc">
+            <h2>📡 10. WebRTC配置</h2>
+            <div class="config-section">
+                <h3>webrtcIPHandling 节点</h3>
+                <table class="param-table">
+                    <tr>
+                        <th>参数</th>
+                        <th>类型</th>
+                        <th>说明</th>
+                    </tr>
+                    <tr>
+                        <td><code>policy</code></td>
+                        <td class="string-value">string</td>
+                        <td>IP处理策略：default_public_interface_only</td>
+                    </tr>
+                    <tr>
+                        <td><code>public_ip</code></td>
+                        <td class="string-value">string</td>
+                        <td>公网IP地址</td>
+                    </tr>
+                    <tr>
+                        <td><code>internal_ip</code></td>
+                        <td class="string-value">string</td>
+                        <td>内网IP地址</td>
+                    </tr>
+                </table>
+                
+                <div class="algorithm-note">
+                    <strong>🔒 IP泄露防护：</strong>通过控制WebRTC的IP处理策略，防止真实IP地址泄露，配合代理服务实现完整的IP隐藏。
+                </div>
+            </div>
+
+            <div class="config-section">
+                <h3>dynFpsInfo 节点</h3>
+                <p>动态指纹信息，包含IP地理位置信息，与代理配置联动：ip、country、region、city、timezone等。</p>
+            </div>
+        </section>
+
+        <section id="yunlogin">
+            <h2>☁️ 11. 云登录配置</h2>
+            <div class="config-section">
+                <h3>yunlogin 节点</h3>
+                <table class="param-table">
+                    <tr>
+                        <th>参数</th>
+                        <th>类型</th>
+                        <th>说明</th>
+                    </tr>
+                    <tr>
+                        <td><code>enable</code></td>
+                        <td class="bool-value">boolean</td>
+                        <td>是否启用云登录功能</td>
+                    </tr>
+                    <tr>
+                        <td><code>enable_finger</code></td>
+                        <td class="bool-value">boolean</td>
+                        <td>云登录时是否使用指纹</td>
+                    </tr>
+                    <tr>
+                        <td><code>enable_extensions</code></td>
+                        <td class="bool-value">boolean</td>
+                        <td>云登录时是否启用扩展</td>
+                    </tr>
+                    <tr>
+                        <td><code>enable_proxy</code></td>
+                        <td class="bool-value">boolean</td>
+                        <td>云登录时是否使用代理</td>
+                    </tr>
+                </table>
+            </div>
+        </section>
+
+        <div class="config-section">
+            <h2>🎯 针对ADSCORE的配置建议</h2>
+            
+            <div class="danger">
+                <h3>🚨 关键配置检查清单</h3>
+                <table class="param-table">
+                    <tr>
+                        <th>配置项</th>
+                        <th>推荐值</th>
+                        <th>防护作用</th>
+                    </tr>
+                    <tr>
+                        <td><code>navigatorWebdriver</code></td>
+                        <td class="bool-value">false</td>
+                        <td>隐藏自动化特征</td>
+                    </tr>
+                    <tr>
+                        <td><code>cookies/storage.blocklist</code></td>
+                        <td class="string-value">["c.adsco.re"]</td>
+                        <td>阻止ADSCORE数据收集</td>
+                    </tr>
+                    <tr>
+                        <td><code>jss.enable</code></td>
+                        <td class="bool-value">true</td>
+                        <td>启用Math.sin扰动反制</td>
+                    </tr>
+                    <tr>
+                        <td><code>webgl/canvas.enable</code></td>
+                        <td class="bool-value">true</td>
+                        <td>科学化指纹扰动</td>
+                    </tr>
+                </table>
+            </div>
+
+            <h3>配置要点</h3>
+            <ul>
+                <li><strong>指纹一致性：</strong>确保UA/Platform/Language/Timezone/IP地理位置联动一致</li>
+                <li><strong>参数多样性：</strong>每次启动使用不同timestamp，避免指纹重复</li>
+                <li><strong>扰动科学化：</strong>WebGL使用真实硬件参数范围，12%特殊值采样</li>
+                <li><strong>数据隔离：</strong>将c.adsco.re加入所有blocklist</li>
+                <li><strong>流量控制：</strong>配置多代理IP，使用随机延迟，监控Zone状态</li>
+            </ul>
+        </div>
+
+        <div class="config-section">
+            <h2>🎯 通用配置建议</h2>
+            
+            <h3>基础配置</h3>
+            <ul>
+                <li>确保<code>navigatorWebdriver: false</code>隐藏自动化特征</li>
+                <li>启用所有指纹模块的<code>enable: true</code></li>
+                <li>将风控域名添加到blocklist</li>
+                <li>配置合适的代理服务</li>
+            </ul>
+
+            <h3>安全建议</h3>
+            <ul>
+                <li>定期更新代理配置，监控IP地理位置一致性</li>
+                <li>避免频繁修改指纹配置，使用真实硬件参数范围</li>
+                <li>合理配置扩展allowlist和启动参数</li>
+            </ul>
+        </div>
+
+        <div class="danger">
+            <h2>⚠️ 重要警告</h2>
+            <ul>
+                <li><strong>合法使用：</strong>本工具仅供学习和合法测试使用</li>
+                <li><strong>风险提示：</strong>不当使用可能违反相关法律法规</li>
+                <li><strong>技术限制：</strong>任何反检测技术都有被识破的风险</li>
+                <li><strong>更新维护：</strong>需要持续更新以应对新的检测技术</li>
+                <li><strong>ADSCORE特别提醒：</strong>该系统具有机器学习能力，会根据流量模式动态调整检测策略</li>
+            </ul>
+        </div>
+
+        <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid #eee; color: #666;">
+            <p>📝 Chromium(dev) 指纹浏览器配置说明书 v2.0</p>
+            <p>🔧 基于 model_level_1.cc 算法分析 + ADSCORE检测策略研究</p>
+            <p>📅 生成时间：2025-08-08 | 🎯 专业反检测版本</p>
+        </footer>
+    </div>
+</body>
+</html>

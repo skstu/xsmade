@@ -11,9 +11,12 @@
 
 namespace chromium {
 namespace xsiumio {
+typedef unsigned int tfRequestType;
+typedef unsigned int tfIdentifyType;
+typedef unsigned long long tfSeedType;
 constexpr char kObjectKey[] = "xsiumio";
 constexpr char kProjectDirnameChromium[] = "Chromium";
-constexpr char kProjectDirnameDefaultUserData[] = "chromium";
+constexpr char kProjectDirnameDefaultUserData[] = "default";
 constexpr char kProjectDirnameComponents[] = "components";
 constexpr char kProjectDirnameExtensions[] = "extensions";
 constexpr char kProjectDirnameRoute[] = "route";
@@ -26,6 +29,7 @@ constexpr char kProjectDirnameConfigures[] = "configures";
 constexpr char kProjectFilenameConfigure[] = "configure.json";
 constexpr char kProjectFilenameTmpcfgpath[] = "cfgpath.cfg";
 constexpr char kProjectFilenameStartupEnv[] = ".startup";
+constexpr char kProjectFilenameUddPath[] = "udd.path";
 constexpr char kProjectFilenameChromiumProcessId[] = "chromium.pid";
 
 constexpr char kWebRTCIPHandlingDefault[] = "default";
@@ -41,6 +45,48 @@ enum class WebRTCIPHandlingPolicy {
   kDefaultPublicInterfaceOnly = 2,
   kDisableNonProxiedUdp = 3,
 };
+enum class HttpRequestType {
+  kUnknown = 0,
+  kGet = 1,
+  kPost = 2,
+  kPut = 3,
+  kDelete = 4
+};
+enum class RequestType : tfRequestType {
+  kDefault = 0,
+  kCreateBrowser = 1,
+  kDestroyBrowser = 2,
+  kChromiumInit = 3,
+  kResetBrowser = 4,
+  kServiceAsyncNotify = 5,
+  kBegin = kDefault,
+  kEnd = kResetBrowser,
+  kUnknown = 0xFFFF,
+};
+inline const std::map<RequestType, std::string> &RequestTypePathMap() {
+  static const std::map<RequestType, std::string> *m =
+      new std::map<RequestType, std::string>{
+          {RequestType::kDefault, "/"},
+          {RequestType::kCreateBrowser, "browser/create"},
+          {RequestType::kDestroyBrowser, "browser/destroy"},
+          {RequestType::kChromiumInit, "chromium/init"},
+          {RequestType::kResetBrowser, "browser/reset"},
+          {RequestType::kServiceAsyncNotify, "service/async_notify"},
+      };
+  return *m;
+}
+inline const std::map<std::string, RequestType> &PathRequestTypeMap() {
+  static const std::map<std::string, RequestType> *m =
+      new std::map<std::string, RequestType>{
+          {"/", RequestType::kDefault},
+          {"browser/create", RequestType::kCreateBrowser},
+          {"browser/destroy", RequestType::kDestroyBrowser},
+          {"chromium/init", RequestType::kChromiumInit},
+          {"browser/reset", RequestType::kResetBrowser},
+          {"service/async_notify", RequestType::kServiceAsyncNotify},
+      };
+  return *m;
+}
 class IXSiumio {
 public:
   enum class ProxyType { HTTP, SOCKS4, SOCKS5, SOCKS5H };
@@ -77,6 +123,347 @@ public:
     } while (0);
     return result;
   }
+  struct Bridge {
+    inline Bridge();
+    inline ~Bridge();
+    bool enable = false;
+    bool single_process = true;
+    std::string config =
+        "config.conf"; // Load configuration options from specified file.
+    std::string server_listen =
+        "[::0]:55668"; // Specify server listening address and port.
+    bool reuse_port =
+        false; // Enable TCP SO_REUSEPORT option (available since Linux 3.9).
+    bool happyeyeballs =
+        true;            // Enable Happy Eyeballs algorithm for TCP connections.
+    bool v6only = false; // Enable IPv6 only mode for TCP connections.
+    bool v4only = false; // Enable IPv4 only mode for TCP connections.
+    std::string
+        local_ip; // Specify local IP for client TCP connection to server.
+    bool transparent = false; // Enable transparent proxy mode(only linux).
+    int64_t so_mark = -1;     // Set SO_MARK for linux transparent proxy mode.
+    int udp_timeout = 60;     // Set UDP timeout for UDP connections.
+    int tcp_timeout = -1;     // Set TCP timeout for TCP connections.
+    int rate_limit = -1;      // Set TCP rate limit for connection.
+    std::vector<std::string> auth_users = {
+        "martell:5858668",
+    }; // List of authorized users(default user: jack:1111) (e.g: user1:passwd1
+    // user2:passwd2).
+    std::vector<std::string> users_rate_limit; // List of users rate limit (e.g:
+    // user1:1000000 user2:800000).
+    std::vector<std::string> allow_region; // Allow region (e.g:
+    // 北京|河南|武汉|192.168.1.2|192.168.1.0/24|2001:0db8::1|2001:db8::/32).
+    std::vector<std::string> deny_region; // Deny region (e.g:
+    // 广东|上海|山东|192.168.1.2|192.168.1.0/24|2001:0db8::1|2001:db8::/32).
+    std::string proxy_pass; // Specify next proxy pass (e.g:
+    // socks5://user:passwd@ip:port).
+    bool proxy_pass_ssl = false; // Enable SSL for the next proxy pass.
+    std::string ssl_certificate_dir =
+        "path"; // Directory containing SSL certificates.
+    std::string ssl_cacert_dir =
+        "path";          // Directory containing SSL CA certificates.
+    std::string ssl_sni; // Specifies SNI for multiple SSL certificates on one
+    // IP (Deprecated, using proxy_ssl_name instead).
+    std::string proxy_ssl_name; // Specifies SNI for multiple SSL certificates
+    // on one IP.
+    std::string ssl_ciphers; // Specify enabled SSL ciphers
+    bool ssl_prefer_server_ciphers =
+        false; // Prefer server ciphers over client ciphers for SSLv3 and TLS
+    // protocols.
+    std::string ipip_db = "17monipdb.datx"; // Specify ipip database filename.
+    std::string http_doc =
+        "/tmp/";           // Specify document root directory for HTTP server.
+    bool htpasswd = false; // Enable WWW-Authenticate for HTTP server.
+    bool autoindex = true; // Enable directory listing.
+    std::string logs_path = "";     // Specify directory for log files.
+    bool disable_logs = true;       // Disable logging.
+    bool disable_http = false;      // Disable HTTP protocol.
+    bool disable_socks = false;     // Disable SOCKS proxy protocol.
+    bool disable_udp = false;       // Disable UDP protocol.
+    bool disable_insecure = false;  // Disable insecure protocol.
+    bool scramble = false;          // Noise-based data security.
+    uint16_t noise_length = 0x0fff; // Length of the noise data.
+
+    bool IsEnable() const {
+      return enable;
+    }
+    inline void operator>>(std::string &output) const {
+      output.clear();
+      output.append("single_process")
+          .append("=")
+          .append(single_process ? "true" : "false")
+          .append("\n");
+      if (!proxy_pass.empty()) {
+        output.append("proxy_pass").append("=").append(proxy_pass).append("\n");
+      }
+      output.append("server_listen")
+          .append("=")
+          .append(server_listen)
+          .append("\n");
+      for (const auto &u : auth_users) {
+        output.append("auth_users").append("=").append(u).append("\n");
+      }
+      output.append("disable_insecure")
+          .append("=")
+          .append(disable_insecure ? "true" : "false")
+          .append("\n");
+      output.append("http_doc").append("=").append(http_doc).append("\n");
+      output.append("autoindex")
+          .append("=")
+          .append(autoindex ? "true" : "false")
+          .append("\n");
+      output.append("disable_logs")
+          .append("=")
+          .append(disable_logs ? "true" : "false")
+          .append("\n");
+      output.append("scramble")
+          .append("=")
+          .append(scramble ? "true" : "false")
+          .append("\n");
+    }
+    inline void operator>>(rapidjson::Document &doc) const {
+      if (!doc.IsObject())
+        return;
+      rapidjson::Document::AllocatorType &allocator = doc.GetAllocator();
+      rapidjson::Value obj(rapidjson::Type::kObjectType);
+      RAPIDJSON_ADDMEMBER_BOOL(obj, std::string("enable"), enable, allocator);
+      RAPIDJSON_ADDMEMBER_STRING(obj, std::string("config"), config, allocator);
+      RAPIDJSON_ADDMEMBER_BOOL(obj, std::string("single_process"),
+                               single_process, allocator);
+      RAPIDJSON_ADDMEMBER_STRING(obj, std::string("server_listen"),
+                                 server_listen, allocator);
+      RAPIDJSON_ADDMEMBER_BOOL(obj, std::string("reuse_port"), reuse_port,
+                               allocator);
+      RAPIDJSON_ADDMEMBER_BOOL(obj, std::string("happyeyeballs"), happyeyeballs,
+                               allocator);
+      RAPIDJSON_ADDMEMBER_BOOL(obj, std::string("v6only"), v6only, allocator);
+      RAPIDJSON_ADDMEMBER_BOOL(obj, std::string("v4only"), v4only, allocator);
+      RAPIDJSON_ADDMEMBER_STRING(obj, std::string("local_ip"), local_ip,
+                                 allocator);
+      RAPIDJSON_ADDMEMBER_BOOL(obj, std::string("transparent"), transparent,
+                               allocator);
+      RAPIDJSON_ADDMEMBER_INT64(obj, std::string("so_mark"), so_mark,
+                                allocator);
+      RAPIDJSON_ADDMEMBER_INT(obj, std::string("udp_timeout"), udp_timeout,
+                              allocator);
+      RAPIDJSON_ADDMEMBER_INT(obj, std::string("tcp_timeout"), tcp_timeout,
+                              allocator);
+      RAPIDJSON_ADDMEMBER_INT(obj, std::string("rate_limit"), rate_limit,
+                              allocator);
+      RAPIDJSON_ADDMEMBER_STRING(obj, std::string("proxy_pass"), proxy_pass,
+                                 allocator);
+      RAPIDJSON_ADDMEMBER_BOOL(obj, std::string("proxy_pass_ssl"),
+                               proxy_pass_ssl, allocator);
+      RAPIDJSON_ADDMEMBER_STRING(obj, std::string("ssl_certificate_dir"),
+                                 ssl_certificate_dir, allocator);
+      RAPIDJSON_ADDMEMBER_STRING(obj, std::string("ssl_cacert_dir"),
+                                 ssl_cacert_dir, allocator);
+      RAPIDJSON_ADDMEMBER_STRING(obj, std::string("ssl_sni"), ssl_sni,
+                                 allocator);
+      RAPIDJSON_ADDMEMBER_STRING(obj, std::string("proxy_ssl_name"),
+                                 proxy_ssl_name, allocator);
+      RAPIDJSON_ADDMEMBER_STRING(obj, std::string("ssl_ciphers"), ssl_ciphers,
+                                 allocator);
+      RAPIDJSON_ADDMEMBER_BOOL(obj, std::string("ssl_prefer_server_ciphers"),
+                               ssl_prefer_server_ciphers, allocator);
+      RAPIDJSON_ADDMEMBER_STRING(obj, std::string("ipip_db"), ipip_db,
+                                 allocator);
+      RAPIDJSON_ADDMEMBER_STRING(obj, std::string("http_doc"), http_doc,
+                                 allocator);
+      RAPIDJSON_ADDMEMBER_BOOL(obj, std::string("htpasswd"), htpasswd,
+                               allocator);
+      RAPIDJSON_ADDMEMBER_BOOL(obj, std::string("autoindex"), autoindex,
+                               allocator);
+      rapidjson::Value deny_regionArray(rapidjson::Type::kArrayType);
+      for (const auto &arg : deny_region) {
+        if (arg.empty())
+          continue;
+        rapidjson::Value item(rapidjson::Type::kStringType);
+        item.SetString(arg.c_str(),
+                       static_cast<rapidjson::SizeType>(arg.size()), allocator);
+        deny_regionArray.PushBack(item, allocator);
+      }
+      RAPIDJSON_ADDMEMBER_OBJECT(obj, std::string("deny_region"),
+                                 deny_regionArray, allocator);
+
+      rapidjson::Value allow_regionArray(rapidjson::Type::kArrayType);
+      for (const auto &arg : allow_region) {
+        if (arg.empty())
+          continue;
+        rapidjson::Value item(rapidjson::Type::kStringType);
+        item.SetString(arg.c_str(),
+                       static_cast<rapidjson::SizeType>(arg.size()), allocator);
+        allow_regionArray.PushBack(item, allocator);
+      }
+      RAPIDJSON_ADDMEMBER_OBJECT(obj, std::string("allow_region"),
+                                 allow_regionArray, allocator);
+
+      rapidjson::Value auth_usersArray(rapidjson::Type::kArrayType);
+      for (const auto &arg : auth_users) {
+        if (arg.empty())
+          continue;
+        rapidjson::Value item(rapidjson::Type::kStringType);
+        item.SetString(arg.c_str(),
+                       static_cast<rapidjson::SizeType>(arg.size()), allocator);
+        auth_usersArray.PushBack(item, allocator);
+      }
+      RAPIDJSON_ADDMEMBER_OBJECT(obj, std::string("auth_users"),
+                                 auth_usersArray, allocator);
+
+      rapidjson::Value users_rate_limitArray(rapidjson::Type::kArrayType);
+      for (const auto &arg : users_rate_limit) {
+        if (arg.empty())
+          continue;
+        rapidjson::Value item(rapidjson::Type::kStringType);
+        item.SetString(arg.c_str(),
+                       static_cast<rapidjson::SizeType>(arg.size()), allocator);
+        users_rate_limitArray.PushBack(item, allocator);
+      }
+      RAPIDJSON_ADDMEMBER_OBJECT(obj, std::string("users_rate_limit"),
+                                 users_rate_limitArray, allocator);
+
+      doc.AddMember("bridge", obj, allocator);
+    }
+    inline void operator<<(const rapidjson::Value &v) {
+      do {
+        if (!v.IsObject())
+          return;
+        if (v.HasMember("enable") && v["enable"].IsBool())
+          enable = v["enable"].GetBool();
+        if (v.HasMember("single_process") && v["single_process"].IsBool())
+          single_process = v["single_process"].GetBool();
+        if (v.HasMember("config") && v["config"].IsString())
+          config = v["config"].GetString();
+        if (v.HasMember("server_listen") && v["server_listen"].IsString())
+          server_listen = v["server_listen"].GetString();
+        if (v.HasMember("reuse_port") && v["reuse_port"].IsBool())
+          reuse_port = v["reuse_port"].GetBool();
+        if (v.HasMember("happyeyeballs") && v["happyeyeballs"].IsBool())
+          happyeyeballs = v["happyeyeballs"].GetBool();
+        if (v.HasMember("v6only") && v["v6only"].IsBool())
+          v6only = v["v6only"].GetBool();
+        if (v.HasMember("v4only") && v["v4only"].IsBool())
+          v4only = v["v4only"].GetBool();
+        if (v.HasMember("local_ip") && v["local_ip"].IsString())
+          local_ip = v["local_ip"].GetString();
+        if (v.HasMember("transparent") && v["transparent"].IsBool())
+          transparent = v["transparent"].GetBool();
+        if (v.HasMember("so_mark") && v["so_mark"].IsInt64())
+          so_mark = v["so_mark"].GetInt64();
+        if (v.HasMember("udp_timeout") && v["udp_timeout"].IsInt())
+          udp_timeout = v["udp_timeout"].GetInt();
+        if (v.HasMember("tcp_timeout") && v["tcp_timeout"].IsInt())
+          tcp_timeout = v["tcp_timeout"].GetInt();
+        if (v.HasMember("rate_limit") && v["rate_limit"].IsInt())
+          rate_limit = v["rate_limit"].GetInt();
+        if (v.HasMember("auth_users") && v["auth_users"].IsArray()) {
+          auth_users.clear();
+          for (const auto &user : v["auth_users"].GetArray()) {
+            if (user.IsString()) {
+              auth_users.push_back(user.GetString());
+            }
+          }
+        }
+        if (v.HasMember("users_rate_limit") &&
+            v["users_rate_limit"].IsArray()) {
+          users_rate_limit.clear();
+          for (const auto &user : v["users_rate_limit"].GetArray()) {
+            if (user.IsString()) {
+              users_rate_limit.push_back(user.GetString());
+            }
+          }
+        }
+        if (v.HasMember("allow_region") && v["allow_region"].IsArray()) {
+          allow_region.clear();
+          for (const auto &region : v["allow_region"].GetArray()) {
+            if (region.IsString()) {
+              allow_region.push_back(region.GetString());
+            }
+          }
+        }
+        if (v.HasMember("deny_region") && v["deny_region"].IsArray()) {
+          deny_region.clear();
+          for (const auto &region : v["deny_region"].GetArray()) {
+            if (region.IsString()) {
+              deny_region.push_back(region.GetString());
+            }
+          }
+        }
+        if (v.HasMember("proxy_pass") && v["proxy_pass"].IsString())
+          proxy_pass = v["proxy_pass"].GetString();
+        if (v.HasMember("proxy_pass_ssl") && v["proxy_pass_ssl"].IsBool())
+          proxy_pass_ssl = v["proxy_pass_ssl"].GetBool();
+        if (v.HasMember("ssl_certificate_dir") &&
+            v["ssl_certificate_dir"].IsString())
+          ssl_certificate_dir = v["ssl_certificate_dir"].GetString();
+        if (v.HasMember("ssl_cacert_dir") && v["ssl_cacert_dir"].IsString())
+          ssl_cacert_dir = v["ssl_cacert_dir"].GetString();
+        if (v.HasMember("ssl_sni") && v["ssl_sni"].IsString())
+          ssl_sni = v["ssl_sni"].GetString();
+        if (v.HasMember("proxy_ssl_name") && v["proxy_ssl_name"].IsString())
+          proxy_ssl_name = v["proxy_ssl_name"].GetString();
+        if (v.HasMember("ssl_ciphers") && v["ssl_ciphers"].IsString())
+          ssl_ciphers = v["ssl_ciphers"].GetString();
+        if (v.HasMember("ssl_prefer_server_ciphers") &&
+            v["ssl_prefer_server_ciphers"].IsBool())
+          ssl_prefer_server_ciphers = v["ssl_prefer_server_ciphers"].GetBool();
+        if (v.HasMember("ipip_db") && v["ipip_db"].IsString())
+          ipip_db = v["ipip_db"].GetString();
+        if (v.HasMember("http_doc") && v["http_doc"].IsString())
+          http_doc = v["http_doc"].GetString();
+        if (v.HasMember("logs_path") && v["logs_path"].IsString())
+          logs_path = v["logs_path"].GetString();
+        if (v.HasMember("noise_length") && v["noise_length"].IsUint())
+          noise_length =
+              static_cast<decltype(noise_length)>(v["noise_length"].GetUint());
+        if (v.HasMember("htpasswd") && v["htpasswd"].IsBool())
+          htpasswd = v["htpasswd"].GetBool();
+        if (v.HasMember("autoindex") && v["autoindex"].IsBool())
+          autoindex = v["autoindex"].GetBool();
+        if (v.HasMember("disable_logs") && v["disable_logs"].IsBool())
+          disable_logs = v["disable_logs"].GetBool();
+        if (v.HasMember("disable_http") && v["disable_http"].IsBool())
+          disable_http = v["disable_http"].GetBool();
+        if (v.HasMember("disable_socks") && v["disable_socks"].IsBool())
+          disable_socks = v["disable_socks"].GetBool();
+        if (v.HasMember("disable_udp") && v["disable_udp"].IsBool())
+          disable_udp = v["disable_udp"].GetBool();
+        if (v.HasMember("disable_insecure") && v["disable_insecure"].IsBool())
+          disable_insecure = v["disable_insecure"].GetBool();
+        if (v.HasMember("scramble") && v["scramble"].IsBool())
+          scramble = v["scramble"].GetBool();
+      } while (0);
+    }
+  };
+  struct Server {
+    inline Server();
+    inline ~Server();
+    bool enable = false;
+    std::string host = "localhost";
+    int port = 65533;
+    void operator<<(const rapidjson::Value &v) {
+      do {
+        if (!v.IsObject())
+          return;
+        if (v.HasMember("enable") && v["enable"].IsBool())
+          enable = v["enable"].GetBool();
+        if (v.HasMember("host") && v["host"].IsString())
+          host = v["host"].GetString();
+        if (v.HasMember("port") && v["port"].IsInt())
+          port = v["port"].GetInt();
+      } while (0);
+    }
+    void operator>>(rapidjson::Document &doc) const {
+      if (!doc.IsObject())
+        return;
+      rapidjson::Document::AllocatorType &allocator = doc.GetAllocator();
+      rapidjson::Value obj(rapidjson::Type::kObjectType);
+      RAPIDJSON_ADDMEMBER_BOOL(obj, std::string("enable"), enable, allocator);
+      RAPIDJSON_ADDMEMBER_STRING(obj, std::string("host"), host, allocator);
+      RAPIDJSON_ADDMEMBER_INT(obj, std::string("port"), port, allocator);
+      doc.AddMember("server", obj, allocator);
+    }
+  };
   struct Proxy {
     ProxyType type = ProxyType::SOCKS5H;
     std::string scheme = "SOCKS5H";
@@ -86,7 +473,9 @@ public:
     int port = 80;
 
     bool enable = false;
+    bool dynamic = false;
     std::string credentials_url;
+    std::string curl_credentials_url;
     inline Proxy();
     inline ~Proxy();
 
@@ -96,9 +485,15 @@ public:
           return;
         if (v.HasMember("enable") && v["enable"].IsBool())
           enable = v["enable"].GetBool();
+        if (v.HasMember("dynamic") && v["dynamic"].IsBool())
+          dynamic = v["dynamic"].GetBool();
         if (v.HasMember("credentials_url") && v["credentials_url"].IsString()) {
           credentials_url = v["credentials_url"].GetString();
           *this << credentials_url;
+        }
+        if (v.HasMember("curl_credentials_url") &&
+            v["curl_credentials_url"].IsString()) {
+          curl_credentials_url = v["curl_credentials_url"].GetString();
         }
       } while (0);
     }
@@ -108,8 +503,11 @@ public:
       rapidjson::Document::AllocatorType &allocator = doc.GetAllocator();
       rapidjson::Value obj(rapidjson::Type::kObjectType);
       RAPIDJSON_ADDMEMBER_BOOL(obj, std::string("enable"), enable, allocator);
+      RAPIDJSON_ADDMEMBER_BOOL(obj, std::string("dynamic"), dynamic, allocator);
       RAPIDJSON_ADDMEMBER_STRING(obj, std::string("credentials_url"),
                                  credentials_url, allocator);
+      RAPIDJSON_ADDMEMBER_STRING(obj, std::string("curl_credentials_url"),
+                                 curl_credentials_url, allocator);
       doc.AddMember("proxy", obj, allocator);
     }
     inline void operator<<(const std::string &authString) {
@@ -160,6 +558,7 @@ public:
     bool enable_cleanup_udd = false;
     std::string homepage;
     std::string search_engine;
+    unsigned int startup_pid = 0;
     unsigned int search_engine_id = 0;
     std::vector<std::string> urls;
     std::vector<std::string> args;
@@ -177,6 +576,8 @@ public:
                                  search_engine, allocator);
       RAPIDJSON_ADDMEMBER_UINT(obj, std::string("search_engine_id"),
                                search_engine_id, allocator);
+      RAPIDJSON_ADDMEMBER_UINT(obj, std::string("startup_pid"), startup_pid,
+                               allocator);
       rapidjson::Value urlsArray(rapidjson::Type::kArrayType);
       for (const auto &url : urls) {
         if (url.empty())
@@ -223,6 +624,9 @@ public:
         }
         if (value.HasMember("enable") && value["enable"].IsBool()) {
           enable = value["enable"].GetBool();
+        }
+        if (value.HasMember("startup_pid") && value["startup_pid"].IsUint()) {
+          startup_pid = value["startup_pid"].GetUint();
         }
         if (value.HasMember("enable_cleanup_udd") &&
             value["enable_cleanup_udd"].IsBool()) {
@@ -347,44 +751,6 @@ public:
     }
   };
 
-  struct Yunlogin {
-    inline Yunlogin();
-    inline ~Yunlogin();
-    bool enable = false;
-    bool enable_finger = false;
-    bool enable_extensions = false;
-    bool enable_proxy = false;
-    inline void operator>>(rapidjson::Document &doc) const {
-      if (!doc.IsObject())
-        return;
-      rapidjson::Document::AllocatorType &allocator = doc.GetAllocator();
-      rapidjson::Value obj(rapidjson::Type::kObjectType);
-      RAPIDJSON_ADDMEMBER_BOOL(obj, std::string("enable"), enable, allocator);
-      RAPIDJSON_ADDMEMBER_BOOL(obj, std::string("enable_finger"), enable_finger,
-                               allocator);
-      RAPIDJSON_ADDMEMBER_BOOL(obj, std::string("enable_extensions"),
-                               enable_extensions, allocator);
-      RAPIDJSON_ADDMEMBER_BOOL(obj, std::string("enable_proxy"), enable_proxy,
-                               allocator);
-      doc.AddMember("yunlogin", obj, allocator);
-    }
-    void operator<<(const rapidjson::Value &value) {
-      do {
-        if (!value.IsObject())
-          break;
-        if (value.HasMember("enable") && value["enable"].IsBool())
-          enable = value["enable"].GetBool();
-        if (value.HasMember("enable_finger") && value["enable_finger"].IsBool())
-          enable_finger = value["enable_finger"].GetBool();
-        if (value.HasMember("enable_extensions") &&
-            value["enable_extensions"].IsBool())
-          enable_extensions = value["enable_extensions"].GetBool();
-        if (value.HasMember("enable_proxy") && value["enable_proxy"].IsBool())
-          enable_proxy = value["enable_proxy"].GetBool();
-      } while (0);
-    }
-  };
-
   struct WebRTCIPHandling {
     inline WebRTCIPHandling();
     inline ~WebRTCIPHandling();
@@ -482,14 +848,50 @@ public:
           if (v.HasMember("random") && v["random"].IsBool()) {
             random = v["random"].GetBool();
           }
-          if (v.HasMember("base") && v["base"].IsDouble()) {
-            base = v["base"].GetDouble();
+          if (v.HasMember("base")) {
+            if (v["base"].IsFloat()) {
+              base = static_cast<double>(v["base"].GetFloat());
+            } else if (v["base"].IsDouble()) {
+              base = v["base"].GetDouble();
+            } else if (v["base"].IsInt()) {
+              base = static_cast<double>(v["base"].GetInt() * 1.0);
+            } else if (v["base"].IsUint()) {
+              base = static_cast<double>(v["base"].GetUint() * 1.0);
+            } else if (v["base"].IsInt64()) {
+              base = static_cast<double>(v["base"].GetInt64() * 1.0);
+            } else if (v["base"].IsUint64()) {
+              base = static_cast<double>(v["base"].GetUint64() * 1.0);
+            }
           }
-          if (v.HasMember("from") && v["from"].IsDouble()) {
-            from = v["from"].GetDouble();
+          if (v.HasMember("from")) {
+            if (v["from"].IsFloat()) {
+              from = static_cast<double>(v["from"].GetFloat());
+            } else if (v["from"].IsDouble()) {
+              from = v["from"].GetDouble();
+            } else if (v["from"].IsInt()) {
+              from = static_cast<double>(v["from"].GetInt() * 1.0);
+            } else if (v["from"].IsUint()) {
+              from = static_cast<double>(v["from"].GetUint() * 1.0);
+            } else if (v["from"].IsInt64()) {
+              from = static_cast<double>(v["from"].GetInt64() * 1.0);
+            } else if (v["from"].IsUint64()) {
+              from = static_cast<double>(v["from"].GetUint64() * 1.0);
+            }
           }
-          if (v.HasMember("to") && v["to"].IsDouble()) {
-            to = v["to"].GetDouble();
+          if (v.HasMember("to")) {
+            if (v["to"].IsFloat()) {
+              to = static_cast<double>(v["to"].GetFloat());
+            } else if (v["to"].IsDouble()) {
+              to = v["to"].GetDouble();
+            } else if (v["to"].IsInt()) {
+              to = static_cast<double>(v["to"].GetInt() * 1.0);
+            } else if (v["to"].IsUint()) {
+              to = static_cast<double>(v["to"].GetUint() * 1.0);
+            } else if (v["to"].IsInt64()) {
+              to = static_cast<double>(v["to"].GetInt64() * 1.0);
+            } else if (v["to"].IsUint64()) {
+              to = static_cast<double>(v["to"].GetUint64() * 1.0);
+            }
           }
         } while (0);
       }
@@ -502,6 +904,10 @@ public:
         int x = 96; //!@ Default DPI for X axis
         int y = 96; //!@ Default DPI for Y axis
 
+        void operator=(const Dpi &other) {
+          x = other.x;
+          y = other.y;
+        }
         void operator>>(rapidjson::Document &doc) const {
           if (!doc.IsObject())
             return;
@@ -539,6 +945,19 @@ public:
       Dpi dpi; //!@ Default DPI for screen, usually 96x96
       bool enable = false;
 
+      void operator=(const Screen &other) {
+        height = other.height;
+        width = other.width;
+        colorDepth = other.colorDepth;
+        pixelDepth = other.pixelDepth;
+        availLeft = other.availLeft;
+        availTop = other.availTop;
+        availHeight = other.availHeight;
+        availWidth = other.availWidth;
+        devicePixelRatio = other.devicePixelRatio;
+        dpi = other.dpi;
+        enable = other.enable;
+      }
       void operator>>(rapidjson::Document &doc) const {
         if (!doc.IsObject())
           return;
@@ -607,38 +1026,33 @@ public:
         }
       }
     };
-    struct TimeZone {
-      inline TimeZone();
-      inline ~TimeZone();
+    struct V8 {
+      inline V8();
+      inline ~V8();
 
-      std::string id;
-      std::string label;
-      int offset = 0;
+      bool enable = false;
+      Hash hash;
 
       inline void operator>>(rapidjson::Document &doc) const {
         if (!doc.IsObject())
           return;
-        auto &allocator = doc.GetAllocator();
-        rapidjson::Value obj(rapidjson::Type::kObjectType);
-        RAPIDJSON_ADDMEMBER_STRING(obj, std::string("id"), id, allocator);
-        RAPIDJSON_ADDMEMBER_STRING(obj, std::string("label"), label, allocator);
-        RAPIDJSON_ADDMEMBER_INT(obj, std::string("offset"), offset, allocator);
-        doc.AddMember("timezone", obj, allocator);
+        rapidjson::Document tmpDoc(rapidjson::Type::kObjectType);
+        auto &allocHash = tmpDoc.GetAllocator();
+        RAPIDJSON_ADDMEMBER_BOOL(tmpDoc, std::string("enable"), enable,
+                                 allocHash);
+        hash >> tmpDoc;
+
+        rapidjson::Value tmpValue(tmpDoc, doc.GetAllocator());
+        doc.AddMember(rapidjson::Value("v8", doc.GetAllocator()).Move(),
+                      tmpValue, doc.GetAllocator());
       }
-      inline void operator<<(const rapidjson::Value &value) {
-        do {
-          if (!value.IsObject())
-            break;
-          if (value.HasMember("id") && value["id"].IsString()) {
-            id = value["id"].GetString();
-          }
-          if (value.HasMember("label") && value["label"].IsString()) {
-            label = value["label"].GetString();
-          }
-          if (value.HasMember("offset") && value["offset"].IsInt()) {
-            offset = value["offset"].GetInt();
-          }
-        } while (0);
+      inline void operator<<(const rapidjson::Value &v) {
+        if (!v.IsObject())
+          return;
+        if (v.HasMember("enable") && v["enable"].IsBool()) {
+          enable = v["enable"].GetBool();
+        }
+        hash << v["hash"];
       }
     };
     struct Math {
@@ -740,6 +1154,19 @@ public:
         bool preserveDrawingBuffer = false;
         bool stencil = false;
         bool xrCompatible = false;
+        inline void operator=(const ContextAttributes &other) {
+          enable = other.enable;
+          alpha = other.alpha;
+          antialias = other.antialias;
+          depth = other.depth;
+          desynchronized = other.desynchronized;
+          failIfMajorPerformanceCaveat = other.failIfMajorPerformanceCaveat;
+          powerPreference = other.powerPreference;
+          premultipliedAlpha = other.premultipliedAlpha;
+          preserveDrawingBuffer = other.preserveDrawingBuffer;
+          stencil = other.stencil;
+          xrCompatible = other.xrCompatible;
+        }
         inline void operator>>(rapidjson::Document &doc) const {
           if (!doc.IsObject())
             return;
@@ -829,6 +1256,11 @@ public:
           int rangeMin = 0;
           int rangeMax = 0;
           int precision = 0;
+          void operator=(const _8DF_ &other) {
+            rangeMin = other.rangeMin;
+            rangeMax = other.rangeMax;
+            precision = other.precision;
+          }
         };
         struct _8B30_ {
           inline _8B30_();
@@ -839,6 +1271,14 @@ public:
           _8DF_ _8DF3;
           _8DF_ _8DF4;
           _8DF_ _8DF5;
+          void operator=(const _8B30_ &other) {
+            _8DF0 = other._8DF0;
+            _8DF1 = other._8DF1;
+            _8DF2 = other._8DF2;
+            _8DF3 = other._8DF3;
+            _8DF4 = other._8DF4;
+            _8DF5 = other._8DF5;
+          }
           void operator>>(rapidjson::Document &doc) const {
             if (!doc.IsObject())
               return;
@@ -1015,6 +1455,14 @@ public:
           _8DF_ _8DF3;
           _8DF_ _8DF4;
           _8DF_ _8DF5;
+          void operator=(const _8B31_ &other) {
+            _8DF0 = other._8DF0;
+            _8DF1 = other._8DF1;
+            _8DF2 = other._8DF2;
+            _8DF3 = other._8DF3;
+            _8DF4 = other._8DF4;
+            _8DF5 = other._8DF5;
+          }
           void operator>>(rapidjson::Document &doc) const {
             if (!doc.IsObject())
               return;
@@ -1183,6 +1631,11 @@ public:
         _8B30_ _8B30;
         _8B31_ _8B31;
 
+        void operator=(const ShaderPrecisionFormat &other) {
+          enable = other.enable;
+          _8B30 = other._8B30;
+          _8B31 = other._8B31;
+        }
         void operator>>(rapidjson::Document &doc) const {
           if (!doc.IsObject())
             return;
@@ -1261,7 +1714,9 @@ public:
         if (v.HasMember("enable") && v["enable"].IsBool()) {
           enable = v["enable"].GetBool();
         }
-        hash << v["hash"];
+        if (v.HasMember("hash") && v["hash"].IsObject()) {
+          hash << v["hash"];
+        }
         getParameter.clear();
         if (v.HasMember("getParameter") && v["getParameter"].IsObject()) {
           const rapidjson::Value &refObj = v["getParameter"];
@@ -1393,12 +1848,20 @@ public:
         inline ~Brand_version();
         std::string brand;
         std::string version;
+        void operator=(const Brand_version &other) {
+          brand = other.brand;
+          version = other.version;
+        }
       };
       struct Brand_full_version {
         inline Brand_full_version();
         inline ~Brand_full_version();
         std::string brand;
         std::string version;
+        void operator=(const Brand_full_version &other) {
+          brand = other.brand;
+          version = other.version;
+        }
       };
       inline UserAgentMetadata();
       inline ~UserAgentMetadata();
@@ -1416,6 +1879,29 @@ public:
       bool wow64 = false;
       std::vector<std::string> form_factors = {"Desktop"};
 
+      void operator=(const UserAgentMetadata &other) {
+        form_factors.clear();
+        brand_version_list.clear();
+        brand_full_version_list.clear();
+        enable = other.enable;
+        for (auto &item : other.brand_version_list) {
+          brand_version_list.emplace_back(item);
+        }
+        for (auto &item : other.brand_full_version_list) {
+          brand_full_version_list.emplace_back(item);
+        }
+        full_version = other.full_version;
+        platform = other.platform;
+        platform_version = other.platform_version;
+        architecture = other.architecture;
+        model = other.model;
+        mobile = other.mobile;
+        bitness = other.bitness;
+        wow64 = other.wow64;
+        for (auto &item : other.form_factors) {
+          form_factors.emplace_back(item);
+        }
+      }
       void operator<<(const rapidjson::Value &value) {
         do {
           if (!value.IsObject())
@@ -1570,6 +2056,99 @@ public:
             tmpValue, output.GetAllocator());
       }
     };
+    struct CdmRegistry {
+      struct CdmEntry final {
+        inline CdmEntry();
+        inline ~CdmEntry();
+        std::string key_system;
+        std::string mime_type;
+        std::string robustness;
+        void operator=(const CdmEntry &edmEntry) {
+          key_system = edmEntry.key_system;
+          mime_type = edmEntry.mime_type;
+          robustness = edmEntry.robustness;
+        }
+        void operator<<(const rapidjson::Value &v) {
+          if (!v.IsObject())
+            return;
+          if (v.HasMember("key_system") && v["key_system"].IsString()) {
+            key_system = v["key_system"].GetString();
+          }
+          if (v.HasMember("mime_type") && v["mime_type"].IsString()) {
+            mime_type = v["mime_type"].GetString();
+          }
+          if (v.HasMember("robustness") && v["robustness"].IsString()) {
+            robustness = v["robustness"].GetString();
+          }
+        }
+        void operator>>(rapidjson::Document &v) const {
+          v.SetObject();
+          auto &alloc = v.GetAllocator();
+          RAPIDJSON_ADDMEMBER_STRING(v, std::string("key_system"), key_system,
+                                     alloc);
+          RAPIDJSON_ADDMEMBER_STRING(v, std::string("mime_type"), mime_type,
+                                     alloc);
+          RAPIDJSON_ADDMEMBER_STRING(v, std::string("robustness"), robustness,
+                                     alloc);
+        }
+      };
+      inline CdmRegistry();
+      inline ~CdmRegistry();
+      bool enable = false;
+      Hash hash;
+      std::vector<CdmEntry> allowlist;
+      inline void operator=(const CdmRegistry &other) {
+        enable = other.enable;
+        hash = other.hash;
+        allowlist.clear();
+        for (const auto &item : other.allowlist) {
+          allowlist.emplace_back(item);
+        }
+      }
+      inline void operator<<(const rapidjson::Value &v) {
+        if (!v.IsObject())
+          return;
+        if (v.HasMember("enable") && v["enable"].IsBool()) {
+          enable = v["enable"].GetBool();
+        }
+        hash << v["hash"];
+        allowlist.clear();
+        if (v.HasMember("allowlist") && v["allowlist"].IsArray()) {
+          const rapidjson::Value &refObj = v["allowlist"];
+          for (rapidjson::SizeType i = 0; i < refObj.Size(); ++i) {
+            if (!refObj[i].IsObject())
+              break;
+            CdmEntry item;
+            item << refObj[i];
+            allowlist.emplace_back(item);
+          }
+        }
+      }
+      inline void operator>>(rapidjson::Document &doc) const {
+        if (!doc.IsObject())
+          return;
+        rapidjson::Document tmpDoc(rapidjson::Type::kObjectType);
+        auto &alloc = tmpDoc.GetAllocator();
+        RAPIDJSON_ADDMEMBER_BOOL(tmpDoc, std::string("enable"), enable, alloc);
+        hash >> tmpDoc;
+
+        rapidjson::Value allowlistArray(rapidjson::Type::kArrayType);
+        for (const auto &item : allowlist) {
+          rapidjson::Document itemObj(rapidjson::Type::kObjectType);
+          item >> itemObj;
+          rapidjson::Value copiedItemObj;
+          copiedItemObj.CopyFrom(itemObj, alloc);
+          allowlistArray.PushBack(copiedItemObj, alloc);
+        }
+        RAPIDJSON_ADDMEMBER_OBJECT(tmpDoc, std::string("allowlist"),
+                                   allowlistArray, alloc);
+
+        rapidjson::Value tmpValue(tmpDoc, doc.GetAllocator());
+        doc.AddMember(
+            rapidjson::Value("cdmRegistry", doc.GetAllocator()).Move(),
+            tmpValue, doc.GetAllocator());
+      }
+    };
     struct Font {
       inline Font();
       inline ~Font();
@@ -1625,16 +2204,59 @@ public:
         }
       }
     };
+    struct Product {
+      inline Product();
+      inline ~Product();
+      std::string name = "Microsoft Edge";     //!@ Google Chrome
+      std::string version = "138.0.3351.140";  //!@ Google Chrome version
+      std::string chromium = "138.0.7204.158"; //!@ Google Chrome version
+
+      void operator<<(const rapidjson::Value &v) {
+        if (!v.IsObject())
+          return;
+        if (v.HasMember("name") && v["name"].IsString()) {
+          name = v["name"].GetString();
+        }
+        if (v.HasMember("version") && v["version"].IsString()) {
+          version = v["version"].GetString();
+        }
+        if (v.HasMember("chromium") && v["chromium"].IsString()) {
+          chromium = v["chromium"].GetString();
+        }
+      }
+      void operator>>(rapidjson::Document &doc) const {
+        if (!doc.IsObject())
+          return;
+        rapidjson::Document tmpDoc(rapidjson::Type::kObjectType);
+        auto &allocHash = tmpDoc.GetAllocator();
+        RAPIDJSON_ADDMEMBER_STRING(tmpDoc, std::string("name"), name,
+                                   allocHash);
+        RAPIDJSON_ADDMEMBER_STRING(tmpDoc, std::string("version"), version,
+                                   allocHash);
+        RAPIDJSON_ADDMEMBER_STRING(tmpDoc, std::string("chromium"), chromium,
+                                   allocHash);
+        rapidjson::Value tmpValue(tmpDoc, doc.GetAllocator());
+        doc.AddMember(rapidjson::Value("product", doc.GetAllocator()).Move(),
+                      tmpValue, doc.GetAllocator());
+      }
+      void operator=(const Product &other) {
+        name = other.name;
+        version = other.version;
+        chromium = other.chromium;
+      }
+    };
     inline Fingerprint();
     inline ~Fingerprint();
 
     bool enable = false;
     bool real_fingerprint_output = false;
-    std::string do_not_track = "1";
+    bool navigatorWebdriver =
+        false; //!@ blink navigator.webdriver, default is false
+    bool do_not_track = true;
     std::string platform = "Win32";
     unsigned int rtt = 0; //!@ Round-trip time in milliseconds, default is 0
     bool netDnsAllowFallbackToSystemtask =
-        true; //!@ Allow fallback to system task for DNS resolution
+        false; //!@ Allow fallback to system task for DNS resolution
     int hardwareConcurrency = 8;
     int deviceMemory = 16;
     std::string userAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
@@ -1642,15 +2264,15 @@ public:
                             "like Gecko) Chrome/138.0.0.0 Safari/537.36";
     std::vector<std::string> languages = {
         "en-US", "en"}; //!@ Language list, default is ["en-US", "en"]
-    std::string acceptLanguage =
-        "en-US,en;q=0.9,en;q=0.8"; //!@ Accept-Language header
+    Product product;
     Canvas canvas;
     Webgl webgl;
     Audio audio;
     Math math;
+    V8 v8;
     Font font;
+    CdmRegistry cdmRegistry;
     Screen screen;
-    TimeZone timezone;
     Disk disk;
     UserAgentMetadata userAgentMetadata;
     Voice voice;
@@ -1663,8 +2285,10 @@ public:
                                fpsAllocator);
       RAPIDJSON_ADDMEMBER_BOOL(fpsDoc, std::string("real_fingerprint_output"),
                                real_fingerprint_output, fpsAllocator);
-      RAPIDJSON_ADDMEMBER_STRING(fpsDoc, std::string("do_not_track"),
-                                 do_not_track, fpsAllocator);
+      RAPIDJSON_ADDMEMBER_BOOL(fpsDoc, std::string("navigatorWebdriver"),
+                               navigatorWebdriver, fpsAllocator);
+      RAPIDJSON_ADDMEMBER_BOOL(fpsDoc, std::string("do_not_track"),
+                               do_not_track, fpsAllocator);
       RAPIDJSON_ADDMEMBER_STRING(fpsDoc, std::string("platform"), platform,
                                  fpsAllocator);
       RAPIDJSON_ADDMEMBER_INT(fpsDoc, std::string("hardwareConcurrency"),
@@ -1689,20 +2313,20 @@ public:
       }
       RAPIDJSON_ADDMEMBER_OBJECT(fpsDoc, std::string("languages"),
                                  languagesArray, fpsAllocator);
-      RAPIDJSON_ADDMEMBER_STRING(fpsDoc, std::string("acceptLanguage"),
-                                 acceptLanguage, fpsAllocator);
+      product >> fpsDoc;
       userAgentMetadata >> fpsDoc;
       voice >> fpsDoc;
       canvas >> fpsDoc;
       webgl >> fpsDoc;
       audio >> fpsDoc;
       math >> fpsDoc;
+      v8 >> fpsDoc;
       font >> fpsDoc;
-      timezone >> fpsDoc;
       screen >> fpsDoc;
       disk >> fpsDoc;
+      cdmRegistry >> fpsDoc;
       rapidjson::Value fpsValue(fpsDoc, doc.GetAllocator());
-      doc.AddMember(rapidjson::Value("fingerprint", doc.GetAllocator()).Move(),
+      doc.AddMember(rapidjson::Value("fps", doc.GetAllocator()).Move(),
                     fpsValue, doc.GetAllocator());
     }
     inline void operator<<(const rapidjson::Value &v) {
@@ -1715,8 +2339,12 @@ public:
           v["real_fingerprint_output"].IsBool()) {
         real_fingerprint_output = v["real_fingerprint_output"].GetBool();
       }
-      if (v.HasMember("do_not_track") && v["do_not_track"].IsString()) {
-        do_not_track = v["do_not_track"].GetString();
+      if (v.HasMember("navigatorWebdriver") &&
+          v["navigatorWebdriver"].IsBool()) {
+        navigatorWebdriver = v["navigatorWebdriver"].GetBool();
+      }
+      if (v.HasMember("do_not_track") && v["do_not_track"].IsBool()) {
+        do_not_track = v["do_not_track"].GetBool();
       }
       if (v.HasMember("rtt") && v["rtt"].IsUint()) {
         rtt = v["rtt"].GetUint();
@@ -1729,12 +2357,18 @@ public:
         netDnsAllowFallbackToSystemtask =
             v["netDnsAllowFallbackToSystemtask"].GetBool();
       }
+      if (v.HasMember("product") && v["product"].IsObject()) {
+        product << v["product"];
+      }
       if (v.HasMember("userAgentMetadata") &&
           v["userAgentMetadata"].IsObject()) {
         userAgentMetadata << v["userAgentMetadata"];
       }
       if (v.HasMember("voice") && v["voice"].IsObject()) {
         voice << v["voice"];
+      }
+      if (v.HasMember("cdmRegistry") && v["cdmRegistry"].IsObject()) {
+        cdmRegistry << v["cdmRegistry"];
       }
       if (v.HasMember("platform") && v["platform"].IsString()) {
         platform = v["platform"].GetString();
@@ -1764,9 +2398,6 @@ public:
           languages.emplace_back(tmp);
         }
       }
-      if (v.HasMember("acceptLanguage") && v["acceptLanguage"].IsString()) {
-        acceptLanguage = v["acceptLanguage"].GetString();
-      }
       if (v.HasMember("canvas") && v["canvas"].IsObject()) {
         canvas << v["canvas"];
       }
@@ -1779,11 +2410,11 @@ public:
       if (v.HasMember("math") && v["math"].IsObject()) {
         math << v["math"];
       }
+      if (v.HasMember("v8") && v["v8"].IsObject()) {
+        v8 << v["v8"];
+      }
       if (v.HasMember("font") && v["font"].IsObject()) {
         font << v["font"];
-      }
-      if (v.HasMember("timezone") && v["timezone"].IsObject()) {
-        timezone << v["timezone"];
       }
     }
   };
@@ -1932,8 +2563,87 @@ public:
   };
 
 public:
+  inline const tfIdentifyType &GetIdentify() const {
+    return identify;
+  }
+  inline const std::string &GetSuper() const {
+    return super;
+  }
+  inline const bool &IsReuse() const {
+    return reuse;
+  }
+  inline const tfSeedType &GetSeed() const {
+    return seed;
+  }
+  inline const chromium::xsiumio::RequestType &GetRequestType() const {
+    return type;
+  }
+  inline bool ValidateRequestType() const {
+    return type >= RequestType::kBegin && type <= RequestType::kEnd;
+  }
+  inline bool ValidateIdentify() const {
+    return identify > 0 && identify <= 0xFF;
+  }
+  inline bool ValidateSeed() const {
+    return seed > 0 && seed <= 0xFFFFFFFFFFFFFFFF;
+  }
+  inline bool ValidateSuper() const {
+    return !super.empty();
+  }
+  inline const int &GetMode() const {
+    return mode;
+  }
+  inline void
+  Super(const std::function<std::string(const std::string &src)> &hashCb) {
+    do {
+      if (!hashCb)
+        break;
+      rapidjson::Document doc(rapidjson::kObjectType);
+      *this >> doc;
+      if (!doc.HasMember(xsiumio::kObjectKey))
+        break;
+      rapidjson::Value &refObj = doc[xsiumio::kObjectKey];
+      for (auto it = refObj.MemberBegin(); it != refObj.MemberEnd(); ++it) {
+        if (std::find(hashKeys.begin(), hashKeys.end(), it->name.GetString()) ==
+            hashKeys.end()) {
+          refObj.RemoveMember(it->name.GetString());
+        }
+      }
+      Json::Sort(refObj, doc.GetAllocator());
+      std::string hashSource = Json::toString(refObj);
+      super = hashCb(hashSource);
+    } while (0);
+  }
+  inline void operator=(const IXSiumio &other) {
+    enable = other.enable;
+    identify = other.identify;
+    seed = other.seed;
+    cookies = other.cookies;
+    storage = other.storage;
+    jss = other.jss;
+    startup = other.startup;
+    extensions = other.extensions;
+    fps = other.fps;
+    bridge = other.bridge;
+    proxy = other.proxy;
+    webrtcIPHandling = other.webrtcIPHandling;
+    dynFpsUrl = other.dynFpsUrl;
+    dynFpsInfo = other.dynFpsInfo;
+    super = other.super;
+    reuse = other.reuse;
+    type = other.type;
+    mode = other.mode;
+    server = other.server;
+  }
   inline void operator>>(rapidjson::Document &doc) const;
   inline void operator<<(const rapidjson::Value &v);
+  inline void operator>>(std::string &json) const {
+    do {
+      rapidjson::Document doc(rapidjson::kObjectType);
+      *this >> doc;
+      json = Json::toString(doc);
+    } while (0);
+  }
   inline void operator<<(const std::string &json) {
     do {
       rapidjson::Document doc;
@@ -1951,44 +2661,108 @@ public:
 
 public:
   inline IXSiumio();
+  inline IXSiumio(const std::string &);
   inline ~IXSiumio();
 
   bool enable = false; //!@ Main switch for the browser, default is true
-  bool enable_proxy_info_sync =
-      false; //!@ Enable proxy data synchronization, default is false
-  bool navigatorWebdriver =
-      false; //!@ blink navigator.webdriver, default is false
-  unsigned long long timestamp =
-      0; //!@ Timestamp, default is 0, used for synchronization
-  unsigned long long identify =
+  int mode = 0;        //!@ Mode, default is 0
+  unsigned int chromium_main_pid = 0;
+  unsigned int chromium_server_port = 0;
+  int notifyCode = -1;
+  std::string notifyMsg = "Ok";
+  tfIdentifyType identify =
       0; //!@ Unique identifier, default is 0, used for synchronization
-  Yunlogin yunlogin;
-  std::string proxy_info_request_url;
+  RequestType type = RequestType::kDefault;
+  Server server;
+  tfSeedType seed = 0;
   Cookies cookies;
   Storage storage;
   Jss jss;
   Startup startup;
   Extensions extensions;
   Fingerprint fps; //!@ Fingerprint settings, default is empty
-  Proxy proxy;     //!@ Proxy information, default is empty
+  Bridge bridge;
+  Proxy proxy; //!@ Proxy information, default is empty
   WebRTCIPHandling webrtcIPHandling;
+  std::string dynFpsUrl;
   DynamicFpsInfo dynFpsInfo; //!@ Dynamic FPS information, default is empty
+  std::string super;
+  bool reuse = false;
+
+private:
+  const std::vector<std::string> hashKeys = {
+      "dynFpsInfo", "webrtcIPHandling", "fps",     "proxy",   "bridge",
+      "seed",       "identify",         "cookies", "storage", "jss"};
 };
 inline IXSiumio::IXSiumio() {
 }
 inline IXSiumio::~IXSiumio() {
 }
+inline IXSiumio::IXSiumio(const std::string &json) {
+  *this << json;
+}
 inline void IXSiumio::operator<<(const rapidjson::Value &v) {
   if (!v.IsObject())
     return;
+
+  enable = false; //!@ Main switch for the browser, default is true
+  identify = 0;   //!@ Unique identifier, default is 0, used for synchronization
+  seed = 0;
+  mode = 0;
+  type = RequestType::kDefault;
+  cookies = Cookies();
+  storage = Storage();
+  jss = Jss();
+  startup = Startup();
+  extensions = Extensions();
+  fps = Fingerprint();
+  bridge = Bridge();
+  proxy = Proxy();
+  webrtcIPHandling = WebRTCIPHandling();
+  dynFpsUrl = "";
+  dynFpsInfo = DynamicFpsInfo();
+  super = "";
+  server = Server();
+  reuse = false;
+  notifyCode = -1;
+  notifyMsg = "Ok";
+
   if (v.HasMember("enable") && v["enable"].IsBool()) {
     enable = v["enable"].GetBool();
   }
-  if (v.HasMember("timestamp") && v["timestamp"].IsUint64()) {
-    timestamp = v["timestamp"].GetUint64();
+  if (v.HasMember("type") && v["type"].IsUint()) {
+    type = static_cast<decltype(type)>(v["type"].GetUint());
   }
-  if (v.HasMember("identify") && v["identify"].IsUint64()) {
-    identify = v["identify"].GetUint64();
+  if (v.HasMember("notifyCode") && v["notifyCode"].IsInt()) {
+    notifyCode = v["notifyCode"].GetInt();
+  }
+  if (v.HasMember("notifyMsg") && v["notifyMsg"].IsString()) {
+    notifyMsg = v["notifyMsg"].GetString();
+  }
+  if (v.HasMember("chromium_main_pid") && v["chromium_main_pid"].IsUint()) {
+    chromium_main_pid = v["chromium_main_pid"].GetUint();
+  }
+  if (v.HasMember("chromium_server_port") &&
+      v["chromium_server_port"].IsUint()) {
+    chromium_server_port = v["chromium_server_port"].GetUint();
+  }
+  if (v.HasMember("mode") && v["mode"].IsInt()) {
+    mode = v["mode"].GetInt();
+  }
+  if (v.HasMember("reuse") && v["reuse"].IsBool()) {
+    reuse = v["reuse"].GetBool();
+  }
+  if (v.HasMember("server") && v["server"].IsObject()) {
+    server << v["server"];
+  }
+  if (v.HasMember("super") && v["super"].IsString()) {
+    super = v["super"].GetString();
+  }
+  if (v.HasMember("identify") && v["identify"].IsUint()) {
+    identify = static_cast<decltype(identify)>(v["identify"].GetUint());
+  }
+  if (v.HasMember("seed") && v["seed"].IsUint64()) {
+    seed = static_cast<decltype(seed)>(v["seed"].GetUint64());
   }
   if (v.HasMember("dynFpsInfo") && v["dynFpsInfo"].IsObject()) {
     dynFpsInfo << v["dynFpsInfo"];
@@ -2005,25 +2779,20 @@ inline void IXSiumio::operator<<(const rapidjson::Value &v) {
   if (v.HasMember("startup") && v["startup"].IsObject()) {
     startup << v["startup"];
   }
-  if (v.HasMember("yunlogin") && v["yunlogin"].IsObject()) {
-    yunlogin << v["yunlogin"];
-  }
   if (v.HasMember("webrtcIPHandling") && v["webrtcIPHandling"].IsObject()) {
     webrtcIPHandling << v["webrtcIPHandling"];
   }
-  if (v.HasMember("enable_proxy_info_sync") &&
-      v["enable_proxy_info_sync"].IsBool()) {
-    enable_proxy_info_sync = v["enable_proxy_info_sync"].GetBool();
-  }
-  if (v.HasMember("proxy_info_request_url") &&
-      v["proxy_info_request_url"].IsString()) {
-    proxy_info_request_url = v["proxy_info_request_url"].GetString();
+  if (v.HasMember("dynFpsUrl") && v["dynFpsUrl"].IsString()) {
+    dynFpsUrl = v["dynFpsUrl"].GetString();
   }
   if (v.HasMember("proxy") && v["proxy"].IsObject()) {
     proxy << v["proxy"];
   }
-  if (v.HasMember("fingerprint") && v["fingerprint"].IsObject()) {
-    fps << v["fingerprint"];
+  if (v.HasMember("bridge") && v["bridge"].IsObject()) {
+    bridge << v["bridge"];
+  }
+  if (v.HasMember("fps") && v["fps"].IsObject()) {
+    fps << v["fps"];
   }
   if (v.HasMember("extensions") && v["extensions"].IsObject()) {
     extensions << v["extensions"];
@@ -2041,14 +2810,28 @@ inline void IXSiumio::operator>>(rapidjson::Document &doc) const {
   auto &xsiumioAllocator = xsiumioDoc.GetAllocator();
   RAPIDJSON_ADDMEMBER_BOOL(xsiumioDoc, std::string("enable"), enable,
                            xsiumioAllocator);
-  RAPIDJSON_ADDMEMBER_BOOL(xsiumioDoc, std::string("navigatorWebdriver"),
-                           navigatorWebdriver, xsiumioAllocator);
-  RAPIDJSON_ADDMEMBER_BOOL(xsiumioDoc, std::string("enable_proxy_info_sync"),
-                           enable_proxy_info_sync, xsiumioAllocator);
-  RAPIDJSON_ADDMEMBER_UINT64(xsiumioDoc, std::string("timestamp"), timestamp,
+  RAPIDJSON_ADDMEMBER_UINT(xsiumioDoc, std::string("type"),
+                           static_cast<tfRequestType>(type), xsiumioAllocator);
+  RAPIDJSON_ADDMEMBER_BOOL(xsiumioDoc, std::string("reuse"), reuse,
+                           xsiumioAllocator);
+  RAPIDJSON_ADDMEMBER_STRING(xsiumioDoc, std::string("super"), super,
                              xsiumioAllocator);
-  RAPIDJSON_ADDMEMBER_UINT64(xsiumioDoc, std::string("identify"), identify,
+  RAPIDJSON_ADDMEMBER_UINT(xsiumioDoc, std::string("identify"), identify,
+                           xsiumioAllocator);
+  RAPIDJSON_ADDMEMBER_UINT64(xsiumioDoc, std::string("seed"), seed,
                              xsiumioAllocator);
+  RAPIDJSON_ADDMEMBER_INT(xsiumioDoc, std::string("mode"), mode,
+                          xsiumioAllocator);
+  RAPIDJSON_ADDMEMBER_UINT(xsiumioDoc, std::string("chromium_main_pid"),
+                           chromium_main_pid, xsiumioAllocator);
+  RAPIDJSON_ADDMEMBER_UINT(xsiumioDoc, std::string("chromium_server_port"),
+                           chromium_server_port, xsiumioAllocator);
+  RAPIDJSON_ADDMEMBER_INT(xsiumioDoc, std::string("notifyCode"), notifyCode,
+                          xsiumioAllocator);
+  RAPIDJSON_ADDMEMBER_STRING(xsiumioDoc, std::string("notifyMsg"), notifyMsg,
+                             xsiumioAllocator);
+  server >> xsiumioDoc;
+  bridge >> xsiumioDoc;
   proxy >> xsiumioDoc;
   cookies >> xsiumioDoc;
   storage >> xsiumioDoc;
@@ -2058,9 +2841,8 @@ inline void IXSiumio::operator>>(rapidjson::Document &doc) const {
   extensions >> xsiumioDoc;
   webrtcIPHandling >> xsiumioDoc;
   dynFpsInfo >> xsiumioDoc;
-  RAPIDJSON_ADDMEMBER_STRING(xsiumioDoc, std::string("proxy_info_request_url"),
-                             proxy_info_request_url, xsiumioAllocator);
-  yunlogin >> xsiumioDoc;
+  RAPIDJSON_ADDMEMBER_STRING(xsiumioDoc, std::string("dynFpsUrl"), dynFpsUrl,
+                             xsiumioAllocator);
   rapidjson::Value xsiumioValue(xsiumioDoc, allocator);
   doc.AddMember(rapidjson::Value(kObjectKey, allocator).Move(), xsiumioValue,
                 allocator);
@@ -2071,14 +2853,16 @@ inline IXSiumio::Storage::Storage() = default;
 inline IXSiumio::Storage::~Storage() = default;
 inline IXSiumio::Startup::Startup() = default;
 inline IXSiumio::Startup::~Startup() = default;
+inline IXSiumio::Server::Server() = default;
+inline IXSiumio::Server::~Server() = default;
 inline IXSiumio::Jss::Jss() = default;
 inline IXSiumio::Jss::~Jss() = default;
-inline IXSiumio::Yunlogin::Yunlogin() = default;
-inline IXSiumio::Yunlogin::~Yunlogin() = default;
 inline IXSiumio::WebRTCIPHandling::WebRTCIPHandling() = default;
 inline IXSiumio::WebRTCIPHandling::~WebRTCIPHandling() = default;
 inline IXSiumio::Proxy::Proxy() = default;
 inline IXSiumio::Proxy::~Proxy() = default;
+inline IXSiumio::Bridge::Bridge() = default;
+inline IXSiumio::Bridge::~Bridge() = default;
 inline IXSiumio::Extensions::Extensions() = default;
 inline IXSiumio::Extensions::~Extensions() = default;
 inline IXSiumio::Fingerprint::Fingerprint() = default;
@@ -2087,6 +2871,8 @@ inline IXSiumio::Fingerprint::Hash::Hash() = default;
 inline IXSiumio::Fingerprint::Hash::~Hash() = default;
 inline IXSiumio::Fingerprint::Math::Math() = default;
 inline IXSiumio::Fingerprint::Math::~Math() = default;
+inline IXSiumio::Fingerprint::V8::V8() = default;
+inline IXSiumio::Fingerprint::V8::~V8() = default;
 inline IXSiumio::Fingerprint::Canvas::Canvas() = default;
 inline IXSiumio::Fingerprint::Canvas::~Canvas() = default;
 inline IXSiumio::Fingerprint::Audio::Audio() = default;
@@ -2115,8 +2901,10 @@ inline IXSiumio::Fingerprint::Webgl::ShaderPrecisionFormat::_8B31_::~_8B31_() =
     default;
 inline IXSiumio::Fingerprint::Font::Font() = default;
 inline IXSiumio::Fingerprint::Font::~Font() = default;
-inline IXSiumio::Fingerprint::TimeZone::TimeZone() = default;
-inline IXSiumio::Fingerprint::TimeZone::~TimeZone() = default;
+inline IXSiumio::Fingerprint::CdmRegistry::CdmRegistry() = default;
+inline IXSiumio::Fingerprint::CdmRegistry::~CdmRegistry() = default;
+inline IXSiumio::Fingerprint::CdmRegistry::CdmEntry::CdmEntry() = default;
+inline IXSiumio::Fingerprint::CdmRegistry::CdmEntry::~CdmEntry() = default;
 inline IXSiumio::Fingerprint::Screen::Screen() = default;
 inline IXSiumio::Fingerprint::Screen::~Screen() = default;
 inline IXSiumio::Fingerprint::Screen::Dpi::Dpi() = default;
@@ -2137,6 +2925,8 @@ inline IXSiumio::Fingerprint::Voice::Voice() = default;
 inline IXSiumio::Fingerprint::Voice::~Voice() = default;
 inline IXSiumio::Fingerprint::Voice::Data::Data() = default;
 inline IXSiumio::Fingerprint::Voice::Data::~Data() = default;
+inline IXSiumio::Fingerprint::Product::Product() = default;
+inline IXSiumio::Fingerprint::Product::~Product() = default;
 inline IXSiumio::DynamicFpsInfo::DynamicFpsInfo() = default;
 inline IXSiumio::DynamicFpsInfo::~DynamicFpsInfo() = default;
 inline IXSiumio::DynamicFpsInfo::Ipinfo::Ipinfo() = default;

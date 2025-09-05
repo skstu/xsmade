@@ -26,7 +26,8 @@ int main(int argc, char **argv)
   std::string target_component_path =
       current_path + "/../components/libcurlcc.dll";
 #else
-  std::string target_component_path = current_path + "/libcurlcc.dll";
+  std::string target_component_path =
+      current_path + "/components/libcurlcc.dll";
 #endif
   IComponent *pComponentCurl = nullptr;
   do {
@@ -36,24 +37,53 @@ int main(int argc, char **argv)
     auto pCurl = dynamic_cast<curl::ICurl *>(pComponentCurl);
     if (!pCurl)
       break;
+
+    pCurl->Start();
+    std::string proxy_string, request_url;
+
     for (const auto &line : cmdline) {
       if (line.first.compare("proxy-string") == 0 && !line.second.empty()) {
-        pCurl->GetConfig()->SetCurlProxyString(line.second.c_str());
+        proxy_string = line.second;
       }
       if (line.first.compare("urls") == 0 && !line.second.empty()) {
-        std::vector<std::string> urls =
-            stl::Common::StringSplit(line.second, ",");
-        for (const auto &url : urls) {
-          pCurl->GetConfig()->AppendCurlRequestUrl(url.c_str());
-        }
-      }
-      if (line.first.compare("response-file") == 0 && !line.second.empty()) {
-        pCurl->GetConfig()->SetCurlResponseFilename(line.second.c_str());
+        // std::vector<std::string> urls =
+        //     stl::Common::StringSplit(line.second, ",");
+        // for (const auto &url : urls) {
+        //   pCurl->GetConfig()->AppendCurlRequestUrl(url.c_str());
+        // }
+        request_url = line.second;
       }
     }
 
-    pCurl->Start();
-    pCurl->Perform(nullptr);
+    if (proxy_string.empty())
+      break;
+
+    auto reqArray = pCurl->CreateRequestArray();
+    auto reqMyip = pCurl->CreateRequest();
+    reqMyip->SetUrl(request_url.c_str());
+    reqMyip->SetProxyString(proxy_string.c_str());
+
+    reqArray->Push(reqMyip);
+    curl::ICurl::IRequestArray *resArrsy = pCurl->Perform(reqArray);
+    for (size_t i = 0; i < resArrsy->Total(); ++i) {
+      curl::ICurl::IRequest *req = resArrsy->Next(i);
+      if (!req)
+        continue;
+      if (req->GetResponseCode()) {
+        int code = req->GetResponseCode();
+        std::cout << "Request failed with code: " << code << std::endl;
+        continue;
+      }
+      char *response = nullptr;
+      size_t response_size = 0;
+      req->GetResponse(&response, &response_size);
+      std::cout << "Response: " << std::string(response, response_size)
+                << std::endl;
+      pCurl->Free((void **)&response);
+      
+    }
+    if (resArrsy)
+      resArrsy->Release();
   } while (0);
   curl::ICurl::Destroy(&pComponentCurl);
   return 0;

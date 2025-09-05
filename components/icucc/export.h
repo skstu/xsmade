@@ -26,9 +26,8 @@ public:
   virtual void Stop() {
   }
   virtual bool Ready() const = 0;
-  // virtual bool Detect(const IBuffer *, IBuffer **) const = 0;
-  // virtual bool Convert(const IBuffer *input, const CharsetType &from,
-  //                      const CharsetType &to, IBuffer **output) const = 0;
+  virtual bool GetZoneOffsetMinutes(const char *tzid, int &out_minutes,
+                                    long long tp_ms) const = 0;
 };
 //
 /// /*_ Memade®（新生™） _**/

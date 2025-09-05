@@ -9,7 +9,9 @@ add_library(${PROJECT_NAME} SHARED ${SOURCES})
 target_include_directories(
   ${PROJECT_NAME}
   PRIVATE ${CMAKE_CURRENT_SOURCE_DIR} ${xsINCLUDE_DIR}
-          ${xsBUILD_INSTALLED_INCLUDE_DIR} ${MSYS2_MINGW64_DIR}/include/c++)
+          ${xsBUILD_INSTALLED_INCLUDE_DIR} 
+          #${MSYS2_MINGW64_DIR}/include/c++
+          )
 
 target_link_directories(
   ${PROJECT_NAME}
@@ -17,8 +19,9 @@ target_link_directories(
   ${xsLIBS_DIR}
   ${xsLIBS_LIB_DIR}
   ${xsBUILD_INSTALLED_LIB_DIR}
-  ${MSYS2_CLANG64_DIR}/lib
-  ${MSYS2_MINGW64_DIR}/lib)
+  #${MSYS2_CLANG64_DIR}/lib
+  #${MSYS2_MINGW64_DIR}/lib
+  )
 
 set(LLVM_PROJECT_LIBS
     libLLVMAArch64CodeGen.a
@@ -204,7 +207,7 @@ set(CLANG_PROJECT_LIBS
 if(xsSYSTYPE_WINDOWS)
   target_link_libraries(
     ${PROJECT_NAME}
-    LLVM-20
+    #LLVM-20
     libffi.a
     libzstd.a
     libz.a

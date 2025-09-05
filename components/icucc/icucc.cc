@@ -1,5 +1,4 @@
 #include "icucc.h"
-
 Icucc::Icucc() {
   Init();
 }
@@ -21,6 +20,25 @@ void Icucc::UnInit() {
 }
 bool Icucc::Ready() const {
   return ready_.load();
+}
+bool Icucc::Start() {
+  do {
+    if (open_.load())
+      break;
+    open_.store(true);
+    // America/Chicago
+    int v = 0;
+    GetZoneOffsetMinutes("America/Chicago", v, 0);
+    auto xx = 0;
+  } while (0);
+  return open_.load();
+}
+void Icucc::Stop() {
+  do {
+    if (!open_.load())
+      break;
+    open_.store(false);
+  } while (0);
 }
 //////////////////////////////////////////////////////////////////////////////////////////
 static Icucc *__gpIcucc = nullptr;

@@ -1,0 +1,1849 @@
+﻿//
+// main.cpp
+// ~~~~~~~~
+//
+// Copyright (c) 2023 Jack (jack dot wgm at gmail dot com)
+//
+// Distributed under the Boost Software License, Version 1.0. (See accompanying
+// file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
+//
+#define PROXY_ENABLE_MARTELL_CHANGED 1
+
+#include "proxy/proxy_server.hpp"
+#include "proxy/socks_client.hpp"
+#include "proxy/logging.hpp"
+
+#include "proxy/use_awaitable.hpp"
+#include "proxy/ipip.hpp"
+
+#ifdef _MSC_VER
+#pragma warning(push)
+#pragma warning(disable : 4005)
+#endif // _MSC_VER
+
+#ifdef USE_SNMALLOC
+#define NO_BOOTSTRAP_ALLOCATOR
+#ifndef NDEBUG
+#define NDEBUG
+#endif
+#include "src/snmalloc/override/new.cc"
+#endif // USE_SNMALLOC
+
+#ifdef _MSC_VER
+#pragma warning(pop)
+#endif
+
+#include "main.hpp"
+
+#include <boost/asio/io_context.hpp>
+#include <boost/asio/co_spawn.hpp>
+#include <boost/asio/detached.hpp>
+#include <boost/asio/signal_set.hpp>
+
+#include <boost/nowide/args.hpp>
+#include <boost/algorithm/string/join.hpp>
+#include <boost/program_options.hpp>
+namespace po = boost::program_options;
+
+#include <limits>
+// add synchronization headers for safe shutdown
+#include <mutex>
+#include <condition_variable>
+
+#define PROXY_BUILD_DYNAMIC 1
+#if PROXY_BUILD_DYNAMIC
+#include "iproxy.hpp"
+#define SHARED_API __declspec(dllexport)
+#endif // PROXY_BUILD_DYNAMIC
+#if PROXY_ENABLE_MARTELL_CHANGED
+#ifndef WIN32_LEAN_AND_MEAN
+#define WIN32_LEAN_AND_MEAN
+#endif
+#include <Windows.h>
+#include <boost/beast/core/detail/base64.hpp>
+#endif
+namespace net = boost::asio;
+using namespace proxy;
+
+using server_ptr = std::shared_ptr<proxy_server>;
+
+#ifdef _MSC_VER
+#pragma warning(disable : 4244)
+#endif
+
+#include <iostream>
+#ifdef _WIN32
+#include <winsock2.h>
+#pragma comment(lib, "ws2_32.lib")
+#else
+#include <sys/socket.h>
+#include <netinet/in.h>
+#include <unistd.h>
+#endif
+
+//////////////////////////////////////////////////////////////////////////
+
+std::vector<std::string> server_listens;
+std::vector<std::string> auth_users;
+std::vector<std::string> users_rate_limit;
+std::vector<std::string> deny_region;
+std::vector<std::string> allow_region;
+
+std::string ipip_db;
+std::string doc_dir;
+std::string log_dir;
+std::string local_ip;
+std::string proxy_pass;
+std::string ssl_cert_dir;
+std::string ssl_cacert_dir;
+std::string ssl_ciphers;
+std::string ssl_dhparam;
+std::string proxy_ssl_name;
+
+bool single_process = false;
+
+bool transparent = false;
+bool autoindex = false;
+bool htpasswd = false;
+
+bool disable_http = false;
+bool disable_insecure = true;
+bool disable_logs;
+bool disable_socks = false;
+bool disable_udp = false;
+
+bool happyeyeballs = true;
+bool connect_v6only = false;
+bool connect_v4only = false;
+bool proxy_pass_ssl = false;
+bool reuse_port = false;
+bool scramble = false;
+bool ssl_prefer_server_ciphers = false;
+
+int64_t linux_so_mark;
+uint16_t noise_length;
+int udp_timeout;
+int tcp_timeout;
+int rate_limit;
+
+//////////////////////////////////////////////////////////////////////////
+
+net::awaitable<void> start_proxy_server(net::io_context &ioc,
+                                        server_ptr &server) {
+  proxy_server_option opt;
+  auto &listens = opt.listens_;
+
+  for (const auto &listen : server_listens) {
+    std::string host, port;
+    bool v6only = false;
+
+    if (!parse_endpoint_string(listen, host, port, v6only)) {
+      std::cerr << "Parse endpoint fail: " << listen << std::endl;
+      co_return;
+    }
+
+    listens.emplace_back(tcp::endpoint{net::ip::make_address(host),
+                                       (unsigned short)atoi(port.c_str())},
+                         v6only);
+  }
+
+  for (const auto &user : auth_users) {
+    if (user.empty())
+      continue;
+
+    auto pos = user.find(':');
+    if (pos == std::string::npos)
+      opt.auth_users_.emplace_back(user, "");
+    else
+      opt.auth_users_.emplace_back(user.substr(0, pos), user.substr(pos + 1));
+  }
+
+  for (const auto &user : users_rate_limit) {
+    if (user.empty())
+      continue;
+
+    auto pos = user.find(':');
+    if (pos == std::string::npos)
+      continue;
+
+    auto name = user.substr(0, pos);
+    auto rate = std::atoi(user.substr(pos + 1).c_str());
+
+    opt.users_rate_limit_.insert_or_assign(name, rate);
+  }
+
+  opt.proxy_pass_ = proxy_pass;
+  opt.proxy_pass_use_ssl_ = proxy_pass_ssl;
+
+  opt.ssl_cert_path_ = ssl_cert_dir;
+  opt.ssl_cacert_path_ = ssl_cacert_dir;
+
+  opt.ssl_ciphers_ = ssl_ciphers;
+  opt.proxy_ssl_name_ = proxy_ssl_name;
+
+  opt.disable_http_ = disable_http;
+  opt.disable_socks_ = disable_socks;
+  opt.disable_udp_ = disable_udp;
+  opt.disable_insecure_ = disable_insecure;
+  opt.scramble_ = scramble;
+  opt.noise_length_ = noise_length;
+  opt.local_ip_ = local_ip;
+  opt.udp_timeout_ = udp_timeout;
+  opt.tcp_timeout_ = tcp_timeout;
+  opt.tcp_rate_limit_ = rate_limit;
+
+  opt.ipip_db_ = ipip_db;
+  if (!deny_region.empty()) {
+    std::vector<std::string> regions;
+
+    for (const auto &region : deny_region) {
+      auto ret = strutil::split(region, "|");
+      regions.insert(regions.end(), ret.begin(), ret.end());
+    }
+    deny_region = regions;
+  }
+  opt.deny_regions_.insert(deny_region.begin(), deny_region.end());
+  if (!allow_region.empty()) {
+    std::vector<std::string> regions;
+
+    for (const auto &region : allow_region) {
+      auto ret = strutil::split(region, "|");
+      regions.insert(regions.end(), ret.begin(), ret.end());
+    }
+    allow_region = regions;
+  }
+  opt.allow_regions_.insert(allow_region.begin(), allow_region.end());
+
+  opt.reuse_port_ = reuse_port;
+  opt.happyeyeballs_ = happyeyeballs;
+  opt.connect_v4_only_ = connect_v4only;
+  opt.connect_v6_only_ = connect_v6only;
+  opt.transparent_ = transparent;
+  if (linux_so_mark > 0 &&
+      linux_so_mark <= std::numeric_limits<uint32_t>::max())
+    opt.so_mark_.emplace(linux_so_mark);
+
+  opt.doc_directory_ = doc_dir;
+  opt.autoindex_ = autoindex;
+  opt.htpasswd_ = htpasswd;
+
+  server = proxy_server::make(ioc.get_executor(), opt);
+  server->start();
+
+  co_return;
+}
+
+//////////////////////////////////////////////////////////////////////////
+
+inline std::optional<std::string> try_as_string(const boost::any &var) {
+  try {
+    return boost::any_cast<std::string>(var);
+  } catch (const boost::bad_any_cast &) {
+    return std::nullopt;
+  }
+}
+
+inline std::optional<bool> try_as_bool(const boost::any &var) {
+  try {
+    return boost::any_cast<bool>(var);
+  } catch (const boost::bad_any_cast &) {
+    return std::nullopt;
+  }
+}
+
+inline std::optional<int> try_as_int(const boost::any &var) {
+  try {
+    return boost::any_cast<int>(var);
+  } catch (const boost::bad_any_cast &) {
+    return std::nullopt;
+  }
+}
+
+inline void print_args(int argc, char **argv, const po::variables_map &vm) {
+  XLOG_INFO << "Current directory: " << fs::current_path().string();
+
+  if (!vm.count("config")) {
+    std::vector<std::string> args(argv, argv + argc);
+    XLOG_INFO << "Run: " << boost::algorithm::join(args, " ");
+    return;
+  }
+
+  for (const auto &[key, value] : vm) {
+    if (value.empty() || key == "config")
+      continue;
+
+    if (auto s = try_as_string(value.value())) {
+      XLOG_INFO << key << " = " << *s;
+      continue;
+    }
+
+    if (auto b = try_as_bool(value.value())) {
+      XLOG_INFO << key << " = " << *b;
+      continue;
+    }
+
+    if (auto i = try_as_int(value.value())) {
+      XLOG_INFO << key << " = " << *i;
+      continue;
+    }
+  }
+}
+
+namespace std {
+std::ostream &operator<<(std::ostream &os,
+                         const std::vector<std::string> &users) {
+  for (auto it = users.begin(); it != users.end();) {
+    os << *it;
+    if (++it == users.end())
+      break;
+    os << " ";
+  }
+
+  return os;
+}
+} // namespace std
+
+#if PROXY_BUILD_DYNAMIC
+
+namespace {
+static bool is_port_in_use(int port) {
+#ifdef _WIN32
+  WSADATA wsaData;
+  WSAStartup(MAKEWORD(2, 2), &wsaData);
+#endif
+  int sock = socket(AF_INET, SOCK_STREAM, 0);
+  if (sock < 0)
+    return true; // error, treat as in use
+
+  sockaddr_in addr = {};
+  addr.sin_family = AF_INET;
+  addr.sin_addr.s_addr = htonl(INADDR_ANY);
+  addr.sin_port = htons(port);
+
+  bool in_use = bind(sock, (sockaddr *)&addr, sizeof(addr)) != 0;
+
+#ifdef _WIN32
+  closesocket(sock);
+  WSACleanup();
+#else
+  close(sock);
+#endif
+  return in_use;
+}
+
+static bool parse_proxy_url(const std::string &url, std::string &host,
+                            int &port) {
+  std::regex re(
+      R"((socks5h?|socks4|https?|HTTPS?|SOCKS5H?|SOCKS4)://([^:/]+):(\d+))",
+      std::regex::icase);
+  std::smatch match;
+  if (std::regex_match(url, match, re)) {
+    host = match[2];
+    port = std::stoi(match[3]);
+    return true;
+  }
+  return false;
+}
+
+// RAII wrapper for HANDLE that releases mutex (if owned) and closes handle.
+class ScopedMutex {
+public:
+  ScopedMutex(HANDLE h = nullptr, bool owned = false) noexcept
+      : handle_(h), owned_(owned) {
+  }
+  ~ScopedMutex() noexcept {
+    if (handle_) {
+      if (owned_) {
+        ReleaseMutex(handle_);
+      }
+      CloseHandle(handle_);
+    }
+  }
+  // non-copyable
+  ScopedMutex(const ScopedMutex &) = delete;
+  ScopedMutex &operator=(const ScopedMutex &) = delete;
+  // movable
+  ScopedMutex(ScopedMutex &&o) noexcept : handle_(o.handle_), owned_(o.owned_) {
+    o.handle_ = nullptr;
+    o.owned_ = false;
+  }
+  ScopedMutex &operator=(ScopedMutex &&o) noexcept {
+    if (this != &o) {
+      if (handle_) {
+        if (owned_)
+          ReleaseMutex(handle_);
+        CloseHandle(handle_);
+      }
+      handle_ = o.handle_;
+      owned_ = o.owned_;
+      o.handle_ = nullptr;
+      o.owned_ = false;
+    }
+    return *this;
+  }
+
+  bool valid() const noexcept {
+    return handle_ != nullptr;
+  }
+  bool owned() const noexcept {
+    return owned_;
+  }
+
+private:
+  HANDLE handle_;
+  bool owned_;
+};
+
+// Build a stable mutex name: base + concatenated listeners; if too long,
+// shorten deterministically.
+static std::string
+BuildMutexName(const std::vector<std::string> &server_listens,
+               size_t max_len = 128) {
+  std::string name = "XSiumioBridge.Service";
+  for (const auto &s : server_listens) {
+    name.append(":");
+    name.append(s);
+  }
+  if (name.size() <= max_len)
+    return name;
+  // shorten using std::hash (hex) to keep uniqueness while staying short
+  std::hash<std::string> h;
+  auto hv = h(name);
+  std::ostringstream oss;
+  oss << std::hex << hv;
+  std::string shortname = "XSiumioBridge.Service:";
+  shortname += oss.str();
+  if (shortname.size() > max_len) {
+    // final fallback: truncate
+    shortname.resize(max_len);
+  }
+  return shortname;
+}
+
+// Create a named mutex and return ScopedMutex. If another instance already
+// exists, this function returns an empty ScopedMutex (valid() == false).
+static ScopedMutex
+CreateUniqueMutex(const std::vector<std::string> &server_listens) {
+  std::string mutex_name = BuildMutexName(server_listens, 128);
+
+  // Use ANSI CreateMutexA if mutex_name is ASCII; you can switch to
+  // CreateMutexW if using wide strings.
+  HANDLE h = CreateMutexA(nullptr, TRUE, mutex_name.c_str());
+  if (!h) {
+    // Creation failed: return empty (caller can GetLastError if needed)
+    return ScopedMutex(nullptr, false);
+  }
+
+  // If object already existed, this call does NOT grant ownership even if we
+  // passed TRUE.
+  if (GetLastError() == ERROR_ALREADY_EXISTS) {
+    // Close the handle and signal that another instance exists.
+    CloseHandle(h);
+    return ScopedMutex(nullptr, false);
+  }
+
+  // Created and we own the mutex.
+  return ScopedMutex(h, true);
+}
+
+#if PROXY_BUILD_DYNAMIC
+class ProxyService final : public IProxyService {
+public:
+  static ProxyService *CreateOrGet();
+  static void Destroy();
+
+private:
+  ProxyService();
+  ~ProxyService();
+  void Init();
+  void UnInit();
+
+public:
+  bool Start() override;
+  void Stop() override;
+  void SetConfig(const char *cfg, size_t len) override;
+
+private:
+  server_ptr server_;
+  std::atomic_bool open_ = false;
+  std::string cfgBuffer_;
+  std::vector<std::thread> threads_;
+  void Process();
+
+  // synchronization for threads_ and active thread tracking
+  std::mutex threads_mutex_;
+  std::condition_variable threads_cv_;
+  size_t active_threads_ = 0;
+};
+
+ProxyService::ProxyService() {
+  Init();
+}
+ProxyService::~ProxyService() {
+  UnInit();
+}
+void ProxyService::Init() {
+}
+void ProxyService::UnInit() {
+  // Ensure a safe shutdown when the object is destroyed.
+  Stop();
+}
+void ProxyService::SetConfig(const char *cfg, size_t len) {
+  if (cfg && len > 0)
+    cfgBuffer_.append(cfg, len);
+}
+bool ProxyService::Start() {
+  do {
+    if (open_.load())
+      break;
+    open_.store(true);
+    std::lock_guard<std::mutex> lg(threads_mutex_);
+    threads_.emplace_back([this]() { Process(); });
+  } while (0);
+  return open_.load();
+}
+void ProxyService::Stop() {
+  open_.store(false);
+
+  // Move threads out under lock to avoid races with Start().
+  std::vector<std::thread> local_threads;
+  {
+    std::lock_guard<std::mutex> lg(threads_mutex_);
+    local_threads.swap(threads_);
+  }
+
+  auto self_id = std::this_thread::get_id();
+  bool called_from_worker = false;
+  for (auto &t : local_threads) {
+    if (t.joinable() && t.get_id() == self_id) {
+      called_from_worker = true;
+      break;
+    }
+  }
+
+  if (called_from_worker) {
+    // Called from one of the worker threads: join other threads, but do NOT
+    // join self.
+    for (auto &t : local_threads) {
+      if (!t.joinable())
+        continue;
+      if (t.get_id() == self_id)
+        continue;
+      try {
+        t.join();
+      } catch (...) {
+      }
+    }
+    // Do not wait for the calling thread to exit here (would deadlock).
+    return;
+  } else {
+    // Called from host / non-worker thread: join all worker threads and wait
+    // for active count to reach 0.
+    for (auto &t : local_threads) {
+      if (!t.joinable())
+        continue;
+      try {
+        t.join();
+      } catch (...) {
+      }
+    }
+    // Wait for active_threads_ to reach zero, with a modest timeout to avoid
+    // indefinite blocking.
+    std::unique_lock<std::mutex> lk(threads_mutex_);
+    threads_cv_.wait_for(lk, std::chrono::seconds(5), [this](){ return active_threads_ == 0; });
+    return;
+  }
+}
+void ProxyService::Process() {
+  { std::lock_guard<std::mutex> lg(threads_mutex_); ++active_threads_; }
+  auto notify_exit = [this]() { std::lock_guard<std::mutex> lg(threads_mutex_); if (active_threads_>0) --active_threads_; threads_cv_.notify_all(); };
+
+  do {
+    platform_init();
+
+    std::string config;
+    std::string cfgbuf;
+    po::options_description desc("Options");
+    desc.add_options()("help,h", "Help message.")(
+        "cfgbuf",
+        po::value<std::string>(&cfgbuf)->value_name("aaabbbcccdddeee"),
+        "Load configuration options from specified file.")(
+        "single_process",
+        po::value<bool>(&single_process)->default_value(true, "true"),
+        "Single process")
+
+        ("config", po::value<std::string>(&config)->value_name("config.conf"),
+         "Load configuration options from specified file.")
+
+            ("server_listen",
+             po::value<std::vector<std::string>>(&server_listens)
+                 ->default_value({"[::0]:1080"})
+                 ->value_name("ip:port [ip:port ...]"),
+             "Specify server listening address and port.")
+
+                ("reuse_port",
+                 po::value<bool>(&reuse_port)->default_value(false, "false"),
+                 "Enable TCP SO_REUSEPORT option (available since Linux 3.9).")(
+                    "happyeyeballs",
+                    po::value<bool>(&happyeyeballs)
+                        ->default_value(true, "true"),
+                    "Enable Happy Eyeballs algorithm for TCP connections.")
+
+                    ("v6only",
+                     po::value<bool>(&connect_v6only)
+                         ->default_value(false, "false"),
+                     "Enable IPv6 only mode for TCP connections.")(
+                        "v4only",
+                        po::value<bool>(&connect_v4only)
+                            ->default_value(false, "false"),
+                        "Enable IPv4 only mode for TCP connections.")
+
+                        ("local_ip", po::value<std::string>(&local_ip),
+                         "Specify local IP for client TCP connection to "
+                         "server.")
+
+                            ("transparent",
+                             po::value<bool>(&transparent)
+                                 ->default_value(false, "false"),
+                             "Enable transparent proxy mode(only linux).")(
+                                "so_mark",
+                                po::value<int64_t>(&linux_so_mark)
+                                    ->default_value(-1),
+                                "Set SO_MARK for linux transparent proxy mode.")
+
+                                ("udp_timeout",
+                                 po::value<int>(&udp_timeout)
+                                     ->default_value(60),
+                                 "Set UDP timeout for UDP connections.")(
+                                    "tcp_timeout",
+                                    po::value<int>(&tcp_timeout)
+                                        ->default_value(-1),
+                                    "Set TCP timeout for TCP connections.")(
+                                    "rate_limit",
+                                    po::value<int>(&rate_limit)
+                                        ->default_value(-1),
+                                    "Set TCP rate limit for connection.")
+
+                                    ("auth_users",
+                                     po::value<std::vector<std::string>>(
+                                         &auth_users)
+                                         ->multitoken()
+                                         ->default_value(
+                                             std::vector<std::string>{
+                                                 "jack:1111"}),
+                                     "List of authorized users(default user: "
+                                     "jack:1111) (e.g: user1:passwd1 "
+                                     "user2:passwd2).")(
+                                        "users_rate_limit",
+                                        po::value<std::vector<std::string>>(
+                                            &users_rate_limit)
+                                            ->multitoken(),
+                                        "List of users rate limit (e.g: "
+                                        "user1:1000000 user2:800000).")
+
+                                        ("allow_region",
+                                         po::value<std::vector<std::string>>(
+                                             &allow_region)
+                                             ->multitoken(),
+                                         "Allow region (e.g: "
+                                         "北京|河南|武汉|192.168.1.2|192.168.1."
+                                         "0/24|2001:0db8::1|2001:db8::/32).")(
+                                            "deny_region",
+                                            po::value<std::vector<std::string>>(
+                                                &deny_region)
+                                                ->multitoken(),
+                                            "Deny region (e.g: "
+                                            "广东|上海|山东|192.168.1.2|192."
+                                            "168.1.0/"
+                                            "24|2001:0db8::1|2001:db8::/32).")
+
+                                            ("proxy_pass",
+                                             po::value<std::string>(&proxy_pass)
+                                                 ->default_value("")
+                                                 ->value_name(""),
+                                             "Specify next proxy pass (e.g: "
+                                             "socks5://user:passwd@ip:port).")(
+                                                "proxy_pass_ssl",
+                                                po::value<bool>(&proxy_pass_ssl)
+                                                    ->default_value(false,
+                                                                    "false")
+                                                    ->value_name(""),
+                                                "Enable SSL for the next proxy "
+                                                "pass.")
+
+                                                ("ssl_certificate_dir",
+                                                 po::value<std::string>(
+                                                     &ssl_cert_dir)
+                                                     ->value_name("path"),
+                                                 "Directory containing SSL "
+                                                 "certificates.")(
+                                                    "ssl_cacert_dir",
+                                                    po::value<std::string>(
+                                                        &ssl_cacert_dir)
+                                                        ->value_name("path"),
+                                                    "Directory containing SSL "
+                                                    "CA certificates.")
+
+                                                    ("ssl_sni",
+                                                     po::value<std::string>(
+                                                         &proxy_ssl_name)
+                                                         ->value_name("sni"),
+                                                     "Specifies SNI for "
+                                                     "multiple SSL "
+                                                     "certificates on one IP "
+                                                     "(Deprecated, using "
+                                                     "proxy_ssl_name "
+                                                     "instead).")(
+                                                        "proxy_ssl_name",
+                                                        po::value<std::string>(
+                                                            &proxy_ssl_name)
+                                                            ->value_name("sni"),
+                                                        "Specifies SNI for "
+                                                        "multiple SSL "
+                                                        "certificates on one "
+                                                        "IP.")
+
+                                                        ("ssl_ciphers",
+                                                         po::value<std::string>(
+                                                             &ssl_ciphers)
+                                                             ->value_name(
+                                                                 "ssl_ciphers"),
+                                                         "Specify enabled SSL "
+                                                         "ciphers")(
+                                                            "ssl_prefer_server_"
+                                                            "ciphers",
+                                                            po::value<bool>(
+                                                                &ssl_prefer_server_ciphers)
+                                                                ->default_value(
+                                                                    false,
+                                                                    "false")
+                                                                ->value_name(
+                                                                    ""),
+                                                            "Prefer server "
+                                                            "ciphers over "
+                                                            "client ciphers "
+                                                            "for SSLv3 and TLS "
+                                                            "protocols.")
+
+                                                            ("ipip_db",
+                                                             po::value<
+                                                                 std::string>(
+                                                                 &ipip_db)
+                                                                 ->value_name(
+                                                                     "")
+                                                                 ->default_value(
+                                                                     "17monipdb"
+                                                                     ".datx"),
+                                                             "Specify ipip "
+                                                             "database "
+                                                             "filename.")(
+                                                                "http_doc",
+                                                                po::value<
+                                                                    std::
+                                                                        string>(
+                                                                    &doc_dir)
+                                                                    ->value_name(
+                                                                        "doc"),
+                                                                "Specify "
+                                                                "document root "
+                                                                "directory for "
+                                                                "HTTP server.")(
+                                                                "htpasswd",
+                                                                po::value<bool>(
+                                                                    &htpasswd)
+                                                                    ->value_name(
+                                                                        "")
+                                                                    ->default_value(
+                                                                        false,
+                                                                        "fals"
+                                                                        "e"),
+                                                                "Enable "
+                                                                "WWW-"
+                                                                "Authenticate "
+                                                                "for HTTP "
+                                                                "server.")
+
+                                                                ("autoindex",
+                                                                 po::value<
+                                                                     bool>(
+                                                                     &autoindex)
+                                                                     ->default_value(
+                                                                         false,
+                                                                         "fals"
+                                                                         "e"),
+                                                                 "Enable "
+                                                                 "directory "
+                                                                 "listing.")(
+                                                                    "logs_path",
+                                                                    po::value<
+                                                                        std::
+                                                                            string>(
+                                                                        &log_dir)
+                                                                        ->value_name(
+                                                                            ""),
+                                                                    "Specify "
+                                                                    "directory "
+                                                                    "for log "
+                                                                    "files.")
+
+                                                                    ("disable_"
+                                                                     "logs",
+                                                                     po::value<
+                                                                         bool>(
+                                                                         &disable_logs)
+                                                                         ->value_name(
+                                                                             "")
+                                                                         ->default_value(
+                                                                             false),
+                                                                     "Disable "
+                                                                     "logging"
+                                                                     ".")(
+                                                                        "disabl"
+                                                                        "e_"
+                                                                        "http",
+                                                                        po::value<
+                                                                            bool>(
+                                                                            &disable_http)
+                                                                            ->value_name(
+                                                                                "")
+                                                                            ->default_value(
+                                                                                false,
+                                                                                "false"),
+                                                                        "Disabl"
+                                                                        "e "
+                                                                        "HTTP "
+                                                                        "protoc"
+                                                                        "ol.")(
+                                                                        "disabl"
+                                                                        "e_"
+                                                                        "socks",
+                                                                        po::value<
+                                                                            bool>(
+                                                                            &disable_socks)
+                                                                            ->value_name(
+                                                                                "")
+                                                                            ->default_value(
+                                                                                false,
+                                                                                "false"),
+                                                                        "Disabl"
+                                                                        "e "
+                                                                        "SOCKS "
+                                                                        "proxy "
+                                                                        "protoc"
+                                                                        "ol.")(
+                                                                        "disabl"
+                                                                        "e_udp",
+                                                                        po::value<
+                                                                            bool>(
+                                                                            &disable_udp)
+                                                                            ->value_name(
+                                                                                "")
+                                                                            ->default_value(
+                                                                                false,
+                                                                                "false"),
+                                                                        "Disabl"
+                                                                        "e UDP "
+                                                                        "protoc"
+                                                                        "ol.")(
+                                                                        "disabl"
+                                                                        "e_"
+                                                                        "insecu"
+                                                                        "re",
+                                                                        po::value<
+                                                                            bool>(
+                                                                            &disable_insecure)
+                                                                            ->value_name(
+                                                                                "")
+                                                                            ->default_value(
+                                                                                false,
+                                                                                "false"),
+                                                                        "Disabl"
+                                                                        "e "
+                                                                        "insecu"
+                                                                        "re "
+                                                                        "protoc"
+                                                                        "ol.")
+
+                                                                        ("scram"
+                                                                         "ble",
+                                                                         po::value<
+                                                                             bool>(
+                                                                             &scramble)
+                                                                             ->value_name(
+                                                                                 "")
+                                                                             ->default_value(
+                                                                                 false,
+                                                                                 "false"),
+                                                                         "Noise"
+                                                                         "-base"
+                                                                         "d "
+                                                                         "data "
+                                                                         "secur"
+                                                                         "ity"
+                                                                         ".")(
+                                                                            "no"
+                                                                            "is"
+                                                                            "e_"
+                                                                            "le"
+                                                                            "ng"
+                                                                            "t"
+                                                                            "h",
+                                                                            po::value<
+                                                                                uint16_t>(
+                                                                                &noise_length)
+                                                                                ->value_name(
+                                                                                    "length")
+                                                                                ->default_value(
+                                                                                    0x0fff),
+                                                                            "Le"
+                                                                            "ng"
+                                                                            "th"
+                                                                            " o"
+                                                                            "f "
+                                                                            "th"
+                                                                            "e "
+                                                                            "no"
+                                                                            "is"
+                                                                            "e "
+                                                                            "da"
+                                                                            "ta"
+                                                                            ".");
+
+    po::variables_map vm;
+    po::store(po::command_line_parser(__argc, __argv)
+                  .options(desc)
+                  .style(po::command_line_style::unix_style |
+                         po::command_line_style::allow_long_disguise)
+                  .run(),
+              vm);
+    po::notify(vm);
+
+    std::istringstream iss(cfgBuffer_);
+    auto cfg = po::parse_config_file(iss, desc, /*allow_unregistered=*/false);
+    po::store(cfg, vm);
+    po::notify(vm);
+    // auto cfg = po::parse_config_file(config.c_str(), desc, false);
+    // po::store(cfg, vm);
+    // po::notify(vm);
+
+    print_args(__argc, __argv, vm);
+
+    for (const auto &server_listen : server_listens)
+      XLOG_DBG << "Start server: " << server_listen;
+
+    net::io_context ioc(1);
+    // NOTE: when built as dynamic library, avoid registering process-wide
+    // signal handlers (they affect the host process). Only register signals
+    // for standalone builds.
+#if !defined(PROXY_BUILD_DYNAMIC)
+    net::signal_set terminator_signal(ioc);
+    terminator_signal.add(SIGINT);
+    terminator_signal.add(SIGTERM);
+#ifdef __linux__
+    signal(SIGPIPE, SIG_IGN);
+#endif
+#if defined(SIGQUIT)
+    terminator_signal.add(SIGQUIT);
+#endif
+    terminator_signal.async_wait(
+        [&](const boost::system::error_code &ec, int sig) mutable {
+          if (ec)
+            return;
+          terminator_signal.remove(sig);
+          net::post(ioc, [s = server_]() {
+            if (s)
+              s->close();
+          });
+          net::post(ioc, [&ioc]() { ioc.stop(); });
+        });
+#else
+    // DLL build: do not install signal handlers into host process.
+#endif
+
+    // periodic timer to watch open_ flag
+    auto check_interval = std::chrono::milliseconds(200);
+    auto check_timer = std::make_shared<net::steady_timer>(ioc);
+    // keep shared_ptr cycle via lambda capture for repeated scheduling
+    std::function<void()> schedule_check;
+    schedule_check = [&, check_timer]() {
+      check_timer->expires_after(check_interval);
+      check_timer->async_wait(
+          [&, check_timer](const boost::system::error_code &ec) {
+            if (ec) {
+              // timer cancelled or ioc stopped
+              return;
+            }
+            if (!open_.load()) {
+              // request server close in io_context and then stop
+              if (server_) {
+                net::post(ioc, [s = server_]() {
+                  if (s)
+                    s->close();
+                });
+              }
+              // small grace close then stop
+              net::post(ioc, [&ioc]() { ioc.stop(); });
+              return;
+            }
+            // continue monitoring
+            schedule_check();
+          });
+    };
+
+    // start server coroutine and timer monitor
+    net::co_spawn(ioc, start_proxy_server(ioc, server), net::detached);
+    schedule_check();
+
+    ioc.run();
+    // result = EXIT_SUCCESS;
+  } while (0);
+  notify_exit();
+}
+static ProxyService *__gpsProxyService = nullptr;
+ProxyService *ProxyService::CreateOrGet() {
+  if (!__gpsProxyService) {
+    __gpsProxyService = new ProxyService();
+  }
+  return __gpsProxyService;
+}
+void ProxyService::Destroy() {
+  if (__gpsProxyService) {
+    // Ensure service stopped and workers finished before delete.
+    __gpsProxyService->Stop();
+    delete __gpsProxyService;
+    __gpsProxyService = nullptr;
+  }
+}
+#endif // #if PROXY_BUILD_DYNAMIC
+} // namespace
+
+BOOL APIENTRY DllMain(HMODULE hModule, DWORD ul_reason_for_call,
+                      LPVOID lpReserved) {
+  switch (ul_reason_for_call) {
+  case DLL_PROCESS_ATTACH: {
+  } break;
+  case DLL_THREAD_ATTACH: {
+  } break;
+  case DLL_THREAD_DETACH: {
+  } break;
+  case DLL_PROCESS_DETACH: {
+  } break;
+  }
+  return TRUE;
+}
+
+extern "C" {
+SHARED_API void *interface_init(void *data, unsigned long len) {
+  auto p = ProxyService::CreateOrGet();
+  auto pp = dynamic_cast<IProxyService *>(p);
+  if (data && len > 0) {
+    pp->SetConfig((const char *)data, len);
+  }
+  return pp;
+}
+SHARED_API void interface_uninit() {
+  ProxyService::Destroy();
+}
+} // extern "C"
+#else // PROXY_BUILD_DYNAMIC
+
+#if PROXY_ENABLE_MARTELL_CHANGED
+int APIENTRY WinMain(HINSTANCE hInst, HINSTANCE hInstPrev, PSTR cmdline,
+                     int cmdshow) {
+  int result = EXIT_FAILURE;
+  do {
+    [[maybe_unused]] boost::nowide::args a(__argc, __argv);
+    platform_init();
+
+    std::string config;
+    std::string cfgbuf;
+    po::options_description desc("Options");
+    desc.add_options()("help,h", "Help message.")(
+        "cfgbuf",
+        po::value<std::string>(&cfgbuf)->value_name("aaabbbcccdddeee"),
+        "Load configuration options from specified file.")(
+        "single_process",
+        po::value<bool>(&single_process)->default_value(true, "true"),
+        "Single process")
+
+        ("config", po::value<std::string>(&config)->value_name("config.conf"),
+         "Load configuration options from specified file.")
+
+            ("server_listen",
+             po::value<std::vector<std::string>>(&server_listens)
+                 ->default_value({"[::0]:1080"})
+                 ->value_name("ip:port [ip:port ...]"),
+             "Specify server listening address and port.")
+
+                ("reuse_port",
+                 po::value<bool>(&reuse_port)->default_value(false, "false"),
+                 "Enable TCP SO_REUSEPORT option (available since Linux 3.9).")(
+                    "happyeyeballs",
+                    po::value<bool>(&happyeyeballs)
+                        ->default_value(true, "true"),
+                    "Enable Happy Eyeballs algorithm for TCP connections.")
+
+                    ("v6only",
+                     po::value<bool>(&connect_v6only)
+                         ->default_value(false, "false"),
+                     "Enable IPv6 only mode for TCP connections.")(
+                        "v4only",
+                        po::value<bool>(&connect_v4only)
+                            ->default_value(false, "false"),
+                        "Enable IPv4 only mode for TCP connections.")
+
+                        ("local_ip", po::value<std::string>(&local_ip),
+                         "Specify local IP for client TCP connection to "
+                         "server.")
+
+                            ("transparent",
+                             po::value<bool>(&transparent)
+                                 ->default_value(false, "false"),
+                             "Enable transparent proxy mode(only linux).")(
+                                "so_mark",
+                                po::value<int64_t>(&linux_so_mark)
+                                    ->default_value(-1),
+                                "Set SO_MARK for linux transparent proxy mode.")
+
+                                ("udp_timeout",
+                                 po::value<int>(&udp_timeout)
+                                     ->default_value(60),
+                                 "Set UDP timeout for UDP connections.")(
+                                    "tcp_timeout",
+                                    po::value<int>(&tcp_timeout)
+                                        ->default_value(-1),
+                                    "Set TCP timeout for TCP connections.")(
+                                    "rate_limit",
+                                    po::value<int>(&rate_limit)
+                                        ->default_value(-1),
+                                    "Set TCP rate limit for connection.")
+
+                                    ("auth_users",
+                                     po::value<std::vector<std::string>>(
+                                         &auth_users)
+                                         ->multitoken()
+                                         ->default_value(
+                                             std::vector<std::string>{
+                                                 "jack:1111"}),
+                                     "List of authorized users(default user: "
+                                     "jack:1111) (e.g: user1:passwd1 "
+                                     "user2:passwd2).")(
+                                        "users_rate_limit",
+                                        po::value<std::vector<std::string>>(
+                                            &users_rate_limit)
+                                            ->multitoken(),
+                                        "List of users rate limit (e.g: "
+                                        "user1:1000000 user2:800000).")
+
+                                        ("allow_region",
+                                         po::value<std::vector<std::string>>(
+                                             &allow_region)
+                                             ->multitoken(),
+                                         "Allow region (e.g: "
+                                         "北京|河南|武汉|192.168.1.2|192.168.1."
+                                         "0/24|2001:0db8::1|2001:db8::/32).")(
+                                            "deny_region",
+                                            po::value<std::vector<std::string>>(
+                                                &deny_region)
+                                                ->multitoken(),
+                                            "Deny region (e.g: "
+                                            "广东|上海|山东|192.168.1.2|192."
+                                            "168.1.0/"
+                                            "24|2001:0db8::1|2001:db8::/32).")
+
+                                            ("proxy_pass",
+                                             po::value<std::string>(&proxy_pass)
+                                                 ->default_value("")
+                                                 ->value_name(""),
+                                             "Specify next proxy pass (e.g: "
+                                             "socks5://user:passwd@ip:port).")(
+                                                "proxy_pass_ssl",
+                                                po::value<bool>(&proxy_pass_ssl)
+                                                    ->default_value(false,
+                                                                    "false")
+                                                    ->value_name(""),
+                                                "Enable SSL for the next proxy "
+                                                "pass.")
+
+                                                ("ssl_certificate_dir",
+                                                 po::value<std::string>(
+                                                     &ssl_cert_dir)
+                                                     ->value_name("path"),
+                                                 "Directory containing SSL "
+                                                 "certificates.")(
+                                                    "ssl_cacert_dir",
+                                                    po::value<std::string>(
+                                                        &ssl_cacert_dir)
+                                                        ->value_name("path"),
+                                                    "Directory containing SSL "
+                                                    "CA certificates.")
+
+                                                    ("ssl_sni",
+                                                     po::value<std::string>(
+                                                         &proxy_ssl_name)
+                                                         ->value_name("sni"),
+                                                     "Specifies SNI for "
+                                                     "multiple SSL "
+                                                     "certificates on one IP "
+                                                     "(Deprecated, using "
+                                                     "proxy_ssl_name "
+                                                     "instead).")(
+                                                        "proxy_ssl_name",
+                                                        po::value<std::string>(
+                                                            &proxy_ssl_name)
+                                                            ->value_name("sni"),
+                                                        "Specifies SNI for "
+                                                        "multiple SSL "
+                                                        "certificates on one "
+                                                        "IP.")
+
+                                                        ("ssl_ciphers",
+                                                         po::value<std::string>(
+                                                             &ssl_ciphers)
+                                                             ->value_name(
+                                                                 "ssl_ciphers"),
+                                                         "Specify enabled SSL "
+                                                         "ciphers")(
+                                                            "ssl_prefer_server_"
+                                                            "ciphers",
+                                                            po::value<bool>(
+                                                                &ssl_prefer_server_ciphers)
+                                                                ->default_value(
+                                                                    false,
+                                                                    "false")
+                                                                ->value_name(
+                                                                    ""),
+                                                            "Prefer server "
+                                                            "ciphers over "
+                                                            "client ciphers "
+                                                            "for SSLv3 and TLS "
+                                                            "protocols.")
+
+                                                            ("ipip_db",
+                                                             po::value<
+                                                                 std::string>(
+                                                                 &ipip_db)
+                                                                 ->value_name(
+                                                                     "")
+                                                                 ->default_value(
+                                                                     "17monipdb"
+                                                                     ".datx"),
+                                                             "Specify ipip "
+                                                             "database "
+                                                             "filename.")(
+                                                                "http_doc",
+                                                                po::value<
+                                                                    std::
+                                                                        string>(
+                                                                    &doc_dir)
+                                                                    ->value_name(
+                                                                        "doc"),
+                                                                "Specify "
+                                                                "document root "
+                                                                "directory for "
+                                                                "HTTP server.")(
+                                                                "htpasswd",
+                                                                po::value<bool>(
+                                                                    &htpasswd)
+                                                                    ->value_name(
+                                                                        "")
+                                                                    ->default_value(
+                                                                        false,
+                                                                        "fals"
+                                                                        "e"),
+                                                                "Enable "
+                                                                "WWW-"
+                                                                "Authenticate "
+                                                                "for HTTP "
+                                                                "server.")
+
+                                                                ("autoindex",
+                                                                 po::value<
+                                                                     bool>(
+                                                                     &autoindex)
+                                                                     ->default_value(
+                                                                         false,
+                                                                         "fals"
+                                                                         "e"),
+                                                                 "Enable "
+                                                                 "directory "
+                                                                 "listing.")(
+                                                                    "logs_path",
+                                                                    po::value<
+                                                                        std::
+                                                                            string>(
+                                                                        &log_dir)
+                                                                        ->value_name(
+                                                                            ""),
+                                                                    "Specify "
+                                                                    "directory "
+                                                                    "for log "
+                                                                    "files.")
+
+                                                                    ("disable_"
+                                                                     "logs",
+                                                                     po::value<
+                                                                         bool>(
+                                                                         &disable_logs)
+                                                                         ->value_name(
+                                                                             "")
+                                                                         ->default_value(
+                                                                             false),
+                                                                     "Disable "
+                                                                     "logging"
+                                                                     ".")(
+                                                                        "disabl"
+                                                                        "e_"
+                                                                        "http",
+                                                                        po::value<
+                                                                            bool>(
+                                                                            &disable_http)
+                                                                            ->value_name(
+                                                                                "")
+                                                                            ->default_value(
+                                                                                false,
+                                                                                "false"),
+                                                                        "Disabl"
+                                                                        "e "
+                                                                        "HTTP "
+                                                                        "protoc"
+                                                                        "ol.")(
+                                                                        "disabl"
+                                                                        "e_"
+                                                                        "socks",
+                                                                        po::value<
+                                                                            bool>(
+                                                                            &disable_socks)
+                                                                            ->value_name(
+                                                                                "")
+                                                                            ->default_value(
+                                                                                false,
+                                                                                "false"),
+                                                                        "Disabl"
+                                                                        "e "
+                                                                        "SOCKS "
+                                                                        "proxy "
+                                                                        "protoc"
+                                                                        "ol.")(
+                                                                        "disabl"
+                                                                        "e_udp",
+                                                                        po::value<
+                                                                            bool>(
+                                                                            &disable_udp)
+                                                                            ->value_name(
+                                                                                "")
+                                                                            ->default_value(
+                                                                                false,
+                                                                                "false"),
+                                                                        "Disabl"
+                                                                        "e UDP "
+                                                                        "protoc"
+                                                                        "ol.")(
+                                                                        "disabl"
+                                                                        "e_"
+                                                                        "insecu"
+                                                                        "re",
+                                                                        po::value<
+                                                                            bool>(
+                                                                            &disable_insecure)
+                                                                            ->value_name(
+                                                                                "")
+                                                                            ->default_value(
+                                                                                false,
+                                                                                "false"),
+                                                                        "Disabl"
+                                                                        "e "
+                                                                        "insecu"
+                                                                        "re "
+                                                                        "protoc"
+                                                                        "ol.")
+
+                                                                        ("scram"
+                                                                         "ble",
+                                                                         po::value<
+                                                                             bool>(
+                                                                             &scramble)
+                                                                             ->value_name(
+                                                                                 "")
+                                                                             ->default_value(
+                                                                                 false,
+                                                                                 "false"),
+                                                                         "Noise"
+                                                                         "-base"
+                                                                         "d "
+                                                                         "data "
+                                                                         "secur"
+                                                                         "ity"
+                                                                         ".")(
+                                                                            "no"
+                                                                            "is"
+                                                                            "e_"
+                                                                            "le"
+                                                                            "ng"
+                                                                            "t"
+                                                                            "h",
+                                                                            po::value<
+                                                                                uint16_t>(
+                                                                                &noise_length)
+                                                                                ->value_name(
+                                                                                    "length")
+                                                                                ->default_value(
+                                                                                    0x0fff),
+                                                                            "Le"
+                                                                            "ng"
+                                                                            "th"
+                                                                            " o"
+                                                                            "f "
+                                                                            "th"
+                                                                            "e "
+                                                                            "no"
+                                                                            "is"
+                                                                            "e "
+                                                                            "da"
+                                                                            "ta"
+                                                                            ".");
+
+    po::variables_map vm;
+    po::store(po::command_line_parser(__argc, __argv)
+                  .options(desc)
+                  .style(po::command_line_style::unix_style |
+                         po::command_line_style::allow_long_disguise)
+                  .run(),
+              vm);
+    po::notify(vm);
+
+    ScopedMutex procMutex = CreateUniqueMutex(server_listens);
+    if (!procMutex.valid())
+      break;
+
+    if (cfgbuf.empty())
+      break;
+
+    std::string tmp(beast::detail::base64::decoded_size(cfgbuf.size()), 0);
+    auto [len, _] = beast::detail::base64::decode((char *)tmp.data(),
+                                                  cfgbuf.data(), cfgbuf.size());
+    tmp.resize(len);
+    cfgbuf = tmp;
+
+    if (cfgbuf.empty())
+      break;
+
+    // if (!fs::exists(config))
+    //	break;
+
+#if 0
+		proxy_pass = socks5h:://4412679-3737a568-US-session-877415841:3871a960@gate-hk.kkoip.com:16586
+			server_listen = 0.0.0.0:1080
+
+			auth_users = admin : 8888
+			auth_users = jack : 1111
+
+#ssl_certificate_dir = / path / proxy.server.example /
+
+			disable_insecure = false
+
+			http_doc = / tmp /
+			autoindex = true
+			disable_logs = true
+			scramble = false
+#endif
+
+    std::istringstream iss(cfgbuf);
+    auto cfg = po::parse_config_file(iss, desc, /*allow_unregistered=*/false);
+    po::store(cfg, vm);
+    po::notify(vm);
+    // auto cfg = po::parse_config_file(config.c_str(), desc, false);
+    // po::store(cfg, vm);
+    // po::notify(vm);
+
+    print_args(__argc, __argv, vm);
+
+    for (const auto &server_listen : server_listens)
+      XLOG_DBG << "Start server: " << server_listen;
+
+    net::io_context ioc(1);
+    net::signal_set terminator_signal(ioc);
+    server_ptr server;
+
+    terminator_signal.add(SIGINT);
+    terminator_signal.add(SIGTERM);
+#ifdef __linux__
+    signal(SIGPIPE, SIG_IGN);
+#endif
+#if defined(SIGQUIT)
+    terminator_signal.add(SIGQUIT);
+#endif // defined(SIGQUIT)
+
+    terminator_signal.async_wait(
+        [&](const boost::system::error_code &, int sig) mutable {
+          terminator_signal.remove(sig);
+          server->close();
+        });
+
+    net::co_spawn(ioc, start_proxy_server(ioc, server), net::detached);
+
+    ioc.run();
+
+    result = EXIT_SUCCESS;
+  } while (0);
+  return result;
+}
+
+#else
+int main(int argc, char **argv) {
+  [[maybe_unused]] boost::nowide::args a(argc, argv);
+  platform_init();
+
+  std::string config;
+
+  po::options_description desc("Options");
+  desc.add_options()("help,h", "Help message.")(
+      "config", po::value<std::string>(&config)->value_name("config.conf"),
+      "Load configuration options from specified file.")
+
+      ("server_listen",
+       po::value<std::vector<std::string>>(&server_listens)
+           ->default_value({"[::0]:1080"})
+           ->value_name("ip:port [ip:port ...]"),
+       "Specify server listening address and port.")
+
+          ("reuse_port",
+           po::value<bool>(&reuse_port)->default_value(false, "false"),
+           "Enable TCP SO_REUSEPORT option (available since Linux 3.9).")(
+              "happyeyeballs",
+              po::value<bool>(&happyeyeballs)->default_value(true, "true"),
+              "Enable Happy Eyeballs algorithm for TCP connections.")
+
+              ("v6only",
+               po::value<bool>(&connect_v6only)->default_value(false, "false"),
+               "Enable IPv6 only mode for TCP connections.")(
+                  "v4only",
+                  po::value<bool>(&connect_v4only)
+                      ->default_value(false, "false"),
+                  "Enable IPv4 only mode for TCP connections.")
+
+                  ("local_ip", po::value<std::string>(&local_ip),
+                   "Specify local IP for client TCP connection to server.")
+
+                      ("transparent",
+                       po::value<bool>(&transparent)
+                           ->default_value(false, "false"),
+                       "Enable transparent proxy mode(only linux).")(
+                          "so_mark",
+                          po::value<int64_t>(&linux_so_mark)->default_value(-1),
+                          "Set SO_MARK for linux transparent proxy mode.")
+
+                          ("udp_timeout",
+                           po::value<int>(&udp_timeout)->default_value(60),
+                           "Set UDP timeout for UDP connections.")(
+                              "tcp_timeout",
+                              po::value<int>(&tcp_timeout)->default_value(-1),
+                              "Set TCP timeout for TCP connections.")(
+                              "rate_limit",
+                              po::value<int>(&rate_limit)->default_value(-1),
+                              "Set TCP rate limit for connection.")
+
+                              ("auth_users",
+                               po::value<std::vector<std::string>>(&auth_users)
+                                   ->multitoken()
+                                   ->default_value(
+                                       std::vector<std::string>{"jack:1111"}),
+                               "List of authorized users(default user: "
+                               "jack:1111) (e.g: user1:passwd1 "
+                               "user2:passwd2).")(
+                                  "users_rate_limit",
+                                  po::value<std::vector<std::string>>(
+                                      &users_rate_limit)
+                                      ->multitoken(),
+                                  "List of users rate limit (e.g: "
+                                  "user1:1000000 user2:800000).")
+
+                                  ("allow_region",
+                                   po::value<std::vector<std::string>>(
+                                       &allow_region)
+                                       ->multitoken(),
+                                   "Allow region (e.g: "
+                                   "北京|河南|武汉|192.168.1.2|192.168.1.0/"
+                                   "24|2001:0db8::1|2001:db8::/32).")(
+                                      "deny_region",
+                                      po::value<std::vector<std::string>>(
+                                          &deny_region)
+                                          ->multitoken(),
+                                      "Deny region (e.g: "
+                                      "广东|上海|山东|192.168.1.2|192.168.1.0/"
+                                      "24|2001:0db8::1|2001:db8::/32).")
+
+                                      ("proxy_pass",
+                                       po::value<std::string>(&proxy_pass)
+                                           ->default_value("")
+                                           ->value_name(""),
+                                       "Specify next proxy pass (e.g: "
+                                       "socks5://user:passwd@ip:port).")(
+                                          "proxy_pass_ssl",
+                                          po::value<bool>(&proxy_pass_ssl)
+                                              ->default_value(false, "false")
+                                              ->value_name(""),
+                                          "Enable SSL for the next proxy pass.")
+
+                                          ("ssl_certificate_dir",
+                                           po::value<std::string>(&ssl_cert_dir)
+                                               ->value_name("path"),
+                                           "Directory containing SSL "
+                                           "certificates.")(
+                                              "ssl_cacert_dir",
+                                              po::value<std::string>(
+                                                  &ssl_cacert_dir)
+                                                  ->value_name("path"),
+                                              "Directory containing SSL CA "
+                                              "certificates.")
+
+                                              ("ssl_sni",
+                                               po::value<std::string>(
+                                                   &proxy_ssl_name)
+                                                   ->value_name("sni"),
+                                               "Specifies SNI for multiple SSL "
+                                               "certificates on one IP "
+                                               "(Deprecated, using "
+                                               "proxy_ssl_name instead).")(
+                                                  "proxy_ssl_name",
+                                                  po::value<std::string>(
+                                                      &proxy_ssl_name)
+                                                      ->value_name("sni"),
+                                                  "Specifies SNI for multiple "
+                                                  "SSL certificates on one IP.")
+
+                                                  ("ssl_ciphers",
+                                                   po::value<std::string>(
+                                                       &ssl_ciphers)
+                                                       ->value_name(
+                                                           "ssl_ciphers"),
+                                                   "Specify enabled SSL "
+                                                   "ciphers")(
+                                                      "ssl_prefer_server_"
+                                                      "ciphers",
+                                                      po::value<bool>(
+                                                          &ssl_prefer_server_ciphers)
+                                                          ->default_value(
+                                                              false, "false")
+                                                          ->value_name(""),
+                                                      "Prefer server ciphers "
+                                                      "over client ciphers for "
+                                                      "SSLv3 and TLS "
+                                                      "protocols.")
+
+                                                      ("ipip_db",
+                                                       po::value<std::string>(
+                                                           &ipip_db)
+                                                           ->value_name("")
+                                                           ->default_value(
+                                                               "17monipdb."
+                                                               "datx"),
+                                                       "Specify ipip database "
+                                                       "filename.")(
+                                                          "http_doc",
+                                                          po::value<
+                                                              std::string>(
+                                                              &doc_dir)
+                                                              ->value_name(
+                                                                  "doc"),
+                                                          "Specify document "
+                                                          "root directory for "
+                                                          "HTTP server.")(
+                                                          "htpasswd",
+                                                          po::value<bool>(
+                                                              &htpasswd)
+                                                              ->value_name("")
+                                                              ->default_value(
+                                                                  false,
+                                                                  "false"),
+                                                          "Enable "
+                                                          "WWW-Authenticate "
+                                                          "for HTTP server.")
+
+                                                          ("autoindex",
+                                                           po::value<bool>(
+                                                               &autoindex)
+                                                               ->default_value(
+                                                                   false,
+                                                                   "false"),
+                                                           "Enable directory "
+                                                           "listing.")(
+                                                              "logs_path",
+                                                              po::value<
+                                                                  std::string>(
+                                                                  &log_dir)
+                                                                  ->value_name(
+                                                                      ""),
+                                                              "Specify "
+                                                              "directory for "
+                                                              "log files.")
+
+                                                              ("disable_logs",
+                                                               po::value<bool>(
+                                                                   &disable_logs)
+                                                                   ->value_name(
+                                                                       "")
+                                                                   ->default_value(
+                                                                       false),
+                                                               "Disable "
+                                                               "logging.")(
+                                                                  "disable_"
+                                                                  "http",
+                                                                  po::value<
+                                                                      bool>(
+                                                                      &disable_http)
+                                                                      ->value_name(
+                                                                          "")
+                                                                      ->default_value(
+                                                                          false,
+                                                                          "fals"
+                                                                          "e"),
+                                                                  "Disable "
+                                                                  "HTTP "
+                                                                  "protocol.")(
+                                                                  "disable_"
+                                                                  "socks",
+                                                                  po::value<
+                                                                      bool>(
+                                                                      &disable_socks)
+                                                                      ->value_name(
+                                                                          "")
+                                                                      ->default_value(
+                                                                          false,
+                                                                          "fals"
+                                                                          "e"),
+                                                                  "Disable "
+                                                                  "SOCKS proxy "
+                                                                  "protocol.")(
+                                                                  "disable_udp",
+                                                                  po::value<
+                                                                      bool>(
+                                                                      &disable_udp)
+                                                                      ->value_name(
+                                                                          "")
+                                                                      ->default_value(
+                                                                          false,
+                                                                          "fals"
+                                                                          "e"),
+                                                                  "Disable UDP "
+                                                                  "protocol.")(
+                                                                  "disable_"
+                                                                  "insecure",
+                                                                  po::value<
+                                                                      bool>(
+                                                                      &disable_insecure)
+                                                                      ->value_name(
+                                                                          "")
+                                                                      ->default_value(
+                                                                          false,
+                                                                          "fals"
+                                                                          "e"),
+                                                                  "Disable "
+                                                                  "insecure "
+                                                                  "protocol.")
+
+                                                                  ("scramble",
+                                                                   po::value<
+                                                                       bool>(
+                                                                       &scramble)
+                                                                       ->value_name(
+                                                                           "")
+                                                                       ->default_value(
+                                                                           false,
+                                                                           "fal"
+                                                                           "s"
+                                                                           "e"),
+                                                                   "Noise-"
+                                                                   "based data "
+                                                                   "security.")(
+                                                                      "noise_"
+                                                                      "length",
+                                                                      po::value<
+                                                                          uint16_t>(
+                                                                          &noise_length)
+                                                                          ->value_name(
+                                                                              "length")
+                                                                          ->default_value(
+                                                                              0x0fff),
+                                                                      "Length "
+                                                                      "of the "
+                                                                      "noise "
+                                                                      "data.");
+
+  // 解析命令行.
+  po::variables_map vm;
+  po::store(po::command_line_parser(argc, argv)
+                .options(desc)
+                .style(po::command_line_style::unix_style |
+                       po::command_line_style::allow_long_disguise)
+                .run(),
+            vm);
+  po::notify(vm);
+
+  // 帮助输出.
+  if (vm.count("help") || argc == 1) {
+    version_info();
+    std::cout
+        << desc << "\n"
+        << R"(Email bug reports, questions, discussions to <jack.wgm@gmail.com>
+and/or open issues at https://github.com/Jackarain/proxy)"
+        << "\n";
+    return EXIT_SUCCESS;
+  }
+
+  if (vm.count("config")) {
+    if (!fs::exists(config)) {
+      std::cerr << "No such config file: " << config << std::endl;
+      return EXIT_FAILURE;
+    }
+
+    auto cfg = po::parse_config_file(config.c_str(), desc, false);
+    po::store(cfg, vm);
+    po::notify(vm);
+  }
+
+  if (disable_logs && log_dir.empty()) {
+    xlogger::turnoff_logging();
+  } else {
+    if (log_dir.empty())
+      xlogger::toggle_write_logging(false);
+    else
+      xlogger::init_logging(log_dir);
+
+    if (disable_logs)
+      xlogger::toggle_console_logging(false);
+  }
+
+  print_args(argc, argv, vm);
+
+  for (const auto &server_listen : server_listens)
+    XLOG_DBG << "Start server: " << server_listen;
+
+  net::io_context ioc(1);
+  net::signal_set terminator_signal(ioc);
+  server_ptr server;
+
+  terminator_signal.add(SIGINT);
+  terminator_signal.add(SIGTERM);
+#ifdef __linux__
+  signal(SIGPIPE, SIG_IGN);
+#endif
+#if defined(SIGQUIT)
+  terminator_signal.add(SIGQUIT);
+#endif // defined(SIGQUIT)
+
+  terminator_signal.async_wait(
+      [&](const boost::system::error_code &, int sig) mutable {
+        terminator_signal.remove(sig);
+        server->close();
+      });
+
+  net::co_spawn(ioc, start_proxy_server(ioc, server), net::detached);
+
+  ioc.run();
+
+  return EXIT_SUCCESS;
+}
+#endif
+
+#endif // PROXY_BUILD_DYNAMIC

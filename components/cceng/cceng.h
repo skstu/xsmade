@@ -3,6 +3,7 @@
 
 #include <xs.h>
 #include "export.h"
+#if 0
 #include "clang/AST/ASTConsumer.h"
 #include "clang/AST/ASTContext.h"
 #include "clang/AST/RecursiveASTVisitor.h"
@@ -71,7 +72,7 @@
 #include "llvm/Support/SourceMgr.h"
 #include "llvm/Support/WithColor.h"
 #include "llvm/Support/raw_ostream.h"
-
+#endif
 class CCEng final : public ICCEng {
 public:
   static CCEng *Create();

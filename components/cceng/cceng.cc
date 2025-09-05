@@ -8,10 +8,17 @@ CCEng::~CCEng() {
 }
 void CCEng::Init() {
   do {
+    // llvm::install_fatal_error_handler(
+    //     [](void *UserData, const char *Message, bool GenCrashDiag) {
+    //       llvm::sys::RunInterruptHandlers();
+    //       llvm::sys::Process::Exit(GenCrashDiag ? 70 : 1);
+    //     },
+    //     nullptr);
     ready_.store(true);
   } while (0);
 }
 void CCEng::UnInit() {
+  //llvm::llvm_shutdown_obj();
   ready_.store(false);
 }
 bool CCEng::Ready() const {

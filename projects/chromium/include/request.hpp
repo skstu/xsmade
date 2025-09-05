@@ -3,93 +3,75 @@
 namespace chromium {
 class IRequest final {
 public:
-  IRequest(const IRequest &) = delete;
-  IRequest &operator=(const IRequest &) = delete;
-  void *operator new(size_t) = delete;
-  void operator delete(void *) = delete;
-  IRequest(const std::string &reqBody, const std::string &project_root_dir) {
-    body = reqBody;
-    configure_ = std::make_unique<chromium::cfg::IConfigure>(body);
-    SuperMAC();
+  inline IRequest(const std::string &reqBody) : reqBody_(reqBody) {
+    Init();
   }
-  ~IRequest() = default;
+  inline void Release() const {
+    delete this;
+  }
+  inline std::string GetResponse() const;
 
-  inline void operator>>(std::string &output) const;
+private:
+  inline IRequest(const IRequest &) = delete;
+  inline IRequest &operator=(const IRequest &) = delete;
+  // inline void *operator new(size_t) = delete;
+  // inline void operator delete(void *) = delete;
+
+  inline ~IRequest() {
+    UnInit();
+  }
 
 public:
-  const chromium::cfg::IConfigure &GetConfigure() const {
-    return *configure_;
+  inline bool Ready() const {
+    return static_cast<ErrorCode>(configure_.notifyCode) ==
+               ErrorCode::Success ||
+           static_cast<ErrorCode>(configure_.notifyCode) == ErrorCode::Done;
   }
-
-  void SetErrorCode(const ErrorCode &err) {
-    code = err;
+  inline void SetErrorCode(const ErrorCode &err) {
+    configure_.notifyCode = static_cast<decltype(configure_.notifyCode)>(err);
+    configure_.notifyMsg = ErrorCodeToString(err);
+  }
+  inline void SetRequestType(const chromium::xsiumio::RequestType &type) {
+    configure_.type = type;
+  }
+  inline ErrorCode GetErrorCode() const {
+    return static_cast<ErrorCode>(configure_.notifyCode);
+  }
+  inline const chromium::xsiumio::RequestType &GetRequestType() const {
+    return configure_.type;
+  }
+  inline chromium::xsiumio::IXSiumio &GetConfig() {
+    return configure_;
   }
 
 private:
-  std::string body;
-  std::string hash_source;
-  std::string hash;
-  inline void SuperMAC();
-  ErrorCode code = ErrorCode::UnknownError;
-  std::unique_ptr<chromium::cfg::IConfigure> configure_;
+  inline void Init();
+  inline void UnInit();
+  const std::string reqBody_;
+  chromium::xsiumio::IXSiumio configure_;
 };
-inline void IRequest::operator>>(std::string &output) const {
-  rapidjson::Document doc(rapidjson::Type::kObjectType);
-  rapidjson::Document::AllocatorType &allocator = doc.GetAllocator();
-  doc.AddMember(rapidjson::Value().SetString("code", allocator).Move(),
-                rapidjson::Value().SetInt(static_cast<int>(code)).Move(),
-                allocator);
-  doc.AddMember(
-      rapidjson::Value().SetString("code", allocator).Move(),
-      rapidjson::Value().SetString(ErrorCodeToString(code), allocator).Move(),
-      allocator);
-  if (code == ErrorCode::Success || code == ErrorCode::AlreadyRunning) {
-    doc.AddMember(rapidjson::Value().SetString("id", allocator).Move(),
-                  rapidjson::Value().SetUint(configure_->id).Move(), allocator);
-    doc.AddMember(rapidjson::Value().SetString("hash", allocator).Move(),
-                  rapidjson::Value()
-                      .SetString(hash.empty() ? "" : hash.c_str(), allocator)
-                      .Move(),
-                  allocator);
-  }
-#if 0
-  rapidjson::Document docHashSource(rapidjson::Type::kObjectType);
-  if (!docHashSource.Parse(hash_source.data(), hash_source.size())
-           .HasParseError()) {
-    doc.AddMember(rapidjson::Value().SetString("source", allocator).Move(),
-                  rapidjson::Value(docHashSource, allocator).Move(), allocator);
-  }
-#endif
-  output = Json::toString(doc);
-}
-inline void IRequest::SuperMAC() {
-  rapidjson::Document docHash(rapidjson::kObjectType);
-  rapidjson::Document::AllocatorType &allocator = docHash.GetAllocator();
-  do {
-    if (body.empty())
-      break;
-    rapidjson::Document doc;
-    if (doc.Parse(body.data(), body.size()).HasParseError())
-      break;
-    if (!doc.IsObject())
-      break;
-
-    const char *keys[] = {
-        "enable", "type", "fps_use3rd",   "policy",
-        "proxy",  "fps",  "startup_args",
-    };
-    for (const char *key : keys) {
-      if (doc.HasMember(key)) {
-        docHash.AddMember(rapidjson::Value(key, allocator).Move(),
-                          rapidjson::Value(doc[key], allocator).Move(),
-                          allocator);
-      }
+inline void IRequest::Init() {
+  ErrorCode code;
+  rapidjson::Document doc;
+  if (doc.Parse(reqBody_.data(), reqBody_.size()).HasParseError()) {
+    code = ErrorCode::RequestParseError;
+  } else {
+    configure_ << reqBody_;
+    if (configure_.ValidateRequestType()) {
+      code = ErrorCode::Done;
+    } else {
+      code = ErrorCode::BadRequest;
     }
-  } while (0);
-
-  Json::Sort(docHash, allocator);
-  hash_source = Json::toString(docHash);
-  hash = OpenSSL::HMAC_SHA256(hash_source, "martell", true);
+  }
+  configure_.notifyCode = static_cast<decltype(configure_.notifyCode)>(code);
+  configure_.notifyMsg = ErrorCodeToString(code);
+}
+inline void IRequest::UnInit() {
+}
+inline std::string IRequest::GetResponse() const {
+  std::string result;
+  configure_ >> result;
+  return result;
 }
 } // namespace chromium
 /// /*_ Memade®（新生™） _**/

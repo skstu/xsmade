@@ -3,7 +3,8 @@
 
 #include <xs.h>
 #include "export.h"
-
+#define U_STATIC 1
+#define U_STATIC_IMPLEMENTATION 1
 #include <unicode/uclean.h>
 #include <unicode/ustdio.h>
 #include <unicode/platform.h>
@@ -18,6 +19,10 @@
 #include <unicode/utf32.h>
 #include <unicode/utf8.h>
 #include <unicode/utypes.h>
+#include <unicode/timezone.h>
+#include <unicode/calendar.h>
+#include <unicode/ucal.h>
+#include <unicode/ustream.h>
 
 class Icucc final : public IIcucc {
 public:
@@ -30,6 +35,12 @@ private:
 
 public:
   bool Ready() const override final;
+  bool Start() override final;
+  void Stop() override final;
+
+protected:
+  bool GetZoneOffsetMinutes(const char *tzid, int &out_minutes,
+                            long long tp_ms) const override final;
 
 private:
   void Init();
@@ -37,6 +48,7 @@ private:
 
 private:
   std::atomic_bool ready_ = false;
+  std::atomic_bool open_ = false;
 };
 
 /// /*_ Memade®（新生™） _**/

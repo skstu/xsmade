@@ -17,5 +17,6 @@
 #add_subdirectory(chromium/brwcfg)
 #add_subdirectory(browser/startup)
 #add_subdirectory(chromium/startup)
-add_subdirectory(chromium/startup_yunbrowser)
+add_subdirectory(chromium/startup_xsiumio)
+add_subdirectory(chromium/yunbrowser)
 #add_subdirectory(os/windows/version)

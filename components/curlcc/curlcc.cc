@@ -60,73 +60,111 @@ ICurl::IRequestArray *Curl::Perform(ICurl::IRequestArray *reqArray) {
   std::vector<std::future<void>> futures;
   const size_t reqTotal = reqArray->Total();
   for (size_t i = 0; i < reqTotal; ++i) {
-    futures.emplace_back(std::async(std::launch::async, [this, result, reqArray,
-                                                         i]() {
-      Request *req = dynamic_cast<Request *>(reqArray->Next(i));
-      if (!req)
-        return;
-      CURL *curl = curl_easy_init();
-      if (!curl)
-        return;
-      std::string response;
-      curl_easy_setopt(curl, CURLOPT_URL, req->GetUrl());
-      curl_easy_setopt(curl, CURLOPT_CONNECTTIMEOUT, 10L);
-      curl_easy_setopt(curl, CURLOPT_TIMEOUT, 20L);
-      curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, curlWriteCallback);
-      curl_easy_setopt(curl, CURLOPT_WRITEDATA, &response);
-      curl_easy_setopt(
-          curl, CURLOPT_USERAGENT,
-          "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/"
-          "537.36 (KHTML, like Gecko) Chrome/138.0.7204.158 Safari/"
-          "537.36");
-      if (std::string(req->GetUrl()).find("https://") != std::string::npos) {
-        curl_easy_setopt(curl, CURLOPT_SSL_VERIFYPEER, 0L);
-        curl_easy_setopt(curl, CURLOPT_SSL_VERIFYHOST, 0L);
-      }
-      { // http headers
-        struct curl_slist *header_list = nullptr;
-        std::map<std::string, std::string> header_map = req->GetHeaders();
-        for (const auto &it : header_map) {
-          std::string h = it.first + ": " + it.second;
-          header_list = curl_slist_append(header_list, h.c_str());
-        }
-        if (header_list) {
-          curl_easy_setopt(curl, CURLOPT_HTTPHEADER, header_list);
-        }
-      }
-      {
-        std::string proxy_address = req->GetProxyAddress();
-        std::string proxy_username = req->GetProxyUsername();
-        std::string proxy_password = req->GetProxyPassword();
+    futures.emplace_back(
+        std::async(std::launch::async, [this, result, reqArray, i]() {
+          Request *req = dynamic_cast<Request *>(reqArray->Next(i));
+          if (!req)
+            return;
+          CURL *curl = curl_easy_init();
+          if (!curl)
+            return;
+          std::string response;
+          curl_easy_setopt(curl, CURLOPT_URL, req->GetUrl());
+          curl_easy_setopt(curl, CURLOPT_CONNECTTIMEOUT, 10L);
+          curl_easy_setopt(curl, CURLOPT_TIMEOUT, 20L);
+          // curl_easy_setopt(curl, CURLOPT_VERBOSE, 1L);
+          curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, curlWriteCallback);
+          curl_easy_setopt(curl, CURLOPT_WRITEDATA, &response);
+          curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, 0L);
+          curl_easy_setopt(curl, CURLOPT_SSL_VERIFYPEER, 0L);
+          curl_easy_setopt(curl, CURLOPT_SSL_VERIFYHOST, 0L);
+          curl_easy_setopt(
+              curl, CURLOPT_USERAGENT,
+              "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/"
+              "537.36 (KHTML, like Gecko) Chrome/138.0.7204.158 Safari/"
+              "537.36");
 
-        if (!proxy_address.empty()) {
-          curl_easy_setopt(curl, CURLOPT_PROXY, proxy_address.c_str());
-          if (req->GetProxyType() == ProxyType::SOCKS5) {
-            curl_easy_setopt(curl, CURLOPT_PROXYTYPE, CURLPROXY_SOCKS5);
-            
-          } else if (req->GetProxyType() == ProxyType::SOCKS4) {
-            curl_easy_setopt(curl, CURLOPT_PROXYTYPE, CURLPROXY_SOCKS4);
-          } else {
-            curl_easy_setopt(curl, CURLOPT_PROXYTYPE, CURLPROXY_HTTP);
+          struct curl_slist *header_list = nullptr;
+          {
+            std::map<std::string, std::string> header_map = req->GetHeaders();
+            for (const auto &it : header_map) {
+              std::string h = it.first + ": " + it.second;
+              header_list = curl_slist_append(header_list, h.c_str());
+            }
+            if (header_list) {
+              curl_easy_setopt(curl, CURLOPT_HTTPHEADER, header_list);
+            }
           }
-          if (!proxy_username.empty()) {
-            curl_easy_setopt(curl, CURLOPT_PROXYUSERNAME,
-                             proxy_username.c_str());
+
+          {
+            std::string proxy_address =
+                req->GetProxyAddress(); // may include scheme like
+                                        // "socks5h://host:port"
+            std::string proxy_username = req->GetProxyUsername();
+            std::string proxy_password = req->GetProxyPassword();
+
+            if (!proxy_address.empty()) {
+              // strip scheme if present and detect socks5h
+              std::string addr = proxy_address;
+              bool socks5h = false;
+              auto lower = [](const std::string &s) {
+                std::string r = s;
+                for (auto &c : r)
+                  c = (char)tolower((unsigned char)c);
+                return r;
+              };
+              std::string low = lower(addr);
+              const std::string s_socks5h = "socks5h://";
+              const std::string s_socks5 = "socks5://";
+              const std::string s_socks4 = "socks4://";
+              const std::string s_http = "http://";
+              if (low.rfind(s_socks5h, 0) == 0) {
+                socks5h = true;
+                addr = addr.substr(s_socks5h.size());
+              } else if (low.rfind(s_socks5, 0) == 0) {
+                addr = addr.substr(s_socks5.size());
+              } else if (low.rfind(s_socks4, 0) == 0) {
+                addr = addr.substr(s_socks4.size());
+              } else if (low.rfind(s_http, 0) == 0) {
+                addr = addr.substr(s_http.size());
+              }
+
+              // set proxy (address must not include scheme)
+              curl_easy_setopt(curl, CURLOPT_PROXY, addr.c_str());
+
+#if defined(CURLPROXY_SOCKS5_HOSTNAME)
+              if (socks5h) {
+                // prefer SOCKS5_HOSTNAME if libcurl supports it at compile time
+                curl_easy_setopt(curl, CURLOPT_PROXYTYPE,
+                                 CURLPROXY_SOCKS5_HOSTNAME);
+              } else
+#endif
+                  if (low.find("socks4") != std::string::npos ||
+                      req->GetProxyType() == ProxyType::SOCKS4) {
+                curl_easy_setopt(curl, CURLOPT_PROXYTYPE, CURLPROXY_SOCKS4);
+              } else if (low.find("socks5") != std::string::npos ||
+                         req->GetProxyType() == ProxyType::SOCKS5) {
+                curl_easy_setopt(curl, CURLOPT_PROXYTYPE, CURLPROXY_SOCKS5);
+              } else {
+                curl_easy_setopt(curl, CURLOPT_PROXYTYPE, CURLPROXY_HTTP);
+              }
+
+              // prefer combined credential option (safer parsing)
+              if (!proxy_username.empty() || !proxy_password.empty()) {
+                std::string up = proxy_username + ":" + proxy_password;
+                curl_easy_setopt(curl, CURLOPT_PROXYUSERPWD, up.c_str());
+              }
+            }
           }
-          if (!proxy_password.empty()) {
-            curl_easy_setopt(curl, CURLOPT_PROXYPASSWORD,
-                             proxy_password.c_str());
+
+          CURLcode res = curl_easy_perform(curl);
+          req->SetResponseCode(static_cast<int>(res));
+          if (CURLE_OK == res) {
+            req->SetResponse(response);
           }
-        }
-      }
-      CURLcode res = curl_easy_perform(curl);
-      req->SetResponseCode(static_cast<int>(res));
-      if (CURLE_OK == res) {
-        req->SetResponse(response);
-      }
-      result->Push(dynamic_cast<ICurl::IRequest *>(req));
-      curl_easy_cleanup(curl);
-    }));
+          result->Push(dynamic_cast<ICurl::IRequest *>(req));
+          curl_easy_cleanup(curl);
+        }));
   }
   for (auto &f : futures)
     f.get();

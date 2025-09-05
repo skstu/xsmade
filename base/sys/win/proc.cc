@@ -14,44 +14,78 @@ XS_EXTERN xs_errno_t xs_sys_get_commandline(char **out, size_t *out_size) {
   } while (0);
   return r;
 }
-xs_errno_t xs_sys_process_spawn(const char *proc, const char **args,
+XS_EXTERN xs_errno_t xs_sys_process_spawn(const char *proc, const char **args,
                                 const char **envp, int show_flag,
                                 xs_process_id_t *out_pid) {
   xs_errno_t r = xs_errno_t::XS_NO;
   do {
-    STARTUPINFOW si = {0};
-    PROCESS_INFORMATION pi = {0};
+    STARTUPINFOW si;
+    PROCESS_INFORMATION pi;
+    ZeroMemory(&si, sizeof(si));
+    ZeroMemory(&pi, sizeof(pi));
     si.cb = sizeof(si);
     si.dwFlags = STARTF_USESHOWWINDOW;
-    if (!show_flag) {
-      si.wShowWindow = show_flag == 0 ? SW_HIDE : SW_SHOW;
-    }
-    std::string cmdlines;
+    si.wShowWindow = (show_flag == 0) ? SW_HIDE : SW_SHOW;
+
+    if (!proc)
+      break;
+
+    // Build command line: quoted executable path + arguments
+    std::wstring proc_ws = Conv::u8_to_ws(proc);
+    std::wstring full_cmd = L"\"";
+    full_cmd.append(proc_ws);
+    full_cmd.append(L"\"");
+
     if (args && (*args)) {
-      size_t count = 0;
-      while (args[count] != NULL) {
-        cmdlines.append(args[count]).append(" ");
-        count++;
+      size_t i = 0;
+      while (args[i] != NULL) {
+        full_cmd.append(L" ");
+        full_cmd.append(Conv::u8_to_ws(args[i]));
+        ++i;
       }
     }
-    std::wstring proc_ws = Conv::u8_to_ws(proc);
-    std::wstring cmdlines_ws = Conv::u8_to_ws(cmdlines);
+
+    // CreateProcess requires a writable buffer for lpCommandLine
+    std::vector<wchar_t> cmd_buf(full_cmd.begin(), full_cmd.end());
+    cmd_buf.push_back(L'\0');
+
+    BOOL inherit_handles = FALSE;
+    DWORD creation_flags = 0;
+    if (show_flag == 0) {
+      creation_flags |= CREATE_NO_WINDOW;
+    }
+
+    // Use NULL lpApplicationName and pass full command line (writable)
     BOOL status = CreateProcessW(
-        proc_ws.c_str(), // No module name (use command line)
-        cmdlines.empty() ? NULL
-                         : const_cast<wchar_t *>(
-                               (L"/c " + cmdlines_ws).c_str()), // Command line
-        NULL, // Process handle not inheritable
-        NULL, // Thread handle not inheritable
-        TRUE, // Set handle inheritance to FALSE
-        NULL, // CREATE_NEW_CONSOLE, // No creation flags
-        NULL, // Use parent's environment block
-        NULL, // Use parent's starting directory
-        &si,  // Pointer to STARTUPINFO structure
-        &pi); // Pointer to PROCESS_INFORMATION structure
-    if (FALSE == status)
+        NULL,                   // lpApplicationName
+        cmd_buf.data(),         // lpCommandLine (writable)
+        NULL,                   // lpProcessAttributes
+        NULL,                   // lpThreadAttributes
+        inherit_handles,        // bInheritHandles
+        creation_flags,         // dwCreationFlags
+        NULL,                   // lpEnvironment
+        NULL,                   // lpCurrentDirectory
+        &si,                    // lpStartupInfo
+        &pi);                   // lpProcessInformation
+
+    if (status == FALSE) {
+      // optional: DWORD err = GetLastError();
       break;
-    *out_pid = pi.dwProcessId;
+    }
+
+    if (out_pid)
+      *out_pid = static_cast<xs_process_id_t>(pi.dwProcessId);
+
+    // Close returned handles to avoid leaks; process continues running.
+    if (pi.hThread) {
+      CloseHandle(pi.hThread);
+      pi.hThread = NULL;
+    }
+    if (pi.hProcess) {
+      CloseHandle(pi.hProcess);
+      pi.hProcess = NULL;
+    }
+
     r = xs_errno_t::XS_OK;
   } while (0);
   return r;

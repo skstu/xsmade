@@ -1569,8 +1569,6 @@ public:
   inline bool IsFingerEnv() const {
     bool result = false;
     do {
-      if (!xsiumio.yunlogin.enable)
-        break;
       if (browser_id.empty() || shop_id.empty())
         break;
       if (browser_id.find("Shop-") == std::string::npos)

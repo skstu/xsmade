@@ -22,13 +22,7 @@ int main(int argc, char **argv)
       stl::CmdLine::ParserCommandLines(__cmdline__, true);
 
   std::string current_path = System::GetCurrentProcessPath();
-#if _DEBUG
-  /*std::string target_component_path =
-      current_path + "/../components/libcceng.dll";*/
-  std::string target_component_path = R"(C:\msys64\mingw64\bin\libcceng.dll)";
-#else
-  std::string target_component_path = current_path + "/libcceng.dll";
-#endif
+  std::string target_component_path = current_path + "/../components/libcceng.dll";
   IComponent *pComponentCCeng = nullptr;
   do {
     if (!stl::File::Exists(target_component_path))

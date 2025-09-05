@@ -1,6 +1,6 @@
 #if !defined(__91A7BCE8_86A7_49F2_8FE9_EF591734E9DD__)
 #define __91A7BCE8_86A7_49F2_8FE9_EF591734E9DD__
-
+#include "xsiumio.hpp"
 #define CHROMIUM_XSIUMIO_IFPSDB_WEBGL_GETPARAMETER_ADD_INT(obj, map)           \
   do {                                                                         \
     if (!obj.IsObject())                                                       \
@@ -65,32 +65,6 @@ public:
       } while (0);
     }
   };
-
-  struct Languages {
-    inline Languages();
-    inline ~Languages();
-    std::vector<std::string> language;
-    std::string acceptLanguage;
-    inline void operator<<(const rapidjson::Value &value) {
-      do {
-        if (!value.IsObject())
-          break;
-        if (value.HasMember("language") && value["language"].IsArray()) {
-          const rapidjson::Value &langs = value["language"];
-          for (rapidjson::SizeType i = 0; i < langs.Size(); ++i) {
-            if (langs[i].IsString()) {
-              language.emplace_back(langs[i].GetString());
-            }
-          }
-        }
-        if (value.HasMember("accept_language") &&
-            value["accept_language"].IsString()) {
-          acceptLanguage = value["accept_language"].GetString();
-        }
-      } while (0);
-    }
-  };
-
   struct UserAgentMetadata {
     struct Brand_version_list {
       inline Brand_version_list();
@@ -279,357 +253,11 @@ public:
       } while (0);
     }
   };
-
-  struct UserAgent {
-    inline UserAgent();
-    inline ~UserAgent();
-
-    std::map<int /*key*/, std::vector<std::string>> source;
-    void operator<<(const rapidjson::Value &value) {
-      do {
-        if (!value.IsObject())
-          break;
-        for (auto it = value.MemberBegin(); it != value.MemberEnd(); ++it) {
-          if (!it->name.IsString())
-            break;
-          if (!it->value.IsArray())
-            break;
-          int key = strtol(it->name.GetString(), nullptr, 10);
-          std::vector<std::string> vs;
-          for (auto v = it->value.Begin(); v != it->value.End(); ++v) {
-            if (!v->IsString())
-              break;
-            vs.emplace_back(v->GetString());
-          }
-          source.emplace(key, vs);
-        }
-      } while (0);
-    }
-  };
-
   struct Webgl {
-
-    struct ContextAttributes {
-      inline ContextAttributes();
-      inline ~ContextAttributes();
-      bool alpha = false;
-      bool depth = false;
-      bool stencil = false;
-      bool antialias = false;
-      bool premultipliedAlpha = false;
-      bool preserveDrawingBuffer = false;
-      bool failIfMajorPerformanceCaveat = false;
-      std::string powerPreference = "default";
-      bool xrCompatible = false;
-      void operator<<(const rapidjson::Value &value) {
-        do {
-          if (!value.IsObject())
-            break;
-          if (value.HasMember("alpha") && value["alpha"].IsBool()) {
-            alpha = value["alpha"].GetBool();
-          }
-          if (value.HasMember("depth") && value["depth"].IsBool()) {
-            depth = value["depth"].GetBool();
-          }
-          if (value.HasMember("stencil") && value["stencil"].IsBool()) {
-            stencil = value["stencil"].GetBool();
-          }
-          if (value.HasMember("antialias") && value["antialias"].IsBool()) {
-            antialias = value["antialias"].GetBool();
-          }
-          if (value.HasMember("premultipliedAlpha") &&
-              value["premultipliedAlpha"].IsBool()) {
-            premultipliedAlpha = value["premultipliedAlpha"].GetBool();
-          }
-          if (value.HasMember("preserveDrawingBuffer") &&
-              value["preserveDrawingBuffer"].IsBool()) {
-            preserveDrawingBuffer = value["preserveDrawingBuffer"].GetBool();
-          }
-          if (value.HasMember("failIfMajorPerformanceCaveat") &&
-              value["failIfMajorPerformanceCaveat"].IsBool()) {
-            failIfMajorPerformanceCaveat =
-                value["failIfMajorPerformanceCaveat"].GetBool();
-          }
-          if (value.HasMember("powerPreference") &&
-              value["powerPreference"].IsString()) {
-            powerPreference = value["powerPreference"].GetString();
-          }
-          if (value.HasMember("xrCompatible") &&
-              value["xrCompatible"].IsBool()) {
-            xrCompatible = value["xrCompatible"].GetBool();
-          }
-        } while (0);
-      }
-    };
-    struct ShaderPrecisionFormat {
-      struct _8DF_ {
-        inline _8DF_();
-        inline ~_8DF_();
-        int rangeMin = 0;
-        int rangeMax = 0;
-        int precision = 0;
-      };
-      struct _8B30_ {
-        inline _8B30_();
-        inline ~_8B30_();
-        _8DF_ _8DF0;
-        _8DF_ _8DF1;
-        _8DF_ _8DF2;
-        _8DF_ _8DF3;
-        _8DF_ _8DF4;
-        _8DF_ _8DF5;
-        void operator<<(const rapidjson::Value &v) {
-          do {
-            if (!v.IsObject())
-              break;
-            if (v.HasMember("8DF0") && v["8DF0"].IsObject()) {
-              const rapidjson::Value &refObj = v["8DF0"];
-              if (refObj.HasMember("rangeMin") && refObj["rangeMin"].IsInt()) {
-                _8DF0.rangeMin = refObj["rangeMin"].GetInt();
-              }
-              if (refObj.HasMember("rangeMax") && refObj["rangeMax"].IsInt()) {
-                _8DF0.rangeMax = refObj["rangeMax"].GetInt();
-              }
-              if (refObj.HasMember("precision") &&
-                  refObj["precision"].IsInt()) {
-                _8DF0.precision = refObj["precision"].GetInt();
-              }
-            }
-            if (v.HasMember("8DF1") && v["8DF1"].IsObject()) {
-              const rapidjson::Value &refObj = v["8DF1"];
-              if (refObj.HasMember("rangeMin") && refObj["rangeMin"].IsInt()) {
-                _8DF1.rangeMin = refObj["rangeMin"].GetInt();
-              }
-              if (refObj.HasMember("rangeMax") && refObj["rangeMax"].IsInt()) {
-                _8DF1.rangeMax = refObj["rangeMax"].GetInt();
-              }
-              if (refObj.HasMember("precision") &&
-                  refObj["precision"].IsInt()) {
-                _8DF1.precision = refObj["precision"].GetInt();
-              }
-            }
-            if (v.HasMember("8DF2") && v["8DF2"].IsObject()) {
-              const rapidjson::Value &refObj = v["8DF2"];
-              if (refObj.HasMember("rangeMin") && refObj["rangeMin"].IsInt()) {
-                _8DF2.rangeMin = refObj["rangeMin"].GetInt();
-              }
-              if (refObj.HasMember("rangeMax") && refObj["rangeMax"].IsInt()) {
-                _8DF2.rangeMax = refObj["rangeMax"].GetInt();
-              }
-              if (refObj.HasMember("precision") &&
-                  refObj["precision"].IsInt()) {
-                _8DF2.precision = refObj["precision"].GetInt();
-              }
-            }
-            if (v.HasMember("8DF3") && v["8DF3"].IsObject()) {
-              const rapidjson::Value &refObj = v["8DF3"];
-              if (refObj.HasMember("rangeMin") && refObj["rangeMin"].IsInt()) {
-                _8DF3.rangeMin = refObj["rangeMin"].GetInt();
-              }
-              if (refObj.HasMember("rangeMax") && refObj["rangeMax"].IsInt()) {
-                _8DF3.rangeMax = refObj["rangeMax"].GetInt();
-              }
-              if (refObj.HasMember("precision") &&
-                  refObj["precision"].IsInt()) {
-                _8DF3.precision = refObj["precision"].GetInt();
-              }
-            }
-            if (v.HasMember("8DF4") && v["8DF4"].IsObject()) {
-              const rapidjson::Value &refObj = v["8DF4"];
-              if (refObj.HasMember("rangeMin") && refObj["rangeMin"].IsInt()) {
-                _8DF4.rangeMin = refObj["rangeMin"].GetInt();
-              }
-              if (refObj.HasMember("rangeMax") && refObj["rangeMax"].IsInt()) {
-                _8DF4.rangeMax = refObj["rangeMax"].GetInt();
-              }
-              if (refObj.HasMember("precision") &&
-                  refObj["precision"].IsInt()) {
-                _8DF4.precision = refObj["precision"].GetInt();
-              }
-            }
-            if (v.HasMember("8DF5") && v["8DF5"].IsObject()) {
-              const rapidjson::Value &refObj = v["8DF5"];
-              if (refObj.HasMember("rangeMin") && refObj["rangeMin"].IsInt()) {
-                _8DF5.rangeMin = refObj["rangeMin"].GetInt();
-              }
-              if (refObj.HasMember("rangeMax") && refObj["rangeMax"].IsInt()) {
-                _8DF5.rangeMax = refObj["rangeMax"].GetInt();
-              }
-              if (refObj.HasMember("precision") &&
-                  refObj["precision"].IsInt()) {
-                _8DF5.precision = refObj["precision"].GetInt();
-              }
-            }
-          } while (0);
-        }
-      };
-      struct _8B31_ {
-        inline _8B31_();
-        inline ~_8B31_();
-        _8DF_ _8DF0;
-        _8DF_ _8DF1;
-        _8DF_ _8DF2;
-        _8DF_ _8DF3;
-        _8DF_ _8DF4;
-        _8DF_ _8DF5;
-        void operator<<(const rapidjson::Value &v) {
-          do {
-            if (!v.IsObject())
-              break;
-            if (v.HasMember("8DF0") && v["8DF0"].IsObject()) {
-              const rapidjson::Value &refObj = v["8DF0"];
-              if (refObj.HasMember("rangeMin") && refObj["rangeMin"].IsInt()) {
-                _8DF0.rangeMin = refObj["rangeMin"].GetInt();
-              }
-              if (refObj.HasMember("rangeMax") && refObj["rangeMax"].IsInt()) {
-                _8DF0.rangeMax = refObj["rangeMax"].GetInt();
-              }
-              if (refObj.HasMember("precision") &&
-                  refObj["precision"].IsInt()) {
-                _8DF0.precision = refObj["precision"].GetInt();
-              }
-            }
-            if (v.HasMember("8DF1") && v["8DF1"].IsObject()) {
-              const rapidjson::Value &refObj = v["8DF1"];
-              if (refObj.HasMember("rangeMin") && refObj["rangeMin"].IsInt()) {
-                _8DF1.rangeMin = refObj["rangeMin"].GetInt();
-              }
-              if (refObj.HasMember("rangeMax") && refObj["rangeMax"].IsInt()) {
-                _8DF1.rangeMax = refObj["rangeMax"].GetInt();
-              }
-              if (refObj.HasMember("precision") &&
-                  refObj["precision"].IsInt()) {
-                _8DF1.precision = refObj["precision"].GetInt();
-              }
-            }
-            if (v.HasMember("8DF2") && v["8DF2"].IsObject()) {
-              const rapidjson::Value &refObj = v["8DF2"];
-              if (refObj.HasMember("rangeMin") && refObj["rangeMin"].IsInt()) {
-                _8DF2.rangeMin = refObj["rangeMin"].GetInt();
-              }
-              if (refObj.HasMember("rangeMax") && refObj["rangeMax"].IsInt()) {
-                _8DF2.rangeMax = refObj["rangeMax"].GetInt();
-              }
-              if (refObj.HasMember("precision") &&
-                  refObj["precision"].IsInt()) {
-                _8DF2.precision = refObj["precision"].GetInt();
-              }
-            }
-            if (v.HasMember("8DF3") && v["8DF3"].IsObject()) {
-              const rapidjson::Value &refObj = v["8DF3"];
-              if (refObj.HasMember("rangeMin") && refObj["rangeMin"].IsInt()) {
-                _8DF3.rangeMin = refObj["rangeMin"].GetInt();
-              }
-              if (refObj.HasMember("rangeMax") && refObj["rangeMax"].IsInt()) {
-                _8DF3.rangeMax = refObj["rangeMax"].GetInt();
-              }
-              if (refObj.HasMember("precision") &&
-                  refObj["precision"].IsInt()) {
-                _8DF3.precision = refObj["precision"].GetInt();
-              }
-            }
-            if (v.HasMember("8DF4") && v["8DF4"].IsObject()) {
-              const rapidjson::Value &refObj = v["8DF4"];
-              if (refObj.HasMember("rangeMin") && refObj["rangeMin"].IsInt()) {
-                _8DF4.rangeMin = refObj["rangeMin"].GetInt();
-              }
-              if (refObj.HasMember("rangeMax") && refObj["rangeMax"].IsInt()) {
-                _8DF4.rangeMax = refObj["rangeMax"].GetInt();
-              }
-              if (refObj.HasMember("precision") &&
-                  refObj["precision"].IsInt()) {
-                _8DF4.precision = refObj["precision"].GetInt();
-              }
-            }
-            if (v.HasMember("8DF5") && v["8DF5"].IsObject()) {
-              const rapidjson::Value &refObj = v["8DF5"];
-              if (refObj.HasMember("rangeMin") && refObj["rangeMin"].IsInt()) {
-                _8DF5.rangeMin = refObj["rangeMin"].GetInt();
-              }
-              if (refObj.HasMember("rangeMax") && refObj["rangeMax"].IsInt()) {
-                _8DF5.rangeMax = refObj["rangeMax"].GetInt();
-              }
-              if (refObj.HasMember("precision") &&
-                  refObj["precision"].IsInt()) {
-                _8DF5.precision = refObj["precision"].GetInt();
-              }
-            }
-          } while (0);
-        }
-      };
-
-      inline ShaderPrecisionFormat();
-      inline ~ShaderPrecisionFormat();
-
-      bool enable = false;
-      _8B30_ _8B30;
-      _8B31_ _8B31;
-      void operator<<(const rapidjson::Value &value) {
-        do {
-          if (!value.IsObject())
-            break;
-          if (value.HasMember("enable") && value["enable"].IsBool()) {
-            enable = value["enable"].GetBool();
-          }
-          if (!value.HasMember("8B30") || !value["8B30"].IsObject() ||
-              !value.HasMember("8B31") || !value["8B31"].IsObject()) {
-            break;
-          }
-          _8B30 << value["8B30"];
-          _8B31 << value["8B31"];
-        } while (0);
-      }
-    };
-    struct GetParameter {
-      inline GetParameter();
-      inline ~GetParameter();
-
-      std::map<int, std::string> source;
-      void operator<<(const rapidjson::Value &value) {
-        do {
-          if (!value.IsObject())
-            break;
-          for (auto it = value.MemberBegin(); it != value.MemberEnd(); ++it) {
-            if (!it->name.IsString())
-              break;
-            if (!it->value.IsString())
-              break;
-            int key = strtol(it->name.GetString(), nullptr, 10);
-            source.emplace(key, it->value.GetString());
-          }
-        } while (0);
-      }
-    };
     inline Webgl();
     inline ~Webgl();
-
-    struct Device {
-      inline Device();
-      inline ~Device();
-      ShaderPrecisionFormat shaderPrecisionFormat;
-      ContextAttributes contextAttributes;
-      GetParameter getParameter;
-      void operator<<(const rapidjson::Value &value) {
-        do {
-          if (!value.IsObject())
-            break;
-          if (value.HasMember("shaderPrecisionFormat") &&
-              value["shaderPrecisionFormat"].IsObject()) {
-            shaderPrecisionFormat << value["shaderPrecisionFormat"];
-          }
-          if (value.HasMember("contextAttributes") &&
-              value["contextAttributes"].IsObject()) {
-            contextAttributes << value["contextAttributes"];
-          }
-          if (value.HasMember("getParameter") &&
-              value["getParameter"].IsObject()) {
-            getParameter << value["getParameter"];
-          }
-        } while (0);
-      }
-    };
-
-    std::map<int /*key*/, std::vector<Device>> devices;
+    std::map<int /*key*/, std::vector<xsiumio::IXSiumio::Fingerprint::Webgl>>
+        source;
 
     void operator<<(const rapidjson::Value &value) {
       do {
@@ -641,15 +269,15 @@ public:
           if (!it->value.IsArray())
             break;
           int key = strtol(it->name.GetString(), nullptr, 10);
-          std::vector<Device> vs;
+          std::vector<xsiumio::IXSiumio::Fingerprint::Webgl> vs;
           for (auto v = it->value.Begin(); v != it->value.End(); ++v) {
             if (!v->IsObject())
               break;
-            Device device;
-            device << *v;
-            vs.emplace_back(device);
+            xsiumio::IXSiumio::Fingerprint::Webgl webgl;
+            webgl << *v;
+            vs.emplace_back(webgl);
           }
-          devices.emplace(key, std::move(vs));
+          source.emplace(key, vs);
         }
       } while (0);
     }
@@ -669,83 +297,12 @@ public:
   };
 
   struct Screen {
-    struct Info {
-      struct Dpi {
-        inline Dpi();
-        inline ~Dpi();
-        int x = 96;
-        int y = 96;
-      };
-      inline Info();
-      inline ~Info();
-      int height = 0;
-      int width = 0;
-      int colorDepth = 0;
-      int pixelDepth = 0;
-      int availLeft = 0;
-      int availTop = 0;
-      int availHeight = 0;
-      int availWidth = 0;
-      Dpi dpi;
-      double devicePixelRatio = 1.0f;
-      void operator<<(const rapidjson::Value &value) {
-        do {
-          if (!value.IsObject())
-            break;
-          if (value.HasMember("colorDepth") && value["colorDepth"].IsInt())
-            colorDepth = value["colorDepth"].GetInt();
-          if (value.HasMember("pixelDepth") && value["pixelDepth"].IsInt())
-            pixelDepth = value["pixelDepth"].GetInt();
-          if (value.HasMember("height") && value["height"].IsInt()) {
-            height = value["height"].GetInt();
-          }
-          if (value.HasMember("width") && value["width"].IsInt()) {
-            width = value["width"].GetInt();
-          }
-          if (value.HasMember("availLeft") && value["availLeft"].IsInt()) {
-            availLeft = value["availLeft"].GetInt();
-          }
-          if (value.HasMember("availTop") && value["availTop"].IsInt()) {
-            availTop = value["availTop"].GetInt();
-          }
-          if (value.HasMember("availHeight") && value["availHeight"].IsInt()) {
-            availHeight = value["availHeight"].GetInt();
-          }
-          if (value.HasMember("availTop") && value["availTop"].IsInt()) {
-            availTop = value["availTop"].GetInt();
-          }
-          if (value.HasMember("availHeight") && value["availHeight"].IsInt()) {
-            availHeight = value["availHeight"].GetInt();
-          }
-          if (value.HasMember("availWidth") && value["availWidth"].IsInt()) {
-            availWidth = value["availWidth"].GetInt();
-          }
-          if (value.HasMember("devicePixelRatio") &&
-              value["devicePixelRatio"].IsDouble()) {
-            devicePixelRatio = value["devicePixelRatio"].GetDouble();
-          }
-          if (value.HasMember("availWidth") && value["availWidth"].IsInt()) {
-            availWidth = value["availWidth"].GetInt();
-          }
-          if (value.HasMember("devicePixelRatio") &&
-              value["devicePixelRatio"].IsInt()) {
-            devicePixelRatio = value["devicePixelRatio"].GetInt() * 1.0f;
-          }
-          if (value.HasMember("dpi") && value["dpi"].IsObject()) {
-            if (value["dpi"].HasMember("x") && value["dpi"]["x"].IsInt()) {
-              dpi.x = value["dpi"]["x"].GetInt();
-            }
-            if (value["dpi"].HasMember("y") && value["dpi"]["y"].IsInt()) {
-              dpi.y = value["dpi"]["y"].GetInt();
-            }
-          }
-        } while (0);
-      }
-    };
+
     inline Screen();
     inline ~Screen();
 
-    std::map<int /*key*/, std::vector<Info>> source;
+    std::map<int /*key*/, std::vector<xsiumio::IXSiumio::Fingerprint::Screen>>
+        source;
     void operator<<(const rapidjson::Value &value) {
       do {
         if (!value.IsObject())
@@ -756,13 +313,13 @@ public:
           if (!it->value.IsArray())
             break;
           int key = strtol(it->name.GetString(), nullptr, 10);
-          std::vector<Info> vs;
+          std::vector<xsiumio::IXSiumio::Fingerprint::Screen> vs;
           for (auto v = it->value.Begin(); v != it->value.End(); ++v) {
             if (!v->IsObject())
               break;
-            Info info;
-            info << *v;
-            vs.emplace_back(info);
+            xsiumio::IXSiumio::Fingerprint::Screen screen;
+            screen << *v;
+            vs.emplace_back(screen);
           }
           source.emplace(key, vs);
         }
@@ -798,16 +355,24 @@ public:
     }
   };
 
+  struct Browser {
+    inline Browser();
+    inline ~Browser();
+
+    xsiumio::IXSiumio::Fingerprint::UserAgentMetadata userAgentMetadata;
+    std::string userAgent;
+    xsiumio::IXSiumio::Fingerprint::Product product;
+  };
+
 public:
   inline IFpsdb();
   inline ~IFpsdb();
   inline void Release() const;
   inline void operator<<(const std::string &input);
   Platform platform;
-  std::vector<Languages> languages;
+  std::map<int /*key*/, std::vector<Browser>> browsers;
   UserAgentMetadata userAgentMetadata;
   DeviceMemory deviceMemory;
-  UserAgent userAgent;
   Webgl webgl;
   HardwareConcurrency hardwareConcurrency;
   std::vector<Voice> voice;
@@ -816,6 +381,10 @@ public:
   Hash hash_canvas;
   Hash hash_webgl;
   Hash hash_audio;
+  std::map<int /*key*/,
+           std::vector<
+               chromium::xsiumio::IXSiumio::Fingerprint::CdmRegistry::CdmEntry>>
+      cdmRegistry;
 };
 inline IFpsdb::IFpsdb() {
 }
@@ -839,10 +408,34 @@ inline void IFpsdb::operator<<(const std::string &input) {
     if (fpsdb.HasMember("platform") && fpsdb["platform"].IsObject()) {
       platform << fpsdb["platform"];
     }
-    if (fpsdb.HasMember("languages") && fpsdb["languages"].IsObject()) {
-      Languages langs;
-      langs << fpsdb["languages"];
-      languages.emplace_back(langs);
+    if (fpsdb.HasMember("browser") && fpsdb["browser"].IsObject()) {
+      for (auto it = fpsdb["browser"].MemberBegin();
+           it != fpsdb["browser"].MemberEnd(); ++it) {
+        if (!it->name.IsString())
+          break;
+        if (!it->value.IsArray())
+          break;
+        int key = strtol(it->name.GetString(), nullptr, 10);
+        std::vector<Browser> vs;
+        for (auto v = it->value.Begin(); v != it->value.End(); ++v) {
+          if (!v->IsObject())
+            break;
+          Browser browser;
+          for (auto it = v->MemberBegin(); it != v->MemberEnd(); ++it) {
+            if (!it->name.IsString())
+              break;
+            if (it->name == "userAgentMetadata" && it->value.IsObject()) {
+              browser.userAgentMetadata << it->value;
+            } else if (it->name == "userAgent" && it->value.IsString()) {
+              browser.userAgent = it->value.GetString();
+            } else if (it->name == "product" && it->value.IsObject()) {
+              browser.product << it->value;
+            }
+          }
+          vs.emplace_back(browser);
+        }
+        browsers.emplace(key, std::move(vs));
+      }
     }
     if (fpsdb.HasMember("userAgentMetadata") &&
         fpsdb["userAgentMetadata"].IsObject()) {
@@ -854,9 +447,6 @@ inline void IFpsdb::operator<<(const std::string &input) {
     }
     if (fpsdb.HasMember("deviceMemory") && fpsdb["deviceMemory"].IsObject()) {
       deviceMemory << fpsdb["deviceMemory"];
-    }
-    if (fpsdb.HasMember("userAgent") && fpsdb["userAgent"].IsObject()) {
-      userAgent << fpsdb["userAgent"];
     }
     if (fpsdb.HasMember("webgl") && fpsdb["webgl"].IsObject()) {
       webgl << fpsdb["webgl"];
@@ -876,6 +466,28 @@ inline void IFpsdb::operator<<(const std::string &input) {
         voice.emplace_back(voc);
       }
     }
+    if (fpsdb.HasMember("cdmRegistry") && fpsdb["cdmRegistry"].IsObject()) {
+      for (auto it = fpsdb["cdmRegistry"].MemberBegin();
+           it != fpsdb["cdmRegistry"].MemberEnd(); ++it) {
+        if (!it->name.IsString())
+          break;
+        if (!it->value.IsArray())
+          break;
+        int key = strtol(it->name.GetString(), nullptr, 10);
+        std::vector<
+            chromium::xsiumio::IXSiumio::Fingerprint::CdmRegistry::CdmEntry>
+            vs;
+        for (auto v = it->value.Begin(); v != it->value.End(); ++v) {
+          if (!v->IsObject())
+            break;
+          chromium::xsiumio::IXSiumio::Fingerprint::CdmRegistry::CdmEntry cdm;
+          cdm << *v;
+          vs.emplace_back(cdm);
+        }
+        cdmRegistry.emplace(key, std::move(vs));
+      }
+    }
+
     if (fpsdb.HasMember("font") && fpsdb["font"].IsObject()) {
       const auto &obj = fpsdb["font"];
       for (auto it = obj.MemberBegin(); it != obj.MemberEnd(); ++it) {
@@ -916,8 +528,8 @@ inline void IFpsdb::operator<<(const std::string &input) {
 ////////////////////////////////////////////////////////////////////////////////
 inline IFpsdb::Platform::Platform() = default;
 inline IFpsdb::Platform::~Platform() = default;
-inline IFpsdb::Languages::Languages() = default;
-inline IFpsdb::Languages::~Languages() = default;
+inline IFpsdb::Browser::Browser() = default;
+inline IFpsdb::Browser::~Browser() = default;
 inline IFpsdb::UserAgentMetadata::UserAgentMetadata() = default;
 inline IFpsdb::UserAgentMetadata::~UserAgentMetadata() = default;
 inline IFpsdb::UserAgentMetadata::Brand_version_list::Brand_version_list() =
@@ -934,34 +546,14 @@ inline IFpsdb::HardwareConcurrency::HardwareConcurrency() = default;
 inline IFpsdb::HardwareConcurrency::~HardwareConcurrency() = default;
 inline IFpsdb::DeviceMemory::DeviceMemory() = default;
 inline IFpsdb::DeviceMemory::~DeviceMemory() = default;
-inline IFpsdb::UserAgent::UserAgent() = default;
-inline IFpsdb::UserAgent::~UserAgent() = default;
 inline IFpsdb::Webgl::Webgl() = default;
 inline IFpsdb::Webgl::~Webgl() = default;
-inline IFpsdb::Webgl::Device::Device() = default;
-inline IFpsdb::Webgl::Device::~Device() = default;
-inline IFpsdb::Webgl::GetParameter::GetParameter() = default;
-inline IFpsdb::Webgl::GetParameter::~GetParameter() = default;
-inline IFpsdb::Webgl::ContextAttributes::ContextAttributes() = default;
-inline IFpsdb::Webgl::ContextAttributes::~ContextAttributes() = default;
-inline IFpsdb::Webgl::ShaderPrecisionFormat::ShaderPrecisionFormat() = default;
-inline IFpsdb::Webgl::ShaderPrecisionFormat::~ShaderPrecisionFormat() = default;
-inline IFpsdb::Webgl::ShaderPrecisionFormat::_8DF_::_8DF_() = default;
-inline IFpsdb::Webgl::ShaderPrecisionFormat::_8DF_::~_8DF_() = default;
-inline IFpsdb::Webgl::ShaderPrecisionFormat::_8B30_::_8B30_() = default;
-inline IFpsdb::Webgl::ShaderPrecisionFormat::_8B30_::~_8B30_() = default;
-inline IFpsdb::Webgl::ShaderPrecisionFormat::_8B31_::_8B31_() = default;
-inline IFpsdb::Webgl::ShaderPrecisionFormat::_8B31_::~_8B31_() = default;
 inline IFpsdb::Voice::Voice() = default;
 inline IFpsdb::Voice::~Voice() = default;
 inline IFpsdb::Font::Font() = default;
 inline IFpsdb::Font::~Font() = default;
 inline IFpsdb::Screen::Screen() = default;
 inline IFpsdb::Screen::~Screen() = default;
-inline IFpsdb::Screen::Info::Info() = default;
-inline IFpsdb::Screen::Info::~Info() = default;
-inline IFpsdb::Screen::Info::Dpi::Dpi() = default;
-inline IFpsdb::Screen::Info::Dpi::~Dpi() = default;
 inline IFpsdb::Hash::Hash() = default;
 inline IFpsdb::Hash::~Hash() = default;
 } // namespace xsiumio

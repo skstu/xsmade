@@ -26,10 +26,10 @@ if(xsSYSTYPE_WINDOWS)
     libsys.a
     libstl.a
     libpthread.a
-    ${MSYS2_CLANG64_DIR}/lib/libicuuc.a
     ${MSYS2_CLANG64_DIR}/lib/libicuin.a
-    ${MSYS2_CLANG64_DIR}/lib/libicuio.a
+    ${MSYS2_CLANG64_DIR}/lib/libicuuc.a
     ${MSYS2_CLANG64_DIR}/lib/libicudt.a
+    ${MSYS2_CLANG64_DIR}/lib/libicuio.a  
     ${MSYS2_CLANG64_DIR}/lib/libicutu.a)
 
   add_custom_command(

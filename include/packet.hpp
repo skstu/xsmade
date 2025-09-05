@@ -20,8 +20,12 @@ typedef struct tagROUTEDATAHEAD {
   unsigned long flag_tail;
 } ROUTEDATAHEAD, *PROUTEDATAHEAD;
 #pragma pack(pop)
-constexpr unsigned long routedata_flag_head = 0xFEFF;
-constexpr unsigned long routedata_flag_tail = 0x200B;
+// const unsigned long long LOGO_OF_DEVELOPER_BEGIN = 0xFAC9C2D0;
+// const unsigned long long LOGO_OF_DEVELOPER_END = 0xB4B4AAC1;
+// constexpr unsigned long routedata_flag_head = 0xFEFF;
+// constexpr unsigned long routedata_flag_tail = 0x200B;
+constexpr unsigned long routedata_flag_head = 0xFAC9C2D0;
+constexpr unsigned long routedata_flag_tail = 0xB4B4AAC1;
 constexpr unsigned long routedata_head_size = sizeof(tagROUTEDATAHEAD);
 constexpr unsigned long routedata_data_size = sizeof(tagROUTEDATA);
 class Packet final {

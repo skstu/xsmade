@@ -365,7 +365,7 @@ public:
                    .time_since_epoch())
         .count();
   }
-
+  static unsigned long long GoogleTimestamp();
   static unsigned long GetDateDay();
   static std::string GetDateDayString();
 };
