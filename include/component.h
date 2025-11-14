@@ -8,9 +8,6 @@ public:
   virtual bool Start() = 0;
   virtual void Stop() = 0;
   virtual bool Ready() const = 0;
-
-protected:
-  std::shared_ptr<std::mutex> mtx_ = std::make_shared<std::mutex>();
 };
 
 /// /*_ Memade®（新生™） _**/

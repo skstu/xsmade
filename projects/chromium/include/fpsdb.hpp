@@ -81,6 +81,8 @@ public:
     struct MetaData {
       inline MetaData();
       inline ~MetaData();
+      inline MetaData(const MetaData &);
+
       std::vector<Brand_version_list> brand_version_list;
       std::vector<Brand_full_version_list> brand_full_version_list;
       std::string full_version;
@@ -273,9 +275,9 @@ public:
           for (auto v = it->value.Begin(); v != it->value.End(); ++v) {
             if (!v->IsObject())
               break;
-            xsiumio::IXSiumio::Fingerprint::Webgl webgl;
-            webgl << *v;
-            vs.emplace_back(webgl);
+            xsiumio::IXSiumio::Fingerprint::Webgl webgl_entry;
+            webgl_entry << *v;
+            vs.emplace_back(webgl_entry);
           }
           source.emplace(key, vs);
         }
@@ -286,13 +288,16 @@ public:
   struct Voice {
     inline Voice();
     inline ~Voice();
+
     std::string lang;
     std::string name;
+    std::string description;
   };
 
   struct Font {
     inline Font();
     inline ~Font();
+    inline Font(const Font &);
     std::vector<std::string> family;
   };
 
@@ -317,9 +322,9 @@ public:
           for (auto v = it->value.Begin(); v != it->value.End(); ++v) {
             if (!v->IsObject())
               break;
-            xsiumio::IXSiumio::Fingerprint::Screen screen;
-            screen << *v;
-            vs.emplace_back(screen);
+            xsiumio::IXSiumio::Fingerprint::Screen screen_entry;
+            screen_entry << *v;
+            vs.emplace_back(screen_entry);
           }
           source.emplace(key, vs);
         }
@@ -364,16 +369,68 @@ public:
     xsiumio::IXSiumio::Fingerprint::Product product;
   };
 
+  struct Tzlang {
+    inline Tzlang();
+    inline ~Tzlang();
+
+    std::map<std::string /*timezone*/, std::vector<std::string> /*language*/>
+        languages;
+    std::vector<std::string> GetLanguages(const std::string &tz) const {
+      std::vector<std::string> result{"en-US", "en"};
+      auto f = languages.find(tz);
+      if (f != languages.end()) {
+        result.clear();
+        result = f->second;
+      }
+      return result;
+    }
+    void operator<<(const rapidjson::Value &value) {
+      do {
+        if (!value.IsObject())
+          break;
+        for (auto it = value.MemberBegin(); it != value.MemberEnd(); ++it) {
+          if (!it->name.IsString())
+            break;
+          if (!it->value.IsObject())
+            break;
+          if (!it->value.HasMember("languages"))
+            break;
+          if (!it->value["languages"].IsArray())
+            break;
+          std::string key = it->name.GetString();
+          std::vector<std::string> vs;
+          for (auto v = it->value["languages"].Begin();
+               v != it->value["languages"].End(); ++v) {
+            if (!v->IsString())
+              break;
+            vs.emplace_back(v->GetString());
+          }
+          languages.emplace(key, vs);
+        }
+      } while (0);
+    }
+  };
+
 public:
   inline IFpsdb();
   inline ~IFpsdb();
   inline void Release() const;
   inline void operator<<(const std::string &input);
+  inline bool ValidPlatformKey(int key) const {
+    bool result = false;
+    do {
+      if (platform.source.empty())
+        break;
+      result = platform.source.find(key) != platform.source.end();
+    } while (0);
+    return result;
+  }
   Platform platform;
   std::map<int /*key*/, std::vector<Browser>> browsers;
   UserAgentMetadata userAgentMetadata;
   DeviceMemory deviceMemory;
   Webgl webgl;
+  Tzlang tzlang;
   HardwareConcurrency hardwareConcurrency;
   std::vector<Voice> voice;
   std::map<int /*key*/, Font> font;
@@ -409,27 +466,32 @@ inline void IFpsdb::operator<<(const std::string &input) {
       platform << fpsdb["platform"];
     }
     if (fpsdb.HasMember("browser") && fpsdb["browser"].IsObject()) {
-      for (auto it = fpsdb["browser"].MemberBegin();
-           it != fpsdb["browser"].MemberEnd(); ++it) {
-        if (!it->name.IsString())
+      for (auto it_browser = fpsdb["browser"].MemberBegin();
+           it_browser != fpsdb["browser"].MemberEnd(); ++it_browser) {
+        if (!it_browser->name.IsString())
           break;
-        if (!it->value.IsArray())
+        if (!it_browser->value.IsArray())
           break;
-        int key = strtol(it->name.GetString(), nullptr, 10);
+        int key = strtol(it_browser->name.GetString(), nullptr, 10);
         std::vector<Browser> vs;
-        for (auto v = it->value.Begin(); v != it->value.End(); ++v) {
-          if (!v->IsObject())
+        for (auto it_browser_elem = it_browser->value.Begin();
+             it_browser_elem != it_browser->value.End(); ++it_browser_elem) {
+          if (!it_browser_elem->IsObject())
             break;
           Browser browser;
-          for (auto it = v->MemberBegin(); it != v->MemberEnd(); ++it) {
-            if (!it->name.IsString())
+          for (auto it_field = it_browser_elem->MemberBegin();
+               it_field != it_browser_elem->MemberEnd(); ++it_field) {
+            if (!it_field->name.IsString())
               break;
-            if (it->name == "userAgentMetadata" && it->value.IsObject()) {
-              browser.userAgentMetadata << it->value;
-            } else if (it->name == "userAgent" && it->value.IsString()) {
-              browser.userAgent = it->value.GetString();
-            } else if (it->name == "product" && it->value.IsObject()) {
-              browser.product << it->value;
+            if (it_field->name == "userAgentMetadata" &&
+                it_field->value.IsObject()) {
+              browser.userAgentMetadata << it_field->value;
+            } else if (it_field->name == "userAgent" &&
+                       it_field->value.IsString()) {
+              browser.userAgent = it_field->value.GetString();
+            } else if (it_field->name == "product" &&
+                       it_field->value.IsObject()) {
+              browser.product << it_field->value;
             }
           }
           vs.emplace_back(browser);
@@ -448,6 +510,9 @@ inline void IFpsdb::operator<<(const std::string &input) {
     if (fpsdb.HasMember("deviceMemory") && fpsdb["deviceMemory"].IsObject()) {
       deviceMemory << fpsdb["deviceMemory"];
     }
+    if (fpsdb.HasMember("tzlang") && fpsdb["tzlang"].IsObject()) {
+      tzlang << fpsdb["tzlang"];
+    }
     if (fpsdb.HasMember("webgl") && fpsdb["webgl"].IsObject()) {
       webgl << fpsdb["webgl"];
     }
@@ -462,6 +527,10 @@ inline void IFpsdb::operator<<(const std::string &input) {
         }
         if (vObj[i].HasMember("name") && vObj[i]["name"].IsString()) {
           voc.name = vObj[i]["name"].GetString();
+        }
+        if (vObj[i].HasMember("description") &&
+            vObj[i]["description"].IsString()) {
+          voc.description = vObj[i]["description"].GetString();
         }
         voice.emplace_back(voc);
       }
@@ -530,6 +599,8 @@ inline IFpsdb::Platform::Platform() = default;
 inline IFpsdb::Platform::~Platform() = default;
 inline IFpsdb::Browser::Browser() = default;
 inline IFpsdb::Browser::~Browser() = default;
+inline IFpsdb::Tzlang::Tzlang() = default;
+inline IFpsdb::Tzlang::~Tzlang() = default;
 inline IFpsdb::UserAgentMetadata::UserAgentMetadata() = default;
 inline IFpsdb::UserAgentMetadata::~UserAgentMetadata() = default;
 inline IFpsdb::UserAgentMetadata::Brand_version_list::Brand_version_list() =
@@ -542,6 +613,9 @@ inline IFpsdb::UserAgentMetadata::Brand_full_version_list::
     ~Brand_full_version_list() = default;
 inline IFpsdb::UserAgentMetadata::MetaData::MetaData() = default;
 inline IFpsdb::UserAgentMetadata::MetaData::~MetaData() = default;
+inline IFpsdb::UserAgentMetadata::MetaData::MetaData(
+    const IFpsdb::UserAgentMetadata::MetaData &) = default;
+
 inline IFpsdb::HardwareConcurrency::HardwareConcurrency() = default;
 inline IFpsdb::HardwareConcurrency::~HardwareConcurrency() = default;
 inline IFpsdb::DeviceMemory::DeviceMemory() = default;
@@ -552,6 +626,7 @@ inline IFpsdb::Voice::Voice() = default;
 inline IFpsdb::Voice::~Voice() = default;
 inline IFpsdb::Font::Font() = default;
 inline IFpsdb::Font::~Font() = default;
+inline IFpsdb::Font::Font(const IFpsdb::Font &) = default;
 inline IFpsdb::Screen::Screen() = default;
 inline IFpsdb::Screen::~Screen() = default;
 inline IFpsdb::Hash::Hash() = default;

@@ -47,7 +47,7 @@ void Config::Init() {
                              GetChromiumProcessName();
     project_root_dir_ = current_dir_;
 
-    project_bridge_process_name_ = "XSiumioBridge.exe";
+    project_bridge_process_name_ = "ProxyBridge.exe";
     project_bridge_process_path_ =
         project_components_path_ + "/" + project_bridge_process_name_;
 

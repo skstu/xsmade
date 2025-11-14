@@ -46,6 +46,7 @@ private:
 private:
   const RunMode mode_;
   std::atomic_bool ready_ = false;
+  std::atomic_bool first_run_ = true;
   std::unique_ptr<std::mutex> mtx_ = std::make_unique<std::mutex>();
   IModel *model_ = nullptr;
   stl::container::queue<chromium::IRequest *> requests_;

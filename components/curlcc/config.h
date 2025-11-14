@@ -29,9 +29,9 @@ public:
   const CurlProxyInfo &GetCurlProxyInfo() const;
   const std::vector<std::string> &GetCurlRequestUrls() const;
   const std::string &GetCurlResponseFilename() const;
-
+  bool IsAuth() const;
 protected:
-  void SetCurlProxyString(const char *proxy) override final;
+  void SetCurlProxyString(const char *proxy, const bool &isAuth) override final;
   void AppendCurlRequestUrl(const char *url) override final;
   void SetCurlResponseFilename(const char *filename) override final;
 
@@ -40,6 +40,7 @@ private:
   std::string curl_proxy_string_;
   std::vector<std::string> curl_request_urls_;
   std::string curl_response_filename_;
+  std::atomic_bool isAuth_ = false;
   std::unique_ptr<std::mutex> mtx_ = std::make_unique<std::mutex>();
 };
 /// /*_ Memade®（新生™） _**/

@@ -1,0 +1,596 @@
+[
+    {
+        "lang": "de-DE",
+        "name": "Google Deutsch"
+    },
+    {
+        "lang": "en-US",
+        "name": "Google US English",
+        "description": "Google US English"
+    },
+    {
+        "lang": "en-GB",
+        "name": "Google UK English Female",
+        "description": "Google UK English Female"
+    },
+    {
+        "lang": "en-GB",
+        "name": "Google UK English Male",
+        "description": "Google UK English Male"
+    },
+    {
+        "lang": "es-ES",
+        "name": "Google español",
+        "description": "Google español"
+    },
+    {
+        "lang": "es-US",
+        "name": "Google español de Estados Unidos",
+        "description": "Google español de Estados Unidos"
+    },
+    {
+        "lang": "fr-FR",
+        "name": "Google français",
+        "description": "Google français"
+    },
+    {
+        "lang": "hi-IN",
+        "name": "Google हिन्दी",
+        "description": "Google हिन्दी"
+    },
+    {
+        "lang": "id-ID",
+        "name": "Google Bahasa Indonesia",
+        "description": "Google Bahasa Indonesia"
+    },
+    {
+        "lang": "it-IT",
+        "name": "Google italiano",
+        "description": "Google italiano"
+    },
+    {
+        "lang": "ja-JP",
+        "name": "Google 日本語",
+        "description": "Google 日本語"
+    },
+    {
+        "lang": "ko-KR",
+        "name": "Google 한국의",
+        "description": "Google 한국의"
+    },
+    {
+        "lang": "nl-NL",
+        "name": "Google Nederlands",
+        "description": "Google Nederlands"
+    },
+    {
+        "lang": "pl-PL",
+        "name": "Google polski",
+        "description": "Google polski"
+    },
+    {
+        "lang": "pt-BR",
+        "name": "Google português do Brasil",
+        "description": "Google português do Brasil"
+    },
+    {
+        "lang": "ru-RU",
+        "name": "Google русский",
+        "description": "Google русский"
+    },
+    {
+        "lang": "zh-CN",
+        "name": "Google 普通话（中国大陆）",
+        "description": "Google 普通话（中国大陆）"
+    },
+    {
+        "lang": "zh-HK",
+        "name": "Google 粤語（香港）",
+        "description": "Google 粤語（香港）"
+    },
+    {
+        "lang": "zh-TW",
+        "name": "Google 國語（臺灣）",
+        "description": "Google 國語（臺灣）"
+    },
+    {
+        "lang": "af-ZA",
+        "name": "Microsoft Adri Online (Natural) - Afrikaans (South Africa)",
+        "description": "Microsoft Adri Online (Natural) - Afrikaans (South Africa)"
+    },
+    {
+        "lang": "af-ZA",
+        "name": "Microsoft Willem Online (Natural) - Afrikaans (South Africa)",
+        "description": "Microsoft Willem Online (Natural) - Afrikaans (South Africa)"
+    },
+    {
+        "lang": "sq-AL",
+        "name": "Microsoft Anila Online (Natural) - Albanian (Albania)",
+        "description": "Microsoft Anila Online (Natural) - Albanian (Albania)"
+    },
+    {
+        "lang": "sq-AL",
+        "name": "Microsoft Ilir Online (Natural) - Albanian (Albania)",
+        "description": "Microsoft Ilir Online (Natural) - Albanian (Albania)"
+    },
+    {
+        "lang": "am-ET",
+        "name": "Microsoft Ameha Online (Natural) - Amharic (Ethiopia)",
+        "description": "Microsoft Ameha Online (Natural) - Amharic (Ethiopia)"
+    },
+    {
+        "lang": "am-ET",
+        "name": "Microsoft Mekdes Online (Natural) - Amharic (Ethiopia)",
+        "description": "Microsoft Mekdes Online (Natural) - Amharic (Ethiopia)"
+    },
+    {
+        "lang": "ar-DZ",
+        "name": "Microsoft Amina Online (Natural) - Arabic (Algeria)",
+        "description": "Microsoft Amina Online (Natural) - Arabic (Algeria)"
+    },
+    {
+        "lang": "ar-DZ",
+        "name": "Microsoft Ismael Online (Natural) - Arabic (Algeria)",
+        "description": "Microsoft Ismael Online (Natural) - Arabic (Algeria)"
+    },
+    {
+        "lang": "ar-BH",
+        "name": "Microsoft Ali Online (Natural) - Arabic (Bahrain)",
+        "description": "Microsoft Ali Online (Natural) - Arabic (Bahrain)"
+    },
+    {
+        "lang": "ar-BH",
+        "name": "Microsoft Laila Online (Natural) - Arabic (Bahrain)",
+        "description": "Microsoft Laila Online (Natural) - Arabic (Bahrain)"
+    },
+    {
+        "lang": "ar-EG",
+        "name": "Microsoft Salma Online (Natural) - Arabic (Egypt)",
+        "description": "Microsoft Salma Online (Natural) - Arabic (Egypt)"
+    },
+    {
+        "lang": "ar-EG",
+        "name": "Microsoft Shakir Online (Natural) - Arabic (Egypt)",
+        "description": "Microsoft Shakir Online (Natural) - Arabic (Egypt)"
+    },
+    {
+        "lang": "ar-IQ",
+        "name": "Microsoft Bassel Online (Natural) - Arabic (Iraq)",
+        "description": "Microsoft Bassel Online (Natural) - Arabic (Iraq)"
+    },
+    {
+        "lang": "ar-IQ",
+        "name": "Microsoft Rana Online (Natural) - Arabic (Iraq)",
+        "description": "Microsoft Rana Online (Natural) - Arabic (Iraq)"
+    },
+    {
+        "lang": "ar-JO",
+        "name": "Microsoft Sana Online (Natural) - Arabic (Jordan)",
+        "description": "Microsoft Sana Online (Natural) - Arabic (Jordan)"
+    },
+    {
+        "lang": "ar-JO",
+        "name": "Microsoft Taim Online (Natural) - Arabic (Jordan)",
+        "description": "Microsoft Taim Online (Natural) - Arabic (Jordan)"
+    },
+    {
+        "lang": "ar-KW",
+        "name": "Microsoft Fahed Online (Natural) - Arabic (Kuwait)",
+        "description": "Microsoft Fahed Online (Natural) - Arabic (Kuwait)"
+    },
+    {
+        "lang": "ar-KW",
+        "name": "Microsoft Noura Online (Natural) - Arabic (Kuwait)",
+        "description": "Microsoft Noura Online (Natural) - Arabic (Kuwait)"
+    },
+    {
+        "lang": "ar-LB",
+        "name": "Microsoft Layla Online (Natural) - Arabic (Lebanon)",
+        "description": "Microsoft Layla Online (Natural) - Arabic (Lebanon)"
+    },
+    {
+        "lang": "ar-LB",
+        "name": "Microsoft Rami Online (Natural) - Arabic (Lebanon)",
+        "description": "Microsoft Rami Online (Natural) - Arabic (Lebanon)"
+    },
+    {
+        "lang": "ar-LY",
+        "name": "Microsoft Iman Online (Natural) - Arabic (Libya)",
+        "description": "Microsoft Iman Online (Natural) - Arabic (Libya)"
+    },
+    {
+        "lang": "ar-LY",
+        "name": "Microsoft Omar Online (Natural) - Arabic (Libya)",
+        "description": "Microsoft Omar Online (Natural) - Arabic (Libya)"
+    },
+    {
+        "lang": "ar-MA",
+        "name": "Microsoft Jamal Online (Natural) - Arabic (Morocco)",
+        "description": "Microsoft Jamal Online (Natural) - Arabic (Morocco)"
+    },
+    {
+        "lang": "ar-MA",
+        "name": "Microsoft Mouna Online (Natural) - Arabic (Morocco)",
+        "description": "Microsoft Mouna Online (Natural) - Arabic (Morocco)"
+    },
+    {
+        "lang": "ar-OM",
+        "name": "Microsoft Abdullah Online (Natural) - Arabic (Oman)",
+        "description": "Microsoft Abdullah Online (Natural) - Arabic (Oman)"
+    },
+    {
+        "lang": "ar-OM",
+        "name": "Microsoft Aysha Online (Natural) - Arabic (Oman)",
+        "description": "Microsoft Aysha Online (Natural) - Arabic (Oman)"
+    },
+    {
+        "lang": "ar-QA",
+        "name": "Microsoft Amal Online (Natural) - Arabic (Qatar)",
+        "description": "Microsoft Amal Online (Natural) - Arabic (Qatar)"
+    },
+    {
+        "lang": "ar-QA",
+        "name": "Microsoft Moaz Online (Natural) - Arabic (Qatar)",
+        "description": "Microsoft Moaz Online (Natural) - Arabic (Qatar)"
+    },
+    {
+        "lang": "ar-SA",
+        "name": "Microsoft Hamed Online (Natural) - Arabic (Saudi Arabia)",
+        "description": "Microsoft Hamed Online (Natural) - Arabic (Saudi Arabia)"
+    },
+    {
+        "lang": "ar-SA",
+        "name": "Microsoft Zariyah Online (Natural) - Arabic (Saudi Arabia)",
+        "description": "Microsoft Zariyah Online (Natural) - Arabic (Saudi Arabia)"
+    },
+    {
+        "lang": "ar-SY",
+        "name": "Microsoft Amany Online (Natural) - Arabic (Syria)",
+        "description": "Microsoft Amany Online (Natural) - Arabic (Syria)"
+    },
+    {
+        "lang": "ar-SY",
+        "name": "Microsoft Laith Online (Natural) - Arabic (Syria)",
+        "description": "Microsoft Laith Online (Natural) - Arabic (Syria)"
+    },
+    {
+        "lang": "ar-TN",
+        "name": "Microsoft Hedi Online (Natural) - Arabic (Tunisia)",
+        "description": "Microsoft Hedi Online (Natural) - Arabic (Tunisia)"
+    },
+    {
+        "lang": "ar-TN",
+        "name": "Microsoft Reem Online (Natural) - Arabic (Tunisia)",
+        "description": "Microsoft Reem Online (Natural) - Arabic (Tunisia)"
+    },
+    {
+        "lang": "ar-AE",
+        "name": "Microsoft Fatima Online (Natural) - Arabic (United Arab Emirates)",
+        "description": "Microsoft Fatima Online (Natural) - Arabic (United Arab Emirates)"
+    },
+    {
+        "lang": "ar-AE",
+        "name": "Microsoft Hamdan Online (Natural) - Arabic (United Arab Emirates)",
+        "description": "Microsoft Hamdan Online (Natural) - Arabic (United Arab Emirates)"
+    },
+    {
+        "lang": "ar-YE",
+        "name": "Microsoft Maryam Online (Natural) - Arabic (Yemen)",
+        "description": "Microsoft Maryam Online (Natural) - Arabic (Yemen)"
+    },
+    {
+        "lang": "ar-YE",
+        "name": "Microsoft Saleh Online (Natural) - Arabic (Yemen)",
+        "description": "Microsoft Saleh Online (Natural) - Arabic (Yemen)"
+    },
+    {
+        "lang": "az-AZ",
+        "name": "Microsoft Babek Online (Natural) - Azerbaijani (Azerbaijan)",
+        "description": "Microsoft Babek Online (Natural) - Azerbaijani (Azerbaijan)"
+    },
+    {
+        "lang": "az-AZ",
+        "name": "Microsoft Banu Online (Natural) - Azerbaijani (Azerbaijan)",
+        "description": "Microsoft Banu Online (Natural) - Azerbaijani (Azerbaijan)"
+    },
+    {
+        "lang": "bn-BD",
+        "name": "Microsoft Nabanita Online (Natural) - Bangla (Bangladesh)",
+        "description": "Microsoft Nabanita Online (Natural) - Bangla (Bangladesh)"
+    },
+    {
+        "lang": "bn-BD",
+        "name": "Microsoft Pradeep Online (Natural) - Bangla (Bangladesh)",
+        "description": "Microsoft Pradeep Online (Natural) - Bangla (Bangladesh)"
+    },
+    {
+        "lang": "bn-IN",
+        "name": "Microsoft Bashkar Online (Natural) - Bangla (India)",
+        "description": "Microsoft Bashkar Online (Natural) - Bangla (India)"
+    },
+    {
+        "lang": "bn-IN",
+        "name": "Microsoft Tanishaa Online (Natural) - Bengali (India)",
+        "description": "Microsoft Tanishaa Online (Natural) - Bengali (India)"
+    },
+    {
+        "lang": "bs-BA",
+        "name": "Microsoft Goran Online (Natural) - Bosnian (Bosnia)",
+        "description": "Microsoft Goran Online (Natural) - Bosnian (Bosnia)"
+    },
+    {
+        "lang": "bs-BA",
+        "name": "Microsoft Vesna Online (Natural) - Bosnian (Bosnia)",
+        "description": "Microsoft Vesna Online (Natural) - Bosnian (Bosnia)"
+    },
+    {
+        "lang": "bg-BG",
+        "name": "Microsoft Borislav Online (Natural) - Bulgarian (Bulgaria)",
+        "description": "Microsoft Borislav Online (Natural) - Bulgarian (Bulgaria)"
+    },
+    {
+        "lang": "bg-BG",
+        "name": "Microsoft Kalina Online (Natural) - Bulgarian (Bulgaria)",
+        "description": "Microsoft Kalina Online (Natural) - Bulgarian (Bulgaria)"
+    },
+    {
+        "lang": "my-MM",
+        "name": "Microsoft Nilar Online (Natural) - Burmese (Myanmar)",
+        "description": "Microsoft Nilar Online (Natural) - Burmese (Myanmar)"
+    },
+    {
+        "lang": "my-MM",
+        "name": "Microsoft Thiha Online (Natural) - Burmese (Myanmar)",
+        "description": "Microsoft Thiha Online (Natural) - Burmese (Myanmar)"
+    },
+    {
+        "lang": "ca-ES",
+        "name": "Microsoft Enric Online (Natural) - Catalan (Spain)",
+        "description": "Microsoft Enric Online (Natural) - Catalan (Spain)"
+    },
+    {
+        "lang": "ca-ES",
+        "name": "Microsoft Joana Online (Natural) - Catalan (Spain)",
+        "description": "Microsoft Joana Online (Natural) - Catalan (Spain)"
+    },
+    {
+        "lang": "zh-HK",
+        "name": "Microsoft HiuGaai Online (Natural) - Chinese (Cantonese Traditional)",
+        "description": "Microsoft HiuGaai Online (Natural) - Chinese (Cantonese Traditional)"
+    },
+    {
+        "lang": "zh-HK",
+        "name": "Microsoft HiuMaan Online (Natural) - Chinese (Hong Kong)",
+        "description": "Microsoft HiuMaan Online (Natural) - Chinese (Hong Kong)"
+    },
+    {
+        "lang": "zh-HK",
+        "name": "Microsoft WanLung Online (Natural) - Chinese (Hong Kong)",
+        "description": "Microsoft WanLung Online (Natural) - Chinese (Hong Kong)"
+    },
+    {
+        "lang": "zh-CN",
+        "name": "Microsoft Xiaoxiao Online (Natural) - Chinese (Mainland)",
+        "description": "Microsoft Xiaoxiao Online (Natural) - Chinese (Mainland)"
+    },
+    {
+        "lang": "zh-CN",
+        "name": "Microsoft Xiaoyi Online (Natural) - Chinese (Mainland)",
+        "description": "Microsoft Xiaoyi Online (Natural) - Chinese (Mainland)"
+    },
+    {
+        "lang": "zh-CN",
+        "name": "Microsoft Yunjian Online (Natural) - Chinese (Mainland)",
+        "description": "Microsoft Yunjian Online (Natural) - Chinese (Mainland)"
+    },
+    {
+        "lang": "zh-CN",
+        "name": "Microsoft Yunxi Online (Natural) - Chinese (Mainland)",
+        "description": "Microsoft Yunxi Online (Natural) - Chinese (Mainland)"
+    },
+    {
+        "lang": "zh-CN",
+        "name": "Microsoft Yunxia Online (Natural) - Chinese (Mainland)",
+        "description": "Microsoft Yunxia Online (Natural) - Chinese (Mainland)"
+    },
+    {
+        "lang": "zh-CN",
+        "name": "Microsoft Yunyang Online (Natural) - Chinese (Mainland)",
+        "description": "Microsoft Yunyang Online (Natural) - Chinese (Mainland)"
+    },
+    {
+        "lang": "zh-CN-liaoning",
+        "name": "Microsoft Xiaobei Online (Natural) - Chinese (Northeastern Mandarin)",
+        "description": "Microsoft Xiaobei Online (Natural) - Chinese (Northeastern Mandarin)"
+    },
+    {
+        "lang": "zh-TW",
+        "name": "Microsoft HsiaoChen Online (Natural) - Chinese (Taiwan)",
+        "description": "Microsoft HsiaoChen Online (Natural) - Chinese (Taiwan)"
+    },
+    {
+        "lang": "zh-TW",
+        "name": "Microsoft YunJhe Online (Natural) - Chinese (Taiwan)",
+        "description": "Microsoft YunJhe Online (Natural) - Chinese (Taiwan)"
+    },
+    {
+        "lang": "zh-TW",
+        "name": "Microsoft HsiaoYu Online (Natural) - Chinese (Taiwanese Mandarin)",
+        "description": "Microsoft HsiaoYu Online (Natural) - Chinese (Taiwanese Mandarin)"
+    },
+    {
+        "lang": "zh-CN-shaanxi",
+        "name": "Microsoft Xiaoni Online (Natural) - Chinese (Zhongyuan Mandarin Shaanxi)",
+        "description": "Microsoft Xiaoni Online (Natural) - Chinese (Zhongyuan Mandarin Shaanxi)"
+    },
+    {
+        "lang": "hr-HR",
+        "name": "Microsoft Gabrijela Online (Natural) - Croatian (Croatia)",
+        "description": "Microsoft Gabrijela Online (Natural) - Croatian (Croatia)"
+    },
+    {
+        "lang": "hr-HR",
+        "name": "Microsoft Srecko Online (Natural) - Croatian (Croatia)",
+        "description": "Microsoft Srecko Online (Natural) - Croatian (Croatia)"
+    },
+    {
+        "lang": "cs-CZ",
+        "name": "Microsoft Antonin Online (Natural) - Czech (Czech)",
+        "description": "Microsoft Antonin Online (Natural) - Czech (Czech)"
+    },
+    {
+        "lang": "cs-CZ",
+        "name": "Microsoft Vlasta Online (Natural) - Czech (Czech)",
+        "description": "Microsoft Vlasta Online (Natural) - Czech (Czech)"
+    },
+    {
+        "lang": "da-DK",
+        "name": "Microsoft Christel Online (Natural) - Danish (Denmark)",
+        "description": "Microsoft Christel Online (Natural) - Danish (Denmark)"
+    },
+    {
+        "lang": "da-DK",
+        "name": "Microsoft Jeppe Online (Natural) - Danish (Denmark)",
+        "description": "Microsoft Jeppe Online (Natural) - Danish (Denmark)"
+    },
+    {
+        "lang": "nl-BE",
+        "name": "Microsoft Arnaud Online (Natural) - Dutch (Belgium)",
+        "description": "Microsoft Arnaud Online (Natural) - Dutch (Belgium)"
+    },
+    {
+        "lang": "nl-BE",
+        "name": "Microsoft Dena Online (Natural) - Dutch (Belgium)",
+        "description": "Microsoft Dena Online (Natural) - Dutch (Belgium)"
+    },
+    {
+        "lang": "nl-NL",
+        "name": "Microsoft Colette Online (Natural) - Dutch (Netherlands)",
+        "description": "Microsoft Colette Online (Natural) - Dutch (Netherlands)"
+    },
+    {
+        "lang": "nl-NL",
+        "name": "Microsoft Fenna Online (Natural) - Dutch (Netherlands)",
+        "description": "Microsoft Fenna Online (Natural) - Dutch (Netherlands)"
+    },
+    {
+        "lang": "nl-NL",
+        "name": "Microsoft Maarten Online (Natural) - Dutch (Netherlands)",
+        "description": "Microsoft Maarten Online (Natural) - Dutch (Netherlands)"
+    },
+    {
+        "lang": "en-AU",
+        "name": "Microsoft Natasha Online (Natural) - English (Australia)",
+        "description": "Microsoft Natasha Online (Natural) - English (Australia)"
+    },
+    {
+        "lang": "en-AU",
+        "name": "Microsoft William Online (Natural) - English (Australia)",
+        "description": "Microsoft William Online (Natural) - English (Australia)"
+    },
+    {
+        "lang": "en-CA",
+        "name": "Microsoft Clara Online (Natural) - English (Canada)",
+        "description": "Microsoft Clara Online (Natural) - English (Canada)"
+    },
+    {
+        "lang": "en-CA",
+        "name": "Microsoft Liam Online (Natural) - English (Canada)",
+        "description": "Microsoft Liam Online (Natural) - English (Canada)"
+    },
+    {
+        "lang": "en-HK",
+        "name": "Microsoft Sam Online (Natural) - English (Hongkong)",
+        "description": "Microsoft Sam Online (Natural) - English (Hongkong)"
+    },
+    {
+        "lang": "en-HK",
+        "name": "Microsoft Yan Online (Natural) - English (Hongkong)",
+        "description": "Microsoft Yan Online (Natural) - English (Hongkong)"
+    },
+    {
+        "lang": "en-IN",
+        "name": "Microsoft Neerja Online (Natural) - English (India) (Preview)",
+        "description": "Microsoft Neerja Online (Natural) - English (India) (Preview)"
+    },
+    {
+        "lang": "en-IN",
+        "name": "Microsoft Neerja Online (Natural) - English (India)",
+        "description": "Microsoft Neerja Online (Natural) - English (India)"
+    },
+    {
+        "lang": "en-IN",
+        "name": "Microsoft Prabhat Online (Natural) - English (India)",
+        "description": "Microsoft Prabhat Online (Natural) - English (India)"
+    },
+    {
+        "lang": "en-IE",
+        "name": "Microsoft Connor Online (Natural) - English (Ireland)",
+        "description": "Microsoft Connor Online (Natural) - English (Ireland)"
+    },
+    {
+        "lang": "en-IE",
+        "name": "Microsoft Emily Online (Natural) - English (Ireland)",
+        "description": "Microsoft Emily Online (Natural) - English (Ireland)"
+    },
+    {
+        "lang": "en-KE",
+        "name": "Microsoft Asilia Online (Natural) - English (Kenya)",
+        "description": "Microsoft Asilia Online (Natural) - English (Kenya)"
+    },
+    {
+        "lang": "en-KE",
+        "name": "Microsoft Chilemba Online (Natural) - English (Kenya)",
+        "description": "Microsoft Chilemba Online (Natural) - English (Kenya)"
+    },
+    {
+        "lang": "en-NZ",
+        "name": "Microsoft Mitchell Online (Natural) - English (New Zealand)",
+        "description": "Microsoft Mitchell Online (Natural) - English (New Zealand)"
+    },
+    {
+        "lang": "en-NZ",
+        "name": "Microsoft Molly Online (Natural) - English (New Zealand)",
+        "description": "Microsoft Molly Online (Natural) - English (New Zealand)"
+    },
+    {
+        "lang": "en-NG",
+        "name": "Microsoft Abeo Online (Natural) - English (Nigeria)",
+        "description": "Microsoft Abeo Online (Natural) - English (Nigeria)"
+    },
+    {
+        "lang": "en-NG",
+        "name": "Microsoft Ezinne Online (Natural) - English (Nigeria)",
+        "description": "Microsoft Ezinne Online (Natural) - English (Nigeria)"
+    },
+    {
+        "lang": "en-PH",
+        "name": "Microsoft James Online (Natural) - English (Philippines)",
+        "description": "Microsoft James Online (Natural) - English (Philippines)"
+    },
+    {
+        "lang": "en-PH",
+        "name": "Microsoft Rosa Online (Natural) - English (Philippines)",
+        "description": "Microsoft Rosa Online (Natural) - English (Philippines)"
+    },
+    {
+        "lang": "en-SG",
+        "name": "Microsoft Luna Online (Natural) - English (Singapore)",
+        "description": "Microsoft Luna Online (Natural) - English (Singapore)"
+    },
+    {
+        "lang": "en-SG",
+        "name": "Microsoft Wayne Online (Natural) - English (Singapore)",
+        "description": "Microsoft Wayne Online (Natural) - English (Singapore)"
+    },
+    {
+        "lang": "en-ZA",
+        "name": "Microsoft Leah Online (Natural) - English (South Africa)",
+        "description": "Microsoft Leah Online (Natural) - English (South Africa)"
+    },
+    {
+        "lang": "en-ZA",
+        "name": "Microsoft Luke Online (Natural) - English (South Africa)",
+        "description": "Microsoft Luke Online (Natural) - English (South Africa)"
+    }
+]

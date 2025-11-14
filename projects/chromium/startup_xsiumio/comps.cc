@@ -16,10 +16,10 @@ void Comps::Init() {
         Config::CreateOrGet()->GetProjectComponentsDir() + "/libcurlcc.dll";
     if (!stl::File::Exists(target_component_path))
       break;
-    auto pcmp = curl::ICurl::Create(target_component_path.c_str());
-    if (!pcmp)
-      break;
-    comps_.emplace(CompKey::kCurl, pcmp);
+    // auto pcmp = curl::ICurl::Create(target_component_path.c_str());
+    // if (!pcmp)
+    //   break;
+    // comps_.emplace(CompKey::kCurl, pcmp);
   } while (0);
   do { // libicucc
     std::string target_component_path;

@@ -16,6 +16,22 @@ bool IChromium::Open() {
     if (!stl::File::Exists(proc))
       break;
 
+    if (configure_.startup.enable_cleanup_udd) {
+      for (int i = 0; i < 5; ++i) {
+        try {
+          std::string userDataDir =
+              Config::CreateOrGet()->GetChromiumUserDataDir(
+                  configure_.GetIdentify());
+          stl::Directory::RemoveAll(stl::Path::Parent(userDataDir));
+          std::cout << "chromium udd clear success." << std::endl;
+          break;
+        } catch (const std::exception &e) {
+          e.what();
+        }
+        std::this_thread::sleep_for(std::chrono::seconds(1));
+      }
+    }
+
     xs_process_id_t pid = 0;
     std::vector<const char *> startup_args{nullptr};
     if (xs_sys_process_spawn(proc.c_str(), &startup_args[0], nullptr, 1, &pid))

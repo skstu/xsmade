@@ -81,7 +81,7 @@ void Browser::CreateChromiumResult(chromium::IRequest *req) {
         f_chromium->second->Release();
       }
     }
-    status_ = BrowserStatus::kIdle;
+    status_ = BrowserStatus::kRunning;
   } while (0);
 }
 void Browser::ClearChromium() {

@@ -1,0 +1,50 @@
+FROM ubuntu:22.04
+
+# Set environment variables
+ENV DEBIAN_FRONTEND=noninteractive
+
+# Install necessary packages
+RUN apt-get update && apt-get install -y \
+    ca-certificates \
+    zip unzip wget gnupg2 software-properties-common curl net-tools \
+    libasound2 fonts-liberation \
+    libatk-bridge2.0-0 \
+    libdrm2 libgbm1 \
+    libglib2.0-0 \
+    libgtk-3-0 \
+    libnspr4 libnss3 \
+    libx11-xcb1 libxcomposite1 libxcursor1 libxdamage1 \
+    libxext6 libxfixes3 libxkbcommon0 libxrandr2 libxrender1 \
+    libxi6 libxtst6 libxss1 \
+    libayatana-appindicator3-1 \
+    && rm -rf /var/lib/apt/lists/*
+
+COPY brw.zip /home/brw.zip
+RUN mkdir -p /home/browser \
+    && unzip -o /home/brw.zip -d /home/browser \
+    && find /home/browser -type f -name chrome -exec chmod +x {} \; \
+    && chmod -R a+rX /home/browser \
+    && rm /home/brw.zip
+
+COPY start.sh /usr/local/bin/start.sh
+RUN chmod +x /usr/local/bin/start.sh
+# Set the default command to run Chromium in headless mode
+#CMD ["chromium-browser", "--headless", "--no-sandbox", "--disable-dev-shm-usage", "--remote-debugging-port=9222"]
+#CMD ["/bin/bash"]
+EXPOSE 9223
+WORKDIR /home/browser
+CMD ["/usr/local/bin/start.sh"]
+# Simple healthcheck to verify the debugging endpoint is up
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
+    CMD wget -qO- http://127.0.0.1:9223/json/version || exit 1
+# CMD ["/home/browser/chrome", \
+#     "--no-sandbox", \
+#     "--remote-debugging-address=0.0.0.0", \
+#     "--remote-debugging-port=9223", \
+#     "--disable-dev-shm-usage", \
+#     "--disable-gpu", \
+#     "--headless=new", \
+#     "--no-first-run", \
+#     "--no-default-browser-check", \
+#     "--user-data-dir=/tmp/chromium", \
+#     "--log-file=/home/browser/chromium.log"]

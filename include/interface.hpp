@@ -7,8 +7,8 @@
 
 using tf_interface_init = void *(*)(void *, unsigned long);
 using tf_interface_uninit = void (*)(void);
-const char name_interface_init[] = "interface_init";
-const char name_interface_uninit[] = "interface_uninit";
+constexpr const char name_interface_init[] = "interface_init";
+constexpr const char name_interface_uninit[] = "interface_uninit";
 
 template <typename T> class Interface {
 public:

@@ -368,7 +368,9 @@ bool Startup::ConfigDynamicInfo(const std::string &url,
     auto reqMyip = pCurl->CreateRequest();
     reqMyip->SetUrl(url.c_str());
     if (!proxyString.empty()) {
-      reqMyip->SetProxyString(proxyString.c_str());
+      reqMyip->SetProxyString(
+          proxyString.c_str(),
+          proxyString.find("@") != std::string::npos ? true : false);
     }
     reqArray->Push(reqMyip);
     curl::ICurl::IRequestArray *resArrsy = pCurl->Perform(reqArray);

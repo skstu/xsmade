@@ -1,0 +1,1047 @@
+[
+    "1756410393",
+    "QrtNBAAAAAAAxXV2ACa43iGJNv_7naZD0or7r-g",
+    "dev001",
+    "3",
+    "",
+    "AAK11aRn20f9AaC1MPiTdddA07ybIsMSsKPQdftMoGr1eUYW5uuIIZ8-9OIf2xECn677V-9Cs921egKZh-B9fIbfSMToKXEFljPZsOmXN7tCvA",
+    "",
+    "0",
+    "0",
+    "0",
+    "EIl0qmowJgKZ",
+    [
+        "webgl2",
+        17,
+        0
+    ],
+    [],
+    "0",
+    [
+        1757895158280,
+        null,
+        103.494,
+        15
+    ],
+    [
+        1757895158.286,
+        "unknown",
+        0,
+        0,
+        0,
+        0,
+        "Other",
+        "",
+        1757895158.28,
+        1757895158.28,
+        false,
+        false,
+        false
+    ],
+    "0.6",
+    "10000",
+    "1",
+    "TypeError: Cannot read properties of null (reading '0')\n    at file:///C:/Users/k34ub/Desktop/adsco/adsco228.html:597:21\n    at Ob (file:///C:/Users/k34ub/Desktop/adsco/adsco228.html:602:15)\n    at yb (file:///C:/Users/k34ub/Desktop/adsco/adsco228.html:2315:13)\n    at AdscoreInit (file:///C:/Users/k34ub/Desktop/adsco/adsco228.html:4598:27)\n    at file:///C:/Users/k34ub/Desktop/adsco/adsco228.html:4805:16",
+    "0",
+    "1",
+    "5b3a0f53d7adec144fea2f220d9bc26a",
+    [
+        7000,
+        2857,
+        4000,
+        5500,
+        7500,
+        7143,
+        8095,
+        8000,
+        17
+    ],
+    "1.5",
+    "",
+    "1970/1/1 08:00:00",
+    [
+        "7922,185",
+        "7922,185",
+        "7922,185",
+        "7922,185",
+        "7922,185",
+        "7922,185",
+        "7922,185",
+        "7922,185",
+        "7922,185",
+        "7922,185",
+        "7922,185",
+        "7922,185"
+    ],
+    "6a36cd586af9af49b504ffe67c4af8a5",
+    [
+        40,
+        26,
+        1504,
+        1003,
+        2,
+        2,
+        3,
+        2,
+        5
+    ],
+    [
+        [
+            "application/pdf",
+            "Portable Document Format"
+        ],
+        [
+            "text/pdf",
+            "Portable Document Format"
+        ]
+    ],
+    "1",
+    [
+        "file:///C:/Users/k34ub/Desktop/adsco/adsco228.html",
+        "",
+        187723,
+        187723,
+        "navigate",
+        188023,
+        0,
+        6.699999988079071,
+        6.699999988079071,
+        6.699999988079071,
+        6.699999988079071,
+        0,
+        6.699999988079071,
+        38.39999997615814,
+        6.699999988079071,
+        0,
+        null,
+        "navigation",
+        0,
+        0,
+        0,
+        200,
+        "navigate"
+    ],
+    [
+        [
+            "PDF Viewer",
+            "internal-pdf-viewer",
+            "Portable Document Format"
+        ],
+        [
+            "Chrome PDF Viewer",
+            "internal-pdf-viewer",
+            "Portable Document Format"
+        ],
+        [
+            "Chromium PDF Viewer",
+            "internal-pdf-viewer",
+            "Portable Document Format"
+        ],
+        [
+            "Microsoft Edge PDF Viewer",
+            "internal-pdf-viewer",
+            "Portable Document Format"
+        ],
+        [
+            "WebKit built-in PDF",
+            "internal-pdf-viewer",
+            "Portable Document Format"
+        ]
+    ],
+    "1",
+    [
+        [
+            "window.SecurityPolicyViolationEvent",
+            "function SecurityPolicyViolationEvent() { [native code] }"
+        ],
+        [
+            "window.SVGFESpecularLightingElement",
+            "function SVGFESpecularLightingElement() { [native code] }"
+        ],
+        [
+            "window.ReadableByteStreamController",
+            "function ReadableByteStreamController() { [native code] }"
+        ],
+        [
+            "window.PerformanceObserverEntryList",
+            "function PerformanceObserverEntryList() { [native code] }"
+        ],
+        [
+            "window.FileSystemWritableFileStream",
+            "function FileSystemWritableFileStream() { [native code] }"
+        ],
+        [
+            "window.IntegrityViolationReportBody",
+            "function IntegrityViolationReportBody() { [native code] }"
+        ],
+        [
+            "window.webkitSpeechRecognitionError",
+            "function SpeechRecognitionErrorEvent() { [native code] }"
+        ],
+        [
+            "window.webkitSpeechRecognitionEvent",
+            "function SpeechRecognitionEvent() { [native code] }"
+        ]
+    ],
+    "0",
+    "undefined",
+    "object",
+    "object",
+    "object",
+    "function",
+    "file:///C:/Users/k34ub/Desktop/adsco/adsco228.html",
+    "0",
+    "visible",
+    "0",
+    "1",
+    "1",
+    "1",
+    "1",
+    "1",
+    "1",
+    "object",
+    "",
+    "function setAppBadge() { [native code] }",
+    "",
+    "0",
+    "1",
+    "0",
+    "0",
+    "",
+    "",
+    "",
+    "",
+    "884",
+    "431",
+    "390",
+    "151",
+    "947",
+    "554",
+    "884",
+    "431",
+    "1",
+    "function hasFocus() { [native code] }",
+    "1",
+    "",
+    "3760000000",
+    "landscape-primary",
+    "",
+    "",
+    "0",
+    "0",
+    "1504",
+    "1003",
+    "1504",
+    "955",
+    "24",
+    "24",
+    "",
+    "",
+    "1.5",
+    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0",
+    "5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0",
+    "Mozilla",
+    "",
+    "Gecko",
+    "20030107",
+    "Google Inc.",
+    "",
+    "",
+    "Win32",
+    "",
+    "",
+    "8",
+    "10",
+    "",
+    "zh-CN",
+    "zh-CN,en,en-GB,en-US",
+    "",
+    "",
+    "",
+    "1",
+    "8",
+    "1",
+    "",
+    "1",
+    "",
+    "",
+    "0",
+    "0",
+    "1",
+    "",
+    "",
+    "",
+    "",
+    "",
+    "",
+    "",
+    "",
+    "1757895158360",
+    "-480",
+    "",
+    "3g",
+    "",
+    "0.4",
+    "300",
+    "0",
+    "",
+    "",
+    "",
+    "1757895158280",
+    "0",
+    "0",
+    "1757895158286",
+    "1757895158286",
+    "1757895158286",
+    "1757895158286",
+    "1757895158286",
+    "0",
+    "1757895158286",
+    "1757895158286",
+    "1757895158318",
+    "undefined",
+    "undefined",
+    "number",
+    "[object Window]",
+    "[object Navigator]",
+    "[object Navigator]",
+    "[object PluginArray]",
+    "function eval() { [native code] }",
+    "function animate() { [native code] }",
+    "[object Screen]",
+    "function open() { [native code] }",
+    "",
+    "function close() { [native code] }",
+    "",
+    "0",
+    "function log() { [native code] }",
+    "function appendChild() { [native code] }",
+    "function appendChild() { [native code] }",
+    "function appendChild() { [native code] }",
+    "",
+    "",
+    "function IntersectionObserver() { [native code] }",
+    "function alert() { [native code] }",
+    "1",
+    "string",
+    "function toDataURL() { [native code] }",
+    "https://adsco.re/",
+    "adsco.re",
+    "",
+    "function RTCPeerConnection() { [native code] }",
+    "",
+    "function RTCPeerConnection() { [native code] }",
+    "function XMLHttpRequest() { [native code] }",
+    "Asia/Shanghai",
+    "zh-CN",
+    "1",
+    "",
+    "",
+    "",
+    "",
+    "",
+    [
+        0.6735038222466498,
+        0.9369381294607052,
+        0.4782607824872678,
+        0.7569898760379877,
+        0.1930585553806038
+    ],
+    "0",
+    [
+        0,
+        "Windows",
+        [
+            [
+                "Chromium",
+                "140"
+            ],
+            [
+                "Not=A?Brand",
+                "24"
+            ],
+            [
+                "Microsoft Edge",
+                "140"
+            ]
+        ]
+    ],
+    "IfR88wlLyJLZCsHR8K1TaKFVCWms4LTe",
+    [
+        "0",
+        "0",
+        "884",
+        "8",
+        "0",
+        "0"
+    ],
+    [
+        "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+        "WebGL GLSL ES 3.00 (OpenGL ES GLSL ES 3.0 Chromium)",
+        "WebKit",
+        "WebKit WebGL",
+        "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+        "Google Inc. (Google)",
+        6
+    ],
+    [
+        "ae8b6d4f",
+        "a540e7b04b601fc5f2ad545bf681e211",
+        "4f99270e8d4ba849bb6dc572cc1b4a6e"
+    ],
+    [
+        "40a375369748bd5d53d85ffc5288cbff",
+        "3bc48fa030b4db10f72ee998b2e5b5a4"
+    ],
+    [
+        "AddSearchProvider",
+        "IsSearchProviderInstalled"
+    ],
+    [
+        "95",
+        "1"
+    ],
+    "1",
+    "9",
+    [
+        [
+            "org.w3.clearkey",
+            "video/mp4; codecs=\"avc1.42E01E\"",
+            ""
+        ],
+        [
+            "com.widevine.alpha",
+            "video/mp4; codecs=\"avc1.42E01E\"",
+            "SW_SECURE_CRYPTO"
+        ],
+        [
+            "com.widevine.alpha",
+            "video/mp4; codecs=\"avc1.42E01E\"",
+            "SW_SECURE_DECODE"
+        ],
+        [
+            "org.w3.clearkey",
+            "video/mp4; codecs=\"avc1.42c00d\"",
+            ""
+        ],
+        [
+            "com.widevine.alpha",
+            "video/mp4; codecs=\"avc1.42c00d\"",
+            "SW_SECURE_CRYPTO"
+        ],
+        [
+            "com.widevine.alpha",
+            "video/mp4; codecs=\"avc1.42c00d\"",
+            "SW_SECURE_DECODE"
+        ]
+    ],
+    "1",
+    "0",
+    "100",
+    [
+        -1,
+        359.19999998807907,
+        877.8000000119209
+    ],
+    [
+        -1,
+        359.60000002384186,
+        877.8000000119209
+    ],
+    [
+        -1,
+        359.80000001192093,
+        877.8999999761581
+    ],
+    [
+        -1,
+        359.89999997615814,
+        877.8999999761581
+    ],
+    "0",
+    [
+        "cade6a68bffb2358acd5d63a141ec064",
+        "cade6a68bffb2358acd5d63a141ec064",
+        "",
+        7,
+        3
+    ],
+    [
+        null,
+        null,
+        null
+    ],
+    [
+        null,
+        null,
+        null,
+        16
+    ],
+    [
+        648,
+        386,
+        246,
+        124
+    ],
+    [
+        "#0.4542287852566185\r\n",
+        361,
+        null,
+        378.69999998807907
+    ],
+    [
+        [
+            "af-ZA",
+            "Microsoft Adri Online (Natural) - Afrikaans (South Africa)",
+            "Microsoft Adri Online (Natural) - Afrikaans (South Africa)"
+        ],
+        [
+            "af-ZA",
+            "Microsoft Willem Online (Natural) - Afrikaans (South Africa)",
+            "Microsoft Willem Online (Natural) - Afrikaans (South Africa)"
+        ],
+        [
+            "sq-AL",
+            "Microsoft Anila Online (Natural) - Albanian (Albania)",
+            "Microsoft Anila Online (Natural) - Albanian (Albania)"
+        ],
+        [
+            "sq-AL",
+            "Microsoft Ilir Online (Natural) - Albanian (Albania)",
+            "Microsoft Ilir Online (Natural) - Albanian (Albania)"
+        ],
+        [
+            "am-ET",
+            "Microsoft Ameha Online (Natural) - Amharic (Ethiopia)",
+            "Microsoft Ameha Online (Natural) - Amharic (Ethiopia)"
+        ],
+        [
+            "am-ET",
+            "Microsoft Mekdes Online (Natural) - Amharic (Ethiopia)",
+            "Microsoft Mekdes Online (Natural) - Amharic (Ethiopia)"
+        ],
+        [
+            "ar-DZ",
+            "Microsoft Amina Online (Natural) - Arabic (Algeria)",
+            "Microsoft Amina Online (Natural) - Arabic (Algeria)"
+        ],
+        [
+            "ar-DZ",
+            "Microsoft Ismael Online (Natural) - Arabic (Algeria)",
+            "Microsoft Ismael Online (Natural) - Arabic (Algeria)"
+        ],
+        [
+            "ar-BH",
+            "Microsoft Ali Online (Natural) - Arabic (Bahrain)",
+            "Microsoft Ali Online (Natural) - Arabic (Bahrain)"
+        ],
+        [
+            "ar-BH",
+            "Microsoft Laila Online (Natural) - Arabic (Bahrain)",
+            "Microsoft Laila Online (Natural) - Arabic (Bahrain)"
+        ],
+        [
+            "ar-EG",
+            "Microsoft Salma Online (Natural) - Arabic (Egypt)",
+            "Microsoft Salma Online (Natural) - Arabic (Egypt)"
+        ],
+        [
+            "ar-EG",
+            "Microsoft Shakir Online (Natural) - Arabic (Egypt)",
+            "Microsoft Shakir Online (Natural) - Arabic (Egypt)"
+        ],
+        [
+            "ar-IQ",
+            "Microsoft Bassel Online (Natural) - Arabic (Iraq)",
+            "Microsoft Bassel Online (Natural) - Arabic (Iraq)"
+        ],
+        [
+            "ar-IQ",
+            "Microsoft Rana Online (Natural) - Arabic (Iraq)",
+            "Microsoft Rana Online (Natural) - Arabic (Iraq)"
+        ],
+        [
+            "ar-JO",
+            "Microsoft Sana Online (Natural) - Arabic (Jordan)",
+            "Microsoft Sana Online (Natural) - Arabic (Jordan)"
+        ],
+        [
+            "ar-JO",
+            "Microsoft Taim Online (Natural) - Arabic (Jordan)",
+            "Microsoft Taim Online (Natural) - Arabic (Jordan)"
+        ],
+        [
+            "ar-KW",
+            "Microsoft Fahed Online (Natural) - Arabic (Kuwait)",
+            "Microsoft Fahed Online (Natural) - Arabic (Kuwait)"
+        ],
+        [
+            "ar-KW",
+            "Microsoft Noura Online (Natural) - Arabic (Kuwait)",
+            "Microsoft Noura Online (Natural) - Arabic (Kuwait)"
+        ],
+        [
+            "ar-LB",
+            "Microsoft Layla Online (Natural) - Arabic (Lebanon)",
+            "Microsoft Layla Online (Natural) - Arabic (Lebanon)"
+        ],
+        [
+            "ar-LB",
+            "Microsoft Rami Online (Natural) - Arabic (Lebanon)",
+            "Microsoft Rami Online (Natural) - Arabic (Lebanon)"
+        ],
+        [
+            "ar-LY",
+            "Microsoft Iman Online (Natural) - Arabic (Libya)",
+            "Microsoft Iman Online (Natural) - Arabic (Libya)"
+        ],
+        [
+            "ar-LY",
+            "Microsoft Omar Online (Natural) - Arabic (Libya)",
+            "Microsoft Omar Online (Natural) - Arabic (Libya)"
+        ],
+        [
+            "ar-MA",
+            "Microsoft Jamal Online (Natural) - Arabic (Morocco)",
+            "Microsoft Jamal Online (Natural) - Arabic (Morocco)"
+        ],
+        [
+            "ar-MA",
+            "Microsoft Mouna Online (Natural) - Arabic (Morocco)",
+            "Microsoft Mouna Online (Natural) - Arabic (Morocco)"
+        ],
+        [
+            "ar-OM",
+            "Microsoft Abdullah Online (Natural) - Arabic (Oman)",
+            "Microsoft Abdullah Online (Natural) - Arabic (Oman)"
+        ],
+        [
+            "ar-OM",
+            "Microsoft Aysha Online (Natural) - Arabic (Oman)",
+            "Microsoft Aysha Online (Natural) - Arabic (Oman)"
+        ],
+        [
+            "ar-QA",
+            "Microsoft Amal Online (Natural) - Arabic (Qatar)",
+            "Microsoft Amal Online (Natural) - Arabic (Qatar)"
+        ],
+        [
+            "ar-QA",
+            "Microsoft Moaz Online (Natural) - Arabic (Qatar)",
+            "Microsoft Moaz Online (Natural) - Arabic (Qatar)"
+        ],
+        [
+            "ar-SA",
+            "Microsoft Hamed Online (Natural) - Arabic (Saudi Arabia)",
+            "Microsoft Hamed Online (Natural) - Arabic (Saudi Arabia)"
+        ],
+        [
+            "ar-SA",
+            "Microsoft Zariyah Online (Natural) - Arabic (Saudi Arabia)",
+            "Microsoft Zariyah Online (Natural) - Arabic (Saudi Arabia)"
+        ],
+        [
+            "ar-SY",
+            "Microsoft Amany Online (Natural) - Arabic (Syria)",
+            "Microsoft Amany Online (Natural) - Arabic (Syria)"
+        ],
+        [
+            "ar-SY",
+            "Microsoft Laith Online (Natural) - Arabic (Syria)",
+            "Microsoft Laith Online (Natural) - Arabic (Syria)"
+        ],
+        [
+            "ar-TN",
+            "Microsoft Hedi Online (Natural) - Arabic (Tunisia)",
+            "Microsoft Hedi Online (Natural) - Arabic (Tunisia)"
+        ],
+        [
+            "ar-TN",
+            "Microsoft Reem Online (Natural) - Arabic (Tunisia)",
+            "Microsoft Reem Online (Natural) - Arabic (Tunisia)"
+        ],
+        [
+            "ar-AE",
+            "Microsoft Fatima Online (Natural) - Arabic (United Arab Emirates)",
+            "Microsoft Fatima Online (Natural) - Arabic (United Arab Emirates)"
+        ],
+        [
+            "ar-AE",
+            "Microsoft Hamdan Online (Natural) - Arabic (United Arab Emirates)",
+            "Microsoft Hamdan Online (Natural) - Arabic (United Arab Emirates)"
+        ],
+        [
+            "ar-YE",
+            "Microsoft Maryam Online (Natural) - Arabic (Yemen)",
+            "Microsoft Maryam Online (Natural) - Arabic (Yemen)"
+        ],
+        [
+            "ar-YE",
+            "Microsoft Saleh Online (Natural) - Arabic (Yemen)",
+            "Microsoft Saleh Online (Natural) - Arabic (Yemen)"
+        ],
+        [
+            "az-AZ",
+            "Microsoft Babek Online (Natural) - Azerbaijani (Azerbaijan)",
+            "Microsoft Babek Online (Natural) - Azerbaijani (Azerbaijan)"
+        ],
+        [
+            "az-AZ",
+            "Microsoft Banu Online (Natural) - Azerbaijani (Azerbaijan)",
+            "Microsoft Banu Online (Natural) - Azerbaijani (Azerbaijan)"
+        ],
+        [
+            "bn-BD",
+            "Microsoft Nabanita Online (Natural) - Bangla (Bangladesh)",
+            "Microsoft Nabanita Online (Natural) - Bangla (Bangladesh)"
+        ],
+        [
+            "bn-BD",
+            "Microsoft Pradeep Online (Natural) - Bangla (Bangladesh)",
+            "Microsoft Pradeep Online (Natural) - Bangla (Bangladesh)"
+        ],
+        [
+            "bn-IN",
+            "Microsoft Bashkar Online (Natural) - Bangla (India)",
+            "Microsoft Bashkar Online (Natural) - Bangla (India)"
+        ],
+        [
+            "bn-IN",
+            "Microsoft Tanishaa Online (Natural) - Bengali (India)",
+            "Microsoft Tanishaa Online (Natural) - Bengali (India)"
+        ],
+        [
+            "bs-BA",
+            "Microsoft Goran Online (Natural) - Bosnian (Bosnia)",
+            "Microsoft Goran Online (Natural) - Bosnian (Bosnia)"
+        ],
+        [
+            "bs-BA",
+            "Microsoft Vesna Online (Natural) - Bosnian (Bosnia)",
+            "Microsoft Vesna Online (Natural) - Bosnian (Bosnia)"
+        ],
+        [
+            "bg-BG",
+            "Microsoft Borislav Online (Natural) - Bulgarian (Bulgaria)",
+            "Microsoft Borislav Online (Natural) - Bulgarian (Bulgaria)"
+        ],
+        [
+            "bg-BG",
+            "Microsoft Kalina Online (Natural) - Bulgarian (Bulgaria)",
+            "Microsoft Kalina Online (Natural) - Bulgarian (Bulgaria)"
+        ],
+        [
+            "my-MM",
+            "Microsoft Nilar Online (Natural) - Burmese (Myanmar)",
+            "Microsoft Nilar Online (Natural) - Burmese (Myanmar)"
+        ],
+        [
+            "my-MM",
+            "Microsoft Thiha Online (Natural) - Burmese (Myanmar)",
+            "Microsoft Thiha Online (Natural) - Burmese (Myanmar)"
+        ],
+        [
+            "ca-ES",
+            "Microsoft Enric Online (Natural) - Catalan (Spain)",
+            "Microsoft Enric Online (Natural) - Catalan (Spain)"
+        ],
+        [
+            "ca-ES",
+            "Microsoft Joana Online (Natural) - Catalan (Spain)",
+            "Microsoft Joana Online (Natural) - Catalan (Spain)"
+        ],
+        [
+            "zh-HK",
+            "Microsoft HiuGaai Online (Natural) - Chinese (Cantonese Traditional)",
+            "Microsoft HiuGaai Online (Natural) - Chinese (Cantonese Traditional)"
+        ],
+        [
+            "zh-HK",
+            "Microsoft HiuMaan Online (Natural) - Chinese (Hong Kong)",
+            "Microsoft HiuMaan Online (Natural) - Chinese (Hong Kong)"
+        ],
+        [
+            "zh-HK",
+            "Microsoft WanLung Online (Natural) - Chinese (Hong Kong)",
+            "Microsoft WanLung Online (Natural) - Chinese (Hong Kong)"
+        ],
+        [
+            "zh-CN",
+            "Microsoft Xiaoxiao Online (Natural) - Chinese (Mainland)",
+            "Microsoft Xiaoxiao Online (Natural) - Chinese (Mainland)"
+        ],
+        [
+            "zh-CN",
+            "Microsoft Xiaoyi Online (Natural) - Chinese (Mainland)",
+            "Microsoft Xiaoyi Online (Natural) - Chinese (Mainland)"
+        ],
+        [
+            "zh-CN",
+            "Microsoft Yunjian Online (Natural) - Chinese (Mainland)",
+            "Microsoft Yunjian Online (Natural) - Chinese (Mainland)"
+        ],
+        [
+            "zh-CN",
+            "Microsoft Yunxi Online (Natural) - Chinese (Mainland)",
+            "Microsoft Yunxi Online (Natural) - Chinese (Mainland)"
+        ],
+        [
+            "zh-CN",
+            "Microsoft Yunxia Online (Natural) - Chinese (Mainland)",
+            "Microsoft Yunxia Online (Natural) - Chinese (Mainland)"
+        ],
+        [
+            "zh-CN",
+            "Microsoft Yunyang Online (Natural) - Chinese (Mainland)",
+            "Microsoft Yunyang Online (Natural) - Chinese (Mainland)"
+        ],
+        [
+            "zh-CN-liaoning",
+            "Microsoft Xiaobei Online (Natural) - Chinese (Northeastern Mandarin)",
+            "Microsoft Xiaobei Online (Natural) - Chinese (Northeastern Mandarin)"
+        ],
+        [
+            "zh-TW",
+            "Microsoft HsiaoChen Online (Natural) - Chinese (Taiwan)",
+            "Microsoft HsiaoChen Online (Natural) - Chinese (Taiwan)"
+        ],
+        [
+            "zh-TW",
+            "Microsoft YunJhe Online (Natural) - Chinese (Taiwan)",
+            "Microsoft YunJhe Online (Natural) - Chinese (Taiwan)"
+        ],
+        [
+            "zh-TW",
+            "Microsoft HsiaoYu Online (Natural) - Chinese (Taiwanese Mandarin)",
+            "Microsoft HsiaoYu Online (Natural) - Chinese (Taiwanese Mandarin)"
+        ],
+        [
+            "zh-CN-shaanxi",
+            "Microsoft Xiaoni Online (Natural) - Chinese (Zhongyuan Mandarin Shaanxi)",
+            "Microsoft Xiaoni Online (Natural) - Chinese (Zhongyuan Mandarin Shaanxi)"
+        ],
+        [
+            "hr-HR",
+            "Microsoft Gabrijela Online (Natural) - Croatian (Croatia)",
+            "Microsoft Gabrijela Online (Natural) - Croatian (Croatia)"
+        ],
+        [
+            "hr-HR",
+            "Microsoft Srecko Online (Natural) - Croatian (Croatia)",
+            "Microsoft Srecko Online (Natural) - Croatian (Croatia)"
+        ],
+        [
+            "cs-CZ",
+            "Microsoft Antonin Online (Natural) - Czech (Czech)",
+            "Microsoft Antonin Online (Natural) - Czech (Czech)"
+        ],
+        [
+            "cs-CZ",
+            "Microsoft Vlasta Online (Natural) - Czech (Czech)",
+            "Microsoft Vlasta Online (Natural) - Czech (Czech)"
+        ],
+        [
+            "da-DK",
+            "Microsoft Christel Online (Natural) - Danish (Denmark)",
+            "Microsoft Christel Online (Natural) - Danish (Denmark)"
+        ],
+        [
+            "da-DK",
+            "Microsoft Jeppe Online (Natural) - Danish (Denmark)",
+            "Microsoft Jeppe Online (Natural) - Danish (Denmark)"
+        ],
+        [
+            "nl-BE",
+            "Microsoft Arnaud Online (Natural) - Dutch (Belgium)",
+            "Microsoft Arnaud Online (Natural) - Dutch (Belgium)"
+        ],
+        [
+            "nl-BE",
+            "Microsoft Dena Online (Natural) - Dutch (Belgium)",
+            "Microsoft Dena Online (Natural) - Dutch (Belgium)"
+        ],
+        [
+            "nl-NL",
+            "Microsoft Colette Online (Natural) - Dutch (Netherlands)",
+            "Microsoft Colette Online (Natural) - Dutch (Netherlands)"
+        ],
+        [
+            "nl-NL",
+            "Microsoft Fenna Online (Natural) - Dutch (Netherlands)",
+            "Microsoft Fenna Online (Natural) - Dutch (Netherlands)"
+        ],
+        [
+            "nl-NL",
+            "Microsoft Maarten Online (Natural) - Dutch (Netherlands)",
+            "Microsoft Maarten Online (Natural) - Dutch (Netherlands)"
+        ],
+        [
+            "en-AU",
+            "Microsoft Natasha Online (Natural) - English (Australia)",
+            "Microsoft Natasha Online (Natural) - English (Australia)"
+        ],
+        [
+            "en-AU",
+            "Microsoft William Online (Natural) - English (Australia)",
+            "Microsoft William Online (Natural) - English (Australia)"
+        ],
+        [
+            "en-CA",
+            "Microsoft Clara Online (Natural) - English (Canada)",
+            "Microsoft Clara Online (Natural) - English (Canada)"
+        ],
+        [
+            "en-CA",
+            "Microsoft Liam Online (Natural) - English (Canada)",
+            "Microsoft Liam Online (Natural) - English (Canada)"
+        ],
+        [
+            "en-HK",
+            "Microsoft Sam Online (Natural) - English (Hongkong)",
+            "Microsoft Sam Online (Natural) - English (Hongkong)"
+        ],
+        [
+            "en-HK",
+            "Microsoft Yan Online (Natural) - English (Hongkong)",
+            "Microsoft Yan Online (Natural) - English (Hongkong)"
+        ],
+        [
+            "en-IN",
+            "Microsoft Neerja Online (Natural) - English (India) (Preview)",
+            "Microsoft Neerja Online (Natural) - English (India) (Preview)"
+        ],
+        [
+            "en-IN",
+            "Microsoft Neerja Online (Natural) - English (India)",
+            "Microsoft Neerja Online (Natural) - English (India)"
+        ],
+        [
+            "en-IN",
+            "Microsoft Prabhat Online (Natural) - English (India)",
+            "Microsoft Prabhat Online (Natural) - English (India)"
+        ],
+        [
+            "en-IE",
+            "Microsoft Connor Online (Natural) - English (Ireland)",
+            "Microsoft Connor Online (Natural) - English (Ireland)"
+        ],
+        [
+            "en-IE",
+            "Microsoft Emily Online (Natural) - English (Ireland)",
+            "Microsoft Emily Online (Natural) - English (Ireland)"
+        ],
+        [
+            "en-KE",
+            "Microsoft Asilia Online (Natural) - English (Kenya)",
+            "Microsoft Asilia Online (Natural) - English (Kenya)"
+        ],
+        [
+            "en-KE",
+            "Microsoft Chilemba Online (Natural) - English (Kenya)",
+            "Microsoft Chilemba Online (Natural) - English (Kenya)"
+        ],
+        [
+            "en-NZ",
+            "Microsoft Mitchell Online (Natural) - English (New Zealand)",
+            "Microsoft Mitchell Online (Natural) - English (New Zealand)"
+        ],
+        [
+            "en-NZ",
+            "Microsoft Molly Online (Natural) - English (New Zealand)",
+            "Microsoft Molly Online (Natural) - English (New Zealand)"
+        ],
+        [
+            "en-NG",
+            "Microsoft Abeo Online (Natural) - English (Nigeria)",
+            "Microsoft Abeo Online (Natural) - English (Nigeria)"
+        ],
+        [
+            "en-NG",
+            "Microsoft Ezinne Online (Natural) - English (Nigeria)",
+            "Microsoft Ezinne Online (Natural) - English (Nigeria)"
+        ],
+        [
+            "en-PH",
+            "Microsoft James Online (Natural) - English (Philippines)",
+            "Microsoft James Online (Natural) - English (Philippines)"
+        ],
+        [
+            "en-PH",
+            "Microsoft Rosa Online (Natural) - English (Philippines)",
+            "Microsoft Rosa Online (Natural) - English (Philippines)"
+        ],
+        [
+            "en-SG",
+            "Microsoft Luna Online (Natural) - English (Singapore)",
+            "Microsoft Luna Online (Natural) - English (Singapore)"
+        ],
+        [
+            "en-SG",
+            "Microsoft Wayne Online (Natural) - English (Singapore)",
+            "Microsoft Wayne Online (Natural) - English (Singapore)"
+        ],
+        [
+            "en-ZA",
+            "Microsoft Leah Online (Natural) - English (South Africa)",
+            "Microsoft Leah Online (Natural) - English (South Africa)"
+        ],
+        [
+            "en-ZA",
+            "Microsoft Luke Online (Natural) - English (South Africa)",
+            "Microsoft Luke Online (Natural) - English (South Africa)"
+        ]
+    ],
+    [
+        152716913049,
+        0
+    ],
+    "-1",
+    [
+        "x86",
+        "64",
+        [
+            [
+                "Chromium",
+                "140"
+            ],
+            [
+                "Not=A?Brand",
+                "24"
+            ],
+            [
+                "Microsoft Edge",
+                "140"
+            ]
+        ],
+        [
+            [
+                "Chromium",
+                "140.0.7339.133"
+            ],
+            [
+                "Not=A?Brand",
+                "24.0.0.0"
+            ],
+            [
+                "Microsoft Edge",
+                "140.0.3485.66"
+            ]
+        ],
+        "0",
+        "",
+        "Windows",
+        "19.0.0"
+    ],
+    [
+        "candidate:734621091 1 udp 2113937151 35af02c1-3bb5-43df-80b0-71d01282bfac.local 64370 typ host generation 0 ufrag LZvC network-cost 999"
+    ],
+    [
+        "candidate:3237208865 1 udp 2113937151 35af02c1-3bb5-43df-80b0-71d01282bfac.local 64372 typ host generation 0 ufrag w7as network-cost 999"
+    ],
+    "935.8000000119209",
+    [
+        "0",
+        "257.30000001192093"
+    ],
+    []
+]

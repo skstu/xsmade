@@ -96,10 +96,10 @@ ICurl::IRequestArray *Curl::Perform(ICurl::IRequestArray *reqArray) {
             }
           }
 
-          {
-            std::string proxy_address =
-                req->GetProxyAddress(); // may include scheme like
-                                        // "socks5h://host:port"
+          std::string proxy_address =
+              req->GetProxyAddress(); // may include scheme like
+                                      // "socks5h://host:port"
+          if (req->IsAuth()) {
             std::string proxy_username = req->GetProxyUsername();
             std::string proxy_password = req->GetProxyPassword();
 
@@ -155,8 +155,11 @@ ICurl::IRequestArray *Curl::Perform(ICurl::IRequestArray *reqArray) {
                 curl_easy_setopt(curl, CURLOPT_PROXYUSERPWD, up.c_str());
               }
             }
+          } else {
+            if (!proxy_address.empty()) {
+              curl_easy_setopt(curl, CURLOPT_PROXY, proxy_address.c_str());
+            }
           }
-
           CURLcode res = curl_easy_perform(curl);
           req->SetResponseCode(static_cast<int>(res));
           if (CURLE_OK == res) {

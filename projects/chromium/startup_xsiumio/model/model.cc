@@ -10,6 +10,20 @@ static std::string GetUserDynamicProxyString() {
   const int port = 16586;
   return username + ":" + password + "@" + host + ":" + std::to_string(port);
 }
+
+static std::string
+GetUserDynamicProxyStringXuZhou(const unsigned int &timeout = 10) {
+  // socks5h://windows-zone-windows-session-666666-sessTime-120:111111@pr-na.ipidea.io:2336
+  std::ostringstream oss;
+  oss << "windows-zone-windows-session-"
+      << stl::Random::GetRandomValue<int>(666666, 999999) << "-sessTime-"
+      << __min(timeout, 120);
+  const std::string username = oss.str();
+  const std::string password = "111111";
+  const std::string host = "pr-na.ipidea.io";
+  const int port = 2333; // 2336
+  return username + ":" + password + "@" + host + ":" + std::to_string(port);
+}
 } // namespace
 struct StaticProxyInfo {
   std::string host;
@@ -68,15 +82,112 @@ void IModel::LoadXSCfg() {
     xscfg_ << xscfgBuffer;
   } while (0);
 }
-
 void IModel::SaveXSCfg() {
   std::string xscfgBuffer;
   xscfg_ >> xscfgBuffer;
+  stl::File::WriteFile(Config::CreateOrGet()->GetProjectXSCfgPath(),
+                       xscfgBuffer);
+}
+void IModel::GenRouteConfigure(chromium::xsiumio::IXSiumio &cfg) const {
+  std::lock_guard<std::mutex> lck(*mtx_);
+  cfg.Super([](const std::string &hashSource) {
+    return OpenSSL::HMAC_SHA256(hashSource, "Martell", true);
+  });
+  std::string xscfgBuffer;
+  cfg >> xscfgBuffer;
   stl::File::WriteFile(Config::CreateOrGet()->GetGenConfigPath(), xscfgBuffer);
 }
 bool IModel::Ready() const {
   std::lock_guard<std::mutex> lck(*mtx_);
   return ready_.load();
+}
+std::string IModel::GetDynamicProxyUrl() const {
+  std::string result;
+  do {
+    if (!xscfg_.policy.dynamic_proxy)
+      break;
+    switch (xscfg_.policy.dynamic_proxy_type) {
+    case 0: { //!@ User/Client US
+      result = GetUserDynamicProxyString();
+    } break;
+    case 1: { //!@ IPID
+      result = GetUserDynamicProxyStringXuZhou(
+          xscfg_.policy.dynamic_proxy_session_timeout > 0
+              ? xscfg_.policy.dynamic_proxy_session_timeout
+              : 10);
+    } break;
+    default:
+      break;
+    }
+  } while (0);
+  return result;
+}
+std::string IModel::GetProxyStringForCurl() const {
+  std::string result;
+  std::lock_guard<std::mutex> lck(*mtx_);
+  do {
+    if (!xscfg_.proxy.enable)
+      break;
+    if (xscfg_.bridge.enable && !xscfg_.bridge.proxy_pass.empty()) {
+      result = xscfg_.bridge.proxy_pass;
+    } else if (!xscfg_.proxy.url.empty()) {
+      result = xscfg_.proxy.url;
+    }
+    if (result.empty())
+      break;
+    auto f_socks5h = result.find("socks5h://");
+    auto f_socks5 = result.find("socks5://");
+    if (f_socks5 != std::string::npos)
+      result.replace(f_socks5, strlen("socks5://"), "http://");
+    else if (f_socks5h != std::string::npos)
+      result.replace(f_socks5h, strlen("socks5h://"), "http://");
+  } while (0);
+  return result;
+}
+static void SettingBridgeProxyStartupArgs(chromium::xsiumio::IXSiumio &cfg) {
+  for (auto it = cfg.startup.args.begin(); it != cfg.startup.args.end();) {
+    if (it->find("host-resolver-rules") != std::string::npos ||
+        it->find("proxy-bypass-list") != std::string::npos) {
+      it = cfg.startup.args.erase(it);
+    } else {
+      ++it;
+    }
+  }
+  if (cfg.bridge.enable && cfg.proxy.enable) {
+    /* "--host-resolver-rules=MAP * ~NOTFOUND , EXCLUDE 127.0.0.1",
+         "--proxy-bypass-list=<-loopback>",*/
+    cfg.startup.args.emplace_back(
+        "--host-resolver-rules=MAP * ~NOTFOUND , EXCLUDE 127.0.0.1");
+    cfg.startup.args.emplace_back("--proxy-bypass-list=<-loopback>");
+  }
+}
+void IModel::SettingBridgeProxy(chromium::xsiumio::IXSiumio &cfg) {
+  std::lock_guard<std::mutex> lck(*mtx_);
+  SettingBridgeProxyStartupArgs(cfg);
+  if (!cfg.proxy.enable) {
+    cfg.bridge.enable = false;
+    cfg.bridge.proxy_pass.clear();
+    cfg.proxy.url.clear();
+  }
+
+  do {
+    if (!cfg.bridge.enable)
+      break;
+    cfg.bridge.proxy_pass.clear();
+    if (!cfg.policy.enable)
+      break;
+    if (!cfg.policy.dynamic_proxy)
+      break;
+    cfg.bridge.proxy_pass = "socks5h://" + GetDynamicProxyUrl();
+  } while (0);
+
+  if (cfg.bridge.enable) {
+    bridge_startup_args_ = cfg.bridge.GetCmdlineString();
+  }
+  if (cfg.bridge.enable && cfg.proxy.enable) {
+    cfg.proxy.url = "http://127.0.0.1:55668";
+  }
+  xscfg_ = cfg;
 }
 void IModel::FinishModelParts() {
   std::lock_guard<std::mutex> lck(*mtx_);
@@ -233,63 +344,6 @@ void IModel::Super() {
   xscfg_.Super([](const std::string &hashSource) {
     return OpenSSL::HMAC_SHA256(hashSource, "Martell", true);
   });
-}
-void IModel::SettingBridgeProxy() {
-  std::string proxy_url;
-  do {
-    if (!xscfg_.proxy.enable)
-      break;
-    if (xscfg_.proxy.dynamic) {
-      proxy_url = GetUserDynamicProxyString();
-      if (proxy_url.empty())
-        break;
-      xscfg_.proxy.credentials_url = "socks5://" + proxy_url;
-      xscfg_.proxy.curl_credentials_url = "http://" + proxy_url;
-    } else if (!xscfg_.proxy.credentials_url.empty() &&
-               xscfg_.proxy.curl_credentials_url.empty()) {
-
-      auto f_socks5h = xscfg_.proxy.credentials_url.find("socks5h://");
-      auto f_socks5 = xscfg_.proxy.credentials_url.find("socks5://");
-      std::string tmp(xscfg_.proxy.credentials_url);
-      if (f_socks5 != std::string::npos) {
-        xscfg_.proxy.curl_credentials_url =
-            tmp.replace(f_socks5, strlen("http://"), "http://");
-      } else if (f_socks5h != std::string::npos) {
-        xscfg_.proxy.curl_credentials_url =
-            tmp.replace(f_socks5h, strlen("http://"), "http://");
-      }
-    }
-  } while (0);
-
-  do {
-    if (!xscfg_.proxy.enable)
-      break;
-    if (!xscfg_.bridge.enable)
-      break;
-    if (proxy_url.empty())
-      break;
-    bool f_host_resolver_rules = false;
-    bool f_proxy_bypass_list = false;
-    for (const auto &arg : xscfg_.startup.args) {
-      if (arg.find("host-resolver-rules") != std::string::npos) {
-        f_host_resolver_rules = true;
-      }
-      if (arg.find("proxy-bypass-list") != std::string::npos) {
-        f_proxy_bypass_list = true;
-      }
-    }
-    if (!f_host_resolver_rules) {
-      xscfg_.startup.args.emplace_back(
-          "--host-resolver-rules=MAP * ~NOTFOUND , EXCLUDE localhost");
-    }
-    if (!f_proxy_bypass_list) {
-      xscfg_.startup.args.emplace_back("--proxy-bypass-list=<-loopback>");
-    }
-    xscfg_.bridge.proxy_pass = proxy_url;
-    std::string tmp;
-    xscfg_.bridge >> tmp;
-    bridge_startup_args_ = OpenSSL::Base64Encode(tmp, false);
-  } while (0);
 }
 void IModel::SetModelResult(const bool &result) {
   std::lock_guard<std::mutex> lock(*mtx_);

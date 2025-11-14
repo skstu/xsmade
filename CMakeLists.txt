@@ -11,11 +11,10 @@ cmake_minimum_required(VERSION 3.5)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
-# 设置编译器标志，使用 libc++ -nostdlib++
-# set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -stdlib=libc++")
-# # 设置链接器标志，强制链接 libc++ 和 libc++abi
-# set(CMAKE_LINKER_FLAGS "${CMAKE_LINKER_FLAGS} -stdlib=libc++")
-# 强制链接 libc++ 和 libc++abi 库 set(CMAKE_CXX_STANDARD_LIBRARIES "c++abi c++")
+# 设置编译器标志，使用 libc++ -nostdlib++ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}
+# -stdlib=libc++") # 设置链接器标志，强制链接 libc++ 和 libc++abi set(CMAKE_LINKER_FLAGS
+# "${CMAKE_LINKER_FLAGS} -stdlib=libc++") 强制链接 libc++ 和 libc++abi 库
+# set(CMAKE_CXX_STANDARD_LIBRARIES "c++abi c++")
 
 set(xsSOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR})
 set(xsROOT_DIR ${xsSOURCE_DIR})

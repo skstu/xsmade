@@ -1,7 +1,7 @@
 #if !defined(__DBF6427B_81A7_4A73_8F2F_DED725E368A4__)
 #define __DBF6427B_81A7_4A73_8F2F_DED725E368A4__
 enum class ModeType { kMode0 = 0, kMode1 = 1, kMode2 = 2, kMode3 = 3 };
-class IModel {
+class IModel : public IDeviceFingerprint {
 protected:
   IModel();
   virtual ~IModel();
@@ -15,25 +15,28 @@ public:
   virtual void FinishModelParts();
   virtual bool Ready() const;
   virtual void Release() const = 0;
-  virtual bool GenModel(const chromium::xsiumio::IXSiumio &) = 0;
+  virtual bool GenModel(chromium::xsiumio::IXSiumio &) = 0;
   virtual const char *GetModelIdentify() const = 0;
   virtual void SetModelResult(const bool &);
   virtual bool GetModelResult() const;
   virtual void SetModelCache(const std::string &);
   virtual const std::string &GetBridgeStartupArgs() const;
+  virtual std::string GetProxyStringForCurl() const;
+  virtual void SettingBridgeProxy(chromium::xsiumio::IXSiumio &);
+  virtual void GenRouteConfigure(chromium::xsiumio::IXSiumio &) const;
 
 public:
   const chromium::xsiumio::IXSiumio &GetXSCfg() const;
 
 protected:
+  virtual void SaveXSCfg();
   virtual void Output(const chromium::xsiumio::IXSiumio &) const;
   virtual void LoadXSCfg();
-  virtual void SaveXSCfg();
   virtual void Super();
-  virtual void SettingBridgeProxy();
   virtual bool LaunchBrowser(const chromium::xsiumio::tfIdentifyType &);
   virtual bool ShutdownBrowser(const chromium::xsiumio::tfIdentifyType &);
   virtual const ModeType &GetModeType() const = 0;
+  virtual std::string GetDynamicProxyUrl() const;
 
 protected:
   std::atomic_bool ready_ = false;
@@ -43,11 +46,9 @@ protected:
   std::atomic_bool model_result_ = false;
   std::string model_cache_;
   chromium::tfRouteRes model_ress_;
-  chromium::xsiumio::IFpsdb fpsdb_;
   std::atomic_bool model_parts_updated_ = true;
   std::atomic_size_t signal_proxy_use_count_ = 0;
   std::string bridge_startup_args_;
-  chromium::xsiumio::IXSiumio xscfg_;
   ModeType mode_type_ = ModeType::kMode0;
 };
 class ModelLevel0 final : public IModel {
@@ -59,9 +60,11 @@ public:
 protected:
   const ModeType &GetModeType() const override final;
   const char *GetModelIdentify() const override final;
-  bool GenModel(const chromium::xsiumio::IXSiumio &) override final;
+  bool GenModel(chromium::xsiumio::IXSiumio &) override final;
 
 private:
+  int signal_proxy_count_try_ = 5;
+  int signal_proxy_count_success_ = 100;
 };
 #if 0
 class ModelLevel1 final : public IModel {

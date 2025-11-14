@@ -2,9 +2,22 @@
   "version": "0.2.0",
   "configurations": [
     {
+      "type": "node",
+      "request": "launch",
+      "name": "Debug Single JS Script",
+      "program": "${workspaceFolder}/bin/configures/cfg.js", // 修改为你的 JS 文件路径
+      "cwd": "${workspaceFolder}",
+      "console": "integratedTerminal",
+      "args": [
+        // 可选：传递给脚本的参数
+      ]
+    },
+    {
       "name": "Windows Build With CMake Ninja",
       "type": "cppdbg",
       "request": "launch",
+      "program": "${workspaceFolder}/bin/test_settings.exe",
+      "args": [],
       //"program": "${workspaceFolder}/bin/yunbrowser.exe",
       // "args": [
       //   " ",
@@ -12,14 +25,14 @@
       //   "--user-data-dir=C:\\Users\\k34ub\\source\\skstu\\xsmade\\bin\\cache\\test",
       //   " ",
       // ],
-      "program": "${workspaceFolder}/bin/main.exe",
-      "args": [
-        " ",
-        //"--mode=mpak",
-        //"--mode=m0",
-        "--mode=m0",
-        " ",
-      ],
+      // "program": "${workspaceFolder}/bin/main.exe",
+      // "args": [
+      //   " ",
+      //   //"--mode=mpak",
+      //   //"--mode=m0",
+      //   "--mode=m0",
+      //   " ",
+      // ],
       // "program": "${workspaceFolder}/bin/tests/test_cceng.exe",
       // "args": [],
       // "program": "${workspaceFolder}/bin/tests/test_curlcc.exe",

@@ -17,7 +17,7 @@ public:
   void CreateChromiumResult(chromium::IRequest *);
   void CheckChromium(const std::function<bool(IChromium *)> &);
   const BrowserStatus &GetStatus() const;
-  void SetStatus(const BrowserStatus& status);
+  void SetStatus(const BrowserStatus &status);
   bool IsIdle() const;
   void ClearChromium();
 private:

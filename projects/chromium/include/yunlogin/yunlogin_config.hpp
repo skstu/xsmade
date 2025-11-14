@@ -26,6 +26,7 @@ constexpr const char kSwitchBrowserId[] = "browser-id";
 constexpr const char kSwitchShopId[] = "shop-id";
 constexpr const char kSwitchInstallExtension[] = "install-extension";
 constexpr const char kSwitchUninstallExtension[] = "uninstall-extension";
+constexpr const char kCustomDataDir[] = "user-data-dir";
 constexpr const char kSwitchListInstalledExtension[] =
     "list-installed-extensions";
 constexpr const char kSwitchReloadCookies[] = "reload-cookies";
@@ -756,6 +757,8 @@ public:
       std::string uaFullVersion;
       std::string platformVersion;
       std::string Product;
+      bool wow64 = false;
+      std::vector<std::string> form_factors;
 
       inline void operator<<(const rapidjson::Value &v) {
         if (!v.IsObject())
@@ -776,6 +779,16 @@ public:
           platformVersion = v["platformVersion"].GetString();
         if (v.HasMember("Product") && v["Product"].IsString())
           Product = v["Product"].GetString();
+        if (v.HasMember("wow64") && v["wow64"].IsBool())
+          wow64 = v["wow64"].GetBool();
+        if (v.HasMember("form_factors") && v["form_factors"].IsArray()) {
+          form_factors.clear();
+          for (const auto &item : v["form_factors"].GetArray()) {
+            if (item.IsString()) {
+              form_factors.push_back(item.GetString());
+            }
+          }
+        }
       }
     };
 
@@ -841,6 +854,290 @@ public:
       }
     };
 
+    struct FpSwitches {
+      inline FpSwitches();
+      inline ~FpSwitches();
+
+      int fpEnableALL = 1;
+      int fpEnableJS = 1;
+      int fpComputerName = 1;
+      int fpMacAddr = 1;
+      int fpGPU = 1;
+      int fpLanguage = 1;
+      int fpSettingNotification = 1;
+      int fpProxy = 1;
+      int fpHandlePersistentPrefStore = 1;
+      int fpWebRTC = 1;
+      int fpBookmark = 1;
+      int fpBrowserFrameSize = 1;
+      int fpLogoButton = 1;
+      int fpAppIcon = 1;
+      int fpWinTitle = 1;
+      int fpShopSN = 1;
+      int fpSettingSound = 1;
+      int fpTimezone = 1;
+      int fpReduceUA = 1;
+      int fpUA = 1;
+      int fpClientHints = 1;
+      int fpDoNotTrack = 1;
+      int fpRestoreFocus = 1;
+      int fpBlueTooth = 1;
+      int fpGeoLocation = 1;
+      int fpCookieEncrypt = 1;
+      int fpFontsFull = 1;
+      int fpHandleURL = 1;
+      int fpBlockPort = 1;
+      int fpCanvas = 1;
+      int fpWebGL = 1;
+      int fpTLS = 1;
+      int fpImage = 1;
+      int fpQuataStorage = 1;
+      int fpAnimation = 1;
+      int fpScreen = 1;
+      int fpPlatform = 1;
+      int fpDevice = 1;
+      int fpAppCodeName = 1;
+      int fpAppName = 1;
+      int fpProduct = 1;
+      int fpSettingVideo = 1;
+      int fpMediaMimes = 1;
+      int fpSVG = 1;
+      int fpHardware = 1;
+      int fpBattery = 1;
+      int fpMediaDevice = 1;
+      int fpPlugin = 1;
+      int fpSpeechVoices = 1;
+      int fpHardwarePref = 1;
+      int fpAudioContext = 1;
+
+      void operator>>(rapidjson::Document &doc) const {
+        if (!doc.IsObject())
+          return;
+        auto &allocator = doc.GetAllocator();
+        if (doc.HasMember("fpSwitches"))
+          doc.RemoveMember("fpSwitches");
+        rapidjson::Value fpSwitchesObj(rapidjson::kObjectType);
+        RAPIDJSON_ADDMEMBER_INT(fpSwitchesObj, std::string("fpEnableALL"),
+                                fpEnableALL, allocator);
+        RAPIDJSON_ADDMEMBER_INT(fpSwitchesObj, std::string("fpEnableJS"),
+                                fpEnableJS, allocator);
+        RAPIDJSON_ADDMEMBER_INT(fpSwitchesObj, std::string("fpComputerName"),
+                                fpComputerName, allocator);
+        RAPIDJSON_ADDMEMBER_INT(fpSwitchesObj, std::string("fpMacAddr"),
+                                fpMacAddr, allocator);
+        RAPIDJSON_ADDMEMBER_INT(fpSwitchesObj, std::string("fpGPU"), fpGPU,
+                                allocator);
+        RAPIDJSON_ADDMEMBER_INT(fpSwitchesObj, std::string("fpLanguage"),
+                                fpLanguage, allocator);
+        RAPIDJSON_ADDMEMBER_INT(fpSwitchesObj,
+                                std::string("fpSettingNotification"),
+                                fpSettingNotification, allocator);
+        RAPIDJSON_ADDMEMBER_INT(fpSwitchesObj, std::string("fpProxy"), fpProxy,
+                                allocator);
+        RAPIDJSON_ADDMEMBER_INT(fpSwitchesObj,
+                                std::string("fpHandlePersistentPrefStore"),
+                                fpHandlePersistentPrefStore, allocator);
+        RAPIDJSON_ADDMEMBER_INT(fpSwitchesObj, std::string("fpWebRTC"),
+                                fpWebRTC, allocator);
+        RAPIDJSON_ADDMEMBER_INT(fpSwitchesObj, std::string("fpBookmark"),
+                                fpBookmark, allocator);
+        RAPIDJSON_ADDMEMBER_INT(fpSwitchesObj,
+                                std::string("fpBrowserFrameSize"),
+                                fpBrowserFrameSize, allocator);
+        RAPIDJSON_ADDMEMBER_INT(fpSwitchesObj, std::string("fpLogoButton"),
+                                fpLogoButton, allocator);
+        RAPIDJSON_ADDMEMBER_INT(fpSwitchesObj, std::string("fpAppIcon"),
+                                fpAppIcon, allocator);
+        RAPIDJSON_ADDMEMBER_INT(fpSwitchesObj, std::string("fpWinTitle"),
+                                fpWinTitle, allocator);
+        RAPIDJSON_ADDMEMBER_INT(fpSwitchesObj, std::string("fpShopSN"),
+                                fpShopSN, allocator);
+        RAPIDJSON_ADDMEMBER_INT(fpSwitchesObj, std::string("fpSettingSound"),
+                                fpSettingSound, allocator);
+        RAPIDJSON_ADDMEMBER_INT(fpSwitchesObj, std::string("fpTimezone"),
+                                fpTimezone, allocator);
+        RAPIDJSON_ADDMEMBER_INT(fpSwitchesObj, std::string("fpReduceUA"),
+                                fpReduceUA, allocator);
+        RAPIDJSON_ADDMEMBER_INT(fpSwitchesObj, std::string("fpUA"), fpUA,
+                                allocator);
+        RAPIDJSON_ADDMEMBER_INT(fpSwitchesObj, std::string("fpClientHints"),
+                                fpClientHints, allocator);
+        RAPIDJSON_ADDMEMBER_INT(fpSwitchesObj, std::string("fpDoNotTrack"),
+                                fpDoNotTrack, allocator);
+        RAPIDJSON_ADDMEMBER_INT(fpSwitchesObj, std::string("fpRestoreFocus"),
+                                fpRestoreFocus, allocator);
+        RAPIDJSON_ADDMEMBER_INT(fpSwitchesObj, std::string("fpBlueTooth"),
+                                fpBlueTooth, allocator);
+        RAPIDJSON_ADDMEMBER_INT(fpSwitchesObj, std::string("fpGeoLocation"),
+                                fpGeoLocation, allocator);
+        RAPIDJSON_ADDMEMBER_INT(fpSwitchesObj, std::string("fpCookieEncrypt"),
+                                fpCookieEncrypt, allocator);
+        RAPIDJSON_ADDMEMBER_INT(fpSwitchesObj, std::string("fpFontsFull"),
+                                fpFontsFull, allocator);
+        RAPIDJSON_ADDMEMBER_INT(fpSwitchesObj, std::string("fpHandleURL"),
+                                fpHandleURL, allocator);
+        RAPIDJSON_ADDMEMBER_INT(fpSwitchesObj, std::string("fpBlockPort"),
+                                fpBlockPort, allocator);
+        RAPIDJSON_ADDMEMBER_INT(fpSwitchesObj, std::string("fpCanvas"),
+                                fpCanvas, allocator);
+        RAPIDJSON_ADDMEMBER_INT(fpSwitchesObj, std::string("fpWebGL"), fpWebGL,
+                                allocator);
+        RAPIDJSON_ADDMEMBER_INT(fpSwitchesObj, std::string("fpTLS"), fpTLS,
+                                allocator);
+        RAPIDJSON_ADDMEMBER_INT(fpSwitchesObj, std::string("fpImage"), fpImage,
+                                allocator);
+        RAPIDJSON_ADDMEMBER_INT(fpSwitchesObj, std::string("fpQuataStorage"),
+                                fpQuataStorage, allocator);
+        RAPIDJSON_ADDMEMBER_INT(fpSwitchesObj, std::string("fpAnimation"),
+                                fpAnimation, allocator);
+        RAPIDJSON_ADDMEMBER_INT(fpSwitchesObj, std::string("fpScreen"),
+                                fpScreen, allocator);
+        RAPIDJSON_ADDMEMBER_INT(fpSwitchesObj, std::string("fpPlatform"),
+                                fpPlatform, allocator);
+        RAPIDJSON_ADDMEMBER_INT(fpSwitchesObj, std::string("fpDevice"),
+                                fpDevice, allocator);
+        RAPIDJSON_ADDMEMBER_INT(fpSwitchesObj, std::string("fpAppCodeName"),
+                                fpAppCodeName, allocator);
+        RAPIDJSON_ADDMEMBER_INT(fpSwitchesObj, std::string("fpAppName"),
+                                fpAppName, allocator);
+        RAPIDJSON_ADDMEMBER_INT(fpSwitchesObj, std::string("fpProduct"),
+                                fpProduct, allocator);
+        RAPIDJSON_ADDMEMBER_INT(fpSwitchesObj, std::string("fpSettingVideo"),
+                                fpSettingVideo, allocator);
+        RAPIDJSON_ADDMEMBER_INT(fpSwitchesObj, std::string("fpMediaMimes"),
+                                fpMediaMimes, allocator);
+        RAPIDJSON_ADDMEMBER_INT(fpSwitchesObj, std::string("fpSVG"), fpSVG,
+                                allocator);
+        RAPIDJSON_ADDMEMBER_INT(fpSwitchesObj, std::string("fpHardware"),
+                                fpHardware, allocator);
+        RAPIDJSON_ADDMEMBER_INT(fpSwitchesObj, std::string("fpBattery"),
+                                fpBattery, allocator);
+        RAPIDJSON_ADDMEMBER_INT(fpSwitchesObj, std::string("fpMediaDevice"),
+                                fpMediaDevice, allocator);
+        RAPIDJSON_ADDMEMBER_INT(fpSwitchesObj, std::string("fpPlugin"),
+                                fpPlugin, allocator);
+        RAPIDJSON_ADDMEMBER_INT(fpSwitchesObj, std::string("fpSpeechVoices"),
+                                fpSpeechVoices, allocator);
+        RAPIDJSON_ADDMEMBER_INT(fpSwitchesObj, std::string("fpHardwarePref"),
+                                fpHardwarePref, allocator);
+        RAPIDJSON_ADDMEMBER_INT(fpSwitchesObj, std::string("fpAudioContext"),
+                                fpAudioContext, allocator);
+        if (doc.HasMember("finger")) {
+          doc["finger"].RemoveMember("fpSwitches");
+          doc["finger"].AddMember("fpSwitches", fpSwitchesObj, allocator);
+        }
+      }
+      void operator<<(const rapidjson::Value &v) {
+        if (!v.IsObject())
+          return;
+        if (v.HasMember("fpEnableALL") && v["fpEnableALL"].IsInt())
+          fpEnableALL = v["fpEnableALL"].GetInt();
+        if (v.HasMember("fpEnableJS") && v["fpEnableJS"].IsInt())
+          fpEnableJS = v["fpEnableJS"].GetInt();
+        if (v.HasMember("fpComputerName") && v["fpComputerName"].IsInt())
+          fpComputerName = v["fpComputerName"].GetInt();
+        if (v.HasMember("fpMacAddr") && v["fpMacAddr"].IsInt())
+          fpMacAddr = v["fpMacAddr"].GetInt();
+        if (v.HasMember("fpGPU") && v["fpGPU"].IsInt())
+          fpGPU = v["fpGPU"].GetInt();
+        if (v.HasMember("fpLanguage") && v["fpLanguage"].IsInt())
+          fpLanguage = v["fpLanguage"].GetInt();
+        if (v.HasMember("fpSettingNotification") &&
+            v["fpSettingNotification"].IsInt())
+          fpSettingNotification = v["fpSettingNotification"].GetInt();
+        if (v.HasMember("fpProxy") && v["fpProxy"].IsInt())
+          fpProxy = v["fpProxy"].GetInt();
+        if (v.HasMember("fpHandlePersistentPrefStore") &&
+            v["fpHandlePersistentPrefStore"].IsInt())
+          fpHandlePersistentPrefStore =
+              v["fpHandlePersistentPrefStore"].GetInt();
+        if (v.HasMember("fpWebRTC") && v["fpWebRTC"].IsInt())
+          fpWebRTC = v["fpWebRTC"].GetInt();
+        if (v.HasMember("fpBookmark") && v["fpBookmark"].IsInt())
+          fpBookmark = v["fpBookmark"].GetInt();
+        if (v.HasMember("fpBrowserFrameSize") &&
+            v["fpBrowserFrameSize"].IsInt())
+          fpBrowserFrameSize = v["fpBrowserFrameSize"].GetInt();
+        if (v.HasMember("fpLogoButton") && v["fpLogoButton"].IsInt())
+          fpLogoButton = v["fpLogoButton"].GetInt();
+        if (v.HasMember("fpAppIcon") && v["fpAppIcon"].IsInt())
+          fpAppIcon = v["fpAppIcon"].GetInt();
+        if (v.HasMember("fpWinTitle") && v["fpWinTitle"].IsInt())
+          fpWinTitle = v["fpWinTitle"].GetInt();
+        if (v.HasMember("fpShopSN") && v["fpShopSN"].IsInt())
+          fpShopSN = v["fpShopSN"].GetInt();
+        if (v.HasMember("fpSettingSound") && v["fpSettingSound"].IsInt())
+          fpSettingSound = v["fpSettingSound"].GetInt();
+        if (v.HasMember("fpTimezone") && v["fpTimezone"].IsInt())
+          fpTimezone = v["fpTimezone"].GetInt();
+        if (v.HasMember("fpReduceUA") && v["fpReduceUA"].IsInt())
+          fpReduceUA = v["fpReduceUA"].GetInt();
+        if (v.HasMember("fpUA") && v["fpUA"].IsInt())
+          fpUA = v["fpUA"].GetInt();
+        if (v.HasMember("fpClientHints") && v["fpClientHints"].IsInt())
+          fpClientHints = v["fpClientHints"].GetInt();
+        if (v.HasMember("fpDoNotTrack") && v["fpDoNotTrack"].IsInt())
+          fpDoNotTrack = v["fpDoNotTrack"].GetInt();
+        if (v.HasMember("fpRestoreFocus") && v["fpRestoreFocus"].IsInt())
+          fpRestoreFocus = v["fpRestoreFocus"].GetInt();
+        if (v.HasMember("fpBlueTooth") && v["fpBlueTooth"].IsInt())
+          fpBlueTooth = v["fpBlueTooth"].GetInt();
+        if (v.HasMember("fpGeoLocation") && v["fpGeoLocation"].IsInt())
+          fpGeoLocation = v["fpGeoLocation"].GetInt();
+        if (v.HasMember("fpCookieEncrypt") && v["fpCookieEncrypt"].IsInt())
+          fpCookieEncrypt = v["fpCookieEncrypt"].GetInt();
+        if (v.HasMember("fpFontsFull") && v["fpFontsFull"].IsInt())
+          fpFontsFull = v["fpFontsFull"].GetInt();
+        if (v.HasMember("fpHandleURL") && v["fpHandleURL"].IsInt())
+          fpHandleURL = v["fpHandleURL"].GetInt();
+        if (v.HasMember("fpBlockPort") && v["fpBlockPort"].IsInt())
+          fpBlockPort = v["fpBlockPort"].GetInt();
+        if (v.HasMember("fpCanvas") && v["fpCanvas"].IsInt())
+          fpCanvas = v["fpCanvas"].GetInt();
+        if (v.HasMember("fpWebGL") && v["fpWebGL"].IsInt())
+          fpWebGL = v["fpWebGL"].GetInt();
+        if (v.HasMember("fpTLS") && v["fpTLS"].IsInt())
+          fpTLS = v["fpTLS"].GetInt();
+        if (v.HasMember("fpImage") && v["fpImage"].IsInt())
+          fpImage = v["fpImage"].GetInt();
+        if (v.HasMember("fpQuataStorage") && v["fpQuataStorage"].IsInt())
+          fpQuataStorage = v["fpQuataStorage"].GetInt();
+        if (v.HasMember("fpAnimation") && v["fpAnimation"].IsInt())
+          fpAnimation = v["fpAnimation"].GetInt();
+        if (v.HasMember("fpScreen") && v["fpScreen"].IsInt())
+          fpScreen = v["fpScreen"].GetInt();
+        if (v.HasMember("fpPlatform") && v["fpPlatform"].IsInt())
+          fpPlatform = v["fpPlatform"].GetInt();
+        if (v.HasMember("fpDevice") && v["fpDevice"].IsInt())
+          fpDevice = v["fpDevice"].GetInt();
+        if (v.HasMember("fpAppCodeName") && v["fpAppCodeName"].IsInt())
+          fpAppCodeName = v["fpAppCodeName"].GetInt();
+        if (v.HasMember("fpAppName") && v["fpAppName"].IsInt())
+          fpAppName = v["fpAppName"].GetInt();
+        if (v.HasMember("fpProduct") && v["fpProduct"].IsInt())
+          fpProduct = v["fpProduct"].GetInt();
+        if (v.HasMember("fpSettingVideo") && v["fpSettingVideo"].IsInt())
+          fpSettingVideo = v["fpSettingVideo"].GetInt();
+        if (v.HasMember("fpMediaMimes") && v["fpMediaMimes"].IsInt())
+          fpMediaMimes = v["fpMediaMimes"].GetInt();
+        if (v.HasMember("fpSVG") && v["fpSVG"].IsInt())
+          fpSVG = v["fpSVG"].GetInt();
+        if (v.HasMember("fpHardware") && v["fpHardware"].IsInt())
+          fpHardware = v["fpHardware"].GetInt();
+        if (v.HasMember("fpBattery") && v["fpBattery"].IsInt())
+          fpBattery = v["fpBattery"].GetInt();
+        if (v.HasMember("fpMediaDevice") && v["fpMediaDevice"].IsInt())
+          fpMediaDevice = v["fpMediaDevice"].GetInt();
+        if (v.HasMember("fpPlugin") && v["fpPlugin"].IsInt())
+          fpPlugin = v["fpPlugin"].GetInt();
+        if (v.HasMember("fpSpeechVoices") && v["fpSpeechVoices"].IsInt())
+          fpSpeechVoices = v["fpSpeechVoices"].GetInt();
+        if (v.HasMember("fpHardwarePref") && v["fpHardwarePref"].IsInt())
+          fpHardwarePref = v["fpHardwarePref"].GetInt();
+        if (v.HasMember("fpAudioContext") && v["fpAudioContext"].IsInt())
+          fpAudioContext = v["fpAudioContext"].GetInt();
+      }
+    };
     struct SpeechVoice {
       inline SpeechVoice();
       inline ~SpeechVoice();
@@ -978,6 +1275,8 @@ public:
     std::string webglType;
     std::string webglVendor;
     std::string webglRenderer;
+
+    FpSwitches fpSwitches;
     double canvasPerturbX = 0.0;
     double canvasPerturbY = 0.0;
     double canvasFontY = 0.0;
@@ -1186,6 +1485,8 @@ public:
                                  clientHints.mobile, allocator);
       RAPIDJSON_ADDMEMBER_STRING(clientHintsObj, std::string("bitness"),
                                  clientHints.bitness, allocator);
+      RAPIDJSON_ADDMEMBER_BOOL(clientHintsObj, std::string("wow64"),
+                               clientHints.wow64, allocator);
       RAPIDJSON_ADDMEMBER_STRING(clientHintsObj, std::string("platform"),
                                  clientHints.platform, allocator);
       RAPIDJSON_ADDMEMBER_STRING(clientHintsObj, std::string("architecture"),
@@ -1196,6 +1497,14 @@ public:
                                  clientHints.platformVersion, allocator);
       RAPIDJSON_ADDMEMBER_STRING(clientHintsObj, std::string("Product"),
                                  clientHints.Product, allocator);
+      rapidjson::Value form_factorsObj(rapidjson::kArrayType);
+      for (const auto &ff : clientHints.form_factors) {
+        form_factorsObj.PushBack(
+            rapidjson::Value().SetString(ff.c_str(), allocator).Move(),
+            allocator);
+      }
+      RAPIDJSON_ADDMEMBER_OBJECT(clientHintsObj, std::string("form_factors"),
+                                 form_factorsObj, allocator);
       RAPIDJSON_ADDMEMBER_OBJECT(fingerObj, std::string("ClientHints"),
                                  clientHintsObj, allocator);
       rapidjson::Value pluginsArray(rapidjson::kArrayType);
@@ -1288,9 +1597,9 @@ public:
                                  geographic.accuracy, allocator);
       RAPIDJSON_ADDMEMBER_OBJECT(fingerObj, std::string("geographic"),
                                  geographicObj, allocator);
-
       RAPIDJSON_ADDMEMBER_OBJECT(doc, std::string("finger"), fingerObj,
                                  allocator);
+      fpSwitches >> doc;
     }
     inline void operator<<(const rapidjson::Value &v) {
       if (!v.IsObject())
@@ -1378,6 +1687,8 @@ public:
         for (const auto &it : fallback)
           setFonts.insert(it);
       }
+      if (v.HasMember("fpSwitches") && v["fpSwitches"].IsObject())
+        fpSwitches << v["fpSwitches"];
       if (v.HasMember("webglType") && v["webglType"].IsString())
         webglType = v["webglType"].GetString();
       if (v.HasMember("webglVendor") && v["webglVendor"].IsString())
@@ -1588,14 +1899,30 @@ public:
   }
   inline void operator<<(const std::string &);
 
+  inline void
+  AutoSettingProxy(const std::function<unsigned int(void)> &get_free_port_cb) {
+    do {
+      std::string proxyString = GetProxyAuthUrl();
+      if (proxyString.empty()) {
+        xsiumio.bridge.enable = false;
+        xsiumio.proxy.enable = false;
+        xsiumio.proxy.credentials = false;
+        xsiumio.proxy.url.clear();
+        break;
+      }
+      unsigned int free_port = 0;
+      if (get_free_port_cb)
+        free_port = get_free_port_cb();
+      xsiumio.bridge.enable = true;
+      xsiumio.proxy.url = "http://127.0.0.1:" + std::to_string(free_port);
+      xsiumio.proxy.credentials = false;
+      xsiumio.bridge.proxy_pass = proxyString;
+      xsiumio.bridge.server_listen = "127.0.0.1:" + std::to_string(free_port);
+      xsiumio.bridge.ProxyPassFixed();
+    } while (0);
+  }
   inline std::string GetProxyAuthUrl() const {
     std::string result;
-    if (xsiumio.proxy.enable && !xsiumio.proxy.credentials_url.empty()) {
-      result = xsiumio.proxy.credentials_url;
-    }
-    if (!result.empty())
-      return result;
-
     if (proxyInfo.IsUseBridge()) {
       result.append(proxyInfo.bridge.protocol)
           .append("://")
@@ -1616,9 +1943,29 @@ public:
           .append(proxyInfo.outbound.server)
           .append(":")
           .append(std::to_string(proxyInfo.outbound.port));
+    } else if (!device.protocol.empty() && !device.host.empty() &&
+               !device.userName.empty() && !device.password.empty() &&
+               device.port > 0) {
+      result.append(device.protocol)
+          .append("://")
+          .append(device.userName)
+          .append(":")
+          .append(device.password)
+          .append("@")
+          .append(device.host)
+          .append(":")
+          .append(std::to_string(device.port));
     }
-
     return result;
+  }
+  bool IsAllowPort(const int &port) const {
+    if (!finger.blockPortScanning || finger.portScanningWhitelist.empty())
+      return true;
+    const std::string filter = "," + finger.portScanningWhitelist + ",";
+    const std::string target = "," + std::to_string(port) + ",";
+    if (filter.find(target) != std::string::npos)
+      return true;
+    return false;
   }
 
 private:
@@ -1833,7 +2180,8 @@ inline IConfigure::Shop::Shop() = default;
 inline IConfigure::Shop::~Shop() = default;
 inline IConfigure::SearchEngine::SearchEngine() = default;
 inline IConfigure::SearchEngine::~SearchEngine() = default;
-
+inline IConfigure::Finger::FpSwitches::FpSwitches() = default;
+inline IConfigure::Finger::FpSwitches::~FpSwitches() = default;
 inline IConfigure::Finger::ClientHints::ClientHints() = default;
 inline IConfigure::Finger::ClientHints::~ClientHints() = default;
 inline IConfigure::Finger::Plugin::Plugin() = default;

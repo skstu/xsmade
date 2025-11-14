@@ -239,7 +239,7 @@ void IModel::SettingBridgeProxy() {
   do {
     if (!xscfg_.proxy.enable)
       break;
-    if (xscfg_.proxy.dynamic) {
+    if (xscfg_.policy.dynamic) {
       proxy_url = GetUserDynamicProxyString();
       if (proxy_url.empty())
         break;

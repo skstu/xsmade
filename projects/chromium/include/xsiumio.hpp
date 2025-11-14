@@ -12,9 +12,10 @@
 namespace chromium {
 namespace xsiumio {
 typedef unsigned int tfRequestType;
-typedef unsigned int tfIdentifyType;
+typedef unsigned long long tfIdentifyType;
 typedef unsigned long long tfSeedType;
 constexpr char kObjectKey[] = "xsiumio";
+constexpr const char kChromiumCoreVersion[] = "138.0.7204.158";
 constexpr char kProjectDirnameChromium[] = "Chromium";
 constexpr char kProjectDirnameDefaultUserData[] = "default";
 constexpr char kProjectDirnameComponents[] = "components";
@@ -63,6 +64,14 @@ enum class RequestType : tfRequestType {
   kEnd = kResetBrowser,
   kUnknown = 0xFFFF,
 };
+enum class BrowserBrandType : int {
+  kDefault = 0,
+  kChromium = kDefault,
+  kChrome = 1,
+  kEdge = 2,
+  kFirefox = 3,
+  kSafari = 4,
+};
 inline const std::map<RequestType, std::string> &RequestTypePathMap() {
   static const std::map<RequestType, std::string> *m =
       new std::map<RequestType, std::string>{
@@ -89,7 +98,7 @@ inline const std::map<std::string, RequestType> &PathRequestTypeMap() {
 }
 class IXSiumio {
 public:
-  enum class ProxyType { HTTP, SOCKS4, SOCKS5, SOCKS5H };
+  enum class ProxyType { kDirect, kHttp, kHttps, kSocks5, kSocks5h };
   static bool ParseProxyCredentialsUrl(const std::string &authString,
                                        ProxyType &type, std::string &scheme,
                                        int &port, std::string &username,
@@ -99,26 +108,43 @@ public:
     do {
       if (authString.empty())
         break;
-      std::regex re(
-          R"(^(https?|socks4|socks5h?|ftp)://(?:([^:]+):([^@]+)@)?([^\:]+):(\d+)$)");
-      std::smatch m;
-      if (!std::regex_match(authString, m, re))
-        break;
-      scheme = m[1];
-      username = m[2];
-      password = m[3];
-      host = m[4];
-      std::string portStr = m[5];
-      port = portStr.empty() ? 80 : std::strtol(portStr.c_str(), nullptr, 10);
-      if (scheme.find("socks5h") != std::string::npos) {
-        type = ProxyType::SOCKS5H;
-      } else if (scheme.find("socks5") != std::string::npos) {
-        type = ProxyType::SOCKS5;
-      } else if (scheme.find("socks4") != std::string::npos) {
-        type = ProxyType::SOCKS4;
+      if (authString.find("@") == std::string::npos) {
+        std::regex re(R"(^(https?|socks4|socks5h?|ftp)://([^:]+):(\d+)$)");
+        std::smatch m;
+        if (!std::regex_match(authString, m, re))
+          break;
+        scheme = m[1];
+        username.clear();
+        password.clear();
+        host = m[2];
+        std::string portStr = m[3];
+        port = portStr.empty() ? 80 : std::strtol(portStr.c_str(), nullptr, 10);
       } else {
-        type = ProxyType::HTTP;
+        std::regex re(
+            R"(^(https?|socks4|socks5h?|ftp)://(?:([^:]+):([^@]+)@)?([^\:]+):(\d+)$)");
+        std::smatch m;
+        if (!std::regex_match(authString, m, re))
+          break;
+        scheme = m[1];
+        username = m[2];
+        password = m[3];
+        host = m[4];
+        std::string portStr = m[5];
+        port = portStr.empty() ? 80 : std::strtol(portStr.c_str(), nullptr, 10);
+        if (scheme.find("socks5h") != std::string::npos) {
+          type = ProxyType::kSocks5h;
+        } else if (scheme.find("socks5") != std::string::npos) {
+          type = ProxyType::kSocks5;
+        } /*else if (scheme.find("https") != std::string::npos) {
+                                                                                                                                        type = ProxyType::kHttps;
+        }*/
+        else if (scheme.find("http") != std::string::npos) {
+          type = ProxyType::kHttp;
+        } else {
+          type = ProxyType::kDirect;
+        }
       }
+
       result = true;
     } while (0);
     return result;
@@ -127,11 +153,8 @@ public:
     inline Bridge();
     inline ~Bridge();
     bool enable = false;
-    bool single_process = true;
-    std::string config =
-        "config.conf"; // Load configuration options from specified file.
     std::string server_listen =
-        "[::0]:55668"; // Specify server listening address and port.
+        ""; // Specify server listening address and port.
     bool reuse_port =
         false; // Enable TCP SO_REUSEPORT option (available since Linux 3.9).
     bool happyeyeballs =
@@ -145,9 +168,9 @@ public:
     int udp_timeout = 60;     // Set UDP timeout for UDP connections.
     int tcp_timeout = -1;     // Set TCP timeout for TCP connections.
     int rate_limit = -1;      // Set TCP rate limit for connection.
-    std::vector<std::string> auth_users = {
-        "martell:5858668",
-    }; // List of authorized users(default user: jack:1111) (e.g: user1:passwd1
+    std::vector<std::string> auth_users =
+        {}; // List of authorized users(default user: jack:1111) (e.g:
+    // user1:passwd1
     // user2:passwd2).
     std::vector<std::string> users_rate_limit; // List of users rate limit (e.g:
     // user1:1000000 user2:800000).
@@ -159,9 +182,9 @@ public:
     // socks5://user:passwd@ip:port).
     bool proxy_pass_ssl = false; // Enable SSL for the next proxy pass.
     std::string ssl_certificate_dir =
-        "path"; // Directory containing SSL certificates.
+        ""; // Directory containing SSL certificates.
     std::string ssl_cacert_dir =
-        "path";          // Directory containing SSL CA certificates.
+        "";              // Directory containing SSL CA certificates.
     std::string ssl_sni; // Specifies SNI for multiple SSL certificates on one
     // IP (Deprecated, using proxy_ssl_name instead).
     std::string proxy_ssl_name; // Specifies SNI for multiple SSL certificates
@@ -170,29 +193,144 @@ public:
     bool ssl_prefer_server_ciphers =
         false; // Prefer server ciphers over client ciphers for SSLv3 and TLS
     // protocols.
-    std::string ipip_db = "17monipdb.datx"; // Specify ipip database filename.
+    std::string ipip_db = ""; // Specify ipip database filename.
     std::string http_doc =
-        "/tmp/";           // Specify document root directory for HTTP server.
+        "";                // Specify document root directory for HTTP server.
     bool htpasswd = false; // Enable WWW-Authenticate for HTTP server.
     bool autoindex = true; // Enable directory listing.
-    std::string logs_path = "";     // Specify directory for log files.
-    bool disable_logs = true;       // Disable logging.
-    bool disable_http = false;      // Disable HTTP protocol.
-    bool disable_socks = false;     // Disable SOCKS proxy protocol.
-    bool disable_udp = false;       // Disable UDP protocol.
-    bool disable_insecure = false;  // Disable insecure protocol.
-    bool scramble = false;          // Noise-based data security.
-    uint16_t noise_length = 0x0fff; // Length of the noise data.
+    std::string logs_path = "";    // Specify directory for log files.
+    bool disable_logs = true;      // Disable logging.
+    bool disable_http = false;     // Disable HTTP protocol.
+    bool disable_socks = false;    // Disable SOCKS proxy protocol.
+    bool disable_udp = false;      // Disable UDP protocol.
+    bool disable_insecure = false; // Disable insecure protocol.
+    bool scramble = false;         // Noise-based data security.
+    uint16_t noise_length = 0;     // Length of the noise data.
 
-    bool IsEnable() const {
+    inline bool IsEnable() const {
       return enable;
+    }
+    inline void ProxyPassFixed() {
+      do {
+        if (proxy_pass.empty())
+          break;
+        auto f_socks5h = proxy_pass.find("socks5h://");
+        if (f_socks5h != std::string::npos)
+          break;
+        auto f_socks5 = proxy_pass.find("socks5://");
+        auto f_http = proxy_pass.find("http://");
+        auto f_https = proxy_pass.find("https://");
+        if (f_socks5 != std::string::npos) {
+          proxy_pass.replace(f_socks5, strlen("socks5://"), "socks5h://");
+        } else if (f_http != std::string::npos) {
+          proxy_pass.replace(f_http, strlen("http://"), "socks5h://");
+        } else if (f_https != std::string::npos) {
+          proxy_pass.replace(f_https, strlen("https://"), "socks5h://");
+        }
+      } while (0);
+    }
+    inline std::string GetCmdlineString() const {
+      std::string result;
+      if (!server_listen.empty()) {
+        result.append("--server_listen=\"").append(server_listen).append("\" ");
+      }
+      result.append("--reuse_port=")
+          .append(reuse_port ? "true" : "false")
+          .append(" ");
+      result.append("--happyeyeballs=")
+          .append(happyeyeballs ? "true" : "false")
+          .append(" ");
+      result.append("--v6only=").append(v6only ? "true" : "false").append(" ");
+      result.append("--v4only=").append(v4only ? "true" : "false").append(" ");
+      if (!local_ip.empty()) {
+        result.append("--local_ip=\"").append(local_ip).append("\" ");
+      }
+      result.append("--transparent=")
+          .append(transparent ? "true" : "false")
+          .append(" ");
+      result.append("--so_mark=").append(std::to_string(so_mark)).append(" ");
+      result.append("--udp_timeout=")
+          .append(std::to_string(udp_timeout))
+          .append(" ");
+      result.append("--tcp_timeout=")
+          .append(std::to_string(tcp_timeout))
+          .append(" ");
+      result.append("--rate_limit=")
+          .append(std::to_string(rate_limit))
+          .append(" ");
+      if (!auth_users.empty()) {
+        result.append("--auth_users=\"").append(auth_users[0]).append("\" ");
+      }
+      if (!proxy_pass.empty()) {
+        result.append("--proxy_pass=\"").append(proxy_pass).append("\" ");
+      }
+      result.append("--proxy_pass_ssl=")
+          .append(proxy_pass_ssl ? "true" : "false")
+          .append(" ");
+      if (!ssl_certificate_dir.empty()) {
+        result.append("--ssl_certificate_dir=\"")
+            .append(ssl_certificate_dir)
+            .append("\" ");
+      }
+      if (!ssl_cacert_dir.empty()) {
+        result.append("--ssl_cacert_dir=\"")
+            .append(ssl_cacert_dir)
+            .append("\" ");
+      }
+      if (!ssl_sni.empty()) {
+        result.append("--ssl_sni=\"").append(ssl_sni).append("\" ");
+      }
+      if (!proxy_ssl_name.empty()) {
+        result.append("--proxy_ssl_name=\"")
+            .append(proxy_ssl_name)
+            .append("\" ");
+      }
+      if (!ssl_ciphers.empty()) {
+        result.append("--ssl_ciphers=\"").append(ssl_ciphers).append("\" ");
+      }
+      result.append("--ssl_prefer_server_ciphers=")
+          .append(ssl_prefer_server_ciphers ? "true" : "false")
+          .append(" ");
+      if (!ipip_db.empty()) {
+        result.append("--ipip_db=\"").append(ipip_db).append("\" ");
+      }
+      if (!http_doc.empty()) {
+        result.append("--http_doc=\"").append(http_doc).append("\" ");
+      }
+      result.append("--htpasswd=")
+          .append(htpasswd ? "true" : "false")
+          .append(" ");
+      result.append("--autoindex=")
+          .append(autoindex ? "true" : "false")
+          .append(" ");
+      if (!logs_path.empty()) {
+        result.append("--logs_path=\"").append(logs_path).append("\" ");
+      }
+      result.append("--disable_logs=")
+          .append(disable_logs ? "true" : "false")
+          .append(" ");
+      result.append("--disable_http=")
+          .append(disable_http ? "true" : "false")
+          .append(" ");
+      result.append("--disable_socks=")
+          .append(disable_socks ? "true" : "false")
+          .append(" ");
+      result.append("--disable_udp=")
+          .append(disable_udp ? "true" : "false")
+          .append(" ");
+      result.append("--disable_insecure=")
+          .append(disable_insecure ? "true" : "false")
+          .append(" ");
+      result.append("--scramble=")
+          .append(scramble ? "true" : "false")
+          .append(" ");
+      result.append("--noise_length=")
+          .append(std::to_string(noise_length))
+          .append(" ");
+      return result;
     }
     inline void operator>>(std::string &output) const {
       output.clear();
-      output.append("single_process")
-          .append("=")
-          .append(single_process ? "true" : "false")
-          .append("\n");
       if (!proxy_pass.empty()) {
         output.append("proxy_pass").append("=").append(proxy_pass).append("\n");
       }
@@ -227,9 +365,6 @@ public:
       rapidjson::Document::AllocatorType &allocator = doc.GetAllocator();
       rapidjson::Value obj(rapidjson::Type::kObjectType);
       RAPIDJSON_ADDMEMBER_BOOL(obj, std::string("enable"), enable, allocator);
-      RAPIDJSON_ADDMEMBER_STRING(obj, std::string("config"), config, allocator);
-      RAPIDJSON_ADDMEMBER_BOOL(obj, std::string("single_process"),
-                               single_process, allocator);
       RAPIDJSON_ADDMEMBER_STRING(obj, std::string("server_listen"),
                                  server_listen, allocator);
       RAPIDJSON_ADDMEMBER_BOOL(obj, std::string("reuse_port"), reuse_port,
@@ -273,6 +408,22 @@ public:
       RAPIDJSON_ADDMEMBER_BOOL(obj, std::string("htpasswd"), htpasswd,
                                allocator);
       RAPIDJSON_ADDMEMBER_BOOL(obj, std::string("autoindex"), autoindex,
+                               allocator);
+      RAPIDJSON_ADDMEMBER_STRING(obj, std::string("logs_path"), logs_path,
+                                 allocator);
+      RAPIDJSON_ADDMEMBER_BOOL(obj, std::string("disable_logs"), disable_logs,
+                               allocator);
+      RAPIDJSON_ADDMEMBER_BOOL(obj, std::string("disable_http"), disable_http,
+                               allocator);
+      RAPIDJSON_ADDMEMBER_BOOL(obj, std::string("disable_socks"), disable_socks,
+                               allocator);
+      RAPIDJSON_ADDMEMBER_BOOL(obj, std::string("disable_udp"), disable_udp,
+                               allocator);
+      RAPIDJSON_ADDMEMBER_BOOL(obj, std::string("disable_insecure"),
+                               disable_insecure, allocator);
+      RAPIDJSON_ADDMEMBER_BOOL(obj, std::string("scramble"), scramble,
+                               allocator);
+      RAPIDJSON_ADDMEMBER_UINT(obj, std::string("noise_length"), noise_length,
                                allocator);
       rapidjson::Value deny_regionArray(rapidjson::Type::kArrayType);
       for (const auto &arg : deny_region) {
@@ -330,10 +481,6 @@ public:
           return;
         if (v.HasMember("enable") && v["enable"].IsBool())
           enable = v["enable"].GetBool();
-        if (v.HasMember("single_process") && v["single_process"].IsBool())
-          single_process = v["single_process"].GetBool();
-        if (v.HasMember("config") && v["config"].IsString())
-          config = v["config"].GetString();
         if (v.HasMember("server_listen") && v["server_listen"].IsString())
           server_listen = v["server_listen"].GetString();
         if (v.HasMember("reuse_port") && v["reuse_port"].IsBool())
@@ -465,36 +612,36 @@ public:
     }
   };
   struct Proxy {
-    ProxyType type = ProxyType::SOCKS5H;
-    std::string scheme = "SOCKS5H";
+    ProxyType type = ProxyType::kSocks5;
+    std::string scheme = "";
     std::string username = "";
     std::string password = "";
-    std::string host = "127.0.0.1";
-    int port = 80;
+    std::string host = "";
+    int port = 0;
 
     bool enable = false;
-    bool dynamic = false;
-    std::string credentials_url;
-    std::string curl_credentials_url;
+    bool credentials = false;
+    std::string url;
     inline Proxy();
     inline ~Proxy();
 
+    inline void operator<<(const std::string &proxyString) {
+      ParseProxyCredentialsUrl(proxyString, type, scheme, port, username,
+                               password, host);
+    }
     inline void operator<<(const rapidjson::Value &v) {
       do {
         if (!v.IsObject())
           return;
         if (v.HasMember("enable") && v["enable"].IsBool())
           enable = v["enable"].GetBool();
-        if (v.HasMember("dynamic") && v["dynamic"].IsBool())
-          dynamic = v["dynamic"].GetBool();
-        if (v.HasMember("credentials_url") && v["credentials_url"].IsString()) {
-          credentials_url = v["credentials_url"].GetString();
-          *this << credentials_url;
+        if (v.HasMember("credentials") && v["credentials"].IsBool())
+          credentials = v["credentials"].GetBool();
+        if (v.HasMember("url") && v["url"].IsString()) {
+          url = v["url"].GetString();
         }
-        if (v.HasMember("curl_credentials_url") &&
-            v["curl_credentials_url"].IsString()) {
-          curl_credentials_url = v["curl_credentials_url"].GetString();
-        }
+        credentials = (url.find("@") != std::string::npos) ? true : false;
+        *this << url;
       } while (0);
     }
     inline void operator>>(rapidjson::Document &doc) const {
@@ -503,51 +650,10 @@ public:
       rapidjson::Document::AllocatorType &allocator = doc.GetAllocator();
       rapidjson::Value obj(rapidjson::Type::kObjectType);
       RAPIDJSON_ADDMEMBER_BOOL(obj, std::string("enable"), enable, allocator);
-      RAPIDJSON_ADDMEMBER_BOOL(obj, std::string("dynamic"), dynamic, allocator);
-      RAPIDJSON_ADDMEMBER_STRING(obj, std::string("credentials_url"),
-                                 credentials_url, allocator);
-      RAPIDJSON_ADDMEMBER_STRING(obj, std::string("curl_credentials_url"),
-                                 curl_credentials_url, allocator);
+      RAPIDJSON_ADDMEMBER_STRING(obj, std::string("url"), url, allocator);
+      RAPIDJSON_ADDMEMBER_BOOL(obj, std::string("credentials"), credentials,
+                               allocator);
       doc.AddMember("proxy", obj, allocator);
-    }
-    inline void operator<<(const std::string &authString) {
-      ParseProxyCredentialsUrl(authString, type, scheme, port, username,
-                               password, host);
-    }
-  };
-  struct Jss {
-  public:
-    inline Jss();
-    inline ~Jss();
-
-    bool enable = false;
-    std::string frameImplDidClearWindowObject;
-
-    inline void operator>>(rapidjson::Document &doc) const {
-      if (!doc.IsObject())
-        return;
-      rapidjson::Document::AllocatorType &allocator = doc.GetAllocator();
-      rapidjson::Value obj(rapidjson::Type::kObjectType);
-      RAPIDJSON_ADDMEMBER_BOOL(obj, std::string("enable"), enable, allocator);
-      RAPIDJSON_ADDMEMBER_STRING(obj,
-                                 std::string("frameImplDidClearWindowObject"),
-                                 frameImplDidClearWindowObject, allocator);
-      doc.AddMember("jss", obj, allocator);
-    }
-    inline void operator<<(const rapidjson::Value &value) {
-      do {
-        if (!value.IsObject())
-          break;
-        if (value.HasMember("enable") && value["enable"].IsBool()) {
-          enable = value["enable"].GetBool();
-        }
-        if (value.HasMember("frameImplDidClearWindowObject") &&
-            value["frameImplDidClearWindowObject"].IsString() &&
-            value["frameImplDidClearWindowObject"].GetStringLength() > 0) {
-          frameImplDidClearWindowObject =
-              value["frameImplDidClearWindowObject"].GetString();
-        }
-      } while (0);
     }
   };
   struct Startup {
@@ -932,7 +1038,7 @@ public:
       };
       inline Screen();
       inline ~Screen();
-
+      inline Screen(const Screen &);
       int height = 0;
       int width = 0;
       int colorDepth = 0;
@@ -1032,14 +1138,41 @@ public:
 
       bool enable = false;
       Hash hash;
-
+      std::vector<std::string> ecmaJss;   // ECMAScriptV8.mjs
+      std::vector<std::string> chromeJss; // ChromeApiV8.mjs
       inline void operator>>(rapidjson::Document &doc) const {
         if (!doc.IsObject())
           return;
         rapidjson::Document tmpDoc(rapidjson::Type::kObjectType);
-        auto &allocHash = tmpDoc.GetAllocator();
-        RAPIDJSON_ADDMEMBER_BOOL(tmpDoc, std::string("enable"), enable,
-                                 allocHash);
+        auto &alloc = tmpDoc.GetAllocator();
+        RAPIDJSON_ADDMEMBER_BOOL(tmpDoc, std::string("enable"), enable, alloc);
+
+        rapidjson::Value chromeJssArray(rapidjson::Type::kArrayType);
+        for (const auto &item : chromeJss) {
+          if (item.empty())
+            continue;
+          rapidjson::Value itemValue(rapidjson::Type::kStringType);
+          itemValue.SetString(item.c_str(),
+                              static_cast<rapidjson::SizeType>(item.size()),
+                              alloc);
+          chromeJssArray.PushBack(itemValue, alloc);
+        }
+        RAPIDJSON_ADDMEMBER_OBJECT(tmpDoc, std::string("chromeJss"),
+                                   chromeJssArray, alloc);
+
+        rapidjson::Value ecmaJssArray(rapidjson::Type::kArrayType);
+        for (const auto &item : ecmaJss) {
+          if (item.empty())
+            continue;
+          rapidjson::Value itemValue(rapidjson::Type::kStringType);
+          itemValue.SetString(item.c_str(),
+                              static_cast<rapidjson::SizeType>(item.size()),
+                              alloc);
+          ecmaJssArray.PushBack(itemValue, alloc);
+        }
+        RAPIDJSON_ADDMEMBER_OBJECT(tmpDoc, std::string("ecmaJss"), ecmaJssArray,
+                                   alloc);
+
         hash >> tmpDoc;
 
         rapidjson::Value tmpValue(tmpDoc, doc.GetAllocator());
@@ -1052,7 +1185,85 @@ public:
         if (v.HasMember("enable") && v["enable"].IsBool()) {
           enable = v["enable"].GetBool();
         }
-        hash << v["hash"];
+        if (v.HasMember("ecmaJss") && v["ecmaJss"].IsArray()) {
+          ecmaJss.clear();
+          for (const auto &item : v["ecmaJss"].GetArray()) {
+            if (item.IsString()) {
+              ecmaJss.push_back(item.GetString());
+            }
+          }
+        }
+        if (v.HasMember("chromeJss") && v["chromeJss"].IsArray()) {
+          chromeJss.clear();
+          for (const auto &item : v["chromeJss"].GetArray()) {
+            if (item.IsString()) {
+              chromeJss.push_back(item.GetString());
+            }
+          }
+        }
+        if (v.HasMember("hash") && v["hash"].IsObject()) {
+          hash << v["hash"];
+        }
+      }
+    };
+    struct Tlspeet {
+      inline Tlspeet();
+      inline ~Tlspeet();
+
+      //!@ TLS cipher suites
+      //!@ TLS extensions
+      //!@ TLS curves
+      unsigned short grease_seed = 0xAA;
+      //!@ Akamai HTTP/2 fingerprint
+      bool enable_http2_settings_grease = false;
+      //!@ JA3 fingerprint
+      bool permute_extensions = false;
+
+      bool enable = false;
+
+      void operator=(const Tlspeet &other) {
+        grease_seed = other.grease_seed;
+        enable_http2_settings_grease = other.enable_http2_settings_grease;
+        permute_extensions = other.permute_extensions;
+        enable = other.enable;
+      }
+      void operator>>(rapidjson::Document &doc) const {
+        if (!doc.IsObject())
+          return;
+        rapidjson::Document tmpDoc(rapidjson::Type::kObjectType);
+        auto &allocHash = tmpDoc.GetAllocator();
+        RAPIDJSON_ADDMEMBER_BOOL(tmpDoc, std::string("enable"), enable,
+                                 allocHash);
+        RAPIDJSON_ADDMEMBER_UINT(tmpDoc, std::string("grease_seed"),
+                                 grease_seed, allocHash);
+        RAPIDJSON_ADDMEMBER_BOOL(tmpDoc,
+                                 std::string("enable_http2_settings_grease"),
+                                 enable_http2_settings_grease, allocHash);
+        RAPIDJSON_ADDMEMBER_BOOL(tmpDoc, std::string("permute_extensions"),
+                                 permute_extensions, allocHash);
+
+        rapidjson::Value tmpValue(tmpDoc, doc.GetAllocator());
+        doc.AddMember(rapidjson::Value("tlspeet", doc.GetAllocator()).Move(),
+                      tmpValue, doc.GetAllocator());
+      }
+      void operator<<(const rapidjson::Value &v) {
+        if (!v.IsObject())
+          return;
+        if (v.HasMember("enable") && v["enable"].IsBool()) {
+          enable = v["enable"].GetBool();
+        }
+        if (v.HasMember("grease_seed") && v["grease_seed"].IsUint()) {
+          grease_seed = static_cast<unsigned short>(v["grease_seed"].GetUint());
+        }
+        if (v.HasMember("enable_http2_settings_grease") &&
+            v["enable_http2_settings_grease"].IsBool()) {
+          enable_http2_settings_grease =
+              v["enable_http2_settings_grease"].GetBool();
+        }
+        if (v.HasMember("permute_extensions") &&
+            v["permute_extensions"].IsBool()) {
+          permute_extensions = v["permute_extensions"].GetBool();
+        }
       }
     };
     struct Math {
@@ -1080,7 +1291,9 @@ public:
         if (v.HasMember("enable") && v["enable"].IsBool()) {
           enable = v["enable"].GetBool();
         }
-        hash << v["hash"];
+        if (v.HasMember("hash") && v["hash"].IsObject()) {
+          hash << v["hash"];
+        }
       }
     };
     struct Canvas {
@@ -1107,7 +1320,9 @@ public:
         if (v.HasMember("enable") && v["enable"].IsBool()) {
           enable = v["enable"].GetBool();
         }
-        hash << v["hash"];
+        if (v.HasMember("hash") && v["hash"].IsObject()) {
+          hash << v["hash"];
+        }
       }
     };
     struct Audio {
@@ -1135,13 +1350,16 @@ public:
         if (v.HasMember("enable") && v["enable"].IsBool()) {
           enable = v["enable"].GetBool();
         }
-        hash << v["hash"];
+        if (v.HasMember("hash") && v["hash"].IsObject()) {
+          hash << v["hash"];
+        }
       }
     };
     struct Webgl {
       struct ContextAttributes {
         inline ContextAttributes();
         inline ~ContextAttributes();
+        inline ContextAttributes(const ContextAttributes &);
         bool enable = false;
         bool alpha = true;
         bool antialias = true;
@@ -1265,6 +1483,7 @@ public:
         struct _8B30_ {
           inline _8B30_();
           inline ~_8B30_();
+          inline _8B30_(const _8B30_ &);
           _8DF_ _8DF0;
           _8DF_ _8DF1;
           _8DF_ _8DF2;
@@ -1449,6 +1668,7 @@ public:
         struct _8B31_ {
           inline _8B31_();
           inline ~_8B31_();
+          inline _8B31_(const _8B31_ &);
           _8DF_ _8DF0;
           _8DF_ _8DF1;
           _8DF_ _8DF2;
@@ -1670,7 +1890,7 @@ public:
       };
       inline Webgl();
       inline ~Webgl();
-
+      inline Webgl(const Webgl &);
       bool enable = false;
       Hash hash;
       ContextAttributes contextAttributes;
@@ -1865,11 +2085,11 @@ public:
       };
       inline UserAgentMetadata();
       inline ~UserAgentMetadata();
-
+      inline UserAgentMetadata(const UserAgentMetadata &);
       bool enable = false;
       std::vector<Brand_version> brand_version_list;
       std::vector<Brand_full_version> brand_full_version_list;
-      std::string full_version = "138.0.7204.158";
+      std::string full_version = kChromiumCoreVersion;
       std::string platform = "Windows";
       std::string platform_version = "11.0.0";
       std::string architecture = "x86_64";
@@ -2111,9 +2331,11 @@ public:
         if (v.HasMember("enable") && v["enable"].IsBool()) {
           enable = v["enable"].GetBool();
         }
-        hash << v["hash"];
-        allowlist.clear();
+        if (v.HasMember("hash") && v["hash"].IsObject()) {
+          hash << v["hash"];
+        }
         if (v.HasMember("allowlist") && v["allowlist"].IsArray()) {
+          allowlist.clear();
           const rapidjson::Value &refObj = v["allowlist"];
           for (rapidjson::SizeType i = 0; i < refObj.Size(); ++i) {
             if (!refObj[i].IsObject())
@@ -2188,9 +2410,11 @@ public:
         if (v.HasMember("enable") && v["enable"].IsBool()) {
           enable = v["enable"].GetBool();
         }
-        hash << v["hash"];
-        allowlist.clear();
+        if (v.HasMember("hash") && v["hash"].IsObject()) {
+          hash << v["hash"];
+        }
         if (v.HasMember("allowlist") && v["allowlist"].IsArray()) {
+          allowlist.clear();
           const rapidjson::Value &refObj = v["allowlist"];
           for (rapidjson::SizeType i = 0; i < refObj.Size(); ++i) {
             if (!refObj[i].IsString())
@@ -2207,9 +2431,9 @@ public:
     struct Product {
       inline Product();
       inline ~Product();
-      std::string name = "Microsoft Edge";     //!@ Google Chrome
-      std::string version = "138.0.3351.140";  //!@ Google Chrome version
-      std::string chromium = "138.0.7204.158"; //!@ Google Chrome version
+      std::string name = "Microsoft Edge";         //!@ Google Chrome
+      std::string version = "138.0.3351.140";      //!@ Google Chrome version
+      std::string chromium = kChromiumCoreVersion; //!@ Google Chrome version
 
       void operator<<(const rapidjson::Value &v) {
         if (!v.IsObject())
@@ -2269,6 +2493,7 @@ public:
     Webgl webgl;
     Audio audio;
     Math math;
+    Tlspeet tlspeet;
     V8 v8;
     Font font;
     CdmRegistry cdmRegistry;
@@ -2323,6 +2548,7 @@ public:
       v8 >> fpsDoc;
       font >> fpsDoc;
       screen >> fpsDoc;
+      tlspeet >> fpsDoc;
       disk >> fpsDoc;
       cdmRegistry >> fpsDoc;
       rapidjson::Value fpsValue(fpsDoc, doc.GetAllocator());
@@ -2385,6 +2611,9 @@ public:
       }
       if (v.HasMember("screen") && v["screen"].IsObject()) {
         screen << v["screen"];
+      }
+      if (v.HasMember("tlspeet") && v["tlspeet"].IsObject()) {
+        tlspeet << v["tlspeet"];
       }
       if (v.HasMember("languages") && v["languages"].IsArray()) {
         languages.clear();
@@ -2511,6 +2740,7 @@ public:
       }
     }
   };
+
   struct Extensions {
     inline Extensions();
     inline ~Extensions();
@@ -2538,8 +2768,6 @@ public:
       doc.AddMember("extensions", obj, allocator);
     }
     inline void operator<<(const rapidjson::Value &v) {
-      allowlist.clear();
-      enable = false;
       do {
         if (!v.IsObject())
           break;
@@ -2562,15 +2790,93 @@ public:
     }
   };
 
+  struct Policy {
+    inline Policy();
+    inline ~Policy();
+
+    bool enable = false;
+    bool reuse = false;
+    bool dynamic_proxy = false;
+    int reuse_ip = 0;
+    int reuse_failed_max = 3;
+    int reuse_success_max = 10;
+    int dynamic_proxy_type = 0;
+    int dynamic_proxy_session_timeout = 10; // seconds
+
+    void operator=(const Policy &other) {
+      enable = other.enable;
+      reuse = other.reuse;
+      dynamic_proxy = other.dynamic_proxy;
+      reuse_ip = other.reuse_ip;
+      reuse_failed_max = other.reuse_failed_max;
+      reuse_success_max = other.reuse_success_max;
+      dynamic_proxy_type = other.dynamic_proxy_type;
+      dynamic_proxy_session_timeout = other.dynamic_proxy_session_timeout;
+    }
+    void operator<<(const rapidjson::Value &v) {
+      if (!v.IsObject())
+        return;
+      if (v.HasMember("enable") && v["enable"].IsBool()) {
+        enable = v["enable"].GetBool();
+      }
+      if (v.HasMember("reuse") && v["reuse"].IsBool()) {
+        reuse = v["reuse"].GetBool();
+      }
+      if (v.HasMember("dynamic_proxy") && v["dynamic_proxy"].IsBool()) {
+        dynamic_proxy = v["dynamic_proxy"].GetBool();
+      }
+      if (v.HasMember("reuse_ip") && v["reuse_ip"].IsInt()) {
+        reuse_ip = v["reuse_ip"].GetInt();
+      }
+      if (v.HasMember("reuse_failed_max") && v["reuse_failed_max"].IsInt()) {
+        reuse_failed_max = v["reuse_failed_max"].GetInt();
+      }
+      if (v.HasMember("reuse_success_max") && v["reuse_success_max"].IsInt()) {
+        reuse_success_max = v["reuse_success_max"].GetInt();
+      }
+      if (v.HasMember("dynamic_proxy_type") &&
+          v["dynamic_proxy_type"].IsInt()) {
+        dynamic_proxy_type = v["dynamic_proxy_type"].GetInt();
+      }
+      if (v.HasMember("dynamic_proxy_session_timeout") &&
+          v["dynamic_proxy_session_timeout"].IsInt()) {
+        dynamic_proxy_session_timeout =
+            v["dynamic_proxy_session_timeout"].GetInt();
+      }
+    }
+    void operator>>(rapidjson::Document &doc) const {
+      if (!doc.IsObject())
+        return;
+      rapidjson::Document tmpDoc(rapidjson::Type::kObjectType);
+      auto &allocHash = tmpDoc.GetAllocator();
+      RAPIDJSON_ADDMEMBER_BOOL(tmpDoc, std::string("enable"), enable,
+                               allocHash);
+      RAPIDJSON_ADDMEMBER_BOOL(tmpDoc, std::string("reuse"), reuse, allocHash);
+      RAPIDJSON_ADDMEMBER_BOOL(tmpDoc, std::string("dynamic_proxy"),
+                               dynamic_proxy, allocHash);
+      RAPIDJSON_ADDMEMBER_INT(tmpDoc, std::string("reuse_ip"), reuse_ip,
+                              allocHash);
+      RAPIDJSON_ADDMEMBER_INT(tmpDoc, std::string("reuse_failed_max"),
+                              reuse_failed_max, allocHash);
+      RAPIDJSON_ADDMEMBER_INT(tmpDoc, std::string("reuse_success_max"),
+                              reuse_success_max, allocHash);
+      RAPIDJSON_ADDMEMBER_INT(tmpDoc, std::string("dynamic_proxy_type"),
+                              dynamic_proxy_type, allocHash);
+      RAPIDJSON_ADDMEMBER_INT(tmpDoc,
+                              std::string("dynamic_proxy_session_timeout"),
+                              dynamic_proxy_session_timeout, allocHash);
+      rapidjson::Value tmpValue(tmpDoc, doc.GetAllocator());
+      doc.AddMember(rapidjson::Value("policy", doc.GetAllocator()).Move(),
+                    tmpValue, doc.GetAllocator());
+    }
+  };
+
 public:
   inline const tfIdentifyType &GetIdentify() const {
     return identify;
   }
   inline const std::string &GetSuper() const {
     return super;
-  }
-  inline const bool &IsReuse() const {
-    return reuse;
   }
   inline const tfSeedType &GetSeed() const {
     return seed;
@@ -2582,7 +2888,7 @@ public:
     return type >= RequestType::kBegin && type <= RequestType::kEnd;
   }
   inline bool ValidateIdentify() const {
-    return identify > 0 && identify <= 0xFF;
+    return seed > 0 && seed <= 0xFFFFFFFFFFFFFFFF;
   }
   inline bool ValidateSeed() const {
     return seed > 0 && seed <= 0xFFFFFFFFFFFFFFFF;
@@ -2620,7 +2926,6 @@ public:
     seed = other.seed;
     cookies = other.cookies;
     storage = other.storage;
-    jss = other.jss;
     startup = other.startup;
     extensions = other.extensions;
     fps = other.fps;
@@ -2630,10 +2935,12 @@ public:
     dynFpsUrl = other.dynFpsUrl;
     dynFpsInfo = other.dynFpsInfo;
     super = other.super;
-    reuse = other.reuse;
     type = other.type;
     mode = other.mode;
     server = other.server;
+    policy = other.policy;
+    devmode = other.devmode;
+    devlogo = other.devlogo;
   }
   inline void operator>>(rapidjson::Document &doc) const;
   inline void operator<<(const rapidjson::Value &v);
@@ -2658,6 +2965,30 @@ public:
       }
     } while (0);
   }
+  inline BrowserBrandType GetBrowserBrandType() const {
+    BrowserBrandType brand = BrowserBrandType::kChromium;
+    do {
+      if (fps.userAgent.find("Edg/") != std::string::npos ||
+          fps.userAgent.find("Edge/") != std::string::npos) {
+        brand = BrowserBrandType::kEdge;
+        break;
+      }
+      if (fps.userAgent.find("Chrome/") != std::string::npos) {
+        brand = BrowserBrandType::kChrome;
+        break;
+      }
+      if (fps.userAgent.find("Firefox/") != std::string::npos) {
+        brand = BrowserBrandType::kFirefox;
+        break;
+      }
+      if (fps.userAgent.find("Safari/") != std::string::npos &&
+          fps.userAgent.find("Chrome/") == std::string::npos) {
+        brand = BrowserBrandType::kSafari;
+        break;
+      }
+    } while (0);
+    return brand;
+  }
 
 public:
   inline IXSiumio();
@@ -2674,10 +3005,10 @@ public:
       0; //!@ Unique identifier, default is 0, used for synchronization
   RequestType type = RequestType::kDefault;
   Server server;
+  Policy policy;
   tfSeedType seed = 0;
   Cookies cookies;
   Storage storage;
-  Jss jss;
   Startup startup;
   Extensions extensions;
   Fingerprint fps; //!@ Fingerprint settings, default is empty
@@ -2687,12 +3018,13 @@ public:
   std::string dynFpsUrl;
   DynamicFpsInfo dynFpsInfo; //!@ Dynamic FPS information, default is empty
   std::string super;
-  bool reuse = false;
+  bool devmode = false;
+  bool devlogo = false;
 
 private:
   const std::vector<std::string> hashKeys = {
-      "dynFpsInfo", "webrtcIPHandling", "fps",     "proxy",   "bridge",
-      "seed",       "identify",         "cookies", "storage", "jss"};
+      "dynFpsInfo", "webrtcIPHandling", "fps",     "proxy",  "bridge",
+      "seed",       "identify",         "cookies", "storage"};
 };
 inline IXSiumio::IXSiumio() {
 }
@@ -2704,31 +3036,36 @@ inline IXSiumio::IXSiumio(const std::string &json) {
 inline void IXSiumio::operator<<(const rapidjson::Value &v) {
   if (!v.IsObject())
     return;
-
-  enable = false; //!@ Main switch for the browser, default is true
-  identify = 0;   //!@ Unique identifier, default is 0, used for synchronization
-  seed = 0;
-  mode = 0;
-  type = RequestType::kDefault;
-  cookies = Cookies();
-  storage = Storage();
-  jss = Jss();
-  startup = Startup();
-  extensions = Extensions();
-  fps = Fingerprint();
-  bridge = Bridge();
-  proxy = Proxy();
-  webrtcIPHandling = WebRTCIPHandling();
-  dynFpsUrl = "";
-  dynFpsInfo = DynamicFpsInfo();
-  super = "";
-  server = Server();
-  reuse = false;
-  notifyCode = -1;
-  notifyMsg = "Ok";
-
+#if 0
+			enable = false; //!@ Main switch for the browser, default is true
+			identify = 0;   //!@ Unique identifier, default is 0, used for synchronization
+			seed = 0;
+			mode = 0;
+			type = RequestType::kDefault;
+			cookies = Cookies();
+			storage = Storage();
+			startup = Startup();
+			extensions = Extensions();
+			fps = Fingerprint();
+			bridge = Bridge();
+			proxy = Proxy();
+			webrtcIPHandling = WebRTCIPHandling();
+			dynFpsUrl = "";
+			dynFpsInfo = DynamicFpsInfo();
+			super = "";
+			server = Server();
+			notifyCode = -1;
+			notifyMsg = "Ok";
+			policy = Policy();
+#endif
   if (v.HasMember("enable") && v["enable"].IsBool()) {
     enable = v["enable"].GetBool();
+  }
+  if (v.HasMember("devmode") && v["devmode"].IsBool()) {
+    devmode = v["devmode"].GetBool();
+  }
+  if (v.HasMember("devlogo") && v["devlogo"].IsBool()) {
+    devlogo = v["devlogo"].GetBool();
   }
   if (v.HasMember("type") && v["type"].IsUint()) {
     type = static_cast<decltype(type)>(v["type"].GetUint());
@@ -2749,17 +3086,14 @@ inline void IXSiumio::operator<<(const rapidjson::Value &v) {
   if (v.HasMember("mode") && v["mode"].IsInt()) {
     mode = v["mode"].GetInt();
   }
-  if (v.HasMember("reuse") && v["reuse"].IsBool()) {
-    reuse = v["reuse"].GetBool();
-  }
   if (v.HasMember("server") && v["server"].IsObject()) {
     server << v["server"];
   }
   if (v.HasMember("super") && v["super"].IsString()) {
     super = v["super"].GetString();
   }
-  if (v.HasMember("identify") && v["identify"].IsUint()) {
-    identify = static_cast<decltype(identify)>(v["identify"].GetUint());
+  if (v.HasMember("identify") && v["identify"].IsUint64()) {
+    identify = static_cast<decltype(identify)>(v["identify"].GetUint64());
   }
   if (v.HasMember("seed") && v["seed"].IsUint64()) {
     seed = static_cast<decltype(seed)>(v["seed"].GetUint64());
@@ -2767,14 +3101,14 @@ inline void IXSiumio::operator<<(const rapidjson::Value &v) {
   if (v.HasMember("dynFpsInfo") && v["dynFpsInfo"].IsObject()) {
     dynFpsInfo << v["dynFpsInfo"];
   }
+  if (v.HasMember("policy") && v["policy"].IsObject()) {
+    policy << v["policy"];
+  }
   if (v.HasMember("cookies") && v["cookies"].IsObject()) {
     cookies << v["cookies"];
   }
   if (v.HasMember("storage") && v["storage"].IsObject()) {
     storage << v["storage"];
-  }
-  if (v.HasMember("jss") && v["jss"].IsObject()) {
-    jss << v["jss"];
   }
   if (v.HasMember("startup") && v["startup"].IsObject()) {
     startup << v["startup"];
@@ -2810,14 +3144,16 @@ inline void IXSiumio::operator>>(rapidjson::Document &doc) const {
   auto &xsiumioAllocator = xsiumioDoc.GetAllocator();
   RAPIDJSON_ADDMEMBER_BOOL(xsiumioDoc, std::string("enable"), enable,
                            xsiumioAllocator);
+  RAPIDJSON_ADDMEMBER_BOOL(xsiumioDoc, std::string("devmode"), devmode,
+                           xsiumioAllocator);
+  RAPIDJSON_ADDMEMBER_BOOL(xsiumioDoc, std::string("devlogo"), devlogo,
+                           xsiumioAllocator);
   RAPIDJSON_ADDMEMBER_UINT(xsiumioDoc, std::string("type"),
                            static_cast<tfRequestType>(type), xsiumioAllocator);
-  RAPIDJSON_ADDMEMBER_BOOL(xsiumioDoc, std::string("reuse"), reuse,
-                           xsiumioAllocator);
   RAPIDJSON_ADDMEMBER_STRING(xsiumioDoc, std::string("super"), super,
                              xsiumioAllocator);
-  RAPIDJSON_ADDMEMBER_UINT(xsiumioDoc, std::string("identify"), identify,
-                           xsiumioAllocator);
+  RAPIDJSON_ADDMEMBER_UINT64(xsiumioDoc, std::string("identify"), identify,
+                             xsiumioAllocator);
   RAPIDJSON_ADDMEMBER_UINT64(xsiumioDoc, std::string("seed"), seed,
                              xsiumioAllocator);
   RAPIDJSON_ADDMEMBER_INT(xsiumioDoc, std::string("mode"), mode,
@@ -2835,18 +3171,20 @@ inline void IXSiumio::operator>>(rapidjson::Document &doc) const {
   proxy >> xsiumioDoc;
   cookies >> xsiumioDoc;
   storage >> xsiumioDoc;
-  jss >> xsiumioDoc;
   startup >> xsiumioDoc;
   fps >> xsiumioDoc;
   extensions >> xsiumioDoc;
   webrtcIPHandling >> xsiumioDoc;
   dynFpsInfo >> xsiumioDoc;
+  policy >> xsiumioDoc;
   RAPIDJSON_ADDMEMBER_STRING(xsiumioDoc, std::string("dynFpsUrl"), dynFpsUrl,
                              xsiumioAllocator);
   rapidjson::Value xsiumioValue(xsiumioDoc, allocator);
   doc.AddMember(rapidjson::Value(kObjectKey, allocator).Move(), xsiumioValue,
                 allocator);
 }
+inline IXSiumio::Policy::Policy() = default;
+inline IXSiumio::Policy::~Policy() = default;
 inline IXSiumio::Cookies::Cookies() = default;
 inline IXSiumio::Cookies::~Cookies() = default;
 inline IXSiumio::Storage::Storage() = default;
@@ -2855,8 +3193,6 @@ inline IXSiumio::Startup::Startup() = default;
 inline IXSiumio::Startup::~Startup() = default;
 inline IXSiumio::Server::Server() = default;
 inline IXSiumio::Server::~Server() = default;
-inline IXSiumio::Jss::Jss() = default;
-inline IXSiumio::Jss::~Jss() = default;
 inline IXSiumio::WebRTCIPHandling::WebRTCIPHandling() = default;
 inline IXSiumio::WebRTCIPHandling::~WebRTCIPHandling() = default;
 inline IXSiumio::Proxy::Proxy() = default;
@@ -2879,10 +3215,16 @@ inline IXSiumio::Fingerprint::Audio::Audio() = default;
 inline IXSiumio::Fingerprint::Audio::~Audio() = default;
 inline IXSiumio::Fingerprint::Webgl::Webgl() = default;
 inline IXSiumio::Fingerprint::Webgl::~Webgl() = default;
+inline IXSiumio::Fingerprint::Webgl::Webgl(
+    const IXSiumio::Fingerprint::Webgl &) = default;
+inline IXSiumio::Fingerprint::Tlspeet::Tlspeet() = default;
+inline IXSiumio::Fingerprint::Tlspeet::~Tlspeet() = default;
 inline IXSiumio::Fingerprint::Webgl::ContextAttributes::ContextAttributes() =
     default;
 inline IXSiumio::Fingerprint::Webgl::ContextAttributes::~ContextAttributes() =
     default;
+inline IXSiumio::Fingerprint::Webgl::ContextAttributes::ContextAttributes(
+    const IXSiumio::Fingerprint::Webgl::ContextAttributes &) = default;
 inline IXSiumio::Fingerprint::Webgl::ShaderPrecisionFormat::
     ShaderPrecisionFormat() = default;
 inline IXSiumio::Fingerprint::Webgl::ShaderPrecisionFormat::
@@ -2899,6 +3241,12 @@ inline IXSiumio::Fingerprint::Webgl::ShaderPrecisionFormat::_8B31_::_8B31_() =
     default;
 inline IXSiumio::Fingerprint::Webgl::ShaderPrecisionFormat::_8B31_::~_8B31_() =
     default;
+inline IXSiumio::Fingerprint::Webgl::ShaderPrecisionFormat::_8B30_::_8B30_(
+    const IXSiumio::Fingerprint::Webgl::ShaderPrecisionFormat::_8B30_ &) =
+    default;
+inline IXSiumio::Fingerprint::Webgl::ShaderPrecisionFormat::_8B31_::_8B31_(
+    const IXSiumio::Fingerprint::Webgl::ShaderPrecisionFormat::_8B31_ &) =
+    default;
 inline IXSiumio::Fingerprint::Font::Font() = default;
 inline IXSiumio::Fingerprint::Font::~Font() = default;
 inline IXSiumio::Fingerprint::CdmRegistry::CdmRegistry() = default;
@@ -2907,12 +3255,16 @@ inline IXSiumio::Fingerprint::CdmRegistry::CdmEntry::CdmEntry() = default;
 inline IXSiumio::Fingerprint::CdmRegistry::CdmEntry::~CdmEntry() = default;
 inline IXSiumio::Fingerprint::Screen::Screen() = default;
 inline IXSiumio::Fingerprint::Screen::~Screen() = default;
+inline IXSiumio::Fingerprint::Screen::Screen(
+    const IXSiumio::Fingerprint::Screen &) = default;
 inline IXSiumio::Fingerprint::Screen::Dpi::Dpi() = default;
 inline IXSiumio::Fingerprint::Screen::Dpi::~Dpi() = default;
 inline IXSiumio::Fingerprint::Disk::Disk() = default;
 inline IXSiumio::Fingerprint::Disk::~Disk() = default;
 inline IXSiumio::Fingerprint::UserAgentMetadata::UserAgentMetadata() = default;
 inline IXSiumio::Fingerprint::UserAgentMetadata::~UserAgentMetadata() = default;
+inline IXSiumio::Fingerprint::UserAgentMetadata::UserAgentMetadata(
+    const IXSiumio::Fingerprint::UserAgentMetadata &) = default;
 inline IXSiumio::Fingerprint::UserAgentMetadata::Brand_version::
     Brand_version() = default;
 inline IXSiumio::Fingerprint::UserAgentMetadata::Brand_version::

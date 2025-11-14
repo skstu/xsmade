@@ -18,5 +18,6 @@
 #add_subdirectory(browser/startup)
 #add_subdirectory(chromium/startup)
 add_subdirectory(chromium/startup_xsiumio)
-add_subdirectory(chromium/yunbrowser)
+add_subdirectory(chromium/libsettings)
+#add_subdirectory(chromium/yunbrowser)
 #add_subdirectory(os/windows/version)

@@ -59,6 +59,7 @@ enum class BrowserStatus {
 #include "comps.h"
 using namespace chromium;
 #include "client.h"
+#include "device.h"
 #include "model/model.h"
 #include "request.hpp"
 #include "chromium.h"

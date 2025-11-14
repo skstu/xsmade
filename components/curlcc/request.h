@@ -20,9 +20,9 @@ public:
   void Release() const override final;
   void SetUrl(const char *) override final;
   void SetMethod(const char *) override final;
-  void SetHeaders(const std::map<std::string, std::string> &) override final;
+  //void SetHeaders(const std::map<std::string, std::string> &) override final;
   void SetBody(const char *) override final;
-  void SetProxyString(const char *) override final;
+  void SetProxyString(const char *,const bool&) override final;
   bool GetResponse(char **, size_t *) const override final;
   void SetResponseCode(const int &) override final;
   int GetResponseCode() const override final;
@@ -37,6 +37,7 @@ public:
   const std::string &GetProxyUsername() const;
   const std::string &GetProxyPassword() const;
   const ProxyType &GetProxyType() const;
+  bool IsAuth() const;
 
 private:
   int response_code_ = 0;
@@ -46,6 +47,7 @@ private:
   std::string body_;
   std::string response_;
   CurlProxyInfo proxy_info_;
+  std::atomic_bool is_auth_ = false;
   std::unique_ptr<std::mutex> mtx_ = std::make_unique<std::mutex>();
 };
 

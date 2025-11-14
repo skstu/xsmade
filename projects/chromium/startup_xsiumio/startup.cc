@@ -33,124 +33,6 @@ void Startup::UnInit() {
     model_->Release();
   Comps::Destroy();
 }
-#if 0
-std::time_t Startup::GetChromiumStartTime() const {
-  std::time_t result = 0;
-  std::unique_lock<std::mutex> lck(__mtx__, std::defer_lock);
-  lck.lock();
-  result = chromium_start_time_;
-  lck.unlock();
-  return result;
-}
-void Startup::ChromiumClose() {
-  std::unique_lock<std::mutex> lck(__mtx__, std::defer_lock);
-  lck.lock();
-  if (chromium_main_pid_.load() != 0) {
-    xs_process_id_t chromium_pid = 0;
-    xs_process_id_t bridge_pid = 0;
-    // xs_sys_process_kill(chromium_main_pid_.load(), 0);
-    xs_sys_process_kill_name(
-        Config::CreateOrGet()->GetChromiumProcessName().c_str(), &chromium_pid);
-
-    xs_sys_process_kill_name(
-        Config::CreateOrGet()->GetBridgeProcessName().c_str(), &bridge_pid);
-    chromium_main_pid_.store(0);
-  }
-  chromium_start_time_ = 0;
-  lck.unlock();
-}
-void Startup::ConfigureBegin() {
-  do {
-    const std::string xsiumio_path =
-        Config::CreateOrGet()->GetProjectConfiguresDir() + "/" +
-        chromium::xsiumio::kObjectKey + ".json";
-    std::string xsiumio_buffer;
-    xsiumio << stl::File::ReadFile(xsiumio_path);
-#if _DEBUG
-    std::cout << xsiumio.dynFpsInfo.ipinfo.timezone << std::endl;
-#endif
-    const std::string uddPath =
-        Config::CreateOrGet()->GetChromiumUserDataDir(xsiumio.identify);
-    const std::string uddPathBufferPath =
-        Config::CreateOrGet()->GetProjectConfiguresDir() + "/" +
-        chromium::xsiumio::kProjectFilenameUddPath;
-
-    // if (xsiumio.startup.enable_cleanup_udd) {
-    //   try {
-    //     stl::Directory::RemoveAll(stl::Path::Parent(uddPath));
-    //   } catch (const std::exception &e) {
-    //     std::cout << "Error removing directory: " << e.what() << std::endl;
-    //     LOG_WARN("Error removing directory: %s", e.what());
-    //   }
-    // }
-    stl::File::WriteFile(uddPathBufferPath, uddPath);
-  } while (0);
-}
-bool Startup::ConfigureEnd() {
-  bool result = false;
-  do {
-#if 0
-    chromium::xsiumio::IXSiumio tmp;
-    std::string chromium_proxy_string, curl_proxy_string;
-    model_->GetProxyInfo(xsiumio, chromium_proxy_string, curl_proxy_string,
-                         xsiumio.startup.enable_cleanup_udd);
-    xsiumio.proxy.credentials_url = chromium_proxy_string;
-    LOG_INFO("Chromium Proxy: {}", chromium_proxy_string);
-    std::cout << "Chromium Proxy: " << xsiumio.proxy.credentials_url
-              << std::endl;
-    if (!ConfigDynamicInfo(xsiumio.dynFpsUrl.empty()
-                               ? R"(https://myip.ipccr.com)"
-                               : xsiumio.dynFpsUrl,
-                           xsiumio.proxy.enable ? curl_proxy_string : "", tmp))
-      break;
-
-    xsiumio.dynFpsInfo.ipinfo.city = tmp.dynFpsInfo.ipinfo.city;
-    xsiumio.dynFpsInfo.ipinfo.country = tmp.dynFpsInfo.ipinfo.country;
-    xsiumio.dynFpsInfo.ipinfo.region = tmp.dynFpsInfo.ipinfo.region;
-    xsiumio.dynFpsInfo.ipinfo.timezone = tmp.dynFpsInfo.ipinfo.timezone;
-    xsiumio.dynFpsInfo.ipinfo.lat = tmp.dynFpsInfo.ipinfo.lat;
-    xsiumio.dynFpsInfo.ipinfo.lon = tmp.dynFpsInfo.ipinfo.lon;
-    xsiumio.dynFpsInfo.ipinfo.isp = tmp.dynFpsInfo.ipinfo.isp;
-    xsiumio.dynFpsInfo.ipinfo.ip = tmp.dynFpsInfo.ipinfo.ip;
-
-    if (!model_->GetModelResult()) {
-      xsiumio.proxy.credentials_url = chromium_proxy_string;
-      xsiumio.webrtcIPHandling.public_ip = tmp.dynFpsInfo.ipinfo.ip;
-      // std::this_thread::sleep_for(std::chrono::milliseconds(
-      //     stl::Random::GetRandomValue<int>(1000 * 3, 1000 * 18)));
-    }
-    {
-#if _DEBUG
-      std::cout << xsiumio.fps.userAgent << std::endl;
-      LOG_INFO("{}", xsiumio.fps.userAgent);
-      std::cout << xsiumio.fps.webgl.getParameter[37446] << std::endl;
-      LOG_INFO("{}", xsiumio.fps.webgl.getParameter[37446]);
-      std::cout << xsiumio.dynFpsInfo.ipinfo.timezone << std::endl;
-      std::cout << xsiumio.webrtcIPHandling.public_ip << std::endl;
-
-      std::cout << "Use model id " << xsiumio.identify << std::endl;
-      LOG_INFO("Use model id {}", xsiumio.identify);
-#endif
-    }
-    chromium::yunlogin::IConfigure cfgdat("");
-
-    std::string xsiumioBuffer, cfgdatBuffer, cfgdatBufferEncrypted;
-    rapidjson::Document docOutput(rapidjson::Type::kObjectType);
-    xsiumio >> docOutput;
-    xsiumioBuffer = Json::toString(docOutput);
-
-    stl::File::WriteFile(Config::CreateOrGet()->GetProjectConfiguresDir() +
-                             "/" + chromium::xsiumio::kObjectKey + ".json",
-                         xsiumioBuffer);
-#if _DEBUG
-    LOG_INFO("{}---\n{}", xsiumio.identify, xsiumioBuffer);
-#endif
-#endif
-    result = true;
-  } while (0);
-  return result;
-}
-#endif
 void Startup::Request(chromium::IRequest *req) {
   std::lock_guard<std::mutex> lck(*mtx_);
   requests_.push(req);
@@ -164,7 +46,9 @@ void Startup::Run() {
     std::time_t next_time = curr_time;
     std::time_t prev_time = next_time;
     std::time_t prev_time_chromium_check = 0;
-    const std::time_t time_chromium_check_interval = 3; // 3 seconds
+    const std::time_t time_chromium_check_interval = 3;        // 3 seconds
+    const std::time_t chromium_running_timeout_ms = 1000 * 60; // 1 minutes
+    std::time_t chromium_startup_time_ms = 0;
     do {
       curr_time = stl::Time::TimeStamp<std::chrono::seconds>();
 
@@ -196,20 +80,25 @@ void Startup::Run() {
       do {
         if (RunMode::kModeService == mode_)
           break;
+        if (chromium_startup_time_ms > 0) {
+          if (stl::Time::TimeStamp<std::chrono::milliseconds>() -
+                  chromium_startup_time_ms >=
+              chromium_running_timeout_ms) {
+            model_->SetModelResult(false);
+            Browser::CreateOrGet()->ClearChromium();
+          }
+        }
         if (Browser::CreateOrGet()->IsIdle()) {
+          chromium_startup_time_ms =
+              stl::Time::TimeStamp<std::chrono::milliseconds>();
           Browser::CreateOrGet()->SetStatus(BrowserStatus::kStarting);
           // model_->GenModel();
           // Browser::CreateOrGet()->CreateChromium(model_->GetXSCfg());
           std::string cfgBuffer = stl::File::ReadFile(
               Config::CreateOrGet()->GetProjectConfiguresDir() + "/" +
               chromium::xsiumio::kObjectKey + ".json");
-          std::string cfgBufferRouter = stl::File::ReadFile(
-              Config::CreateOrGet()->GetProjectRouteDir() + "/" +
-              chromium::xsiumio::kObjectKey + ".json");
-          chromium::IRequest *reqObj = new chromium::IRequest(
-              model_->GetModelResult() ? cfgBufferRouter : cfgBuffer);
+          chromium::IRequest *reqObj = new chromium::IRequest(cfgBuffer);
           Startup::GetOrCreate()->Request(reqObj);
-          auto ss = 0;
         }
       } while (0);
 
@@ -231,51 +120,31 @@ void Startup::Run() {
             }
             switch (req->GetRequestType()) {
             case chromium::xsiumio::RequestType::kCreateBrowser: {
+              chromium::xsiumio::IXSiumio &cfg = req->GetConfig();
+              model_->SettingBridgeProxy(cfg);
               xs_process_id_t bridgePid = 0;
-              if (model_) {
-                chromium::xsiumio::IXSiumio &cfg = req->GetConfig();
-                do {
-                  if (cfg.startup.enable_cleanup_udd) {
-                    for (int i = 0; i < 5; ++i) {
-                      try {
-                        std::string userDataDir =
-                            Config::CreateOrGet()->GetChromiumUserDataDir(
-                                cfg.GetIdentify());
-                        stl::Directory::RemoveAll(
-                            stl::Path::Parent(userDataDir));
-                        break;
-                      } catch (const std::exception &e) {
-                        e.what();
-                        // std::cout << "Error removing directory: " << e.what()
-                        //           << std::endl;
-                      }
-                      std::this_thread::sleep_for(std::chrono::seconds(1));
-                    }
-                  }
-                  do {
-                    if (!cfg.bridge.enable)
-                      break;
-                    std::string tmp;
-                    cfg.bridge >> tmp;
-                    std::string bridge_startup_args =
-                        OpenSSL::Base64Encode(tmp, false);
-                    std::vector<const char *> startup_args{
-                        "--single_process", "false", "--cfgbuf",
-                        bridge_startup_args.c_str(), nullptr};
-                    xs_sys_process_spawn(
-                        Config::CreateOrGet()->GetBridgeProcessPath().c_str(),
-                        &startup_args[0], nullptr, 1, &bridgePid);
+              if (cfg.bridge.enable) {
+                std::vector<const char *> startup_args{
+                    model_->GetBridgeStartupArgs().c_str(), nullptr};
+                xs_sys_process_spawn(
+                    Config::CreateOrGet()->GetBridgeProcessPath().c_str(),
+                    &startup_args[0], nullptr, 1, &bridgePid);
+              }
+              if (!ConfigDynamicInfo(cfg.dynFpsUrl.empty()
+                                         ? "https://myip.ipipv.com"
+                                         : cfg.dynFpsUrl,
+                                     model_->GetProxyStringForCurl(), cfg)) {
+                Browser::CreateOrGet()->SetStatus(BrowserStatus::kIdle);
+                break;
+              }
+              model_->GenModel(cfg);
 
-                  } while (0);
-
-                  ConfigDynamicInfo(cfg.dynFpsUrl, cfg.proxy.credentials_url,
-                                    cfg);
-
-                } while (0);
-                model_->GenModel(cfg);
+              if (first_run_.load() || !cfg.policy.reuse ||
+                  !model_->GetModelResult()) {
+                model_->GenRouteConfigure(cfg);
               }
               IChromium *chromium = Browser::CreateOrGet()->CreateChromium(req);
-              if (chromium) {
+              if (bridgePid > 0 && chromium) {
                 chromium->SetBridgePid(bridgePid);
               }
             } break;
@@ -349,6 +218,9 @@ void Startup::Run() {
       // #endif
       //         ChromiumClose();
       //       }
+      if (first_run_.load()) {
+        first_run_.store(false);
+      }
       std::this_thread::sleep_for(std::chrono::milliseconds(1000));
     } while (1);
   }).join();
@@ -365,10 +237,10 @@ bool Startup::ConfigDynamicInfo(const std::string &url,
                                 chromium::xsiumio::IXSiumio &out) const {
   bool result = false;
   std::string dynamic_info;
-#if _DEBUG
-  LOG_INFO("ConfigDynamicInfo: url={}, proxyString={}", url, proxyString);
-  std::cout << "ConfigDynamicInfo: url=" << url
-            << ", proxyString=" << proxyString << std::endl;
+#if 1 //_DEBUG
+  LOG_INFO("ConfigDynamicInfo: {}", proxyString);
+  std::cout << "ConfigDynamicInfo: "
+            << (proxyString.empty() ? "localhost" : proxyString) << std::endl;
 #endif
 
   do {
@@ -387,7 +259,9 @@ bool Startup::ConfigDynamicInfo(const std::string &url,
     auto reqMyip = pCurl->CreateRequest();
     reqMyip->SetUrl(url.c_str());
     if (!proxyString.empty()) {
-      reqMyip->SetProxyString(proxyString.c_str());
+      reqMyip->SetProxyString(
+          proxyString.c_str(),
+          proxyString.find("@") != std::string::npos ? true : false);
     }
     reqArray->Push(reqMyip);
     curl::ICurl::IRequestArray *resArrsy = pCurl->Perform(reqArray);
@@ -560,12 +434,11 @@ bool Startup::ConfigDynamicInfo(const std::string &url,
   out.webrtcIPHandling.public_ip = out.dynFpsInfo.ipinfo.ip;
 
 #if _DEBUG
-  LOG_INFO("Request dynamic data {} ,ip {},timezone_id {}",
-           result ? "success" : "failed", out.dynFpsInfo.ipinfo.ip,
-           out.dynFpsInfo.ipinfo.timezone);
-  std::cout << "Request dynamic data " << (result ? "success" : "failed")
-            << ", ip: " << out.dynFpsInfo.ipinfo.ip
-            << ", timezone_id: " << out.dynFpsInfo.ipinfo.timezone << std::endl;
+  const std::string log =
+      fmt::format("DynFpsInfo: tz={}, ip={}", out.dynFpsInfo.ipinfo.timezone,
+                  out.dynFpsInfo.ipinfo.ip);
+  LOG_INFO("{}", log);
+  std::cout << log << std::endl;
 #endif
   return result;
 }
@@ -589,7 +462,7 @@ void Startup::NotifyRequestResult(const std::string &body) {
       }
     }
     model_->SetModelResult(result);
-#if ENABLE_DEVELOP_MODE
+#if ENABLE_DEVELOP_MODE3
     std::cout << "NotifyRequestResult: result = " << result << std::endl;
 #endif
     if (!result)

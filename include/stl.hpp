@@ -264,6 +264,16 @@ public:
     std::uniform_int_distribution<> dis(0, 1);
     return dis(gen) == 1;
   }
+  static bool GetRandomBoolSeed32(uint32_t seed) {
+    std::mt19937 gen(seed);
+    std::uniform_int_distribution<> dis(0, 1);
+    return dis(gen) == 1;
+  }
+  static bool GetRandomBoolSeed64(uint64_t seed) {
+    std::mt19937_64 gen(seed);
+    std::uniform_int_distribution<> dis(0, 1);
+    return dis(gen) == 1;
+  }
   template <typename T> static T GetRandomValue(const T &a, const T &b) {
     std::random_device rd;
     std::mt19937 gen(rd());

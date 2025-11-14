@@ -1,6 +1,6 @@
 option(xsUSE_COMPONENTS_WXUI "Enable configure components - wxui" OFF)
-option(xsUSE_COMPONENTS_UVPP "Enable configure components - uvpp" ON)
-option(xsUSE_COMPONENTS_CCENG "Enable configure components - cceng" ON)
+option(xsUSE_COMPONENTS_UVPP "Enable configure components - uvpp" OFF)
+option(xsUSE_COMPONENTS_CCENG "Enable configure components - cceng" OFF)
 option(xsUSE_COMPONENTS_CURLCC "Enable configure components - curlcc" ON)
 option(xsUSE_COMPONENTS_ICUCC "Enable configure components - icucc" ON)
 option(xsUSE_COMPONENTS_JSONNETCC "Enable configure components - jsonnetcc" OFF)

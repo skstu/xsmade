@@ -1,14 +1,12 @@
 #if !defined(__03406DC9_3BF3_47A3_927C_502ACED2AF60__)
 #define __03406DC9_3BF3_47A3_927C_502ACED2AF60__
 
-#include "component.h"
-
 namespace curl {
-class ICurl : public IComponent {
+class ICurl {
 public:
   class IConfig {
   public:
-    virtual void SetCurlProxyString(const char *) = 0;
+    virtual void SetCurlProxyString(const char *, const bool &) = 0;
     virtual void AppendCurlRequestUrl(const char *) = 0;
     virtual void SetCurlResponseFilename(const char *) = 0;
   };
@@ -17,11 +15,10 @@ public:
   public:
     virtual void Release() const = 0;
     virtual void SetUrl(const char *) = 0;
-    virtual const char* GetUrl() const = 0;
+    virtual const char *GetUrl() const = 0;
     virtual void SetMethod(const char *) = 0;
-    virtual void SetHeaders(const std::map<std::string, std::string> &) = 0;
     virtual void SetBody(const char *) = 0;
-    virtual void SetProxyString(const char *) = 0;
+    virtual void SetProxyString(const char *, const bool &) = 0;
     virtual bool GetResponse(char **, size_t *) const = 0;
     virtual void SetResponseCode(const int &) = 0;
     virtual int GetResponseCode() const = 0;
